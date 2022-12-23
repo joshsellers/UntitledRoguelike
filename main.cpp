@@ -3,8 +3,12 @@
 
 
 int main() {
-    unsigned int windowWidth = WIDTH * SCALE;
-    unsigned int windowHeight = HEIGHT * SCALE;
+    float screenHeight = sf::VideoMode::getDesktopMode().height;
+    float screenWidth = screenHeight * ((float)WIDTH / (float)HEIGHT);
+    float relativeWindowSize = 0.75;
+
+    unsigned int windowWidth = screenWidth * relativeWindowSize;
+    unsigned int windowHeight = screenHeight * relativeWindowSize;
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "");
     window.setFramerateLimit(60);
@@ -21,7 +25,7 @@ int main() {
 
     sf::Sprite mainSurfaceSprite;
     mainSurfaceSprite.setTexture(mainSurfaceTexture);
-    mainSurfaceSprite.setScale(SCALE, SCALE);
+    mainSurfaceSprite.setScale((float)windowWidth / (float)WIDTH, (float)windowHeight / (float)HEIGHT);
 
     sf::RenderTexture uiSurface;
     uiSurface.create(windowWidth, windowHeight);
@@ -29,10 +33,6 @@ int main() {
 
     sf::Sprite uiSurfaceSprite;
     uiSurfaceSprite.setTexture(uiSurfaceTexture);
-
-    sf::CircleShape shape(20);
-    shape.setPosition(40, 0);
-    shape.setFillColor(sf::Color(0x0000FFFF));
 
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
@@ -54,7 +54,6 @@ int main() {
         mainSurface.setView(camera);
 
         mainSurface.clear();
-        mainSurface.draw(shape); // TEMP
         game.draw(mainSurface);
 
         mainSurface.display();

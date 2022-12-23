@@ -23,6 +23,13 @@ public:
 private:
 	sf::View* _camera;
 
+	sf::Font _font;
+	sf::Text _fpsLabel;
+	sf::Text _activeChunksLabel;
+
+	sf::Clock _clock;
+	unsigned int _frameCounter = 0;
+
 	Player _player = Player(sf::Vector2f(0, 0));
 	World _world = World(&_player);
 };
