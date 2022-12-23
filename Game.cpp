@@ -20,7 +20,7 @@ Game::Game(sf::View* camera) {
 
 void Game::update() {
     _player.update();
-    _world.update(_frameCounter);
+    _world.update();
     _camera->setCenter(_player.getPosition().x + 5, _player.getPosition().y + 5);
 }
 
@@ -49,4 +49,9 @@ void Game::keyPressed(sf::Keyboard::Key& key) {
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
+    if (key == sf::Keyboard::Hyphen) {
+        _camera->zoom(2);
+    } else if (key == sf::Keyboard::Equal) {
+        _camera->zoom(0.5);
+    }
 }

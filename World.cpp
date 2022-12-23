@@ -18,7 +18,7 @@ World::World(Player* player) {
     }
 }
 
-void World::update(unsigned int frameCounter) {
+void World::update() {
     Chunk* currentChunk = nullptr;
     int pX = _player->getPosition().x + 5;
     int pY = _player->getPosition().y + 5;
@@ -54,7 +54,7 @@ void World::update(unsigned int frameCounter) {
         }
     }
 
-    if (currentChunk != nullptr && frameCounter >= CHUCK_LOAD_TIME) {
+    if (currentChunk != nullptr) {
         int chX = currentChunk->pos.x;
         int chY = currentChunk->pos.y;
 
@@ -92,33 +92,44 @@ void World::update(unsigned int frameCounter) {
 
 void World::draw(sf::RenderTexture& surface) {
     for (Chunk& chunk : _chunks) {
-        surface.draw(chunk.sprite);
-        sf::RectangleShape chunkOutline(sf::Vector2f(CHUNK_SIZE-1, CHUNK_SIZE-1));
-        chunkOutline.setFillColor(sf::Color::Transparent);
-        chunkOutline.setOutlineColor(sf::Color(0xFFFFFFFF));
-        chunkOutline.setOutlineThickness(1);
-        chunkOutline.setPosition(chunk.pos);
-        surface.draw(chunkOutline);
+        try {
+            surface.draw(chunk.sprite);
+            sf::RectangleShape chunkOutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
 
-        sf::Text idLabel;
-        idLabel.setFont(_font);
-        idLabel.setCharacterSize(10);
-        idLabel.setString(std::to_string(chunk.id));
-        idLabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-        surface.draw(idLabel);
+            chunkOutline.setFillColor(sf::Color::Transparent);
+            chunkOutline.setOutlineColor(sf::Color(0xFFFFFFFF));
+            chunkOutline.setOutlineThickness(1);
+            chunkOutline.setPosition(chunk.pos);
+            //surface.draw(chunkOutline);
+
+            sf::Text idLabel;
+            idLabel.setFont(_font);
+            idLabel.setCharacterSize(10);
+            idLabel.setString(std::to_string(chunk.id));
+            idLabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
+            //surface.draw(idLabel);
+        } catch (std::exception& e) {
+            std::cout << "exception: " << e.what() << std::endl;
+        }
     }
 }
 
 void World::loadChunk(sf::Vector2f pos) {
+    for (sf::Vector2i loadingChunk : _loadingChunks) {
+        if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) {
+            std::cout << "chunk at " << pos.x << ", " << pos.y << " is already loading, did not generate" << std::endl;
+            return;
+        }
+    }
     for (Chunk& chunk : _chunks) {
         if (chunk.pos == pos) {
             std::cout << "chunk " << chunk.id << " already exists, did not load" << std::endl;
             return;
         }
     }
+    _loadingChunks.push_back(sf::Vector2i((int)pos.x, (int)pos.y));
     std::thread buildThread(&World::buildChunk, this, pos);
     buildThread.detach();
-    //buildChunk(pos);
 }
 
 void World::buildChunk(sf::Vector2f pos) {
@@ -129,6 +140,14 @@ void World::buildChunk(sf::Vector2f pos) {
     chunk.sprite.setTexture(*chunk.texture);
     chunk.sprite.setPosition(chunk.pos);
     _chunks.push_back(chunk);
+
+    for (int i = 0; i < _loadingChunks.size(); i++) {
+        sf::Vector2i loadingChunk = _loadingChunks.at(i);
+        if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) {
+            _loadingChunks.erase(_loadingChunks.begin() + i);
+            break;
+        }
+    }
 }
 
 bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
@@ -212,34 +231,31 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
             sf::Uint32 b = rgb & 0xFF;
 
             if (val >= sandRange || val < oceanShallowRange) {
-                rgb = r + randomInt(0, 10);
-                rgb = (rgb << 8) + (g + randomInt(0, 10));
-                rgb = (rgb << 8) + (b + randomInt(0, 10));
+                r += randomInt(0, 10);
+                g += randomInt(0, 10);
+                b += randomInt(0, 10);
+
+                if (val >= oceanShallowRange && val < dirtLowRange) {
+                    int ar = (int)(0x55 * (val)) | r;
+                    int ag = (int)(0x55 * (val)) | g;
+                    int ab = (int)(0x55 * (val)) | b;
+                    r = ar;
+                    g = ag;
+                    b = ab;
+                } else if (val >= dirtLowRange && val < dirtHighRange) {
+                    r *= (val + 0.2)*2;
+                    g *= (val + 0.2)*2;
+                    b *= (val + 0.2)*2;
+                }
+
+                rgb = r;
+                rgb = (rgb << 8) + (g);
+                rgb = (rgb << 8) + (b);
             } else if (val < sandRange && val >= oceanShallowRange) {
                 rgb = r ;
                 rgb = (rgb << 8) + (g + randomInt(0, 10));
                 rgb = (rgb << 8) + (b + randomInt(0, 10));
             }
-
-            /*if (val >= seaLevel + mountainMidRange + mountainHighRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
-            } else if (val >= seaLevel + mountainLowRange + mountainMidRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_MID;
-            } else if (val >= seaLevel + dirtHighRange + mountainLowRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_LOW;
-            } else if (val >= seaLevel + sandRange + dirtHighRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH;
-            } else if (val >= seaLevel + sandRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_LOW;
-            } else if (val > seaLevel && val < seaLevel + sandRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
-            } else if (val > seaLevel - oceanShallowRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_SHALLOW;
-            } else if (val > seaLevel - oceanMidRange) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_MID;
-            } else if (val < seaLevel) {
-                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_DEEP;
-            }*/
 
             image.setPixel(x - chX, y - chY, sf::Color((rgb << 8) + 0xFF));
         }

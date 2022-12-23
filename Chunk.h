@@ -10,7 +10,6 @@ constexpr int CHUNK_SIZE = 550;
 struct Chunk {
     Chunk(sf::Vector2f pos) {
         this->pos = pos;
-
         id = pos.x * pos.y;
     }
 
