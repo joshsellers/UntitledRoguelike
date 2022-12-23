@@ -2,9 +2,12 @@
 #include <iostream>
 #include "PerlinNoise.hpp"
 #include <thread>
+#include "Util.h"
 
 World::World(Player* player) {
     _player = player;
+
+    _seed = randomInt(0, 999);
 
     int pX = _player->getPosition().x;
     int pY = _player->getPosition().y;
@@ -15,7 +18,7 @@ World::World(Player* player) {
     }
 }
 
-void World::update() {
+void World::update(unsigned int frameCounter) {
     Chunk* currentChunk = nullptr;
     int pX = _player->getPosition().x + 5;
     int pY = _player->getPosition().y + 5;
@@ -51,7 +54,7 @@ void World::update() {
         }
     }
 
-    if (currentChunk != nullptr) {
+    if (currentChunk != nullptr && frameCounter >= CHUCK_LOAD_TIME) {
         int chX = currentChunk->pos.x;
         int chY = currentChunk->pos.y;
 
@@ -82,7 +85,7 @@ void World::update() {
         } else if (top && right) {
             loadChunk(sf::Vector2f(chX + CHUNK_SIZE, chY - CHUNK_SIZE));
         }
-    } else {
+    } else if (currentChunk == nullptr) {
         std::cout << "currentChunk was nullptr" << std::endl;
     }
 }
@@ -115,6 +118,7 @@ void World::loadChunk(sf::Vector2f pos) {
     }
     std::thread buildThread(&World::buildChunk, this, pos);
     buildThread.detach();
+    //buildChunk(pos);
 }
 
 void World::buildChunk(sf::Vector2f pos) {
@@ -140,17 +144,18 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
     int intOctaves = 4; 
     double warpSize = 4;
     double warpStrength = 0.8;
-    double sampleRate = 0.005;
+    double sampleRate = 0.0001; // 0.0001
 
     // Terrain levels
-    double seaLevel = 0.5;
-    double oceanMidRange = 0.045;
-    double oceanShallowRange = 0.01;
-    double sandRange = 0.02;
-    double dirtHighRange = 0.05;
-    double mountainLowRange = 0.1;
-    double mountainMidRange = 0.1;
-    double mountainHighRange = 0.2;
+    double seaLevel = -0.2;
+    double oceanMidRange = -0.1;
+    double oceanShallowRange = 0;
+    double sandRange = 0.05;
+    double dirtLowRange = 0.3;
+    double dirtHighRange = 0.65;
+    double mountainLowRange = 0.7;
+    double mountainMidRange = 0.8;
+    double mountainHighRange = 0.7;
 
     int chX = pos.x;
     int chY = pos.y;
@@ -164,20 +169,59 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
 
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
-            double warpNoise = perlin.octave2D_01(
-                warpSize * ((double)x * sampleRate),
-                warpSize * ((double)y * sampleRate), intOctaves
+            double warpNoise = perlin.octave2D_11(
+                warpSize * ((double)x * sampleRate*2),
+                warpSize * ((double)y * sampleRate*2), intOctaves
             );
-            double val = perlin.octave3D_01(
+            double warpNoise2 = perlin.octave2D_11(
+                warpSize * ((double)x * sampleRate*4),
+                warpSize * ((double)y * sampleRate*4), intOctaves
+            );
+       
+            double val = perlin.octave3D_11(
                 (x)*sampleRate, (y)*sampleRate,
-                warpStrength * warpNoise, intOctaves
+                warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, intOctaves
             );
 
             //data[x + y * CHUNK_SIZE] = noise;
 
             sf::Uint32 rgb = 0x00;
 
-            if (val >= seaLevel + mountainMidRange + mountainHighRange) {
+            if (val < seaLevel) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_DEEP;
+            } else if (val < oceanMidRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_MID;
+            } else if (val < oceanShallowRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::WATER_SHALLOW;
+            } else if (val < sandRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
+            } else if (val < dirtLowRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_LOW;
+            } else if (val < dirtHighRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH;
+            } else if (val < mountainLowRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_LOW;
+            } else if (val < mountainMidRange) {
+                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_MID;
+            } else {
+                rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
+            }
+
+            sf::Uint32 r = (rgb >> 16) & 0xFF;
+            sf::Uint32 g = (rgb >> 8) & 0xFF;
+            sf::Uint32 b = rgb & 0xFF;
+
+            if (val >= sandRange || val < oceanShallowRange) {
+                rgb = r + randomInt(0, 10);
+                rgb = (rgb << 8) + (g + randomInt(0, 10));
+                rgb = (rgb << 8) + (b + randomInt(0, 10));
+            } else if (val < sandRange && val >= oceanShallowRange) {
+                rgb = r ;
+                rgb = (rgb << 8) + (g + randomInt(0, 10));
+                rgb = (rgb << 8) + (b + randomInt(0, 10));
+            }
+
+            /*if (val >= seaLevel + mountainMidRange + mountainHighRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
             } else if (val >= seaLevel + mountainLowRange + mountainMidRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_MID;
@@ -195,7 +239,7 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_MID;
             } else if (val < seaLevel) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_DEEP;
-            }
+            }*/
 
             image.setPixel(x - chX, y - chY, sf::Color((rgb << 8) + 0xFF));
         }

@@ -5,8 +5,8 @@
 #include "World.h"
 
 constexpr int SCALE = 4;
-constexpr int WIDTH = 480;
-constexpr int HEIGHT = 270;
+constexpr int WIDTH = 360; //480
+constexpr int HEIGHT = 202; //270
 
 class Game {
 public:

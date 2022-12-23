@@ -20,8 +20,8 @@ Game::Game(sf::View* camera) {
 
 void Game::update() {
     _player.update();
-    _world.update();
-    _camera->setCenter(_player.getPosition());
+    _world.update(_frameCounter);
+    _camera->setCenter(_player.getPosition().x + 5, _player.getPosition().y + 5);
 }
 
 void Game::draw(sf::RenderTexture& surface) {

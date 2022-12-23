@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include "Util.h"
 
 
 int main() {
@@ -14,7 +15,9 @@ int main() {
     window.setFramerateLimit(60);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
+    //camera.zoom(0.75);
 
+    srand(currentTimeMillis());
     Game game(&camera);
 
     sf::Event event;

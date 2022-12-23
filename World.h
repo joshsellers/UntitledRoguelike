@@ -5,7 +5,8 @@
 #include "Chunk.h"
 #include "Player.h"
 
-constexpr int CHUNK_LOAD_THRESHOLD = 260;
+constexpr unsigned int CHUCK_LOAD_TIME = 30;
+constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 260
 
 enum class TERRAIN_COLOR : sf::Uint32 {
@@ -26,7 +27,7 @@ class World {
 public:
     World(Player* player);
 
-    void update();
+    void update(unsigned int frameCounter);
 
     void draw(sf::RenderTexture& surface);
 
@@ -45,7 +46,7 @@ private:
 
     sf::Font _font; // TEMP
 
-    int _seed = 256;
+    int _seed;
 };
 
 #endif
