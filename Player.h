@@ -3,6 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 
+constexpr int PLAYER_WIDTH = 16;
+constexpr int PLAYER_HEIGHT = 32;
+
+constexpr float BASE_PLAYER_SPEED = 1;
+
 class Player {
 public:
     Player(sf::Vector2f pos);
@@ -18,7 +23,23 @@ public:
 private:
     sf::Vector2f _pos;
 
-    sf::CircleShape tempSprite = sf::CircleShape(5);
+    sf::Texture _texture;
+    sf::Sprite _sprite;
+
+    unsigned int _movingDir = 0;
+
+    float _sprintMultiplier = 2;
+    float _dodgeMultiplier(int dodgeTimer) {
+        return (1.075 * (float)std::pow((float)dodgeTimer - 5.f, 2) + (float)0.5);
+    }
+
+    bool _isDodging = false;
+    int _dodgeTimer = 0;
+    int _maxDodgeTime = 4;
+
+    float _dodgeSpeedMultiplier = 1.f;
+
+    bool _dodgeKeyReleased = true;
 };
 
 #endif

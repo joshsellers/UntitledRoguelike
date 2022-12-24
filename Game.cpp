@@ -21,7 +21,7 @@ Game::Game(sf::View* camera) {
 void Game::update() {
     _player.update();
     _world.update();
-    _camera->setCenter(_player.getPosition().x + 5, _player.getPosition().y + 5);
+    _camera->setCenter(_player.getPosition().x + (float)PLAYER_WIDTH / 2, _player.getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
 
 void Game::draw(sf::RenderTexture& surface) {
