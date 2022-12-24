@@ -1,11 +1,12 @@
 #include "Player.h"
+#include "World.h"
 #include <iostream>
 
 Player::Player(sf::Vector2f pos) {
     _pos = pos;
     
-    _texture.create(64, 32);
-    if (!_texture.loadFromFile("res/url_guy_standing-Sheet.png")) {
+    _texture.create(64, 128);
+    if (!_texture.loadFromFile("res/url_guy_walking-Sheet.png")) {
         std::cout << "failed to load player texture" << std::endl;
     }
     _sprite.setTexture(_texture);
@@ -56,15 +57,26 @@ void Player::update() {
 }
 
 void Player::draw(sf::RenderTexture& surface) {
-    _sprite.setTextureRect(sf::IntRect(16 * _movingDir, 0, 16, 32));
+    TERRAIN_TYPE terrainType = /*_world->getTerrainDataAt(_world->getCurrentChunk(), getPosition())*/ TERRAIN_TYPE::NOT_WATER;
+
+    int yOffset = _isMoving ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+    _sprite.setTextureRect(sf::IntRect(16 * _movingDir, 0 + yOffset, 16, terrainType == TERRAIN_TYPE::WATER ? 16 : 32));
     surface.draw(_sprite);
 }
 
 void Player::move(int xa, int ya) {
     _pos.x += xa;
     _pos.y += ya;
+    if (std::abs(xa) > 0 || std::abs(ya) > 0) {
+        _numSteps++;
+        _isMoving = true;
+    } else _isMoving = false;
 }
 
 sf::Vector2f Player::getPosition() {
     return _pos;
+}
+
+void Player::setWorld(World* world) {
+    _world = world;
 }

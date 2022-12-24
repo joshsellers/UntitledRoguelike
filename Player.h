@@ -8,6 +8,8 @@ constexpr int PLAYER_HEIGHT = 32;
 
 constexpr float BASE_PLAYER_SPEED = 1;
 
+class World;
+
 class Player {
 public:
     Player(sf::Vector2f pos);
@@ -20,26 +22,33 @@ public:
 
     sf::Vector2f getPosition();
 
+    void setWorld(World* world);
+
 private:
+    World* _world;
+
     sf::Vector2f _pos;
 
     sf::Texture _texture;
     sf::Sprite _sprite;
 
-    unsigned int _movingDir = 0;
-
     float _sprintMultiplier = 2;
     float _dodgeMultiplier(int dodgeTimer) {
-        return (1.075 * (float)std::pow((float)dodgeTimer - 5.f, 2) + (float)0.5);
+        //return (1.075 * (float)std::pow((float)dodgeTimer - 5.f, 2) + (float)0.5);
+        return (-0.075 * (float)(std::pow((float)dodgeTimer, 2) - 25) + (float)2);
     }
 
     bool _isDodging = false;
     int _dodgeTimer = 0;
     int _maxDodgeTime = 4;
-
     float _dodgeSpeedMultiplier = 1.f;
-
     bool _dodgeKeyReleased = true;
+
+    int _numSteps = 0;
+    int _animSpeed = 3;
+
+    unsigned int _movingDir = 0;
+    bool _isMoving = false;
 };
 
 #endif

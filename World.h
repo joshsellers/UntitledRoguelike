@@ -32,17 +32,22 @@ public:
 
     int getActiveChunkCount();
 
+    Chunk* getCurrentChunk();
+    TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
+
 private:
     std::vector<Chunk> _chunks;
     std::vector<sf::Vector2i> _loadingChunks;
     
     Player* _player;
 
+    Chunk* _currentChunk = nullptr;
+
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);
     bool chunkContains(Chunk& chunk, sf::Vector2f pos);
 
-    sf::Image generateChunkTerrain(sf::Vector2f pos);
+    sf::Image generateChunkTerrain(Chunk& chunk);
 
     sf::Font _font; // TEMP
 

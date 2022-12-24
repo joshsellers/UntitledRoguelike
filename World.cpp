@@ -6,6 +6,7 @@
 
 World::World(Player* player) {
     _player = player;
+    _player->setWorld(this);
 
     _seed = randomInt(0, 999);
 
@@ -19,9 +20,23 @@ World::World(Player* player) {
 }
 
 void World::update() {
-    Chunk* currentChunk = nullptr;
     int pX = _player->getPosition().x + 5;
     int pY = _player->getPosition().y + 5;
+
+    if (_currentChunk != nullptr) {
+        int x = pX - (int)getCurrentChunk()->pos.x;
+        int y = pY - (int)getCurrentChunk()->pos.y;
+
+        /*
+            pretty sure the problem is chunk's terrain data 
+            gets lost in memory when a new chunk is pushed
+            or deleted. solution maybe put terrain data in 
+            a shared_ptr
+        */
+        if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
+            std::cout << (x + y * CHUNK_SIZE) << " " << (CHUNK_SIZE * CHUNK_SIZE) << " " << getCurrentChunk()->terrainData.size()  << " " << /*(int)getCurrentChunk()->terrainData.at(x + y * CHUNK_SIZE) <<*/ std::endl;
+        }
+    }
 
     for (int i = 0; i < _chunks.size(); i++) {
         Chunk& chunk = _chunks.at(i);
@@ -42,21 +57,21 @@ void World::update() {
         if ((!left && !right && !top && !bottom) 
             || ((top || bottom) && (!inVerticleBounds && !left && !right)) 
             || ((left || right) && (!inHorizontalBounds && !top && !bottom))) {
-            std::cout << "erasing chunk " << chunk.id << std::endl;
+            //std::cout << "erasing chunk " << chunk.id << std::endl;
             _chunks.erase(_chunks.begin() + i);
         }
     }
 
     for (Chunk& chunk : _chunks) {
         if (chunkContains(chunk, sf::Vector2f(pX, pY))) {
-            currentChunk = &chunk;
+            _currentChunk = &chunk;
             break;
         }
     }
 
-    if (currentChunk != nullptr) {
-        int chX = currentChunk->pos.x;
-        int chY = currentChunk->pos.y;
+    if (_currentChunk != nullptr) {
+        int chX = _currentChunk->pos.x;
+        int chY = _currentChunk->pos.y;
 
         bool left = std::abs(pX - chX) < CHUNK_LOAD_THRESHOLD;
         bool top = std::abs(pY - chY) < CHUNK_LOAD_THRESHOLD;
@@ -85,7 +100,7 @@ void World::update() {
         } else if (top && right) {
             loadChunk(sf::Vector2f(chX + CHUNK_SIZE, chY - CHUNK_SIZE));
         }
-    } else if (currentChunk == nullptr) {
+    } else if (_currentChunk == nullptr) {
         std::cout << "currentChunk was nullptr" << std::endl;
     }
 }
@@ -117,13 +132,13 @@ void World::draw(sf::RenderTexture& surface) {
 void World::loadChunk(sf::Vector2f pos) {
     for (sf::Vector2i loadingChunk : _loadingChunks) {
         if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) {
-            std::cout << "chunk at " << pos.x << ", " << pos.y << " is already loading, did not generate" << std::endl;
+            //std::cout << "chunk at " << pos.x << ", " << pos.y << " is already loading, did not generate" << std::endl;
             return;
         }
     }
     for (Chunk& chunk : _chunks) {
         if (chunk.pos == pos) {
-            std::cout << "chunk " << chunk.id << " already exists, did not load" << std::endl;
+            //std::cout << "chunk " << chunk.id << " already exists, did not load" << std::endl;
             return;
         }
     }
@@ -134,9 +149,9 @@ void World::loadChunk(sf::Vector2f pos) {
 
 void World::buildChunk(sf::Vector2f pos) {
     Chunk chunk(pos);
-    std::cout << "loading chunk " << chunk.id << std::endl;
+    //std::cout << "loading chunk " << chunk.id << std::endl;
     chunk.texture->create(CHUNK_SIZE, CHUNK_SIZE);
-    chunk.texture->update(generateChunkTerrain(chunk.pos));
+    chunk.texture->update(generateChunkTerrain(chunk));
     chunk.sprite.setTexture(*chunk.texture);
     chunk.sprite.setPosition(chunk.pos);
     _chunks.push_back(chunk);
@@ -158,7 +173,9 @@ bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
     return pX >= chX && pY >= chY && pX < chX + CHUNK_SIZE && pY < chY + CHUNK_SIZE;
 }
 
-sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
+sf::Image World::generateChunkTerrain(Chunk& chunk) {
+    sf::Vector2f pos = chunk.pos;
+
     // Generator properties
     int intOctaves = 4; 
     double warpSize = 4;
@@ -179,7 +196,7 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
     int chX = pos.x;
     int chY = pos.y;
 
-    //std::vector<double> data(CHUNK_SIZE * CHUNK_SIZE);
+    std::vector<TERRAIN_TYPE> data(CHUNK_SIZE * CHUNK_SIZE);
 
     const siv::PerlinNoise perlin{ (siv::PerlinNoise::seed_type)_seed };
 
@@ -202,28 +219,38 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
                 warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, intOctaves
             );
 
-            //data[x + y * CHUNK_SIZE] = noise;
-
             sf::Uint32 rgb = 0x00;
+
+            int dX = x - chX;
+            int dY = y - chY; 
 
             if (val < seaLevel) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_DEEP;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::WATER;
             } else if (val < oceanMidRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_MID;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::WATER;
             } else if (val < oceanShallowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_SHALLOW;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::WATER;
             } else if (val < sandRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             } else if (val < dirtLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_LOW;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             } else if (val < dirtHighRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             } else if (val < mountainLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_LOW;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             } else if (val < mountainMidRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_MID;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             } else {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
             }
 
             sf::Uint32 r = (rgb >> 16) & 0xFF;
@@ -261,9 +288,24 @@ sf::Image World::generateChunkTerrain(sf::Vector2f pos) {
         }
     }
 
+    chunk.terrainData = data;
+
     return image;
 }
 
 int World::getActiveChunkCount() {
     return _chunks.size();
+}
+
+Chunk* World::getCurrentChunk() {
+    return _currentChunk;
+}
+
+TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
+    if (chunk == nullptr) return TERRAIN_TYPE::NOT_WATER;
+
+    int x = (int)pos.x - (int)chunk->pos.x;
+    int y = (int)pos.y - (int)chunk->pos.y;
+
+    return chunk->terrainData[x + y * CHUNK_SIZE];
 }
