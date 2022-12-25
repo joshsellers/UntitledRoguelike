@@ -18,11 +18,15 @@ public:
 
     void draw(sf::RenderTexture& surface);
 
-    void move(int xa, int ya);
+    void move(float xa, float ya);
 
-    sf::Vector2f getPosition();
+    sf::Vector2f getPosition() const;
 
     void setWorld(World* world);
+
+    bool isSwimming() const;
+    bool isMoving() const;
+    bool isDodging() const;
 
 private:
     World* _world;
@@ -32,15 +36,17 @@ private:
     sf::Texture _texture;
     sf::Sprite _sprite;
 
+    bool _isSwimming;
+
     float _sprintMultiplier = 2;
-    float _dodgeMultiplier(int dodgeTimer) {
+    float _dodgeMultiplier(int dodgeTimer) const {
         //return (1.075 * (float)std::pow((float)dodgeTimer - 5.f, 2) + (float)0.5);
-        return (-0.075 * (float)(std::pow((float)dodgeTimer, 2) - 25) + (float)2);
+        return (0.075 * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
     }
 
     bool _isDodging = false;
     int _dodgeTimer = 0;
-    int _maxDodgeTime = 4;
+    int _maxDodgeTime = 10;
     float _dodgeSpeedMultiplier = 1.f;
     bool _dodgeKeyReleased = true;
 

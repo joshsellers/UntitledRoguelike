@@ -5,7 +5,7 @@
 Player::Player(sf::Vector2f pos) {
     _pos = pos;
     
-    _texture.create(64, 128);
+    _texture.create(64, 160);
     if (!_texture.loadFromFile("res/url_guy_walking-Sheet.png")) {
         std::cout << "failed to load player texture" << std::endl;
     }
@@ -31,19 +31,26 @@ void Player::update() {
             _movingDir = 3;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging()  && !isSwimming()) {
             xa *= _sprintMultiplier;
             ya *= _sprintMultiplier;
+            _animSpeed = 2;
+        } else if (!isSwimming() && isMoving()) {
+            _animSpeed = 3;
+        } else if (isSwimming()) {
+            _animSpeed = 4;
+            xa /= 2;
+            ya /= 2;
         }
     //}
 
-    if (!_isDodging && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
+    if (!isSwimming() && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
-    } else if (_isDodging && _dodgeTimer < _maxDodgeTime) {
-        _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer);
+    } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
+        _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer) * _sprintMultiplier;
         _dodgeTimer++;
-    } else if (_isDodging && _dodgeTimer >= _maxDodgeTime) {
+    } else if (isDodging() && _dodgeTimer >= _maxDodgeTime) {
         _isDodging = false;
         _dodgeTimer = 0;
         _dodgeSpeedMultiplier = 1.f;
@@ -57,28 +64,53 @@ void Player::update() {
 }
 
 void Player::draw(sf::RenderTexture& surface) {
-    TERRAIN_TYPE terrainType = _world->getTerrainDataAt(_world->getCurrentChunk(), sf::Vector2f(((int)_pos.x + PLAYER_WIDTH / 2), ((int)_pos.y + PLAYER_HEIGHT)));
+    TERRAIN_TYPE terrainType = _world->getTerrainDataAt(
+        _world->getCurrentChunk(), sf::Vector2f(((int)_pos.x + PLAYER_WIDTH / 2), ((int)_pos.y + PLAYER_HEIGHT))
+    );
+    _isSwimming = terrainType == TERRAIN_TYPE::WATER;
+
     if (terrainType == TERRAIN_TYPE::WATER) _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
-    int yOffset = _isMoving ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
-    _sprite.setTextureRect(sf::IntRect(16 * _movingDir, 0 + yOffset, 16, terrainType == TERRAIN_TYPE::WATER ? 16 : 32));
+    int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
+    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+    _sprite.setTextureRect(sf::IntRect(
+        isDodging() && isMoving() ? xOffset : 16 * _movingDir, 
+        isDodging() && isMoving() ? 128 : 0 + yOffset, 
+        16, 
+        terrainType == TERRAIN_TYPE::WATER ? 16 : 32)
+    );
     surface.draw(_sprite);
 }
 
-void Player::move(int xa, int ya) {
+void Player::move(float xa, float ya) {
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
         _isMoving = true;
+    } else if (isSwimming()) {
+        _numSteps++;
+        _isMoving = false;
     } else _isMoving = false;
 
     _pos.x += xa;
     _pos.y += ya;
 }
 
-sf::Vector2f Player::getPosition() {
+sf::Vector2f Player::getPosition() const {
     return _pos;
 }
 
 void Player::setWorld(World* world) {
     _world = world;
+}
+
+bool Player::isSwimming() const {
+    return _isSwimming;
+}
+
+bool Player::isMoving() const {
+    return _isMoving;
+}
+
+bool Player::isDodging() const {
+    return _isDodging;
 }

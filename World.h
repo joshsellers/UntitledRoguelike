@@ -4,6 +4,7 @@
 #include <vector>
 #include "Chunk.h"
 #include "Player.h"
+#include <mutex>
 
 constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
@@ -36,6 +37,8 @@ public:
     TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
 
 private:
+    std::mutex _mutex;
+
     std::vector<Chunk> _chunks;
     std::vector<sf::Vector2i> _loadingChunks;
     

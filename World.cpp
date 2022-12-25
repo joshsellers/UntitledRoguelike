@@ -39,8 +39,8 @@ void World::update() {
         bool inVerticleBounds = pX > chX && pX < chX + CHUNK_SIZE;
         bool inHorizontalBounds = pY > chY && pY < chY + CHUNK_SIZE;
 
-        if ((!left && !right && !top && !bottom) 
-            || ((top || bottom) && (!inVerticleBounds && !left && !right)) 
+        if ((!left && !right && !top && !bottom)
+            || ((top || bottom) && (!inVerticleBounds && !left && !right))
             || ((left || right) && (!inHorizontalBounds && !top && !bottom))) {
             //std::cout << "erasing chunk " << chunk.id << std::endl;
             _chunks.erase(_chunks.begin() + i);
@@ -94,19 +94,19 @@ void World::draw(sf::RenderTexture& surface) {
     for (Chunk& chunk : _chunks) {
         try {
             surface.draw(chunk.sprite);
-            sf::RectangleShape chunkOutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
+            //sf::RectangleShape chunkOutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
 
-            chunkOutline.setFillColor(sf::Color::Transparent);
-            chunkOutline.setOutlineColor(sf::Color(0xFFFFFFFF));
-            chunkOutline.setOutlineThickness(1);
-            chunkOutline.setPosition(chunk.pos);
+            //chunkOutline.setFillColor(sf::Color::Transparent);
+            //chunkOutline.setOutlineColor(sf::Color(0xFFFFFFFF));
+            //chunkOutline.setOutlineThickness(1);
+            //chunkOutline.setPosition(chunk.pos);
             //surface.draw(chunkOutline);
 
-            sf::Text idLabel;
-            idLabel.setFont(_font);
-            idLabel.setCharacterSize(10);
-            idLabel.setString(std::to_string(chunk.id));
-            idLabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
+            //sf::Text idLabel;
+            //.setFont(_font);
+            //idLabel.setCharacterSize(10);
+            //idLabel.setString(std::to_string(chunk.id));
+            //idLabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
             //surface.draw(idLabel);
         } catch (std::exception& e) {
             std::cout << "exception: " << e.what() << std::endl;
@@ -133,6 +133,8 @@ void World::loadChunk(sf::Vector2f pos) {
 }
 
 void World::buildChunk(sf::Vector2f pos) {
+    _mutex.lock();
+
     Chunk chunk(pos);
     //std::cout << "loading chunk " << chunk.id << std::endl;
     chunk.texture->create(CHUNK_SIZE, CHUNK_SIZE);
@@ -140,6 +142,8 @@ void World::buildChunk(sf::Vector2f pos) {
     chunk.sprite.setTexture(*chunk.texture);
     chunk.sprite.setPosition(chunk.pos);
     _chunks.push_back(chunk);
+
+    _mutex.unlock();
 
     for (int i = 0; i < _loadingChunks.size(); i++) {
         sf::Vector2i loadingChunk = _loadingChunks.at(i);
@@ -162,7 +166,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     sf::Vector2f pos = chunk.pos;
 
     // Generator properties
-    int intOctaves = 4; 
+    int intOctaves = 4;
     double warpSize = 4;
     double warpStrength = 0.8;
     double sampleRate = 0.0001; // 0.0001
@@ -191,14 +195,14 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
             double warpNoise = perlin.octave2D_11(
-                warpSize * ((double)x * sampleRate*2),
-                warpSize * ((double)y * sampleRate*2), intOctaves
+                warpSize * ((double)x * sampleRate * 2),
+                warpSize * ((double)y * sampleRate * 2), intOctaves
             );
             double warpNoise2 = perlin.octave2D_11(
-                warpSize * ((double)x * sampleRate*4),
-                warpSize * ((double)y * sampleRate*4), intOctaves
+                warpSize * ((double)x * sampleRate * 4),
+                warpSize * ((double)y * sampleRate * 4), intOctaves
             );
-       
+
             double val = perlin.octave3D_11(
                 (x)*sampleRate, (y)*sampleRate,
                 warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, intOctaves
@@ -207,7 +211,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             sf::Uint32 rgb = 0x00;
 
             int dX = x - chX;
-            int dY = y - chY; 
+            int dY = y - chY;
 
             if (val < seaLevel) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::WATER_DEEP;
@@ -255,16 +259,16 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                     g = ag;
                     b = ab;
                 } else if (val >= dirtLowRange && val < dirtHighRange) {
-                    r *= (val + 0.2)*2;
-                    g *= (val + 0.2)*2;
-                    b *= (val + 0.2)*2;
+                    r *= (val + 0.2) * 2;
+                    g *= (val + 0.2) * 2;
+                    b *= (val + 0.2) * 2;
                 }
 
                 rgb = r;
                 rgb = (rgb << 8) + (g);
                 rgb = (rgb << 8) + (b);
             } else if (val < sandRange && val >= oceanShallowRange) {
-                rgb = r ;
+                rgb = r;
                 rgb = (rgb << 8) + (g + randomInt(0, 10));
                 rgb = (rgb << 8) + (b + randomInt(0, 10));
             }
