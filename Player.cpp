@@ -57,7 +57,8 @@ void Player::update() {
 }
 
 void Player::draw(sf::RenderTexture& surface) {
-    TERRAIN_TYPE terrainType = /*_world->getTerrainDataAt(_world->getCurrentChunk(), getPosition())*/ TERRAIN_TYPE::NOT_WATER;
+    TERRAIN_TYPE terrainType = _world->getTerrainDataAt(_world->getCurrentChunk(), sf::Vector2f(((int)_pos.x + PLAYER_WIDTH / 2), ((int)_pos.y + PLAYER_HEIGHT)));
+    if (terrainType == TERRAIN_TYPE::WATER) _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
     int yOffset = _isMoving ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
     _sprite.setTextureRect(sf::IntRect(16 * _movingDir, 0 + yOffset, 16, terrainType == TERRAIN_TYPE::WATER ? 16 : 32));
@@ -65,12 +66,13 @@ void Player::draw(sf::RenderTexture& surface) {
 }
 
 void Player::move(int xa, int ya) {
-    _pos.x += xa;
-    _pos.y += ya;
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
         _isMoving = true;
     } else _isMoving = false;
+
+    _pos.x += xa;
+    _pos.y += ya;
 }
 
 sf::Vector2f Player::getPosition() {

@@ -10,8 +10,8 @@ World::World(Player* player) {
 
     _seed = randomInt(0, 999);
 
-    int pX = _player->getPosition().x;
-    int pY = _player->getPosition().y;
+    int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
+    int pY = _player->getPosition().y + PLAYER_HEIGHT;
     loadChunk(sf::Vector2f(pX - CHUNK_SIZE / 2, pY - CHUNK_SIZE / 2));
 
     if (!_font.loadFromFile("font.ttf")) {
@@ -20,23 +20,8 @@ World::World(Player* player) {
 }
 
 void World::update() {
-    int pX = _player->getPosition().x + 5;
-    int pY = _player->getPosition().y + 5;
-
-    if (_currentChunk != nullptr) {
-        int x = pX - (int)getCurrentChunk()->pos.x;
-        int y = pY - (int)getCurrentChunk()->pos.y;
-
-        /*
-            pretty sure the problem is chunk's terrain data 
-            gets lost in memory when a new chunk is pushed
-            or deleted. solution maybe put terrain data in 
-            a shared_ptr
-        */
-        if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
-            std::cout << (x + y * CHUNK_SIZE) << " " << (CHUNK_SIZE * CHUNK_SIZE) << " " << getCurrentChunk()->terrainData.size()  << " " << /*(int)getCurrentChunk()->terrainData.at(x + y * CHUNK_SIZE) <<*/ std::endl;
-        }
-    }
+    int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
+    int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
 
     for (int i = 0; i < _chunks.size(); i++) {
         Chunk& chunk = _chunks.at(i);
@@ -166,10 +151,10 @@ void World::buildChunk(sf::Vector2f pos) {
 }
 
 bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
-    int pX = pos.x;
-    int pY = pos.y;
-    int chX = chunk.pos.x;
-    int chY = chunk.pos.y;
+    int pX = (int)pos.x;
+    int pY = (int)pos.y;
+    int chX = (int)chunk.pos.x;
+    int chY = (int)chunk.pos.y;
     return pX >= chX && pY >= chY && pX < chX + CHUNK_SIZE && pY < chY + CHUNK_SIZE;
 }
 
@@ -302,10 +287,12 @@ Chunk* World::getCurrentChunk() {
 }
 
 TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
-    if (chunk == nullptr) return TERRAIN_TYPE::NOT_WATER;
+    if (chunk == nullptr || chunk->terrainData.size() == 0) return TERRAIN_TYPE::NOT_WATER;
 
     int x = (int)pos.x - (int)chunk->pos.x;
     int y = (int)pos.y - (int)chunk->pos.y;
 
-    return chunk->terrainData[x + y * CHUNK_SIZE];
+    if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
+        return chunk->terrainData[x + y * CHUNK_SIZE];
+    } else return TERRAIN_TYPE::NOT_WATER;
 }
