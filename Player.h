@@ -31,7 +31,7 @@ public:
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
 private:
-    World* _world;
+    World* _world = nullptr;
 
     sf::Sprite _wavesSprite;
 

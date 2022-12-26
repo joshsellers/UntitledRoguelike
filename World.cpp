@@ -121,25 +121,21 @@ void World::update() {
 
 void World::draw(sf::RenderTexture& surface) {
     for (Chunk& chunk : _chunks) {
-        try {
-            surface.draw(chunk.sprite);
-            //sf::RectangleShape chunkOutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
+        surface.draw(chunk.sprite);
+        //sf::rectangleshape chunkoutline(sf::vector2f(chunk_size - 1, chunk_size - 1));
 
-            //chunkOutline.setFillColor(sf::Color::Transparent);
-            //chunkOutline.setOutlineColor(sf::Color(0xFFFFFFFF));
-            //chunkOutline.setOutlineThickness(1);
-            //chunkOutline.setPosition(chunk.pos);
-            //surface.draw(chunkOutline);
+        //chunkoutline.setfillcolor(sf::color::transparent);
+        //chunkoutline.setoutlinecolor(sf::color(0xffffffff));
+        //chunkoutline.setoutlinethickness(1);
+        //chunkoutline.setposition(chunk.pos);
+        //surface.draw(chunkoutline);
 
-            //sf::Text idLabel;
-            //.setFont(_font);
-            //idLabel.setCharacterSize(10);
-            //idLabel.setString(std::to_string(chunk.id));
-            //idLabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-            //surface.draw(idLabel);
-        } catch (std::exception& e) {
-            std::cout << "exception: " << e.what() << std::endl;
-        }
+        //sf::text idlabel;
+        //.setfont(_font);
+        //idlabel.setcharactersize(10);
+        //idlabel.setstring(std::to_string(chunk.id));
+        //idlabel.setposition(chunk.pos.x, chunk.pos.y - 4);
+        //surface.draw(idlabel);
     }
 
     for (auto& entity : _entities) {
@@ -201,6 +197,7 @@ void World::generateChunkProps(Chunk& chunk) {
 
     int grassSpawnRate = 5000;
 
+    srand(chX + chY * _seed);
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
             int dX = x - chX;
