@@ -2,16 +2,8 @@
 #include "World.h"
 #include <iostream>
 
-Player::Player(sf::Vector2f pos) {
+Player::Player(sf::Vector2f pos) : Entity(pos, BASE_PLAYER_SPEED) {
     _pos = pos;
-    
-    _texture.create(64, 160);
-    if (!_texture.loadFromFile("res/url_guy_walking-Sheet.png")) {
-        std::cout << "failed to load player texture" << std::endl;
-    }
-    _sprite.setTexture(_texture);
-    _sprite.setTextureRect(sf::IntRect(0, 0, 16, 32));
-    _sprite.setPosition(pos);
 }
 
 void Player::update() {
@@ -69,10 +61,18 @@ void Player::draw(sf::RenderTexture& surface) {
     );
     _isSwimming = terrainType == TERRAIN_TYPE::WATER;
 
-    if (terrainType == TERRAIN_TYPE::WATER) _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+    if (isSwimming()) {
+        _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+
+        int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
+
+        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2 + 8));
+        surface.draw(_wavesSprite);
+    }
 
     int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
-    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
     _sprite.setTextureRect(sf::IntRect(
         isDodging() && isMoving() ? xOffset : 16 * _movingDir, 
         isDodging() && isMoving() ? 128 : 0 + yOffset, 
@@ -107,10 +107,16 @@ bool Player::isSwimming() const {
     return _isSwimming;
 }
 
-bool Player::isMoving() const {
-    return _isMoving;
-}
-
 bool Player::isDodging() const {
     return _isDodging;
+}
+
+void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+    _sprite.setTexture(*spriteSheet);
+    _sprite.setTextureRect(sf::IntRect(0, 0, 16, 32));
+    _sprite.setPosition(getPosition());
+
+    _wavesSprite.setTexture(*spriteSheet);
+    _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
+    _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 }

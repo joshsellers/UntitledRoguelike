@@ -4,9 +4,11 @@
 #include <thread>
 #include "Util.h"
 
-World::World(Player* player) {
+World::World(std::shared_ptr<Player> player) {
     _player = player;
     _player->setWorld(this);
+
+    _entities.push_back(_player);
 
     _seed = randomInt(0, 999);
 
@@ -20,6 +22,10 @@ World::World(Player* player) {
 }
 
 void World::update() {
+    for (auto& entity : _entities) {
+        entity->update();
+    }
+
     int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
     int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
 
@@ -111,6 +117,10 @@ void World::draw(sf::RenderTexture& surface) {
         } catch (std::exception& e) {
             std::cout << "exception: " << e.what() << std::endl;
         }
+    }
+
+    for (auto& entity : _entities) {
+        entity->draw(surface);
     }
 }
 
@@ -299,4 +309,8 @@ TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
     if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
         return chunk->terrainData[x + y * CHUNK_SIZE];
     } else return TERRAIN_TYPE::NOT_WATER;
+}
+
+void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
+    _spriteSheet = spriteSheet;
 }

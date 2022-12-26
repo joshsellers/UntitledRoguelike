@@ -5,8 +5,8 @@
 #include "World.h"
 
 constexpr int SCALE = 4;
-constexpr int WIDTH = 360; //480
-constexpr int HEIGHT = 202; //270
+constexpr int WIDTH = 360; //360
+constexpr int HEIGHT = 202; //202
 
 class Game {
 public:
@@ -29,9 +29,12 @@ private:
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;
+	
+	std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
+	std::shared_ptr<Player> _player = std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0)));
+	World _world = World(_player);
 
-	Player _player = Player(sf::Vector2f(0, 0));
-	World _world = World(&_player);
+
 };
 
 #endif 

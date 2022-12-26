@@ -2,6 +2,7 @@
 #define _PLAYER_H
 
 #include <SFML/Graphics.hpp>
+#include "Entity.h"
 
 constexpr int PLAYER_WIDTH = 16;
 constexpr int PLAYER_HEIGHT = 32;
@@ -10,37 +11,35 @@ constexpr float BASE_PLAYER_SPEED = 1;
 
 class World;
 
-class Player {
+class Player : public Entity {
 public:
     Player(sf::Vector2f pos);
 
-    void update();
+    virtual void update();
 
-    void draw(sf::RenderTexture& surface);
+    virtual void draw(sf::RenderTexture& surface);
 
-    void move(float xa, float ya);
+    virtual void move(float xa, float ya);
 
     sf::Vector2f getPosition() const;
 
     void setWorld(World* world);
 
     bool isSwimming() const;
-    bool isMoving() const;
     bool isDodging() const;
+
+    virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
 private:
     World* _world;
 
-    sf::Vector2f _pos;
+    sf::Sprite _wavesSprite;
 
-    sf::Texture _texture;
-    sf::Sprite _sprite;
-
-    bool _isSwimming;
+    bool _isSwimming = false;
 
     float _sprintMultiplier = 2;
+
     float _dodgeMultiplier(int dodgeTimer) const {
-        //return (1.075 * (float)std::pow((float)dodgeTimer - 5.f, 2) + (float)0.5);
         return (0.075 * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
     }
 
@@ -49,12 +48,6 @@ private:
     int _maxDodgeTime = 10;
     float _dodgeSpeedMultiplier = 1.f;
     bool _dodgeKeyReleased = true;
-
-    int _numSteps = 0;
-    int _animSpeed = 3;
-
-    unsigned int _movingDir = 0;
-    bool _isMoving = false;
 };
 
 #endif

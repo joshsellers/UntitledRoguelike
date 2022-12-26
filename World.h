@@ -5,6 +5,7 @@
 #include "Chunk.h"
 #include "Player.h"
 #include <mutex>
+#include <memory>
 
 constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
@@ -25,7 +26,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
 class World {
 public:
-    World(Player* player);
+    World(std::shared_ptr<Player> player);
 
     void update();
 
@@ -36,13 +37,19 @@ public:
     Chunk* getCurrentChunk();
     TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
 
+    void loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet);
+
 private:
+    std::shared_ptr<sf::Texture> _spriteSheet;
+
     std::mutex _mutex;
 
     std::vector<Chunk> _chunks;
     std::vector<sf::Vector2i> _loadingChunks;
     
-    Player* _player;
+    std::shared_ptr<Player> _player;
+
+    std::vector<std::shared_ptr<Entity>> _entities;
 
     Chunk* _currentChunk = nullptr;
 

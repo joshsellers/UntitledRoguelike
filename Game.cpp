@@ -16,17 +16,23 @@ Game::Game(sf::View* camera) {
     _activeChunksLabel.setCharacterSize(24);
     _activeChunksLabel.setString("0 active chunks");
     _activeChunksLabel.setPosition(0, 25);
+
+    _spriteSheet->create(64, 160);
+    if (!_spriteSheet->loadFromFile("res/url_guy_walking-Sheet.png")) {
+        std::cout << "failed to load player texture" << std::endl;
+    }
+
+    _player->loadSprite(_spriteSheet);
+    _world.loadSpriteSheet(_spriteSheet);
 }
 
 void Game::update() {
-    _player.update();
     _world.update();
-    _camera->setCenter(_player.getPosition().x + (float)PLAYER_WIDTH / 2, _player.getPosition().y + (float)PLAYER_HEIGHT / 2);
+    _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
 
 void Game::draw(sf::RenderTexture& surface) {
     _world.draw(surface);
-    _player.draw(surface);
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {
