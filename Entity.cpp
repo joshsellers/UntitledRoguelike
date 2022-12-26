@@ -22,3 +22,11 @@ bool Entity::isMoving() const {
 sf::Vector2f Entity::getPosition() const {
     return _pos;
 }
+
+bool Entity::isProp() const {
+    return _isProp;
+}
+
+sf::Sprite Entity::getSprite() const {
+    return _sprite;
+}

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include <mutex>
 #include <memory>
+#include "PerlinNoise.hpp"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
@@ -50,6 +51,7 @@ private:
     std::shared_ptr<Player> _player;
 
     std::vector<std::shared_ptr<Entity>> _entities;
+    std::vector<std::shared_ptr<Entity>> _entityBuffer;
 
     Chunk* _currentChunk = nullptr;
 
@@ -58,6 +60,7 @@ private:
     bool chunkContains(Chunk& chunk, sf::Vector2f pos);
 
     sf::Image generateChunkTerrain(Chunk& chunk);
+    void generateChunkProps(Chunk& chunk);
 
     sf::Font _font; // TEMP
 

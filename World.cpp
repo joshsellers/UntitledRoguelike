@@ -1,8 +1,8 @@
 #include "World.h"
 #include <iostream>
-#include "PerlinNoise.hpp"
 #include <thread>
 #include "Util.h"
+#include "TallGrass.h"
 
 World::World(std::shared_ptr<Player> player) {
     _player = player;
@@ -11,6 +11,7 @@ World::World(std::shared_ptr<Player> player) {
     _entities.push_back(_player);
 
     _seed = randomInt(0, 999);
+    srand(_seed);
 
     int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
     int pY = _player->getPosition().y + PLAYER_HEIGHT;
@@ -22,8 +23,11 @@ World::World(std::shared_ptr<Player> player) {
 }
 
 void World::update() {
-    for (auto& entity : _entities) {
-        entity->update();
+    if (_entityBuffer.size() != 0 && _loadingChunks.size() == 0) {
+        for (auto& entity : _entityBuffer) {
+            _entities.push_back(entity);
+        }
+        _entityBuffer.clear();
     }
 
     int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
@@ -48,9 +52,28 @@ void World::update() {
         if ((!left && !right && !top && !bottom)
             || ((top || bottom) && (!inVerticleBounds && !left && !right))
             || ((left || right) && (!inHorizontalBounds && !top && !bottom))) {
-            //std::cout << "erasing chunk " << chunk.id << std::endl;
+
             _chunks.erase(_chunks.begin() + i);
         }
+    }
+
+    for (int j = 0; j < _entities.size(); j++) {
+        auto& entity = _entities.at(j);
+
+        if (!entity->isProp()) {
+            entity->update();
+            continue;
+        }
+
+        int notInChunkCount = 0;
+        for (auto& chunk : _chunks) {
+            if (!chunkContains(chunk, entity->getPosition())) {
+                notInChunkCount++;
+            }
+        }
+
+        if (notInChunkCount == _chunks.size()) _entities.erase(_entities.begin() + j);
+        else entity->update();
     }
 
     for (Chunk& chunk : _chunks) {
@@ -172,6 +195,28 @@ bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
     return pX >= chX && pY >= chY && pX < chX + CHUNK_SIZE && pY < chY + CHUNK_SIZE;
 }
 
+void World::generateChunkProps(Chunk& chunk) {
+    int chX = chunk.pos.x;
+    int chY = chunk.pos.y;
+
+    int grassSpawnRate = 5000;
+
+    for (int y = chY; y < chY + CHUNK_SIZE; y++) {
+        for (int x = chX; x < chX + CHUNK_SIZE; x++) {
+            int dX = x - chX;
+            int dY = y - chY;
+
+            TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
+            if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
+                if (randomInt(0, grassSpawnRate) == 0) {
+                    std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(grass);
+                }
+            }
+        }
+    }
+}
+
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
     sf::Vector2f pos = chunk.pos;
 
@@ -234,22 +279,22 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::WATER;
             } else if (val < sandRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::SAND;
             } else if (val < dirtLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_LOW;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS_LOW;
             } else if (val < dirtHighRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS_HIGH;
             } else if (val < mountainLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_LOW;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_LOW;
             } else if (val < mountainMidRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_MID;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_MID;
             } else {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::NOT_WATER;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_HIGH;
             }
 
             sf::Uint32 r = (rgb >> 16) & 0xFF;
@@ -289,6 +334,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     chunk.terrainData = data;
 
+    generateChunkProps(chunk);
+
     return image;
 }
 
@@ -301,14 +348,14 @@ Chunk* World::getCurrentChunk() {
 }
 
 TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
-    if (chunk == nullptr || chunk->terrainData.size() == 0) return TERRAIN_TYPE::NOT_WATER;
+    if (chunk == nullptr || chunk->terrainData.size() == 0) return TERRAIN_TYPE::VOID;
 
     int x = (int)pos.x - (int)chunk->pos.x;
     int y = (int)pos.y - (int)chunk->pos.y;
 
     if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
         return chunk->terrainData[x + y * CHUNK_SIZE];
-    } else return TERRAIN_TYPE::NOT_WATER;
+    } else return TERRAIN_TYPE::VOID;
 }
 
 void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {

@@ -8,8 +8,14 @@ constexpr int CHUNK_SIZE = 550;
 // full size 550
 
 enum class TERRAIN_TYPE : unsigned int {
-    NOT_WATER = 0,
-    WATER     = 1
+    VOID          = 0,
+    WATER         = 1,
+    GRASS_LOW     = 2,
+    GRASS_HIGH    = 3,
+    MOUNTAIN_LOW  = 4,
+    MOUNTAIN_MID  = 5,
+    MOUNTAIN_HIGH = 6,
+    SAND          = 7
 };
 
 struct Chunk {

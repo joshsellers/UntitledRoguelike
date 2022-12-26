@@ -3,6 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 
+constexpr int SPRITE_SHEET_SHIFT = 4;
+constexpr int TILE_SIZE = 16;
+
 class Entity {
 public:
     Entity(sf::Vector2f pos, float baseSpeed);
@@ -18,6 +21,10 @@ public:
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet) = 0;
 
+    bool isProp() const;
+
+    sf::Sprite getSprite() const;
+
 protected:
     sf::Sprite _sprite;
 
@@ -29,6 +36,8 @@ protected:
 
     bool _isMoving = false;
     unsigned int _movingDir = 1;
+
+    bool _isProp = false;
 
 private:
 
