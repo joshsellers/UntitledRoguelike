@@ -25,7 +25,11 @@ public:
 
     sf::Sprite getSprite() const;
 
+    bool displayBottom() const;
+
 protected:
+    bool _displayBottom = false;
+
     sf::Sprite _sprite;
 
     float _baseSpeed = 0;

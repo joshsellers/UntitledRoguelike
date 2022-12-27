@@ -65,6 +65,8 @@ private:
     sf::Font _font; // TEMP
 
     int _seed;
+
+    void sortEntities();
 };
 
 #endif

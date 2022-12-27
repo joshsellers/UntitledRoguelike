@@ -3,8 +3,8 @@
 
 #include "Entity.h"
 
-constexpr int TGRASS_SPRITE_POS_X = 0;
-constexpr int TGRASS_SPRITE_POS_Y = 11 << SPRITE_SHEET_SHIFT;
+constexpr int TGRASS_SPRITE_POS_X = 4 << SPRITE_SHEET_SHIFT;
+constexpr int TGRASS_SPRITE_POS_Y = 3 << SPRITE_SHEET_SHIFT; 
 
 class TallGrass : public Entity {
 public:

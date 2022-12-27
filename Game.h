@@ -3,25 +3,44 @@
 
 #include <SFML/Graphics.hpp>
 #include "World.h"
+#include "UIHandler.h"
+#include "UIButton.h"
 
 constexpr int SCALE = 4;
 constexpr int WIDTH = 360; //360
 constexpr int HEIGHT = 202; //202
 
-class Game {
+class Game : public UIButtonListener {
 public:
-	Game(sf::View* camera);
+	Game(sf::View* camera, sf::RenderWindow* window);
 
 	void update();
 
 	void draw(sf::RenderTexture& surface);
 	void drawUI(sf::RenderTexture& surface);
+	
+	void buttonPressed(std::string buttonCode);
 
 	void keyPressed(sf::Keyboard::Key& key);
-	void keyReleased(sf::Keyboard::Key& key);
+	void keyReleased(sf::Keyboard::Key& key); 
+	
+	void mouseButtonPressed(const int mx, const int my);
+	void mouseButtonReleased(const int mx, const int my);
+	void mouseMoved(const int mx, const int my);
+
+	void textEntered(sf::Uint32 character);
 
 private:
+	void initUI();
+
+	bool _isPaused = false;
+
+	sf::RenderWindow* _window;
+
 	sf::View* _camera;
+
+	UIHandler _ui;
+	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	sf::Font _font;
 	sf::Text _fpsLabel;

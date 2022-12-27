@@ -30,3 +30,7 @@ bool Entity::isProp() const {
 sf::Sprite Entity::getSprite() const {
     return _sprite;
 }
+
+bool Entity::displayBottom() const {
+    return _displayBottom;
+}

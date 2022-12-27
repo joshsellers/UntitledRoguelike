@@ -10,6 +10,8 @@ int main() {
 
     unsigned int windowWidth = screenWidth * relativeWindowSize;
     unsigned int windowHeight = screenHeight * relativeWindowSize;
+    WINDOW_WIDTH = windowWidth;
+    WINDOW_HEIGHT = windowHeight;
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "");
     window.setFramerateLimit(60);
@@ -18,7 +20,7 @@ int main() {
     //camera.zoom(8);
 
     srand(currentTimeMillis());
-    Game game(&camera);
+    Game game(&camera, &window);
 
     sf::Event event;
 
@@ -48,6 +50,24 @@ int main() {
                 break;
             case sf::Event::KeyReleased:
                 game.keyReleased(event.key.code);
+                break;
+            case sf::Event::MouseButtonPressed:
+                game.mouseButtonPressed(
+                    event.mouseButton.x, event.mouseButton.y
+                );
+                break;
+            case sf::Event::MouseButtonReleased:
+                game.mouseButtonReleased(
+                    event.mouseButton.x, event.mouseButton.y
+                );
+                break;
+            case sf::Event::MouseMoved:
+                game.mouseMoved(
+                    event.mouseMove.x, event.mouseMove.y
+                );
+                break;
+            case sf::Event::TextEntered:
+                game.textEntered(event.text.unicode);
                 break;
             }
         }

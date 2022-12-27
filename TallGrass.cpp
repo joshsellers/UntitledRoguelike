@@ -6,6 +6,7 @@ TallGrass::TallGrass(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet)
     loadSprite(spriteSheet);
 
     _isProp = true;
+    _displayBottom = true;
 }
 
 void TallGrass::update() {}
@@ -17,7 +18,7 @@ void TallGrass::draw(sf::RenderTexture& surface) {
 void TallGrass::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(
-        sf::IntRect(TGRASS_SPRITE_POS_X + randomInt(0, 3) << SPRITE_SHEET_SHIFT, TGRASS_SPRITE_POS_Y, TILE_SIZE, TILE_SIZE)
+        sf::IntRect(TGRASS_SPRITE_POS_X + (randomInt(0, 2) << SPRITE_SHEET_SHIFT), TGRASS_SPRITE_POS_Y, TILE_SIZE, TILE_SIZE)
     );
     _sprite.setPosition(getPosition());
 }

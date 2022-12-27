@@ -3,6 +3,7 @@
 #include <thread>
 #include "Util.h"
 #include "TallGrass.h"
+#include "SmallTree.h"
 
 World::World(std::shared_ptr<Player> player) {
     _player = player;
@@ -120,22 +121,24 @@ void World::update() {
 }
 
 void World::draw(sf::RenderTexture& surface) {
+    sortEntities();
+
     for (Chunk& chunk : _chunks) {
         surface.draw(chunk.sprite);
-        //sf::rectangleshape chunkoutline(sf::vector2f(chunk_size - 1, chunk_size - 1));
+        /*sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
 
-        //chunkoutline.setfillcolor(sf::color::transparent);
-        //chunkoutline.setoutlinecolor(sf::color(0xffffffff));
-        //chunkoutline.setoutlinethickness(1);
-        //chunkoutline.setposition(chunk.pos);
-        //surface.draw(chunkoutline);
+        chunkoutline.setFillColor(sf::Color::Transparent);
+        chunkoutline.setOutlineColor(sf::Color(0xffffffff));
+        chunkoutline.setOutlineThickness(1);
+        chunkoutline.setPosition(chunk.pos);
+        surface.draw(chunkoutline);
 
-        //sf::text idlabel;
-        //.setfont(_font);
-        //idlabel.setcharactersize(10);
-        //idlabel.setstring(std::to_string(chunk.id));
-        //idlabel.setposition(chunk.pos.x, chunk.pos.y - 4);
-        //surface.draw(idlabel);
+        sf::Text idlabel;
+        idlabel.setFont(_font);
+        idlabel.setCharacterSize(10);
+        idlabel.setString(std::to_string(chunk.id));
+        idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
+        surface.draw(idlabel);*/
     }
 
     for (auto& entity : _entities) {
@@ -145,16 +148,10 @@ void World::draw(sf::RenderTexture& surface) {
 
 void World::loadChunk(sf::Vector2f pos) {
     for (sf::Vector2i loadingChunk : _loadingChunks) {
-        if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) {
-            //std::cout << "chunk at " << pos.x << ", " << pos.y << " is already loading, did not generate" << std::endl;
-            return;
-        }
+        if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) return;
     }
     for (Chunk& chunk : _chunks) {
-        if (chunk.pos == pos) {
-            //std::cout << "chunk " << chunk.id << " already exists, did not load" << std::endl;
-            return;
-        }
+        if (chunk.pos == pos) return;
     }
     _loadingChunks.push_back(sf::Vector2i((int)pos.x, (int)pos.y));
     std::thread buildThread(&World::buildChunk, this, pos);
@@ -165,7 +162,7 @@ void World::buildChunk(sf::Vector2f pos) {
     _mutex.lock();
 
     Chunk chunk(pos);
-    //std::cout << "loading chunk " << chunk.id << std::endl;
+
     chunk.texture->create(CHUNK_SIZE, CHUNK_SIZE);
     chunk.texture->update(generateChunkTerrain(chunk));
     chunk.sprite.setTexture(*chunk.texture);
@@ -196,6 +193,7 @@ void World::generateChunkProps(Chunk& chunk) {
     int chY = chunk.pos.y;
 
     int grassSpawnRate = 5000;
+    int smallTreeSpawnRate = 50000;
 
     srand(chX + chY * _seed);
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
@@ -208,6 +206,11 @@ void World::generateChunkProps(Chunk& chunk) {
                 if (randomInt(0, grassSpawnRate) == 0) {
                     std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(grass);
+                }
+
+                if (randomInt(0, smallTreeSpawnRate) == 0) {
+                    std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(tree);
                 }
             }
         }
@@ -357,4 +360,27 @@ TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
 
 void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
     _spriteSheet = spriteSheet;
+}
+
+void World::sortEntities() {
+    int n = _entities.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++) {
+            std::shared_ptr<Entity> minEntity = _entities.at(min);
+            std::shared_ptr<Entity> jEntity = _entities.at(j);
+            if (minEntity->getPosition().y + minEntity->getSprite().getGlobalBounds().height
+                > jEntity->getPosition().y + jEntity->getSprite().getGlobalBounds().height) {
+                min = j;
+            }
+        }
+
+        std::shared_ptr<Entity> key = _entities.at(min);
+        while (min > i) {
+            _entities[min] = _entities[min - 1];
+            min--;
+        }
+        _entities[i] = key;
+    }
 }
