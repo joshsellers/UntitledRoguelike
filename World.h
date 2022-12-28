@@ -33,6 +33,12 @@ public:
 
     void draw(sf::RenderTexture& surface);
 
+    void purgeEntityBuffer();
+    void updateEntities();
+    void eraseChunks(int pX, int pY);
+    void findCurrentChunk(int pX, int pY);
+    void loadNewChunks(int pX, int pY);
+
     int getActiveChunkCount();
 
     Chunk* getCurrentChunk();

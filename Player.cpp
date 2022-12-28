@@ -23,7 +23,7 @@ void Player::update() {
             _movingDir = 3;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging()  && !isSwimming()) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && !isSwimming()) {
             xa *= _sprintMultiplier;
             ya *= _sprintMultiplier;
             _animSpeed = 2;

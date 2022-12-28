@@ -24,16 +24,77 @@ World::World(std::shared_ptr<Player> player) {
 }
 
 void World::update() {
+    purgeEntityBuffer();
+
+    updateEntities();
+
+    int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
+    int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
+
+    eraseChunks(pX, pY);
+
+    findCurrentChunk(pX, pY);
+
+    loadNewChunks(pX, pY);
+}
+
+void World::draw(sf::RenderTexture& surface) {
+    sortEntities();
+
+    for (Chunk& chunk : _chunks) {
+        surface.draw(chunk.sprite);
+        /*sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
+
+        chunkoutline.setFillColor(sf::Color::Transparent);
+        chunkoutline.setOutlineColor(sf::Color(0xffffffff));
+        chunkoutline.setOutlineThickness(1);
+        chunkoutline.setPosition(chunk.pos);
+        surface.draw(chunkoutline);
+
+        sf::Text idlabel;
+        idlabel.setFont(_font);
+        idlabel.setCharacterSize(10);
+        idlabel.setString(std::to_string(chunk.id));
+        idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
+        surface.draw(idlabel);*/
+    }
+
+    for (auto& entity : _entities) {
+        entity->draw(surface);
+    }
+}
+
+void World::purgeEntityBuffer() {
     if (_entityBuffer.size() != 0 && _loadingChunks.size() == 0) {
         for (auto& entity : _entityBuffer) {
             _entities.push_back(entity);
         }
         _entityBuffer.clear();
     }
+}
 
-    int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
-    int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
+void World::updateEntities() {
+    for (int j = 0; j < _entities.size(); j++) {
+        auto& entity = _entities.at(j);
 
+        if (!entity->isProp()) {
+            entity->update();
+            continue;
+        }
+
+        int notInChunkCount = 0;
+        for (auto& chunk : _chunks) {
+            if (!chunkContains(chunk, entity->getPosition())) {
+                notInChunkCount++;
+            }
+        }
+
+        if (notInChunkCount == _chunks.size()) _entities.erase(_entities.begin() + j);
+        else entity->update();
+    }
+}
+
+void World::eraseChunks(int pX, int pY) {
     for (int i = 0; i < _chunks.size(); i++) {
         Chunk& chunk = _chunks.at(i);
 
@@ -57,33 +118,18 @@ void World::update() {
             _chunks.erase(_chunks.begin() + i);
         }
     }
+}
 
-    for (int j = 0; j < _entities.size(); j++) {
-        auto& entity = _entities.at(j);
-
-        if (!entity->isProp()) {
-            entity->update();
-            continue;
-        }
-
-        int notInChunkCount = 0;
-        for (auto& chunk : _chunks) {
-            if (!chunkContains(chunk, entity->getPosition())) {
-                notInChunkCount++;
-            }
-        }
-
-        if (notInChunkCount == _chunks.size()) _entities.erase(_entities.begin() + j);
-        else entity->update();
-    }
-
+void World::findCurrentChunk(int pX, int pY) {
     for (Chunk& chunk : _chunks) {
         if (chunkContains(chunk, sf::Vector2f(pX, pY))) {
             _currentChunk = &chunk;
             break;
         }
     }
+}
 
+void World::loadNewChunks(int pX, int pY) {
     if (_currentChunk != nullptr) {
         int chX = _currentChunk->pos.x;
         int chY = _currentChunk->pos.y;
@@ -117,32 +163,6 @@ void World::update() {
         }
     } else if (_currentChunk == nullptr) {
         std::cout << "currentChunk was nullptr" << std::endl;
-    }
-}
-
-void World::draw(sf::RenderTexture& surface) {
-    sortEntities();
-
-    for (Chunk& chunk : _chunks) {
-        surface.draw(chunk.sprite);
-        /*sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
-
-        chunkoutline.setFillColor(sf::Color::Transparent);
-        chunkoutline.setOutlineColor(sf::Color(0xffffffff));
-        chunkoutline.setOutlineThickness(1);
-        chunkoutline.setPosition(chunk.pos);
-        surface.draw(chunkoutline);
-
-        sf::Text idlabel;
-        idlabel.setFont(_font);
-        idlabel.setCharacterSize(10);
-        idlabel.setString(std::to_string(chunk.id));
-        idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-        surface.draw(idlabel);*/
-    }
-
-    for (auto& entity : _entities) {
-        entity->draw(surface);
     }
 }
 
