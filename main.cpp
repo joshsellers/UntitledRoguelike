@@ -17,7 +17,6 @@ int main() {
     window.setFramerateLimit(60);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
-    //camera.zoom(8);
 
     srand(currentTimeMillis());
     Game game(&camera, &window);

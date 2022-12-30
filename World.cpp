@@ -317,10 +317,32 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_HIGH;
             }
 
+            // biomes
+            double temperatureNoise = perlin.octave3D_01(x * sampleRate * 2, y * sampleRate * 2, 10, intOctaves);
+            double precipitationNoise = perlin.octave3D_01(x * sampleRate * 2, y * sampleRate * 2, 40, intOctaves);
+
+            bool tundra = temperatureNoise < 0.5 && precipitationNoise < 0.4 && precipitationNoise >= 0.1;
+            bool desert = precipitationNoise < 0.2;
+            tundra = false;
+            desert = false;
+
+            TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
+            if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
+                bool high = terrainType == TERRAIN_TYPE::GRASS_HIGH;
+                if (tundra) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::TUNDRA;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::TUNDRA;
+                } else if (desert) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::DESERT;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
+                }
+            }
+
             sf::Uint32 r = (rgb >> 16) & 0xFF;
             sf::Uint32 g = (rgb >> 8) & 0xFF;
             sf::Uint32 b = rgb & 0xFF;
 
+            // fix this to use terrain data instead of ranges
             if (val >= sandRange || val < oceanShallowRange) {
                 r += randomInt(0, 10);
                 g += randomInt(0, 10);
@@ -348,7 +370,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 rgb = (rgb << 8) + (b + randomInt(0, 10));
             }
 
-            image.setPixel(x - chX, y - chY, sf::Color((rgb << 8) + 0xFF));
+            image.setPixel(x - chX, y - chY, sf::Color(((rgb) << 8) + 0xFF));
         }
     }
 

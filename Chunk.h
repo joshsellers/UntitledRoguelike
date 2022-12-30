@@ -15,7 +15,9 @@ enum class TERRAIN_TYPE : unsigned int {
     MOUNTAIN_LOW  = 4,
     MOUNTAIN_MID  = 5,
     MOUNTAIN_HIGH = 6,
-    SAND          = 7
+    SAND          = 7,
+    TUNDRA        = 8,
+    DESERT        = 9
 };
 
 struct Chunk {

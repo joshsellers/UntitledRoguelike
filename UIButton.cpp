@@ -112,11 +112,7 @@ void UIButton::update() {
     }
 }
 
-void UIButton::draw(sf::RenderTexture& surface) {
-    /*sf::RectangleShape test(sf::Vector2f(_sprite.getGlobalBounds().width, _sprite.getGlobalBounds().height));
-    test.setPosition(_sprite.getPosition());
-    surface.draw(test);*/
-}
+void UIButton::draw(sf::RenderTexture& surface) {}
 
 void UIButton::mouseButtonPressed(const int mx, const int my) {
     _mouseDown = true;

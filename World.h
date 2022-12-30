@@ -22,7 +22,9 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
     MOUNTAIN_LOW = 0x5b5e5c,
     MOUNTAIN_MID = 0x414545,
-    MOUNTAIN_HIGH = 0xe2edec
+    MOUNTAIN_HIGH = 0xe2edec,
+
+    TUNDRA = 0xe2edec
 };
 
 class World {

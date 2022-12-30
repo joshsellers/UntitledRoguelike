@@ -8,35 +8,33 @@ Player::Player(sf::Vector2f pos) : Entity(pos, BASE_PLAYER_SPEED) {
 
 void Player::update() {
     float xa = 0, ya = 0;
-    //if (!_isDodging) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            ya = -BASE_PLAYER_SPEED;
-            _movingDir = 2;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            ya = BASE_PLAYER_SPEED;
-            _movingDir = 0;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            xa = -BASE_PLAYER_SPEED;
-            _movingDir = 1;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            xa = BASE_PLAYER_SPEED;
-            _movingDir = 3;
-        }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        ya = -BASE_PLAYER_SPEED;
+        _movingDir = 2;
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        ya = BASE_PLAYER_SPEED;
+        _movingDir = 0;
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        xa = -BASE_PLAYER_SPEED;
+        _movingDir = 1;
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        xa = BASE_PLAYER_SPEED;
+        _movingDir = 3;
+    }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && !isSwimming()) {
-            xa *= _sprintMultiplier;
-            ya *= _sprintMultiplier;
-            _animSpeed = 2;
-        } else if (!isSwimming() && isMoving()) {
-            _animSpeed = 3;
-        } else if (isSwimming()) {
-            _animSpeed = 4;
-            xa /= 2;
-            ya /= 2;
-        }
-    //}
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS)) {
+        xa *= _sprintMultiplier;
+        ya *= _sprintMultiplier;
+        _animSpeed = 2;
+    } else if (!isSwimming() && isMoving()) {
+        _animSpeed = 3;
+    } else if (isSwimming() && !NO_MOVEMENT_RESTRICIONS) {
+        _animSpeed = 4;
+        xa /= 2;
+        ya /= 2;
+    }
 
-    if (!isSwimming() && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
+    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS) && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
     } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {

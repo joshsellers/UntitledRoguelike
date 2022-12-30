@@ -9,6 +9,8 @@ constexpr int PLAYER_HEIGHT = 32;
 
 constexpr float BASE_PLAYER_SPEED = 1;
 
+constexpr bool NO_MOVEMENT_RESTRICIONS = true;
+
 class World;
 
 class Player : public Entity {
