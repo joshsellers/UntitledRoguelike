@@ -24,7 +24,9 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     MOUNTAIN_MID = 0x414545,
     MOUNTAIN_HIGH = 0xe2edec,
 
-    TUNDRA = 0xe2edec
+    TUNDRA = MOUNTAIN_HIGH,
+    SAVANNA = 0xb5954f,
+    DESERT = 0xfde898
 };
 
 class World {
@@ -47,6 +49,8 @@ public:
     TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
 
     void loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet);
+
+    int getSeed();
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;

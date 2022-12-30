@@ -45,6 +45,7 @@ private:
 	sf::Font _font;
 	sf::Text _fpsLabel;
 	sf::Text _activeChunksLabel;
+	sf::Text _seedLabel;
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;

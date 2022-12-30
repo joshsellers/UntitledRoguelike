@@ -18,6 +18,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) {
     _activeChunksLabel.setString("0 active chunks");
     _activeChunksLabel.setPosition(0, 25);
 
+    _seedLabel.setFont(_font);
+    _seedLabel.setCharacterSize(24);
+    _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
+    _seedLabel.setPosition(0, 50);
+
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/url_guy_walking-Sheet.png")) {
         std::cout << "failed to load sprite sheet" << std::endl;
@@ -61,6 +66,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
     int chunkCount = _world.getActiveChunkCount();
     _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount > 1 ? "s" : ""));
     surface.draw(_activeChunksLabel);
+
+    surface.draw(_seedLabel);
 
     _frameCounter++;
 }

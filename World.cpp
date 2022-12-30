@@ -241,7 +241,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     sf::Vector2f pos = chunk.pos;
 
     // Generator properties
-    int intOctaves = 4;
+    int octaves = 4;
     double warpSize = 4;
     double warpStrength = 0.8;
     double sampleRate = 0.0001; // 0.0001
@@ -271,16 +271,16 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
             double warpNoise = perlin.octave2D_11(
                 warpSize * ((double)x * sampleRate * 2),
-                warpSize * ((double)y * sampleRate * 2), intOctaves
+                warpSize * ((double)y * sampleRate * 2), octaves
             );
             double warpNoise2 = perlin.octave2D_11(
                 warpSize * ((double)x * sampleRate * 4),
-                warpSize * ((double)y * sampleRate * 4), intOctaves
+                warpSize * ((double)y * sampleRate * 4), octaves
             );
 
             double val = perlin.octave3D_11(
                 (x)*sampleRate, (y)*sampleRate,
-                warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, intOctaves
+                warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, octaves
             );
 
             sf::Uint32 rgb = 0x00;
@@ -318,13 +318,14 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
-            double temperatureNoise = perlin.octave3D_01(x * sampleRate * 2, y * sampleRate * 2, 10, intOctaves);
-            double precipitationNoise = perlin.octave3D_01(x * sampleRate * 2, y * sampleRate * 2, 40, intOctaves);
+            int biomeOctaves = 1;
+            float biomeSampleRate = 0.0001;
+            double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
+            double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
-            bool tundra = temperatureNoise < 0.5 && precipitationNoise < 0.4 && precipitationNoise >= 0.1;
-            bool desert = precipitationNoise < 0.2;
-            tundra = false;
-            desert = false;
+            bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
+            bool desert = precipitationNoise < 0.4;
+            bool savanna = temperatureNoise > 0.5 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
@@ -334,28 +335,32 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                     rgb = (sf::Uint32)TERRAIN_COLOR::TUNDRA;
                 } else if (desert) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::DESERT;
-                    rgb = (sf::Uint32)TERRAIN_COLOR::SAND;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::DESERT;
+                } else if (savanna) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::SAVANNA;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::SAVANNA;
                 }
             }
+            terrainType = data[dX + dY * CHUNK_SIZE];
 
             sf::Uint32 r = (rgb >> 16) & 0xFF;
             sf::Uint32 g = (rgb >> 8) & 0xFF;
             sf::Uint32 b = rgb & 0xFF;
 
             // fix this to use terrain data instead of ranges
-            if (val >= sandRange || val < oceanShallowRange) {
+            if (terrainType != TERRAIN_TYPE::SAND && terrainType != TERRAIN_TYPE::DESERT) {
                 r += randomInt(0, 10);
                 g += randomInt(0, 10);
                 b += randomInt(0, 10);
 
-                if (val >= oceanShallowRange && val < dirtLowRange) {
+                if (terrainType == TERRAIN_TYPE::GRASS_LOW) {
                     int ar = (int)(0x55 * (val)) | r;
                     int ag = (int)(0x55 * (val)) | g;
                     int ab = (int)(0x55 * (val)) | b;
                     r = ar;
                     g = ag;
                     b = ab;
-                } else if (val >= dirtLowRange && val < dirtHighRange) {
+                } else if (terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                     r *= (val + 0.2) * 2;
                     g *= (val + 0.2) * 2;
                     b *= (val + 0.2) * 2;
@@ -364,7 +369,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 rgb = r;
                 rgb = (rgb << 8) + (g);
                 rgb = (rgb << 8) + (b);
-            } else if (val < sandRange && val >= oceanShallowRange) {
+            } else {
                 rgb = r;
                 rgb = (rgb << 8) + (g + randomInt(0, 10));
                 rgb = (rgb << 8) + (b + randomInt(0, 10));
@@ -402,6 +407,10 @@ TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
 
 void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
     _spriteSheet = spriteSheet;
+}
+
+int World::getSeed() {
+    return _seed;
 }
 
 void World::sortEntities() {

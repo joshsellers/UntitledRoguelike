@@ -48,6 +48,8 @@ void Player::update() {
 
     _dodgeKeyReleased = !sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 
+    xa += 15;
+
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
 
     _sprite.setPosition(getPosition());
