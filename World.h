@@ -7,6 +7,8 @@
 #include <mutex>
 #include <memory>
 #include "PerlinNoise.hpp"
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
@@ -77,6 +79,8 @@ private:
     sf::Font _font; // TEMP
 
     int _seed;
+
+    boost::random::mt19937 gen = boost::random::mt19937();
 
     void sortEntities();
 };

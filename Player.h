@@ -7,9 +7,9 @@
 constexpr int PLAYER_WIDTH = 16;
 constexpr int PLAYER_HEIGHT = 32;
 
-constexpr float BASE_PLAYER_SPEED = 1;
-
-constexpr bool NO_MOVEMENT_RESTRICIONS = false;
+constexpr bool GODMODE = false;
+constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 1;
+constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
 class World;
 

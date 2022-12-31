@@ -4,6 +4,10 @@
 #include "Util.h"
 #include "TallGrass.h"
 #include "SmallTree.h"
+#include "Cactus.h"
+#include "SmallSavannaTree.h"
+#include "LargeSavannaTree.h"
+#include "SmallTundraTree.h"
 
 World::World(std::shared_ptr<Player> player) {
     _player = player;
@@ -13,6 +17,7 @@ World::World(std::shared_ptr<Player> player) {
 
     _seed = randomInt(0, 999);
     srand(_seed);
+    gen.seed(_seed);
 
     int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
     int pY = _player->getPosition().y + PLAYER_HEIGHT;
@@ -214,8 +219,13 @@ void World::generateChunkProps(Chunk& chunk) {
 
     int grassSpawnRate = 5000;
     int smallTreeSpawnRate = 50000;
+    int cactusSpawnRate = 200000;
+    int smallSavannaTreeSpawnRate = 200000;
+    int largeSavannaTreeSpawnRate = 250000;
+    int smallTundraTreeSpawnRate = 300000;
 
     srand(chX + chY * _seed);
+    gen.seed(chX + chY * _seed);
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
             int dX = x - chX;
@@ -223,13 +233,39 @@ void World::generateChunkProps(Chunk& chunk) {
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
-                if (randomInt(0, grassSpawnRate) == 0) {
+                boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
+                boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
+                if (/*randomInt(0, grassSpawnRate) == 0*/ grassDist(gen) == 0) {
                     std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(grass);
                 }
 
-                if (randomInt(0, smallTreeSpawnRate) == 0) {
+                if (/*randomInt(0, smallTreeSpawnRate) == 0*/ treeDist(gen) == 0) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::DESERT) {
+                boost::random::uniform_int_distribution<> cactusDist(0, cactusSpawnRate);
+                if (/*randomInt(0, cactusSpawnRate) == 100000 / 2*/ cactusDist(gen) == 0) {
+                    std::shared_ptr<Cactus> cactus = std::shared_ptr<Cactus>(new Cactus(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(cactus);
+                }
+            } else if (terrainType == TERRAIN_TYPE::SAVANNA) {
+                boost::random::uniform_int_distribution<> smallTreeDist(0, smallSavannaTreeSpawnRate);
+                boost::random::uniform_int_distribution<> largeTreeDist(0, largeSavannaTreeSpawnRate);
+                if (smallTreeDist(gen) == 0) {
+                    std::shared_ptr<SmallSavannaTree> tree = std::shared_ptr<SmallSavannaTree>(new SmallSavannaTree(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(tree);
+                }
+
+                if (largeTreeDist(gen) == 0) {
+                    std::shared_ptr<LargeSavannaTree> tree = std::shared_ptr<LargeSavannaTree>(new LargeSavannaTree(sf::Vector2f(x, y), _spriteSheet));
+                    _entityBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::TUNDRA) {
+                boost::random::uniform_int_distribution<> smallTreeDist(0, smallTundraTreeSpawnRate);
+                if (smallTreeDist(gen) == 0) {
+                    std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(tree);
                 }
             }
@@ -318,8 +354,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
-            int biomeOctaves = 1;
-            float biomeSampleRate = 0.0001;
+            int biomeOctaves = 2;
+            float biomeSampleRate = 0.00005;
             double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
@@ -353,7 +389,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 g += randomInt(0, 10);
                 b += randomInt(0, 10);
 
-                if (terrainType == TERRAIN_TYPE::GRASS_LOW) {
+                if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::SAVANNA) {
                     int ar = (int)(0x55 * (val)) | r;
                     int ag = (int)(0x55 * (val)) | g;
                     int ab = (int)(0x55 * (val)) | b;
