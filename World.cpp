@@ -235,18 +235,18 @@ void World::generateChunkProps(Chunk& chunk) {
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
                 boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
-                if (/*randomInt(0, grassSpawnRate) == 0*/ grassDist(gen) == 0) {
+                if (grassDist(gen) == 0) {
                     std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(grass);
                 }
 
-                if (/*randomInt(0, smallTreeSpawnRate) == 0*/ treeDist(gen) == 0) {
+                if (treeDist(gen) == 0) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(tree);
                 }
             } else if (terrainType == TERRAIN_TYPE::DESERT) {
                 boost::random::uniform_int_distribution<> cactusDist(0, cactusSpawnRate);
-                if (/*randomInt(0, cactusSpawnRate) == 100000 / 2*/ cactusDist(gen) == 0) {
+                if (cactusDist(gen) == 0) {
                     std::shared_ptr<Cactus> cactus = std::shared_ptr<Cactus>(new Cactus(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(cactus);
                 }
@@ -355,13 +355,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             // biomes
             int biomeOctaves = 2;
-            float biomeSampleRate = 0.00005;
+            float biomeSampleRate = 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
             bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
             bool desert = precipitationNoise < 0.4;
-            bool savanna = temperatureNoise > 0.5 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
+            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
@@ -383,7 +383,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             sf::Uint32 g = (rgb >> 8) & 0xFF;
             sf::Uint32 b = rgb & 0xFF;
 
-            // fix this to use terrain data instead of ranges
             if (terrainType != TERRAIN_TYPE::SAND && terrainType != TERRAIN_TYPE::DESERT) {
                 r += randomInt(0, 10);
                 g += randomInt(0, 10);

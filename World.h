@@ -27,7 +27,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     MOUNTAIN_HIGH = 0xe2edec,
 
     TUNDRA = MOUNTAIN_HIGH,
-    SAVANNA = 0xb5954f,
+    SAVANNA = 0x95a54f, //0xb5954f
     DESERT = 0xfde898
 };
 
