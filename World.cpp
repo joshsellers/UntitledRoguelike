@@ -15,7 +15,7 @@ World::World(std::shared_ptr<Player> player) {
 
     _entities.push_back(_player);
 
-    _seed = randomInt(0, 999);
+    _seed = currentTimeMillis();
     srand(_seed);
     gen.seed(_seed);
 
@@ -231,6 +231,7 @@ void World::generateChunkProps(Chunk& chunk) {
             int dX = x - chX;
             int dY = y - chY;
 
+            // TODO store prop sprite sizes somewhere and set there spawn position to x - w / 2, y - h
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
@@ -359,9 +360,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
-            bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
-            bool desert = precipitationNoise < 0.4;
-            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.4 && precipitationNoise < 0.6;
+            bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.3 && precipitationNoise < 0.6;
+            bool desert = temperatureNoise > 0.6 && precipitationNoise < 0.4;
+            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.375 && precipitationNoise < 0.6;
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
