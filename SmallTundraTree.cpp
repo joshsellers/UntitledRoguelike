@@ -1,10 +1,8 @@
 #include "SmallTundraTree.h"
 #include "Util.h"
 
-SmallTundraTree::SmallTundraTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0) {
+SmallTundraTree::SmallTundraTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 2, 3, true) {
     loadSprite(spriteSheet);
-
-    _isProp = true;
 }
 
 void SmallTundraTree::update() {}

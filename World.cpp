@@ -231,7 +231,7 @@ void World::generateChunkProps(Chunk& chunk) {
             int dX = x - chX;
             int dY = y - chY;
 
-            // TODO store prop sprite sizes somewhere and set there spawn position to x - w / 2, y - h
+            // TODO store prop sprite sizes somewhere and set their spawn position to x - w / 2, y - h
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);

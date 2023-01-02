@@ -1,7 +1,8 @@
 #include "Entity.h"
 
-Entity::Entity(sf::Vector2f pos, float baseSpeed) {
-    _pos = pos;
+Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
+    _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp) {
+    _pos = _isProp ? sf::Vector2f(pos.x - (_spriteWidth * TILE_SIZE) / 2, pos.y - (_spriteHeight * TILE_SIZE)) : pos;
     _baseSpeed = baseSpeed;
 }
 
@@ -33,4 +34,8 @@ sf::Sprite Entity::getSprite() const {
 
 bool Entity::displayBottom() const {
     return _displayBottom;
+}
+
+sf::Vector2i Entity::getSpriteSize() const {
+    return sf::Vector2i(_spriteWidth, _spriteHeight);
 }

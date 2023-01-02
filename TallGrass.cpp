@@ -2,10 +2,9 @@
 
 #include "Util.h"
 
-TallGrass::TallGrass(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0) {
+TallGrass::TallGrass(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 1, 1, true) {
     loadSprite(spriteSheet);
 
-    _isProp = true;
     _displayBottom = true;
 }
 

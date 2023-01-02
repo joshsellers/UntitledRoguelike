@@ -2,8 +2,8 @@
 #include "World.h"
 #include <iostream>
 
-Player::Player(sf::Vector2f pos) : Entity(pos, BASE_PLAYER_SPEED) {
-    _pos = pos;
+Player::Player(sf::Vector2f pos) : 
+    Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false) {
 }
 
 void Player::update() {

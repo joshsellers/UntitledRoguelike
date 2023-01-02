@@ -1,10 +1,8 @@
 #include "SmallTree.h"
 #include "Util.h"
 
-SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0) {
+SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 2, 3, true) {
     loadSprite(spriteSheet);
-
-    _isProp = true;
 }
 
 void SmallTree::update() {}

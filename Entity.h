@@ -8,7 +8,7 @@ constexpr int TILE_SIZE = 16;
 
 class Entity {
 public:
-    Entity(sf::Vector2f pos, float baseSpeed);
+    Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp);
 
     virtual void update() = 0;
 
@@ -27,7 +27,11 @@ public:
 
     bool displayBottom() const;
 
+    sf::Vector2i getSpriteSize() const;
+
 protected:
+    const int _spriteWidth, _spriteHeight;
+
     bool _displayBottom = false;
 
     sf::Sprite _sprite;
@@ -41,7 +45,7 @@ protected:
     bool _isMoving = false;
     unsigned int _movingDir = 1;
 
-    bool _isProp = false;
+    const bool _isProp;
 
 private:
 
