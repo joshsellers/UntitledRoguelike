@@ -1,9 +1,11 @@
 #include "Player.h"
 #include "World.h"
 #include <iostream>
+#include "Item.h"
 
 Player::Player(sf::Vector2f pos) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false) {
+    _inventory.addItem(Item::TEST_ITEM.getId(), 1);
 }
 
 void Player::update() {

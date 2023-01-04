@@ -14,8 +14,8 @@ public:
     virtual void draw(sf::RenderTexture& surface) = 0;
     void render(sf::RenderTexture& surface);
 
-    virtual void mouseButtonPressed(const int mx, const int my) = 0;
-    virtual void mouseButtonReleased(const int mx, const int my) = 0;
+    virtual void mouseButtonPressed(const int mx, const int my, const int button) = 0;
+    virtual void mouseButtonReleased(const int mx, const int my, const int button) = 0;
     virtual void mouseMoved(const int mx, const int my) = 0;
     virtual void textEntered(const sf::Uint32 character) = 0;
 

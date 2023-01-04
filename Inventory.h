@@ -1,11 +1,35 @@
 #ifndef _INVENTORY_H
 #define _INVENTORY_H
 
+#include <vector>
+#include <SFML/System/Vector2.hpp>
+
+constexpr unsigned int DEFAULT_MAX_SIZE = 64;
+
+class Entity;
+
 class Inventory {
 public:
-    
+    Inventory(Entity* parent);
+
+    void addItem(unsigned int itemId, unsigned int amount);
+    void removeItem(unsigned int itemId, unsigned int amount);
+
+    bool hasItem(unsigned int itemId) const;
+
+    void useItem(size_t inventoryIndex) const;
+
+    void setMaxSize(unsigned int maxSize);
+    unsigned int getMaxSize() const;
+
+    Entity* getParent() const;
+
 private:
-    // list of item IDs or maybe list of sf::Vector2u(itemId, amount)
+    unsigned int _maxSize = DEFAULT_MAX_SIZE;
+    // list of sf::Vector2u(itemId, amount)
+    std::vector<sf::Vector2u> _inventory;
+
+    Entity* _parent;
 };
 
 #endif

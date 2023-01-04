@@ -18,15 +18,15 @@ void UIMenu::addElement(std::shared_ptr<UIElement> element) {
     _elements.push_back(element);
 }
 
-void UIMenu::mouseButtonPressed(const int mx, const int my) {
+void UIMenu::mouseButtonPressed(const int mx, const int my, const int button) {
     for (auto& element : _elements) {
-        if (element->isActive()) element->mouseButtonPressed(mx, my);
+        if (element->isActive()) element->mouseButtonPressed(mx, my, button);
     }
 }
 
-void UIMenu::mouseButtonReleased(const int mx, const int my) {
+void UIMenu::mouseButtonReleased(const int mx, const int my, const int button) {
     for (auto& element : _elements) {
-        if (element->isActive()) element->mouseButtonReleased(mx, my);
+        if (element->isActive()) element->mouseButtonReleased(mx, my, button);
     }
 }
 
@@ -56,6 +56,6 @@ void UIMenu::hide() {
     }
 }
 
-bool UIMenu::isActive() {
+bool UIMenu::isActive() const {
     return _isActive;
 }

@@ -14,8 +14,8 @@ public:
 
     void addElement(std::shared_ptr<UIElement> element);
 
-    void mouseButtonPressed(const int mx, const int my);
-    void mouseButtonReleased(const int mx, const int my);
+    void mouseButtonPressed(const int mx, const int my, const int button);
+    void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
 
     void textEntered(sf::Uint32 character);
@@ -23,7 +23,7 @@ public:
     void show();
     void hide();
 
-    bool isActive();
+    bool isActive() const;
 private:
     bool _isActive = false;
 

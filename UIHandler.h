@@ -14,8 +14,8 @@ public:
 
     void addMenu(std::shared_ptr<UIMenu> menu);
 
-    void mouseButtonPressed(const int mx, const int my);
-    void mouseButtonReleased(const int mx, const int my);
+    void mouseButtonPressed(const int mx, const int my, const int button);
+    void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
 
     void textEntered(sf::Uint32 character);

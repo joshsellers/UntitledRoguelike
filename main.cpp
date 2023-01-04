@@ -52,12 +52,12 @@ int main() {
                 break;
             case sf::Event::MouseButtonPressed:
                 game.mouseButtonPressed(
-                    event.mouseButton.x, event.mouseButton.y
+                    event.mouseButton.x, event.mouseButton.y, event.mouseButton.button
                 );
                 break;
             case sf::Event::MouseButtonReleased:
                 game.mouseButtonReleased(
-                    event.mouseButton.x, event.mouseButton.y
+                    event.mouseButton.x, event.mouseButton.y, event.mouseButton.button
                 );
                 break;
             case sf::Event::MouseMoved:

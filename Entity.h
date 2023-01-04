@@ -2,6 +2,7 @@
 #define _ENTITY_H
 
 #include <SFML/Graphics.hpp>
+#include "Inventory.h"
 
 constexpr int SPRITE_SHEET_SHIFT = 4;
 constexpr int TILE_SIZE = 16;
@@ -29,6 +30,8 @@ public:
 
     sf::Vector2i getSpriteSize() const;
 
+    Inventory& getInventory();
+
 protected:
     const int _spriteWidth, _spriteHeight;
 
@@ -46,6 +49,8 @@ protected:
     unsigned int _movingDir = 1;
 
     const bool _isProp;
+
+    Inventory _inventory = Inventory(this);
 
 private:
 

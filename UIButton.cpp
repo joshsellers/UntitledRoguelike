@@ -114,11 +114,11 @@ void UIButton::update() {
 
 void UIButton::draw(sf::RenderTexture& surface) {}
 
-void UIButton::mouseButtonPressed(const int mx, const int my) {
+void UIButton::mouseButtonPressed(const int mx, const int my, const int button) {
     _mouseDown = true;
 }
 
-void UIButton::mouseButtonReleased(const int mx, const int my) {
+void UIButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
     sf::FloatRect bounds = _sprite.getGlobalBounds();
     if (bounds.contains(_mx, _my)) {

@@ -94,15 +94,18 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         else _pauseMenu->show();
         _isPaused = !_isPaused;
         break;
+    case sf::Keyboard::P:
+        _player->getInventory().useItem(0);
+        break;
     }
 }
 
-void Game::mouseButtonPressed(const int mx, const int my) {
-    _ui.mouseButtonPressed(mx, my);
+void Game::mouseButtonPressed(const int mx, const int my, const int button) {
+    _ui.mouseButtonPressed(mx, my, button);
 }
 
-void Game::mouseButtonReleased(const int mx, const int my) {
-    _ui.mouseButtonReleased(mx, my);
+void Game::mouseButtonReleased(const int mx, const int my, const int button) {
+    _ui.mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {
