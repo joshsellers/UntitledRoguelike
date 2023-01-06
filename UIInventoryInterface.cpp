@@ -5,7 +5,7 @@
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     _source(source), _spriteSheet(spriteSheet), UIElement(49, 49, 3, 3, false, true, font) {
     _disableAutomaticTextAlignment = true;
-
+    
     float fontSize = 4;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
     _text.setFont(_font);
@@ -16,8 +16,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _text.setPosition(basePos.x - _text.getGlobalBounds().width / 2, 0);
 }
 
-void UIInventoryInterface::update() {
-}
+void UIInventoryInterface::update() {}
 
 void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     for (int i = 0; i < _source.getCurrentSize(); i++) {
@@ -59,8 +58,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     }
 }
 
-void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {
-}
+void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {}
 
 void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const int button) {
     for (int i = 0; i < _source.getCurrentSize(); i++) {
@@ -70,13 +68,16 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
         if (itemBounds.contains(mx, my)) {
             switch (button) {
             case sf::Mouse::Left:
-
+                if (Item::ITEMS[_source.getItemIdAt(i)]->isConsumable()) {
+                    Item::ITEMS[_source.getItemIdAt(i)]->use(_source.getParent());
+                    _source.removeItemAt(i, 1);
+                }
                 break;
             case sf::Mouse::Right:
                 _source.removeItemAt(i, 1);
                 break;
             case sf::Mouse::Middle:
-
+                _source.removeItemAt(i, _source.getItemAmountAt(i));
                 break;
             }
         }
@@ -91,5 +92,4 @@ void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent m
     _y += mouseWheelScroll.delta;
 }
 
-void UIInventoryInterface::textEntered(const sf::Uint32 character) {
-}
+void UIInventoryInterface::textEntered(const sf::Uint32 character) {}

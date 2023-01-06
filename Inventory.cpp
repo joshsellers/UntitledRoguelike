@@ -16,12 +16,12 @@ void Inventory::addItem(unsigned int itemId, unsigned int amount) {
             }
         }
 
-        if (Item::ITEMS[itemId]->isStackable() && amount <= Item::ITEMS[itemId]->getStackLimit()) 
+        if (Item::ITEMS[itemId]->isStackable() && amount <= Item::ITEMS[itemId]->getStackLimit() && _inventory.size() < getMaxSize()) 
             _inventory.push_back(sf::Vector2u(itemId, amount));
-        else if (Item::ITEMS[itemId]->isStackable() && amount > Item::ITEMS[itemId]->getStackLimit()) {
+        else if (Item::ITEMS[itemId]->isStackable() && amount > Item::ITEMS[itemId]->getStackLimit() && _inventory.size() < getMaxSize()) {
             _inventory.push_back(sf::Vector2u(itemId, Item::ITEMS[itemId]->getStackLimit()));
             addItem(itemId, amount - Item::ITEMS[itemId]->getStackLimit());
-        } else if (!Item::ITEMS[itemId]->isStackable())
+        } else if (!Item::ITEMS[itemId]->isStackable() && _inventory.size() < getMaxSize())
             _inventory.push_back(sf::Vector2u(itemId, amount));
     }
 }

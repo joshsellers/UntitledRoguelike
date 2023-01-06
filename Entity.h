@@ -18,6 +18,9 @@ public:
     virtual void move(float xa, float ya);
     bool isMoving() const;
 
+    void setBaseSpeed(float speed);
+    float getBaseSpeed() const;
+
     sf::Vector2f getPosition() const;
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet) = 0;

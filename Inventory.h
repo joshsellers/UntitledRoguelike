@@ -4,7 +4,7 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp>
 
-constexpr unsigned int DEFAULT_MAX_SIZE = 64;
+constexpr unsigned int DEFAULT_MAX_SIZE = 20;
 
 class Entity;
 

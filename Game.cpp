@@ -119,9 +119,6 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         else _inventoryMenu->show();
         break;
     // TEMP
-    case sf::Keyboard::P:
-        _player->getInventory().useItem(0);
-        break;
     case sf::Keyboard::LBracket:
         _player->getInventory().addItem(0, 1);
         break;

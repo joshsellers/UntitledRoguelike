@@ -16,7 +16,8 @@ public:
     static std::vector<const Item*> ITEMS;
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
-        const bool isStackable, const unsigned int stackLimit, const std::function<void(Entity*)> use);
+        const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
+        const std::function<void(Entity*)> use);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -25,6 +26,8 @@ public:
 
     bool isStackable() const;
     unsigned int getStackLimit() const;
+
+    bool isConsumable() const;
 
     void use(Entity* parent) const;
 
@@ -36,6 +39,8 @@ private:
 
     const bool _isStackable;
     const unsigned int _stackLimit;
+
+    const bool _isConsumable;
 
     const std::function<void(Entity*)> _use;
 };

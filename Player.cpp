@@ -10,16 +10,16 @@ Player::Player(sf::Vector2f pos) :
 void Player::update() {
     float xa = 0, ya = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        ya = -BASE_PLAYER_SPEED;
+        ya = -getBaseSpeed();
         _movingDir = 2;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        ya = BASE_PLAYER_SPEED;
+        ya = getBaseSpeed();
         _movingDir = 0;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        xa = -BASE_PLAYER_SPEED;
+        xa = -getBaseSpeed();
         _movingDir = 1;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        xa = BASE_PLAYER_SPEED;
+        xa = getBaseSpeed();
         _movingDir = 3;
     }
 

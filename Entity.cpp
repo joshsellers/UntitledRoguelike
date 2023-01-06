@@ -21,6 +21,14 @@ bool Entity::isMoving() const {
     return _isMoving;
 }
 
+void Entity::setBaseSpeed(float speed) {
+    _baseSpeed = speed;
+}
+
+float Entity::getBaseSpeed() const {
+    return _baseSpeed;
+}
+
 sf::Vector2f Entity::getPosition() const {
     return _pos;
 }
