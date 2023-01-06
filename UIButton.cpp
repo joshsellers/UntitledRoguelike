@@ -135,4 +135,7 @@ void UIButton::mouseMoved(const int mx, const int my) {
     _my = my;
 }
 
+void UIButton::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
+}
+
 void UIButton::textEntered(const sf::Uint32 character) {}

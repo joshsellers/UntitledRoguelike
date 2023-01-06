@@ -1,6 +1,10 @@
 #include "UIElement.h"
 
-UIElement::UIElement(float x, float y, float width, float height, 
+sf::Vector2f UIElement::getRelativePos(sf::Vector2f pos) {
+    return sf::Vector2f((float)WINDOW_WIDTH * (pos.x / 100), (float)WINDOW_HEIGHT * (pos.y / 100));
+}
+
+UIElement::UIElement(float x, float y, float width, float height,
     bool drawSprite, bool drawText, sf::Font font) {
     _x = x;
     _y = y;
@@ -9,9 +13,7 @@ UIElement::UIElement(float x, float y, float width, float height,
 
     _font = font;
 
-    int relativeX = (float)WINDOW_WIDTH * (_x / 100);
-    int relativeY = (float)WINDOW_HEIGHT * (_y / 100);
-    _sprite.setPosition(relativeX, relativeY);
+    if (drawSprite) _sprite.setPosition(getRelativePos(sf::Vector2f(_x, _y)));
 
     _width = WINDOW_WIDTH * (width / 100);
     _height = WINDOW_WIDTH * (height / 100);

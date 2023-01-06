@@ -8,20 +8,25 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) {
     if (!_font.loadFromFile("font.ttf")) {
         std::cout << "Failed to load font!" << std::endl;
     }
+    _versionLabel.setFont(_font);
+    _versionLabel.setCharacterSize(24);
+    _versionLabel.setString("v" + VERSION);
+    _versionLabel.setPosition(0, 0);
+
     _fpsLabel.setFont(_font);
     _fpsLabel.setCharacterSize(24);
     _fpsLabel.setString("0 fps");
-    _fpsLabel.setPosition(0, 0);
+    _fpsLabel.setPosition(0, 25);
 
     _activeChunksLabel.setFont(_font);
     _activeChunksLabel.setCharacterSize(24);
     _activeChunksLabel.setString("0 active chunks");
-    _activeChunksLabel.setPosition(0, 25);
+    _activeChunksLabel.setPosition(0, 50);
 
     _seedLabel.setFont(_font);
     _seedLabel.setCharacterSize(24);
     _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
-    _seedLabel.setPosition(0, 50);
+    _seedLabel.setPosition(0, 75);
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/url_guy_walking-Sheet.png")) {
@@ -35,11 +40,19 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) {
 }
 
 void Game::initUI() {
+    // Pause menu
     std::shared_ptr<UIButton> exitButton = std::shared_ptr<UIButton>(new UIButton(
         1, 5, 9, 3, "quit game", _font, this, "exit"
     ));
     _pauseMenu->addElement(exitButton);
     _ui.addMenu(_pauseMenu);
+
+    // Inventory menu
+    std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr <UIInventoryInterface>(new UIInventoryInterface(
+        _player->getInventory(), _font, _spriteSheet
+    ));
+    _inventoryMenu->addElement(inventoryInterface);
+    _ui.addMenu(_inventoryMenu);
 }
 
 void Game::update() {
@@ -55,21 +68,25 @@ void Game::draw(sf::RenderTexture& surface) {
 void Game::drawUI(sf::RenderTexture& surface) {
     _ui.draw(surface);
 
-    float fps = 1.f / _clock.restart().asSeconds();
-    if (_frameCounter >= 30) {
-        _fpsLabel.setString(std::to_string((int)fps) + " fps");
-        _frameCounter = 0;
+    if (_showDebug) {
+        surface.draw(_versionLabel);
+
+        float fps = 1.f / _clock.restart().asSeconds();
+        if (_frameCounter >= 30) {
+            _fpsLabel.setString(std::to_string((int)fps) + " fps");
+            _frameCounter = 0;
+        }
+
+        surface.draw(_fpsLabel);
+
+        int chunkCount = _world.getActiveChunkCount();
+        _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount > 1 ? "s" : ""));
+        surface.draw(_activeChunksLabel);
+
+        surface.draw(_seedLabel);
+
+        _frameCounter++;
     }
-
-    surface.draw(_fpsLabel);
-
-    int chunkCount = _world.getActiveChunkCount();
-    _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount > 1 ? "s" : ""));
-    surface.draw(_activeChunksLabel);
-
-    surface.draw(_seedLabel);
-
-    _frameCounter++;
 }
 
 void Game::buttonPressed(std::string buttonCode) {
@@ -83,6 +100,9 @@ void Game::keyPressed(sf::Keyboard::Key& key) {
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
     switch (key) {
+    case sf::Keyboard::F3:
+        _showDebug = !_showDebug;
+        break;
     case sf::Keyboard::Hyphen:
         _camera->zoom(2);
         break;
@@ -94,9 +114,22 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         else _pauseMenu->show();
         _isPaused = !_isPaused;
         break;
+    case sf::Keyboard::I:
+        if (_inventoryMenu->isActive()) _inventoryMenu->hide();
+        else _inventoryMenu->show();
+        break;
+    // TEMP
     case sf::Keyboard::P:
         _player->getInventory().useItem(0);
         break;
+    case sf::Keyboard::LBracket:
+        _player->getInventory().addItem(0, 1);
+        break;
+    case sf::Keyboard::RBracket:
+        _player->getInventory().addItem(1, 1);
+        break;
+    case sf::Keyboard::Backslash:
+        _player->getInventory().addItem(1, 6);
     }
 }
 
@@ -110,6 +143,10 @@ void Game::mouseButtonReleased(const int mx, const int my, const int button) {
 
 void Game::mouseMoved(const int mx, const int my) {
     _ui.mouseMoved(mx, my);
+}
+
+void Game::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
+    _ui.mouseWheelScrolled(mouseWheelScroll);
 }
 
 void Game::textEntered(sf::Uint32 character) {

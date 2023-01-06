@@ -1,25 +1,29 @@
-#ifndef _UI_INVENTORY_INTERFACE
-#define _UI_INVENTORY_INTERFACE
+#ifndef _UI_INVENTORY_INTERFACE_H
+#define _UI_INVENTORY_INTERFACE_H
 
 #include "UIElement.h"
 #include "Inventory.h"
 
-// Basically do what YTY does but what YTY does in tick() should be done in mouseButtonReleased
-// Also text width from text.getLocalBounds() for displaying item info and having nice little 
-// properly sized background
-// Also use this UIElement's size for the size of the rectangles that will be taking the place 
-// of actual buttons
+constexpr int ITEM_SPACING = 7;
 
-// Might need to copy relativeFontSize stuff from UIButton
-// Probably going to have to calculate relative positions for item "buttons" and won't be able
-// to do it based on _sprite's position, maybe make a util function for calculating relative
-// position
 class UIInventoryInterface : public UIElement {
 public:
-    UIInventoryInterface(Inventory& source, sf::Font);
+    UIInventoryInterface(Inventory& source, sf::Font, std::shared_ptr<sf::Texture> spriteSheet);
 
+    void update();
+    void draw(sf::RenderTexture& surface);
+
+    void mouseButtonPressed(const int mx, const int my, const int button);
+    void mouseButtonReleased(const int mx, const int my, const int button);
+    void mouseMoved(const int mx, const int my);
+    void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
+    void textEntered(const sf::Uint32 character);
 private:
     Inventory& _source;
+
+    std::shared_ptr<sf::Texture> _spriteSheet;
+
+    sf::Vector2f _mousePos;
 };
 
 #endif

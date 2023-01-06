@@ -7,6 +7,8 @@
 
 class UIElement {
 public:
+    static sf::Vector2f getRelativePos(sf::Vector2f pos);
+
     UIElement(float x, float y, float width, float height, bool drawSprite, bool drawText,
         sf::Font font);
 
@@ -17,6 +19,7 @@ public:
     virtual void mouseButtonPressed(const int mx, const int my, const int button) = 0;
     virtual void mouseButtonReleased(const int mx, const int my, const int button) = 0;
     virtual void mouseMoved(const int mx, const int my) = 0;
+    virtual void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) = 0;
     virtual void textEntered(const sf::Uint32 character) = 0;
 
     void show();

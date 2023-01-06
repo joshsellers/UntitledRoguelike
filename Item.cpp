@@ -1,17 +1,29 @@
 #include "Item.h"
 #include "Entity.h"
 
-const Item Item::TEST_ITEM(0, "testItem", sf::IntRect(0, 0, 16, 16), true,
+const Item Item::TEST_ITEM(0, "testItem", sf::IntRect(0, 0, 1, 1), false, 0,
     [](Entity* parent) {
         parent->move(0, -10);
     }
+);
+const Item Item::TEST_ITEM_2(1, "testItem2", sf::IntRect(2, 9, 1, 1), true, 5,
+    [](Entity* parent) {}
 );
 
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, 
+    const unsigned int stackLimit,
     const std::function<void(Entity*)> use) :
-    _id(id), _name(name), _textureRect(textureRect), _isStackable(isStackable), _use(use) {
+    _id(id), _name(name), _textureRect(
+        sf::IntRect(
+            textureRect.left << SPRITE_SHEET_SHIFT, 
+            textureRect.top << SPRITE_SHEET_SHIFT, 
+            textureRect.width << SPRITE_SHEET_SHIFT,
+            textureRect.height << SPRITE_SHEET_SHIFT
+        )), 
+    _isStackable(isStackable), _stackLimit(stackLimit), _use(use) {
+
     ITEMS.push_back(this);
 }
 
@@ -29,6 +41,10 @@ sf::IntRect Item::getTextureRect() const {
 
 bool Item::isStackable() const {
     return _isStackable;
+}
+
+unsigned int Item::getStackLimit() const {
+    return _stackLimit;
 }
 
 void Item::use(Entity* parent) const {

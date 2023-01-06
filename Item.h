@@ -11,9 +11,12 @@ class Entity;
 class Item {
 public:
     static const Item TEST_ITEM;
+    static const Item TEST_ITEM_2;
+
     static std::vector<const Item*> ITEMS;
 
-    Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, const std::function<void(Entity*)> use);
+    Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
+        const bool isStackable, const unsigned int stackLimit, const std::function<void(Entity*)> use);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -21,6 +24,7 @@ public:
     sf::IntRect getTextureRect() const;
 
     bool isStackable() const;
+    unsigned int getStackLimit() const;
 
     void use(Entity* parent) const;
 
@@ -31,6 +35,7 @@ private:
     const sf::IntRect _textureRect;
 
     const bool _isStackable;
+    const unsigned int _stackLimit;
 
     const std::function<void(Entity*)> _use;
 };

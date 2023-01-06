@@ -6,10 +6,9 @@
 int main() {
     float screenHeight = sf::VideoMode::getDesktopMode().height;
     float screenWidth = screenHeight * ((float)WIDTH / (float)HEIGHT);
-    float relativeWindowSize = 0.75;
 
-    unsigned int windowWidth = screenWidth * relativeWindowSize;
-    unsigned int windowHeight = screenHeight * relativeWindowSize;
+    unsigned int windowWidth = screenWidth * RELATIVE_WINDOW_SIZE;
+    unsigned int windowHeight = screenHeight * RELATIVE_WINDOW_SIZE;
     WINDOW_WIDTH = windowWidth;
     WINDOW_HEIGHT = windowHeight;
 
@@ -64,6 +63,9 @@ int main() {
                 game.mouseMoved(
                     event.mouseMove.x, event.mouseMove.y
                 );
+                break;
+            case sf::Event::MouseWheelScrolled:
+                game.mouseWheelScrolled(event.mouseWheelScroll);
                 break;
             case sf::Event::TextEntered:
                 game.textEntered(event.text.unicode);

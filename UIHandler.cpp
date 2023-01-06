@@ -36,6 +36,12 @@ void UIHandler::mouseMoved(const int mx, const int my) {
     }
 }
 
+void UIHandler::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
+    for (auto& menu : _menus) {
+        if (menu->isActive()) menu->mouseWheelScrolled(mouseWheelScroll);
+    }
+}
+
 void UIHandler::textEntered(sf::Uint32 character) {
     for (auto& menu : _menus) {
         if (menu->isActive()) menu->textEntered(character);

@@ -15,6 +15,7 @@ public:
     void mouseButtonPressed(const int mx, const int my, const int button);
     void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
+    void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 
 private:

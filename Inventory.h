@@ -14,13 +14,19 @@ public:
 
     void addItem(unsigned int itemId, unsigned int amount);
     void removeItem(unsigned int itemId, unsigned int amount);
+    void removeItemAt(unsigned int index, unsigned int amount);
 
     bool hasItem(unsigned int itemId) const;
 
     void useItem(size_t inventoryIndex) const;
 
+    unsigned int getItemIdAt(unsigned int index) const;
+    unsigned int getItemAmountAt(unsigned int index) const;
+
     void setMaxSize(unsigned int maxSize);
     unsigned int getMaxSize() const;
+
+    unsigned int getCurrentSize() const;
 
     Entity* getParent() const;
 
