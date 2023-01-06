@@ -3,7 +3,7 @@
 #include <iostream>
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
-    _source(source), _spriteSheet(spriteSheet), UIElement(49, 49, 3, 3, false, true, font) {
+    _source(source), _spriteSheet(spriteSheet), UIElement(5, 9, 3, 3, false, true, font) {
     _disableAutomaticTextAlignment = true;
     
     float fontSize = 4;
@@ -13,7 +13,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _text.setFillColor(sf::Color::White);
     _text.setString("INVENTORY");
     sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x, _y)));
-    _text.setPosition(basePos.x - _text.getGlobalBounds().width / 2, 0);
+    _text.setPosition(basePos.x - _text.getGlobalBounds().width / 8, 0);
 
     fontSize = 1;
     relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -110,9 +110,11 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
                 }
                 break;
             case sf::Mouse::Right:
+                _source.dropItem(_source.getItemIdAt(i), 1);
                 _source.removeItemAt(i, 1);
                 break;
             case sf::Mouse::Middle:
+                _source.dropItem(_source.getItemIdAt(i), _source.getItemAmountAt(i));
                 _source.removeItemAt(i, _source.getItemAmountAt(i));
                 break;
             }
@@ -125,7 +127,7 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
-    _y += mouseWheelScroll.delta;
+    _y += mouseWheelScroll.delta * SCROLL_RATE;
 }
 
 void UIInventoryInterface::textEntered(const sf::Uint32 character) {}

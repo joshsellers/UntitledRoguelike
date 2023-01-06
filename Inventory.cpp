@@ -2,6 +2,7 @@
 #include "Item.h"
 #include "World.h"
 #include <iostream>
+#include "DroppedItem.h"
 
 Inventory::Inventory(Entity* parent) : 
     _parent(parent) {
@@ -49,10 +50,37 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
             _inventory.erase(_inventory.begin() + index);
         }
     }
-
 }
 
 void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
+    float px = _parent->getPosition().x;
+    float py = _parent->getPosition().y;
+
+    switch (_parent->getMovingDir()) {
+    case UP:
+        py -= 20;
+        break;
+    case DOWN:
+        py += 37;
+        break;
+    case LEFT:
+        px -= 20;
+        py += 16;
+        break;
+    case RIGHT:
+        px += 20;
+        py += 16;
+        break;
+    }
+
+    sf::Vector2f pos(px, py);
+    std::shared_ptr<DroppedItem> droppedItem = std::shared_ptr<DroppedItem>(
+        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect())
+    );
+    droppedItem->setWorld(_parent->getWorld());
+    droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());
+
+    _parent->getWorld()->addEntity(droppedItem);
 }
 
 bool Inventory::hasItem(unsigned int itemId) const {

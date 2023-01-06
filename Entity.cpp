@@ -21,6 +21,10 @@ bool Entity::isMoving() const {
     return _isMoving;
 }
 
+MOVING_DIRECTION Entity::getMovingDir() const {
+    return (MOVING_DIRECTION)_movingDir;
+}
+
 void Entity::setBaseSpeed(float speed) {
     _baseSpeed = speed;
 }
@@ -37,6 +41,10 @@ bool Entity::isProp() const {
     return _isProp;
 }
 
+bool Entity::canPickUpItems() const {
+    return _canPickUpItems;
+}
+
 sf::Sprite Entity::getSprite() const {
     return _sprite;
 }
@@ -51,4 +59,16 @@ sf::Vector2i Entity::getSpriteSize() const {
 
 Inventory& Entity::getInventory() {
     return _inventory;
+}
+
+void Entity::setWorld(World* world) {
+    _world = world;
+}
+
+World* Entity::getWorld() const {
+    return _world;
+}
+
+bool Entity::isActive() const {
+    return _isActive;
 }

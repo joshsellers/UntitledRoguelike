@@ -79,12 +79,17 @@ void World::purgeEntityBuffer() {
 }
 
 void World::updateEntities() {
+    // rewrite this so that entities that are not in any 
+    // chunks are marked as do not render
+
     for (int j = 0; j < _entities.size(); j++) {
         auto& entity = _entities.at(j);
 
-        if (!entity->isProp()) {
+        if (!entity->isProp() && entity->isActive()) {
             entity->update();
             continue;
+        } else if (!entity->isActive()) {
+            _entities.erase(_entities.begin() + j);
         }
 
         int notInChunkCount = 0;
@@ -445,12 +450,20 @@ void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
     _spriteSheet = spriteSheet;
 }
 
+std::shared_ptr<sf::Texture> World::getSpriteSheet() const {
+    return _spriteSheet;
+}
+
 int World::getSeed() {
     return _seed;
 }
 
 void World::addEntity(std::shared_ptr<Entity> entity) {
     _entities.push_back(entity);
+}
+
+std::vector<std::shared_ptr<Entity>> World::getEntities() const {
+    return _entities;
 }
 
 void World::sortEntities() {

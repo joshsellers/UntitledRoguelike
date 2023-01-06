@@ -11,8 +11,6 @@ constexpr bool GODMODE = false;
 constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 1;
 constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
-class World;
-
 class Player : public Entity {
 public:
     Player(sf::Vector2f pos);
@@ -25,16 +23,12 @@ public:
 
     sf::Vector2f getPosition() const;
 
-    void setWorld(World* world);
-
     bool isSwimming() const;
     bool isDodging() const;
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
 private:
-    World* _world = nullptr;
-
     sf::Sprite _wavesSprite;
 
     bool _isSwimming = false;

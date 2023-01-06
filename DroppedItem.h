@@ -5,18 +5,23 @@
 
 class DroppedItem : public Entity {
 public:
-    DroppedItem(sf::Vector2f pos, unsigned int itemId, sf::IntRect textureRect);
+    DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect);
 
     void update();
     void draw(sf::RenderTexture& surface);
-
-    void move(float xa, float ya);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
 private:
     const unsigned int _itemId;
+    const unsigned int _amount;
     const sf::IntRect _textureRect;
+
+    const float _hoverDist = 5.f;
+    const float _minY;
+    const float _originalY;
+    bool _down = true;
+    int _animCounter = 0;
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include "Inventory.h"
 
 constexpr int ITEM_SPACING = 7;
+constexpr float SCROLL_RATE = 2.f;
 
 class UIInventoryInterface : public UIElement {
 public:

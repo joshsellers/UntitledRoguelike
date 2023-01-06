@@ -39,12 +39,6 @@ private:
     std::vector<sf::Vector2u> _inventory;
 
     Entity* _parent;
-    // Inventory will probably have to take world as a parameter
-    // Maybe to work around how complicated thats gonna be 
-    // instead make inventory take a reference to the world's 
-    // entity buffer which is slightly less problematic
-    // might cause multithreading issues though
-    World* _world;
 };
 
 #endif

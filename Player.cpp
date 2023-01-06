@@ -5,22 +5,23 @@
 
 Player::Player(sf::Vector2f pos) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false) {
+    _canPickUpItems = true;
 }
 
 void Player::update() {
     float xa = 0, ya = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         ya = -getBaseSpeed();
-        _movingDir = 2;
+        _movingDir = UP;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         ya = getBaseSpeed();
-        _movingDir = 0;
+        _movingDir = DOWN;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         xa = -getBaseSpeed();
-        _movingDir = 1;
+        _movingDir = LEFT;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         xa = getBaseSpeed();
-        _movingDir = 3;
+        _movingDir = RIGHT;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS)) {
@@ -96,10 +97,6 @@ void Player::move(float xa, float ya) {
 
 sf::Vector2f Player::getPosition() const {
     return _pos;
-}
-
-void Player::setWorld(World* world) {
-    _world = world;
 }
 
 bool Player::isSwimming() const {

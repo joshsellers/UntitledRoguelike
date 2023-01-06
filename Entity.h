@@ -7,6 +7,13 @@
 constexpr int SPRITE_SHEET_SHIFT = 4;
 constexpr int TILE_SIZE = 16;
 
+enum MOVING_DIRECTION {
+    UP = 2,
+    DOWN = 0,
+    LEFT = 1,
+    RIGHT = 3
+};
+
 class Entity {
 public:
     Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp);
@@ -17,6 +24,7 @@ public:
 
     virtual void move(float xa, float ya);
     bool isMoving() const;
+    MOVING_DIRECTION getMovingDir() const;
 
     void setBaseSpeed(float speed);
     float getBaseSpeed() const;
@@ -26,6 +34,7 @@ public:
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet) = 0;
 
     bool isProp() const;
+    bool canPickUpItems() const;
 
     sf::Sprite getSprite() const;
 
@@ -34,6 +43,11 @@ public:
     sf::Vector2i getSpriteSize() const;
 
     Inventory& getInventory();
+
+    void setWorld(World* world);
+    World* getWorld() const;
+
+    bool isActive() const;
 
 protected:
     const int _spriteWidth, _spriteHeight;
@@ -51,9 +65,14 @@ protected:
     bool _isMoving = false;
     unsigned int _movingDir = 1;
 
-    const bool _isProp;
+    const bool _isProp = false;
+    bool _canPickUpItems = false;
 
     Inventory _inventory = Inventory(this);
+
+    World* _world = nullptr;
+
+    bool _isActive = true;
 
 private:
 

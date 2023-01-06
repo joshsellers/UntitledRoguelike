@@ -51,10 +51,12 @@ public:
     TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
 
     void loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet);
+    std::shared_ptr<sf::Texture> getSpriteSheet() const;
 
     int getSeed();
 
     void addEntity(std::shared_ptr<Entity> entity);
+    std::vector<std::shared_ptr<Entity>> getEntities() const;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
