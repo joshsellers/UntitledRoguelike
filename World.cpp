@@ -449,6 +449,10 @@ int World::getSeed() {
     return _seed;
 }
 
+void World::addEntity(std::shared_ptr<Entity> entity) {
+    _entities.push_back(entity);
+}
+
 void World::sortEntities() {
     int n = _entities.size();
 

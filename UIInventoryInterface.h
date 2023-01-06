@@ -24,6 +24,9 @@ private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 
     sf::Vector2f _mousePos;
+
+    sf::Text _tooltipText;
+    sf::RectangleShape _tooltipBg;
 };
 
 #endif

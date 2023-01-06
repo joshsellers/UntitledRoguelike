@@ -14,11 +14,22 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _text.setString("INVENTORY");
     sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x, _y)));
     _text.setPosition(basePos.x - _text.getGlobalBounds().width / 2, 0);
+
+    fontSize = 1;
+    relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
+    _tooltipText.setFont(_font);
+    _tooltipText.setCharacterSize(relativeFontSize);
+    _tooltipText.setFillColor(sf::Color(0x000023FF));
+
+    _tooltipBg.setFillColor(sf::Color(0xFFFFCAFF));
+    _tooltipBg.setOutlineColor(sf::Color(0xEEEEB9FF));
+    _tooltipBg.setOutlineThickness((float)WINDOW_WIDTH * (0.25f / 100));
 }
 
 void UIInventoryInterface::update() {}
 
 void UIInventoryInterface::draw(sf::RenderTexture& surface) {
+    int mousedOverItemIndex = -1;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * i))));
@@ -55,6 +66,31 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         surface.draw(bg);
         surface.draw(itemSprite);
         surface.draw(label);
+
+        if (labelBg.getGlobalBounds().contains(_mousePos) && !bg.getGlobalBounds().contains(_mousePos))
+            mousedOverItemIndex = i;
+    }
+
+    if (mousedOverItemIndex >= 0) {
+        const Item* item = Item::ITEMS[_source.getItemIdAt(mousedOverItemIndex)];
+
+        float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
+
+        _tooltipText.setString(item->getDescription());
+        float textWidth = _tooltipText.getGlobalBounds().width;
+        float textHeight = _tooltipText.getGlobalBounds().height;
+        sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
+        _tooltipText.setPosition(pos);
+
+        float padding = (float)WINDOW_HEIGHT * (1.f / 100);
+
+        float bgWidth = textWidth + padding * 2;
+        float bgHeight = textHeight + padding * 2;
+        _tooltipBg.setPosition(pos.x - padding, pos.y - padding);
+        _tooltipBg.setSize(sf::Vector2f(bgWidth, bgHeight));
+
+        surface.draw(_tooltipBg);
+        surface.draw(_tooltipText);
     }
 }
 

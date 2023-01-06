@@ -14,21 +14,21 @@ constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
 
 enum class TERRAIN_COLOR : sf::Uint32 {
-    WATER_DEEP = 0x3370cc,
-    WATER_MID = 0x4084e2,
-    WATER_SHALLOW = 0x55aef0,
+    WATER_DEEP = 0X3370CC,
+    WATER_MID = 0X4084E2,
+    WATER_SHALLOW = 0X55AEF0,
 
-    SAND = 0xf7e898,
-    DIRT_LOW = 0x77c73a,
-    DIRT_HIGH = 0x417d13,
+    SAND = 0XF7E898,
+    DIRT_LOW = 0X77C73A,
+    DIRT_HIGH = 0X417D13,
 
-    MOUNTAIN_LOW = 0x5b5e5c,
-    MOUNTAIN_MID = 0x414545,
-    MOUNTAIN_HIGH = 0xe2edec,
+    MOUNTAIN_LOW = 0X5B5E5C,
+    MOUNTAIN_MID = 0X414545,
+    MOUNTAIN_HIGH = 0XE2EDEC,
 
     TUNDRA = MOUNTAIN_HIGH,
-    SAVANNA = 0x95a54f, //0xb5954f
-    DESERT = 0xfde898
+    SAVANNA = 0X95A54F, //0XB5954F
+    DESERT = 0XFDE898
 };
 
 class World {
@@ -53,6 +53,8 @@ public:
     void loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet);
 
     int getSeed();
+
+    void addEntity(std::shared_ptr<Entity> entity);
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;

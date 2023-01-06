@@ -1,6 +1,6 @@
 #include "Inventory.h"
 #include "Item.h"
-#include "Entity.h"
+#include "World.h"
 #include <iostream>
 
 Inventory::Inventory(Entity* parent) : 
@@ -42,7 +42,6 @@ void Inventory::removeItem(unsigned int itemId, unsigned int amount) {
 }
 
 void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
-    //removeItem(_inventory.at(index).x, 1);
     if (amount > 0) {
         auto& item = _inventory.at(index);
         item.y -= amount;
@@ -51,6 +50,9 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
         }
     }
 
+}
+
+void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
 }
 
 bool Inventory::hasItem(unsigned int itemId) const {

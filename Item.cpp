@@ -4,19 +4,21 @@
 const Item Item::TEST_ITEM(0, "testItem", sf::IntRect(0, 0, 1, 1), false, 0, false,
     [](Entity* parent) {
         
-    }
+    },
+    "An amazing test item.\nIt doesn't do anything."
 );
 const Item Item::TEST_ITEM_2(1, "testItem2", sf::IntRect(2, 9, 1, 1), true, 5, true,
     [](Entity* parent) {
         parent->setBaseSpeed(parent->getBaseSpeed() + 0.5);
-    }
+    },
+    "Another amazing test item.\nIncreases base speed by 0.5 when consumed.\ntest\nest\nest"
 );
 
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, 
     const unsigned int stackLimit, const bool isConsumable,
-    const std::function<void(Entity*)> use) :
+    const std::function<void(Entity*)> use, std::string description) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
             textureRect.left << SPRITE_SHEET_SHIFT, 
@@ -24,7 +26,8 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
             textureRect.width << SPRITE_SHEET_SHIFT,
             textureRect.height << SPRITE_SHEET_SHIFT
         )), 
-    _isStackable(isStackable), _stackLimit(stackLimit), _isConsumable(isConsumable), _use(use) {
+    _isStackable(isStackable), _stackLimit(stackLimit), 
+    _isConsumable(isConsumable), _use(use), _description(description) {
 
     ITEMS.push_back(this);
 }
@@ -35,6 +38,10 @@ unsigned int Item::getId() const {
 
 std::string Item::getName() const {
     return _name;
+}
+
+std::string Item::getDescription() const {
+    return _description;
 }
 
 sf::IntRect Item::getTextureRect() const {

@@ -17,10 +17,11 @@ public:
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
-        const std::function<void(Entity*)> use);
+        const std::function<void(Entity*)> use, const std::string description);
 
     unsigned int getId() const;
     std::string getName() const;
+    std::string getDescription() const;
 
     sf::IntRect getTextureRect() const;
 
@@ -34,6 +35,7 @@ public:
 private:
     const unsigned int _id;
     const std::string _name;
+    const std::string _description;
 
     const sf::IntRect _textureRect;
 
