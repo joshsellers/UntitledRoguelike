@@ -6,6 +6,11 @@
 Player::Player(sf::Vector2f pos) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false) {
     _canPickUpItems = true;
+
+    // TEMP
+    for (unsigned int i = Item::TEST_HAT.getId(); i <= Item::TEST_TOOL.getId(); i++) {
+        _inventory.addItem(i, 2);
+    }
 }
 
 void Player::update() {

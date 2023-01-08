@@ -47,7 +47,8 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         sf::RectangleShape labelBg(sf::Vector2f(_width + (_width / 8) * 3 + label.getGlobalBounds().width + (_width / 8), _height + (_height / 8) * 2));
         labelBg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));
-        labelBg.setFillColor(sf::Color(0x000066FF));
+        sf::Uint32 labelBgColor = _source.isEquipped(i) ? 0x0000FFFF : 0x000066FF;
+        labelBg.setFillColor(sf::Color(labelBgColor));
 
         sf::RectangleShape bg(sf::Vector2f(_width + (_width / 8) * 2, _height + (_height / 8) * 2));
         bg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));
@@ -102,11 +103,19 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
 
         if (itemBounds.contains(mx, my)) {
+            const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+
             switch (button) {
             case sf::Mouse::Left:
-                if (Item::ITEMS[_source.getItemIdAt(i)]->isConsumable()) {
-                    Item::ITEMS[_source.getItemIdAt(i)]->use(_source.getParent());
+                if (item->isConsumable()) {
+                    item->use(_source.getParent());
                     _source.removeItemAt(i, 1);
+                } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
+                    if (_source.isEquipped(i)) {
+                        _source.deEquip(item->getEquipmentType());
+                    } else {
+                        _source.equip(i, item->getEquipmentType());
+                    }
                 }
                 break;
             case sf::Mouse::Right:

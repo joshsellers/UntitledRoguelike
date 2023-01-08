@@ -1,10 +1,13 @@
 #ifndef _INVENTORY_H
 #define _INVENTORY_H
 
-#include <vector>
 #include <SFML/System/Vector2.hpp>
+#include "Item.h"
 
-constexpr unsigned int DEFAULT_MAX_SIZE = 20;
+constexpr unsigned int DEFAULT_MAX_SIZE = 100;
+
+constexpr int NOTHING_EQUIPPED = -1;
+constexpr int EQUIPMENT_SLOT_COUNT = 10;
 
 class World;
 class Entity;
@@ -26,6 +29,11 @@ public:
     unsigned int getItemIdAt(unsigned int index) const;
     unsigned int getItemAmountAt(unsigned int index) const;
 
+    void equip(int index, EQUIPMENT_TYPE equipType);
+    void deEquip(EQUIPMENT_TYPE equipType);
+    bool isEquipped(int index) const;
+    int getEquippedItemId(EQUIPMENT_TYPE equipType) const;
+
     void setMaxSize(unsigned int maxSize);
     unsigned int getMaxSize() const;
 
@@ -37,6 +45,13 @@ private:
     unsigned int _maxSize = DEFAULT_MAX_SIZE;
     // list of sf::Vector2u(itemId, amount)
     std::vector<sf::Vector2u> _inventory;
+    
+    int _equippedItems[EQUIPMENT_SLOT_COUNT] = {
+        NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED, 
+        NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED,
+        NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED,
+        NOTHING_EQUIPPED
+    };
 
     Entity* _parent;
 };

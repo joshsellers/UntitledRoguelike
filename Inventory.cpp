@@ -1,5 +1,4 @@
 #include "Inventory.h"
-#include "Item.h"
 #include "World.h"
 #include <iostream>
 #include "DroppedItem.h"
@@ -23,7 +22,7 @@ void Inventory::addItem(unsigned int itemId, unsigned int amount) {
             _inventory.push_back(sf::Vector2u(itemId, Item::ITEMS[itemId]->getStackLimit()));
             addItem(itemId, amount - Item::ITEMS[itemId]->getStackLimit());
         } else if (!Item::ITEMS[itemId]->isStackable() && _inventory.size() < getMaxSize())
-            _inventory.push_back(sf::Vector2u(itemId, amount));
+            for (int i = 0; i < amount; i++) _inventory.push_back(sf::Vector2u(itemId, 1));
     }
 }
 
@@ -34,6 +33,13 @@ void Inventory::removeItem(unsigned int itemId, unsigned int amount) {
             if (item.x == itemId) {
                 item.y -= amount;
                 if (item.y <= 0) {
+                    for (int j = 0; j < EQUIPMENT_SLOT_COUNT; j++) {
+                        if (_equippedItems[j] == i) { 
+                            deEquip((EQUIPMENT_TYPE)j);
+                        }
+
+                        if (i < _equippedItems[j]) _equippedItems[j]--;
+                    }
                     _inventory.erase(_inventory.begin() + i);
                 }
                 return;
@@ -47,6 +53,13 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
         auto& item = _inventory.at(index);
         item.y -= amount;
         if (item.y <= 0) {
+            for (int j = 0; j < EQUIPMENT_SLOT_COUNT; j++) {
+                if (_equippedItems[j] == (int)index) { 
+                    deEquip((EQUIPMENT_TYPE)j);
+                }
+
+                if ((int)index < _equippedItems[j]) _equippedItems[j]--;
+            }
             _inventory.erase(_inventory.begin() + index);
         }
     }
@@ -101,6 +114,29 @@ unsigned int Inventory::getItemIdAt(unsigned int index) const {
 
 unsigned int Inventory::getItemAmountAt(unsigned int index) const {
     return _inventory.at(index).y;
+}
+
+void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
+    if (equipType != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
+        _equippedItems[(int)equipType] = index;
+    }
+}
+
+void Inventory::deEquip(EQUIPMENT_TYPE equipType) {
+    equip(NOTHING_EQUIPPED, equipType);
+}
+
+bool Inventory::isEquipped(int index) const {
+    for (int i : _equippedItems) 
+        if (i == index) return true;
+    return false;
+}
+
+int Inventory::getEquippedItemId(EQUIPMENT_TYPE equipType) const {
+    int equippedIndex = _equippedItems[(int)equipType];
+    if (equippedIndex != NOTHING_EQUIPPED)
+        return getItemIdAt(equippedIndex);
+    return NOTHING_EQUIPPED;
 }
 
 void Inventory::setMaxSize(unsigned int maxSize) {
