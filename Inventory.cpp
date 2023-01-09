@@ -31,17 +31,7 @@ void Inventory::removeItem(unsigned int itemId, unsigned int amount) {
         for (int i = 0; i < _inventory.size(); i++) {
             auto& item = _inventory.at(i);
             if (item.x == itemId) {
-                item.y -= amount;
-                if (item.y <= 0) {
-                    for (int j = 0; j < EQUIPMENT_SLOT_COUNT; j++) {
-                        if (_equippedItems[j] == i) { 
-                            deEquip((EQUIPMENT_TYPE)j);
-                        }
-
-                        if (i < _equippedItems[j]) _equippedItems[j]--;
-                    }
-                    _inventory.erase(_inventory.begin() + i);
-                }
+                removeItemAt(i, amount);
                 return;
             }
         }

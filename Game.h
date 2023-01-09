@@ -7,7 +7,7 @@
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
 
-const std::string VERSION = "0.018";
+const std::string VERSION = "0.019";
 
 class Game : public UIButtonListener {
 public:
@@ -43,6 +43,7 @@ private:
 	UIHandler _ui;
 	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	sf::Font _font;
 	sf::Text _versionLabel;

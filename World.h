@@ -58,6 +58,8 @@ public:
     void addEntity(std::shared_ptr<Entity> entity);
     std::vector<std::shared_ptr<Entity>> getEntities() const;
 
+    std::shared_ptr<Player> getPlayer() const;
+
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 

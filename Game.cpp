@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include "UICommandPrompt.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) {
     _camera = camera;
@@ -48,11 +49,16 @@ void Game::initUI() {
     _ui.addMenu(_pauseMenu);
 
     // Inventory menu
-    std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr <UIInventoryInterface>(new UIInventoryInterface(
+    std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
         _player->getInventory(), _font, _spriteSheet
     ));
     _inventoryMenu->addElement(inventoryInterface);
     _ui.addMenu(_inventoryMenu);
+
+    // Command prompt menu
+    std::shared_ptr<UICommandPrompt> cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
+    _commandMenu->addElement(cmdPrompt);
+    _ui.addMenu(_commandMenu);
 }
 
 void Game::update() {
@@ -103,6 +109,16 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     case sf::Keyboard::F3:
         _showDebug = !_showDebug;
         break;
+    case sf::Keyboard::F10:
+        if (_commandMenu->isActive()) {
+            _commandMenu->hide();
+            _isPaused = false;
+            _pauseMenu->hide();
+        } else {
+            _commandMenu->show();
+            _isPaused = true;
+        }
+        break;
     case sf::Keyboard::Hyphen:
         _camera->zoom(2);
         break;
@@ -110,23 +126,18 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         _camera->zoom(0.5);
         break;
     case sf::Keyboard::Escape:
-        if (_pauseMenu->isActive()) _pauseMenu->hide();
-        else _pauseMenu->show();
-        _isPaused = !_isPaused;
+        if (!_commandMenu->isActive()) {
+            if (_pauseMenu->isActive()) _pauseMenu->hide();
+            else _pauseMenu->show();
+            _isPaused = !_isPaused;
+        }
         break;
     case sf::Keyboard::I:
-        if (_inventoryMenu->isActive()) _inventoryMenu->hide();
-        else _inventoryMenu->show();
+        if (!_commandMenu->isActive()) {
+            if (_inventoryMenu->isActive()) _inventoryMenu->hide();
+            else _inventoryMenu->show();
+        }
         break;
-    // TEMP
-    case sf::Keyboard::LBracket:
-        _player->getInventory().addItem(0, 1);
-        break;
-    case sf::Keyboard::RBracket:
-        _player->getInventory().addItem(1, 1);
-        break;
-    case sf::Keyboard::Backslash:
-        _player->getInventory().addItem(1, 6);
     }
 }
 

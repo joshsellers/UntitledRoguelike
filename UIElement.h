@@ -8,6 +8,7 @@
 class UIElement {
 public:
     static sf::Vector2f getRelativePos(sf::Vector2f pos);
+    static float getRelativeSize(float size);
 
     UIElement(float x, float y, float width, float height, bool drawSprite, bool drawText,
         sf::Font font);
@@ -22,8 +23,8 @@ public:
     virtual void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) = 0;
     virtual void textEntered(const sf::Uint32 character) = 0;
 
-    void show();
-    void hide();
+    virtual void show();
+    virtual void hide();
     bool isActive() const;
 
 protected:
@@ -39,11 +40,11 @@ protected:
 
     bool _disableAutomaticTextAlignment = false;
 
+    bool _isActive = false;
+
 private:
     bool _drawSprite = true;
     bool _drawText = true;
-
-    bool _isActive = false;
 };
 
 #endif

@@ -4,6 +4,10 @@ sf::Vector2f UIElement::getRelativePos(sf::Vector2f pos) {
     return sf::Vector2f((float)WINDOW_WIDTH * (pos.x / 100), (float)WINDOW_HEIGHT * (pos.y / 100));
 }
 
+float UIElement::getRelativeSize(float size) {
+    return (float)WINDOW_WIDTH * (size / 100);
+}
+
 UIElement::UIElement(float x, float y, float width, float height,
     bool drawSprite, bool drawText, sf::Font font) {
     _x = x;

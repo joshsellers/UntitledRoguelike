@@ -462,6 +462,10 @@ void World::addEntity(std::shared_ptr<Entity> entity) {
     _entities.push_back(entity);
 }
 
+std::shared_ptr<Player> World::getPlayer() const {
+    return _player;
+}
+
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {
     return _entities;
 }

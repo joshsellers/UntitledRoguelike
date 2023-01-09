@@ -19,6 +19,8 @@ public:
     void mouseMoved(const int mx, const int my);
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
+
+    void hide();
 private:
     Inventory& _source;
 
@@ -28,6 +30,8 @@ private:
 
     sf::Text _tooltipText;
     sf::RectangleShape _tooltipBg;
+
+    const float _originalY;
 };
 
 #endif

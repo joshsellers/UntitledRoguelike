@@ -3,7 +3,7 @@
 #include <iostream>
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
-    _source(source), _spriteSheet(spriteSheet), UIElement(5, 9, 3, 3, false, true, font) {
+    _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, true, font), _originalY(_y) {
     _disableAutomaticTextAlignment = true;
     
     float fontSize = 4;
@@ -23,7 +23,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
 
     _tooltipBg.setFillColor(sf::Color(0xFFFFCAFF));
     _tooltipBg.setOutlineColor(sf::Color(0xEEEEB9FF));
-    _tooltipBg.setOutlineThickness((float)WINDOW_WIDTH * (0.25f / 100));
+    _tooltipBg.setOutlineThickness(getRelativeSize(0.25f));
 }
 
 void UIInventoryInterface::update() {}
@@ -127,6 +127,8 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
                 _source.removeItemAt(i, _source.getItemAmountAt(i));
                 break;
             }
+
+            if (_source.getCurrentSize() == 0) _y = _originalY;
         }
     }
 }
@@ -136,7 +138,12 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
-    _y += mouseWheelScroll.delta * SCROLL_RATE;
+    if (_source.getCurrentSize() != 0) _y += mouseWheelScroll.delta * SCROLL_RATE;
 }
 
 void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
+
+void UIInventoryInterface::hide() {
+    _isActive = false;
+    _y = _originalY;
+}
