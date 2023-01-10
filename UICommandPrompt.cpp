@@ -65,8 +65,6 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
     }
 }
 
-// maybe make this return a string so we can output confirmation or error to 
-// a message display system 
 std::string UICommandPrompt::processCommand(sf::String commandInput) {
     std::string command = (std::string)commandInput;
     boost::to_lower(command);
@@ -85,7 +83,7 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         if (parsedCommand.size() > 1) {
             try {
                 int itemId = stoi(parsedCommand.at(1));
-                if (itemId > Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
+                if (itemId >= Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
 
                 int amount = 1;
                 if (parsedCommand.size() == 3) 
