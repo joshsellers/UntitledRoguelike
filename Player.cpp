@@ -81,7 +81,7 @@ void Player::draw(sf::RenderTexture& surface) {
     );
     surface.draw(_sprite);
 
-    if (!isDodging()) drawEquipables(surface);
+    if (!isDodging() || !isMoving()) drawEquipables(surface);
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {

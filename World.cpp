@@ -365,9 +365,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
-            bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.3 && precipitationNoise < 0.6;
+            bool tundra = temperatureNoise < 0.45 && precipitationNoise >= 0.25 && precipitationNoise < 0.65;
+            bool desert = temperatureNoise > 0.55 && precipitationNoise < 0.45;
+            bool savanna = temperatureNoise > 0.55 && precipitationNoise >= 0.325 && precipitationNoise < 0.65;
+
+            /*bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.3 && precipitationNoise < 0.6;
             bool desert = temperatureNoise > 0.6 && precipitationNoise < 0.4;
-            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.375 && precipitationNoise < 0.6;
+            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.375 && precipitationNoise < 0.6;*/
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
