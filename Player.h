@@ -28,8 +28,25 @@ public:
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
+    bool freeMove = false;
+
 private:
     sf::Sprite _wavesSprite;
+
+    sf::Sprite _clothingHeadSprite;
+    sf::Sprite _clothingBodySprite;
+    sf::Sprite _clothingLegsSprite;
+    sf::Sprite _clothingFeetSprite;
+
+    sf::Sprite _armorHeadSprite;
+    sf::Sprite _armorBodySprite;
+    sf::Sprite _armorLegsSprite;
+    sf::Sprite _armorFeetSprite;
+
+    sf::Sprite _toolSprite;
+    
+    void drawEquipables(sf::RenderTexture& surface);
+    void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
 
     bool _isSwimming = false;
 

@@ -119,6 +119,12 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
             _isPaused = true;
         }
         break;
+    case sf::Keyboard::Enter:
+        if (_commandMenu->isActive()) {
+            _commandMenu->hide();
+            _isPaused = false;
+        }
+        break;
     case sf::Keyboard::Hyphen:
         _camera->zoom(2);
         break;

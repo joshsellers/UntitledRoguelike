@@ -9,20 +9,45 @@ Inventory::Inventory(Entity* parent) :
 
 void Inventory::addItem(unsigned int itemId, unsigned int amount) {
     if (amount > 0) {
-        for (auto& item : _inventory) {
-            if (item.x == itemId && Item::ITEMS[itemId]->isStackable() && item.y + amount <= Item::ITEMS[itemId]->getStackLimit()) {
-                item.y += amount;
-                return;
-            }
-        }
+        const Item* itemData = Item::ITEMS[itemId];;
 
-        if (Item::ITEMS[itemId]->isStackable() && amount <= Item::ITEMS[itemId]->getStackLimit() && _inventory.size() < getMaxSize()) 
-            _inventory.push_back(sf::Vector2u(itemId, amount));
-        else if (Item::ITEMS[itemId]->isStackable() && amount > Item::ITEMS[itemId]->getStackLimit() && _inventory.size() < getMaxSize()) {
-            _inventory.push_back(sf::Vector2u(itemId, Item::ITEMS[itemId]->getStackLimit()));
-            addItem(itemId, amount - Item::ITEMS[itemId]->getStackLimit());
-        } else if (!Item::ITEMS[itemId]->isStackable() && _inventory.size() < getMaxSize())
-            for (int i = 0; i < amount; i++) _inventory.push_back(sf::Vector2u(itemId, 1));
+        if (_inventory.size() + amount <= getMaxSize() || itemData->isStackable()) {
+            for (auto& item : _inventory) {
+                if (item.x == itemId && itemData->isStackable() && item.y + amount <= itemData->getStackLimit()) {
+                    item.y += amount;
+                    return;
+                }
+            }
+
+            if (itemData->isStackable() && amount <= itemData->getStackLimit() && _inventory.size() < getMaxSize())
+                _inventory.push_back(sf::Vector2u(itemId, amount));
+            else if (itemData->isStackable() && amount > itemData->getStackLimit() && _inventory.size() < getMaxSize()) {
+                _inventory.push_back(sf::Vector2u(itemId, itemData->getStackLimit()));
+                if (_inventory.size() + 1 <= getMaxSize()) addItem(itemId, amount - itemData->getStackLimit());
+                else {
+                    int excess = amount - itemData->getStackLimit();
+                    dropItem(itemId, excess);
+                }
+            } else if (itemData->isStackable() && _inventory.size() == getMaxSize()) {
+                for (auto& item : _inventory) {
+                    if (item.x == itemId && itemData->isStackable() && item.y + amount > itemData->getStackLimit()) {
+                        if (item.y == itemData->getStackLimit()) continue;
+                        else {
+                            int excess = item.y + amount - itemData->getStackLimit();
+                            dropItem(itemId, excess);
+                            item.y += amount - excess;
+                            return;
+                        }
+                    }
+                }
+                dropItem(itemId, amount);
+            } else if (!itemData->isStackable() && _inventory.size() < getMaxSize())
+                for (int i = 0; i < amount; i++) _inventory.push_back(sf::Vector2u(itemId, 1));
+        } else {
+            int excess = _inventory.size() + amount - getMaxSize();
+            dropItem(itemId, excess);
+            addItem(itemId, amount - excess);
+        }
     }
 }
 

@@ -11,27 +11,17 @@ class Entity;
 
 class Item {
 public:
-    static const Item TEST_ITEM;
-    static const Item TEST_ITEM_2;
-
-    static const Item TEST_HAT;
-    static const Item TEST_SHIRT;
-    static const Item TEST_PANTS;
-    static const Item TEST_SHOES;
-    
-    static const Item TEST_HELMET;
-    static const Item TEST_BODYARMOR;
-    static const Item TEST_LEGARMOR;
-    static const Item TEST_FEETARMOR;
-
-    static const Item TEST_AMMO;
-    static const Item TEST_TOOL;
+    static const Item TOP_HAT;
+    static const Item TUX_VEST;
+    static const Item TUX_PANTS;
+    static const Item DRESS_SHOES;
+    static const Item SOMBRERO;
 
     static std::vector<const Item*> ITEMS;
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
-        const std::function<void(Entity*)> use, const std::string description, EQUIPMENT_TYPE equipType);
+        const std::string description, EQUIPMENT_TYPE equipType, const std::function<void(Entity*)> use);
 
     unsigned int getId() const;
     std::string getName() const;

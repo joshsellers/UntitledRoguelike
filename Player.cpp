@@ -24,19 +24,19 @@ void Player::update() {
         _movingDir = RIGHT;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove)) {
         xa *= _sprintMultiplier;
         ya *= _sprintMultiplier;
         _animSpeed = 2;
     } else if (!isSwimming() && isMoving()) {
         _animSpeed = 3;
-    } else if (isSwimming() && !NO_MOVEMENT_RESTRICIONS) {
+    } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
         _animSpeed = 4;
         xa /= 2;
         ya /= 2;
     }
 
-    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS) && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
+    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
     } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
@@ -80,6 +80,56 @@ void Player::draw(sf::RenderTexture& surface) {
         terrainType == TERRAIN_TYPE::WATER ? 16 : 32)
     );
     surface.draw(_sprite);
+
+    if (!isDodging()) drawEquipables(surface);
+}
+
+void Player::drawEquipables(sf::RenderTexture& surface) {
+    drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
+    drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_HEAD, surface);
+
+    if (!isSwimming()) {
+        drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
+        drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
+        drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
+
+        drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_BODY, surface);
+        drawApparel(_armorLegsSprite, EQUIPMENT_TYPE::ARMOR_LEGS, surface);
+        drawApparel(_armorFeetSprite, EQUIPMENT_TYPE::ARMOR_FEET, surface);
+    }
+}
+
+void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface) {
+    if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD || equipType == EQUIPMENT_TYPE::ARMOR_HEAD) {
+        int spriteHeight = 3;
+        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+
+        if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
+            int spriteY = itemTextureRect.top + TILE_SIZE;
+
+            sprite.setTextureRect(sf::IntRect(
+                itemTextureRect.left + TILE_SIZE * 3 * _movingDir, spriteY + yOffset, TILE_SIZE * 3, TILE_SIZE * spriteHeight)
+            );
+
+            sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
+            surface.draw(sprite);
+        }
+    } else {
+        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
+
+        if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
+            int spriteY = itemTextureRect.top;
+
+            sprite.setTextureRect(sf::IntRect(
+                itemTextureRect.left + TILE_SIZE * _movingDir, spriteY + yOffset, TILE_SIZE, TILE_SIZE)
+            );
+
+            sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
+            surface.draw(sprite);
+        }
+    }
 }
 
 void Player::move(float xa, float ya) {
@@ -115,4 +165,16 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+
+    _clothingHeadSprite.setTexture(*spriteSheet); 
+    _clothingBodySprite.setTexture(*spriteSheet);
+    _clothingLegsSprite.setTexture(*spriteSheet);
+    _clothingFeetSprite.setTexture(*spriteSheet);
+
+    _armorHeadSprite.setTexture(*spriteSheet);
+    _armorBodySprite.setTexture(*spriteSheet);
+    _armorLegsSprite.setTexture(*spriteSheet);
+    _armorFeetSprite.setTexture(*spriteSheet);
+
+    _toolSprite.setTexture(*spriteSheet);
 }

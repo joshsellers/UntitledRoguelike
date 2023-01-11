@@ -81,22 +81,33 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
     std::string commandHeader = parsedCommand.at(0);
     if (commandHeader == "give") {
         if (parsedCommand.size() > 1) {
-            try {
-                int itemId = stoi(parsedCommand.at(1));
-                if (itemId >= Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
+            if (parsedCommand.at(1) == "tux") {
+                for (int id = Item::TOP_HAT.getId(); id < Item::DRESS_SHOES.getId() + 1; id++)
+                    _world->getPlayer()->getInventory().addItem(id, 1);
+                return "Player given tuxedo";
+            } else {
+                try {
+                    int itemId = stoi(parsedCommand.at(1));
+                    if (itemId >= Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
 
-                int amount = 1;
-                if (parsedCommand.size() == 3) 
-                    amount = stoi(parsedCommand.at(2));
+                    int amount = 1;
+                    if (parsedCommand.size() == 3)
+                        amount = stoi(parsedCommand.at(2));
 
-                _world->getPlayer()->getInventory().addItem(itemId, amount);
-                return "Player given " + std::to_string(amount) + " " + Item::ITEMS[itemId]->getName() + (amount > 1 ? "s" : "");
-            } catch (std::exception ex) {
-                return ex.what();
+                    _world->getPlayer()->getInventory().addItem(itemId, amount);
+                    return "Player given " + std::to_string(amount) + " " + Item::ITEMS[itemId]->getName() + (amount > 1 ? "s" : "");
+                } catch (std::exception ex) {
+                    return ex.what();
+                }
             }
         } else {
             return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
         }
+    } else if (commandHeader == "tgm") {
+        _world->getPlayer()->freeMove = !_world->getPlayer()->freeMove;
+        if (_world->getPlayer()->freeMove) _world->getPlayer()->setBaseSpeed(8);
+        else _world->getPlayer()->setBaseSpeed(BASE_PLAYER_SPEED);
+        return "Godmode set to " + (std::string)(_world->getPlayer()->freeMove ? "true" : "false");
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }
