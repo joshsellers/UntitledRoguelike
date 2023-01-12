@@ -7,7 +7,7 @@
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
 
-const std::string VERSION = "0.0201";
+const std::string VERSION = "0.0202";
 
 class Game : public UIButtonListener {
 public:
@@ -55,8 +55,8 @@ private:
 	unsigned int _frameCounter = 0;
 	
 	std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
-	std::shared_ptr<Player> _player = std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0)));
-	World _world = World(_player);
+	std::shared_ptr<Player> _player;
+	World _world;
 
 
 };

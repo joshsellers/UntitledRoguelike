@@ -2,9 +2,10 @@
 #include "World.h"
 #include <iostream>
 #include "Item.h"
+#include "Globals.h"
 
-Player::Player(sf::Vector2f pos) : 
-    Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false) {
+Player::Player(sf::Vector2f pos, sf::RenderWindow* window) : 
+    Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window) {
     _canPickUpItems = true;
 }
 
@@ -74,14 +75,24 @@ void Player::draw(sf::RenderTexture& surface) {
     int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
     int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
     _sprite.setTextureRect(sf::IntRect(
-        isDodging() && isMoving() ? xOffset : 16 * _movingDir, 
+        isDodging() && isMoving() ? xOffset : 16 * _facingDir, 
         isDodging() && isMoving() ? 128 : 0 + yOffset, 
         16, 
         terrainType == TERRAIN_TYPE::WATER ? 16 : 32)
     );
-    surface.draw(_sprite);
 
-    if (!isDodging() || !isMoving()) drawEquipables(surface);
+    if (_facingDir == UP || _facingDir == LEFT) {
+        drawTool(surface);
+
+        surface.draw(_sprite);
+
+        if (!isDodging() || !isMoving()) drawEquipables(surface);
+    } else if (_facingDir == DOWN || _facingDir == RIGHT) {
+        surface.draw(_sprite);
+
+        if (!isDodging() || !isMoving()) drawEquipables(surface);
+        drawTool(surface);
+    }
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {
@@ -109,7 +120,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             int spriteY = itemTextureRect.top + TILE_SIZE;
 
             sprite.setTextureRect(sf::IntRect(
-                itemTextureRect.left + TILE_SIZE * 3 * _movingDir, spriteY + yOffset, TILE_SIZE * 3, TILE_SIZE * spriteHeight)
+                itemTextureRect.left + TILE_SIZE * 3 * _facingDir, spriteY + yOffset, TILE_SIZE * 3, TILE_SIZE * spriteHeight)
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
@@ -123,13 +134,80 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             int spriteY = itemTextureRect.top;
 
             sprite.setTextureRect(sf::IntRect(
-                itemTextureRect.left + TILE_SIZE * _movingDir, spriteY + yOffset, TILE_SIZE, TILE_SIZE)
+                itemTextureRect.left + TILE_SIZE * _facingDir, spriteY + yOffset, TILE_SIZE, TILE_SIZE)
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
             surface.draw(sprite);
         }
     }
+}
+
+void Player::drawTool(sf::RenderTexture& surface) {
+    if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && !isSwimming() && (!isDodging() || !isMoving())) {
+        sf::IntRect itemTextureRect =
+            Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
+        int spriteX = itemTextureRect.left + TILE_SIZE;
+        _toolSprite.setTextureRect(sf::IntRect(
+            spriteX, itemTextureRect.top, TILE_SIZE * 3, TILE_SIZE * 3
+        ));
+
+        _toolSprite.setOrigin(sf::Vector2f(_toolSprite.getLocalBounds().width / 2, _toolSprite.getLocalBounds().height));
+
+        sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
+        sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+
+        sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
+
+        double x = (double)(mPos.x - center.x);
+        double y = (double)(mPos.y - center.y);
+
+        float angle = (float)(std::atan2(y, x) * (180. / std::_Pi)) + 90.f;
+
+        if (angle >= -45.f && angle < 45.f) _facingDir = UP;
+        else if (angle >= 45.f && angle < 135.f) _facingDir = RIGHT;
+        else if (angle >= 135.f && angle < 225.f) _facingDir = DOWN;
+        else if (angle >= 225.f || angle < -45.f) _facingDir = LEFT;
+
+        _toolSprite.setRotation(angle);
+
+        switch (_facingDir) {
+        case UP:
+            handPos.x += 13;
+            break;
+        case DOWN:
+            handPos.x += 2;
+            break;
+        case LEFT:
+            handPos.x += 7;
+            break;
+        case RIGHT:
+            handPos.x += 8;
+            break;
+        }
+
+        _toolSprite.setPosition(sf::Vector2f(
+            handPos.x, handPos.y
+        ));
+
+        surface.draw(_toolSprite);
+
+        // if (equippedTool is melee)
+        meleeAttack(_window->mapPixelToCoords(mPos, surface.getView()));
+    } else _facingDir = (MOVING_DIRECTION)_movingDir;
+}
+
+void Player::meleeAttack(sf::Vector2f currentMousePos) {
+    sf::Vector2f delta = currentMousePos - _lastMousePos;
+    const int threshold = 25;
+    if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
+        //const Item* item = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+        // Item needs isMeleeWeapon() and getDamage()
+        std::cout << "attack" << std::endl;
+    }
+    _lastMousePos = currentMousePos;
+
+    _meleeAttackDelayCounter++;
 }
 
 void Player::move(float xa, float ya) {

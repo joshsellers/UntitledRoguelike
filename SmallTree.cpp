@@ -3,6 +3,9 @@
 
 SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 2, 3, true) {
     loadSprite(spriteSheet);
+
+    setMaxHitPoints(10);
+    heal(getMaxHitPoints());
 }
 
 void SmallTree::update() {}

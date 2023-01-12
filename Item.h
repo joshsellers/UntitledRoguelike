@@ -16,6 +16,7 @@ public:
     static const Item TUX_PANTS;
     static const Item DRESS_SHOES;
     static const Item SOMBRERO;
+    static const Item AXE;
 
     static std::vector<const Item*> ITEMS;
 

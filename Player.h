@@ -13,7 +13,7 @@ constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
 class Player : public Entity {
 public:
-    Player(sf::Vector2f pos);
+    Player(sf::Vector2f pos, sf::RenderWindow* window);
 
     virtual void update();
 
@@ -47,10 +47,13 @@ private:
     
     void drawEquipables(sf::RenderTexture& surface);
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
+    void drawTool(sf::RenderTexture& surface);
 
     bool _isSwimming = false;
 
     float _sprintMultiplier = 2;
+
+    MOVING_DIRECTION _facingDir = (MOVING_DIRECTION)_movingDir;
 
     float _dodgeMultiplier(int dodgeTimer) const {
         return (0.075 * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
@@ -61,6 +64,12 @@ private:
     int _maxDodgeTime = 10;
     float _dodgeSpeedMultiplier = 1.f;
     bool _dodgeKeyReleased = true;
+
+    void meleeAttack(sf::Vector2f currentMousePos);
+    sf::Vector2f _lastMousePos;
+    unsigned int _meleeAttackDelayCounter = 0;
+
+    sf::RenderWindow* _window;
 };
 
 #endif

@@ -31,6 +31,12 @@ const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, fa
     [](Entity* parent) {}
 );
 
+const Item Item::AXE(5, "Axe", sf::IntRect(14, 0, 1, 1), false, 0, false,
+    "A large, formidible axe.",
+    EQUIPMENT_TYPE::TOOL,
+    [](Entity* parent) {}
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, 

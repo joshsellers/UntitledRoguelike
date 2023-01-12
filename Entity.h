@@ -49,6 +49,12 @@ public:
 
     bool isActive() const;
 
+    void setMaxHitPoints(int maxHitPoints);
+    int getMaxHitPoints() const;
+    virtual void damage(int damage);
+    void heal(int hitPoints);
+    int getHitPoints() const;
+
 protected:
     const int _spriteWidth, _spriteHeight;
 
@@ -63,7 +69,7 @@ protected:
     int _animSpeed = 3;
 
     bool _isMoving = false;
-    unsigned int _movingDir = 1;
+    unsigned int _movingDir = DOWN;
 
     const bool _isProp = false;
     bool _canPickUpItems = false;
@@ -75,6 +81,7 @@ protected:
     bool _isActive = true;
 
 private:
-
+    int _maxHitPoints = 0;
+    int _hitPoints = 0;
 };
 #endif // !_ENTITY_H

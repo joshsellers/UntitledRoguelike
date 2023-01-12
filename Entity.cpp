@@ -72,3 +72,23 @@ World* Entity::getWorld() const {
 bool Entity::isActive() const {
     return _isActive;
 }
+
+void Entity::setMaxHitPoints(int maxHitPoints) {
+    _maxHitPoints = maxHitPoints;
+}
+
+int Entity::getMaxHitPoints() const {
+    return _maxHitPoints;
+}
+
+void Entity::damage(int damage) {
+    _hitPoints -= damage;
+}
+
+void Entity::heal(int hitPoints) {
+    _hitPoints += hitPoints;
+}
+
+int Entity::getHitPoints() const {
+    return _hitPoints;
+}
