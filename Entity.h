@@ -49,11 +49,15 @@ public:
 
     bool isActive() const;
 
+    bool isDamageable() const;
+
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
     virtual void damage(int damage);
     void heal(int hitPoints);
     int getHitPoints() const;
+
+    sf::FloatRect getHitBox() const;
 
 protected:
     const int _spriteWidth, _spriteHeight;
@@ -80,8 +84,13 @@ protected:
 
     bool _isActive = true;
 
+    sf::FloatRect _hitBox;
+    float _hitBoxXOffset;
+    float _hitBoxYOffset;
+
+    int _hitPoints = 0;
+
 private:
     int _maxHitPoints = 0;
-    int _hitPoints = 0;
 };
 #endif // !_ENTITY_H

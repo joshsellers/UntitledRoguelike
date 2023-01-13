@@ -2,7 +2,8 @@
 #include <iostream>
 #include "UICommandPrompt.h"
 
-Game::Game(sf::View* camera, sf::RenderWindow* window) : _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window))), _world(World(_player)) {
+Game::Game(sf::View* camera, sf::RenderWindow* window) : 
+    _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
     _camera = camera;
     _window = window;
 

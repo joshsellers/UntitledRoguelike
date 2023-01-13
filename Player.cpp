@@ -4,8 +4,8 @@
 #include "Item.h"
 #include "Globals.h"
 
-Player::Player(sf::Vector2f pos, sf::RenderWindow* window) : 
-    Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window) {
+Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
+    Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
     _canPickUpItems = true;
 }
 
@@ -145,65 +145,100 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
 
 void Player::drawTool(sf::RenderTexture& surface) {
     if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && !isSwimming() && (!isDodging() || !isMoving())) {
-        sf::IntRect itemTextureRect =
-            Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
-        int spriteX = itemTextureRect.left + TILE_SIZE;
-        _toolSprite.setTextureRect(sf::IntRect(
-            spriteX, itemTextureRect.top, TILE_SIZE * 3, TILE_SIZE * 3
-        ));
+        sf::RectangleShape meleeHitBoxDisplay;
+        if (!_gamePaused) {
+            sf::IntRect itemTextureRect =
+                Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
+            int spriteX = itemTextureRect.left + TILE_SIZE;
+            _toolSprite.setTextureRect(sf::IntRect(
+                spriteX, itemTextureRect.top, TILE_SIZE * 3, TILE_SIZE * 3
+            ));
 
-        _toolSprite.setOrigin(sf::Vector2f(_toolSprite.getLocalBounds().width / 2, _toolSprite.getLocalBounds().height));
+            _toolSprite.setOrigin(sf::Vector2f(_toolSprite.getLocalBounds().width / 2, _toolSprite.getLocalBounds().height));
 
-        sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
-        sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+            sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
+            sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
 
-        sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
+            sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
 
-        double x = (double)(mPos.x - center.x);
-        double y = (double)(mPos.y - center.y);
+            double x = (double)(mPos.x - center.x);
+            double y = (double)(mPos.y - center.y);
 
-        float angle = (float)(std::atan2(y, x) * (180. / std::_Pi)) + 90.f;
+            float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
 
-        if (angle >= -45.f && angle < 45.f) _facingDir = UP;
-        else if (angle >= 45.f && angle < 135.f) _facingDir = RIGHT;
-        else if (angle >= 135.f && angle < 225.f) _facingDir = DOWN;
-        else if (angle >= 225.f || angle < -45.f) _facingDir = LEFT;
+            if (angle >= -45.f && angle < 45.f) {
+                _facingDir = UP;
+            } else if (angle >= 45.f && angle < 135.f) {
+                _facingDir = RIGHT;
+            } else if (angle >= 135.f && angle < 225.f) {
+                _facingDir = DOWN;
+            } else if (angle >= 225.f || angle < -45.f) {
+                _facingDir = LEFT;
+            }
 
-        _toolSprite.setRotation(angle);
+            if (angle >= 0.f && angle < 180.f) _toolSprite.setScale(-1, 1);
+            else if (angle >= 180 || angle < 0) _toolSprite.setScale(1, 1);
 
-        switch (_facingDir) {
-        case UP:
-            handPos.x += 13;
-            break;
-        case DOWN:
-            handPos.x += 2;
-            break;
-        case LEFT:
-            handPos.x += 7;
-            break;
-        case RIGHT:
-            handPos.x += 8;
-            break;
+            _toolSprite.setRotation(angle);
+
+            switch (_facingDir) {
+            case UP:
+                handPos.x += 13;
+                break;
+            case DOWN:
+                handPos.x += 2;
+                break;
+            case LEFT:
+                handPos.x += 7;
+                break;
+            case RIGHT:
+                handPos.x += 8;
+                break;
+            }
+
+            _toolSprite.setPosition(sf::Vector2f(
+                handPos.x, handPos.y
+            ));
+
+            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isMeleeWeapon()) {
+                int meleeHitBoxSize = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getHitBoxSize();
+                float r = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getHitBoxPos();
+                sf::Vector2f meleeHitBoxPos(handPos.x + r * std::cos((angle - 90.f) * (PI / 180.f)), handPos.y + r * std::sin((angle - 90.f) * (PI / 180.f)));
+                meleeHitBoxPos.x -= (float)meleeHitBoxSize / 2;
+                meleeHitBoxPos.y -= (float)meleeHitBoxSize / 2;
+
+                if (getWorld()->showDebug()) {
+                    meleeHitBoxDisplay.setPosition(meleeHitBoxPos);
+                    meleeHitBoxDisplay.setSize(sf::Vector2f(meleeHitBoxSize, meleeHitBoxSize));
+                    meleeHitBoxDisplay.setFillColor(sf::Color::Transparent);
+                    meleeHitBoxDisplay.setOutlineColor(sf::Color(0xFF0000FF));
+                    meleeHitBoxDisplay.setOutlineThickness(1.f);
+                }
+                
+                sf::FloatRect meleeHitBox;
+                meleeHitBox.left = meleeHitBoxPos.x;
+                meleeHitBox.top = meleeHitBoxPos.y;
+                meleeHitBox.width = meleeHitBoxSize;
+                meleeHitBox.height = meleeHitBoxSize;
+
+                meleeAttack(meleeHitBox, _window->mapPixelToCoords(mPos, surface.getView()));
+            }
         }
-
-        _toolSprite.setPosition(sf::Vector2f(
-            handPos.x, handPos.y
-        ));
-
+        
         surface.draw(_toolSprite);
-
-        // if (equippedTool is melee)
-        meleeAttack(_window->mapPixelToCoords(mPos, surface.getView()));
+        if (getWorld()->showDebug()) surface.draw(meleeHitBoxDisplay);
     } else _facingDir = (MOVING_DIRECTION)_movingDir;
 }
 
-void Player::meleeAttack(sf::Vector2f currentMousePos) {
+void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos) {
     sf::Vector2f delta = currentMousePos - _lastMousePos;
     const int threshold = 25;
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
-        //const Item* item = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
-        // Item needs isMeleeWeapon() and getDamage()
-        std::cout << "attack" << std::endl;
+        for (auto& entity : getWorld()->getEntities()) {
+            if (entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
+                entity->damage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage());
+            }
+        }
     }
     _lastMousePos = currentMousePos;
 

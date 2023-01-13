@@ -73,6 +73,10 @@ bool Entity::isActive() const {
     return _isActive;
 }
 
+bool Entity::isDamageable() const {
+    return getMaxHitPoints() > 0;
+}
+
 void Entity::setMaxHitPoints(int maxHitPoints) {
     _maxHitPoints = maxHitPoints;
 }
@@ -91,4 +95,8 @@ void Entity::heal(int hitPoints) {
 
 int Entity::getHitPoints() const {
     return _hitPoints;
+}
+
+sf::FloatRect Entity::getHitBox() const {
+    return _hitBox;
 }

@@ -13,6 +13,8 @@ public:
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
 
+    void damage(int damage);
+
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 };
 

@@ -33,7 +33,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
 class World {
 public:
-    World(std::shared_ptr<Player> player);
+    World(std::shared_ptr<Player> player, bool& showDebug);
 
     void update();
 
@@ -60,6 +60,10 @@ public:
 
     std::shared_ptr<Player> getPlayer() const;
 
+    bool showDebug() const;
+
+    void propDestroyedAt(sf::Vector2f pos);
+
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 
@@ -67,13 +71,15 @@ private:
 
     std::vector<Chunk> _chunks;
     std::vector<sf::Vector2i> _loadingChunks;
+    Chunk* _currentChunk = nullptr;
     
     std::shared_ptr<Player> _player;
 
     std::vector<std::shared_ptr<Entity>> _entities;
     std::vector<std::shared_ptr<Entity>> _entityBuffer;
 
-    Chunk* _currentChunk = nullptr;
+    std::vector<sf::Vector2f> _destroyedProps;
+    bool isPropDestroyedAt(sf::Vector2f pos) const;
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);
@@ -89,6 +95,8 @@ private:
     boost::random::mt19937 gen = boost::random::mt19937();
 
     void sortEntities();
+
+    bool& _showDebug;
 };
 
 #endif

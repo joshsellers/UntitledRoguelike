@@ -9,7 +9,7 @@
 #include "LargeSavannaTree.h"
 #include "SmallTundraTree.h"
 
-World::World(std::shared_ptr<Player> player) {
+World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
     _player->setWorld(this);
 
@@ -66,6 +66,17 @@ void World::draw(sf::RenderTexture& surface) {
 
     for (auto& entity : _entities) {
         entity->draw(surface);
+        
+        if (showDebug() && entity->isDamageable()) {
+            sf::RectangleShape hitBox;
+            sf::FloatRect box = entity->getHitBox();
+            hitBox.setPosition(box.left, box.top);
+            hitBox.setSize(sf::Vector2f(box.width, box.height));
+            hitBox.setFillColor(sf::Color::Transparent);
+            hitBox.setOutlineColor(sf::Color(0xFF0000FF));
+            hitBox.setOutlineThickness(1.f);
+            surface.draw(hitBox);
+        }
     }
 }
 
@@ -241,37 +252,42 @@ void World::generateChunkProps(Chunk& chunk) {
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
                 boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
-                if (grassDist(gen) == 0) {
+                if (grassDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
                     _entityBuffer.push_back(grass);
                 }
 
-                if (treeDist(gen) == 0) {
+                if (treeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
                     _entityBuffer.push_back(tree);
                 }
             } else if (terrainType == TERRAIN_TYPE::DESERT) {
                 boost::random::uniform_int_distribution<> cactusDist(0, cactusSpawnRate);
-                if (cactusDist(gen) == 0) {
+                if (cactusDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<Cactus> cactus = std::shared_ptr<Cactus>(new Cactus(sf::Vector2f(x, y), _spriteSheet));
+                    cactus->setWorld(this);
                     _entityBuffer.push_back(cactus);
                 }
             } else if (terrainType == TERRAIN_TYPE::SAVANNA) {
                 boost::random::uniform_int_distribution<> smallTreeDist(0, smallSavannaTreeSpawnRate);
                 boost::random::uniform_int_distribution<> largeTreeDist(0, largeSavannaTreeSpawnRate);
-                if (smallTreeDist(gen) == 0) {
+                if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallSavannaTree> tree = std::shared_ptr<SmallSavannaTree>(new SmallSavannaTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
                     _entityBuffer.push_back(tree);
                 }
 
-                if (largeTreeDist(gen) == 0) {
+                if (largeTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<LargeSavannaTree> tree = std::shared_ptr<LargeSavannaTree>(new LargeSavannaTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
                     _entityBuffer.push_back(tree);
                 }
             } else if (terrainType == TERRAIN_TYPE::TUNDRA) {
                 boost::random::uniform_int_distribution<> smallTreeDist(0, smallTundraTreeSpawnRate);
-                if (smallTreeDist(gen) == 0) {
+                if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
                     _entityBuffer.push_back(tree);
                 }
             }
@@ -466,6 +482,10 @@ void World::addEntity(std::shared_ptr<Entity> entity) {
     _entities.push_back(entity);
 }
 
+bool World::showDebug() const {
+    return _showDebug;
+}
+
 std::shared_ptr<Player> World::getPlayer() const {
     return _player;
 }
@@ -495,4 +515,14 @@ void World::sortEntities() {
         }
         _entities[i] = key;
     }
+}
+
+void World::propDestroyedAt(sf::Vector2f pos) {
+    _destroyedProps.push_back(pos);
+}
+
+bool World::isPropDestroyedAt(sf::Vector2f pos) const {
+    for (auto& prop : _destroyedProps)
+        if (prop.x == pos.x && prop.y == pos.y) return true;
+    return false;
 }

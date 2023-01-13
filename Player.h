@@ -11,9 +11,11 @@ constexpr bool GODMODE = false;
 constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 1;
 constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
+constexpr long double PI = 3.14159265358979L;
+
 class Player : public Entity {
 public:
-    Player(sf::Vector2f pos, sf::RenderWindow* window);
+    Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused);
 
     virtual void update();
 
@@ -31,6 +33,8 @@ public:
     bool freeMove = false;
 
 private:
+    bool& _gamePaused;
+
     sf::Sprite _wavesSprite;
 
     sf::Sprite _clothingHeadSprite;
@@ -65,7 +69,7 @@ private:
     float _dodgeSpeedMultiplier = 1.f;
     bool _dodgeKeyReleased = true;
 
-    void meleeAttack(sf::Vector2f currentMousePos);
+    void meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos);
     sf::Vector2f _lastMousePos;
     unsigned int _meleeAttackDelayCounter = 0;
 
