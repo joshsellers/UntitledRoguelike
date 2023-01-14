@@ -32,6 +32,9 @@ public:
 
     bool freeMove = false;
 
+    void mouseButtonReleased(const int mx, const int my, const int button);
+    void keyReleased(sf::Keyboard::Key& key);
+
 private:
     bool& _gamePaused;
 

@@ -6,6 +6,7 @@
 
 constexpr unsigned int DEFAULT_MAX_SIZE = 64;
 
+constexpr int NO_ITEM = -1;
 constexpr int NOTHING_EQUIPPED = -1;
 constexpr int EQUIPMENT_SLOT_COUNT = 10;
 
@@ -23,6 +24,7 @@ public:
     void dropItem(unsigned int itemId, unsigned int amount);
 
     bool hasItem(unsigned int itemId) const;
+    int findItem(unsigned int itemId) const;
 
     void useItem(size_t inventoryIndex) const;
 

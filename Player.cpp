@@ -224,13 +224,15 @@ void Player::drawTool(sf::RenderTexture& surface) {
                 meleeAttack(meleeHitBox, _window->mapPixelToCoords(mPos, surface.getView()));
             }
 
-            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getId() == 8) {
-                _targetPos = _window->mapPixelToCoords(mPos, surface.getView());
+            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
                 sf::Vector2f barrelPos = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getBarrelPos();
                 float r = barrelPos.x;
                 sf::Vector2f xAxisPos(handPos.x + r * std::cos((angle - 90.f) * (PI / 180.f)), handPos.y + r * std::sin((angle - 90.f) * (PI / 180.f)));
                 float q = barrelPos.y * _toolSprite.getScale().x;
                 _calculatedBarrelPos = sf::Vector2f(xAxisPos.x + q * std::cos((angle) * (PI / 180.f)), xAxisPos.y + q * std::sin((angle) * (PI / 180.f)));
+                float targetPosDist = 10;
+                _targetPos = sf::Vector2f(_calculatedBarrelPos.x + targetPosDist * std::cos((angle - 90.f) * (PI / 180.f)),
+                    _calculatedBarrelPos.y + targetPosDist * std::sin((angle - 90.f) * (PI / 180.f)));
 
                 if (getWorld()->showDebug()) {
                     barrelDisplay.setPosition(_calculatedBarrelPos);
@@ -289,6 +291,27 @@ bool Player::isSwimming() const {
 
 bool Player::isDodging() const {
     return _isDodging;
+}
+
+void Player::mouseButtonReleased(const int mx, const int my, const int button) {
+    if (!_gamePaused && button == sf::Mouse::Button::Left && Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
+        unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        Item::ITEMS[id]->use(this);
+    }
+}
+
+void Player::keyReleased(sf::Keyboard::Key& key) {
+    if (!_gamePaused && key == sf::Keyboard::R) {
+        if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
+            Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
+            if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getStackLimit())) {
+                getInventory().equip(
+                    getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getStackLimit()),
+                    EQUIPMENT_TYPE::AMMO
+                );
+            }
+        }
+    }
 }
 
 void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

@@ -93,6 +93,11 @@ void World::updateEntities() {
     // rewrite this so that entities that are not in any 
     // chunks are marked as do not render
 
+    for (int i = 0; i < _entities.size(); i++) {
+        auto& entity = _entities.at(i);
+        if (!entity->isActive()) _entities.erase(_entities.begin() + i);
+    }
+
     for (int j = 0; j < _entities.size(); j++) {
         auto& entity = _entities.at(j);
 
@@ -100,7 +105,8 @@ void World::updateEntities() {
             entity->update();
             continue;
         } else if (!entity->isActive()) {
-            _entities.erase(_entities.begin() + j);
+            // this causes a crash if there's a bunch of projectiles 
+            //_entities.erase(_entities.begin() + j);
         }
 
         int notInChunkCount = 0;
@@ -381,9 +387,24 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
 
-            bool tundra = temperatureNoise < 0.455 && precipitationNoise >= 0.245 && precipitationNoise < 0.655;
+            float tundraTemp = 0.460 + 0.0075;
+            float tundraPrecLow = 0.240 - 0.0075;
+            float tundraPrecHigh = 0.660 + 0.0075;
+
+            float desertTemp = 0.540 - 0.0075;
+            float desertPrec = 0.460 + 0.0075;
+            
+            float savannaTemp = 0.540 - 0.0075;
+            float savannaPrecLow = 0.315 - 0.0075;
+            float savannaPrecHigh = 0.660 + 0.0075;
+
+            bool tundra = temperatureNoise < tundraTemp && precipitationNoise >= tundraPrecLow && precipitationNoise < tundraPrecHigh;
+            bool desert = temperatureNoise > desertTemp && precipitationNoise < desertPrec;
+            bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;
+
+            /*bool tundra = temperatureNoise < 0.455 && precipitationNoise >= 0.245 && precipitationNoise < 0.655;
             bool desert = temperatureNoise > 0.545 && precipitationNoise < 0.455;
-            bool savanna = temperatureNoise > 0.545 && precipitationNoise >= 0.320 && precipitationNoise < 0.655;
+            bool savanna = temperatureNoise > 0.545 && precipitationNoise >= 0.320 && precipitationNoise < 0.655;*/
 
             /*bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.3 && precipitationNoise < 0.6;
             bool desert = temperatureNoise > 0.6 && precipitationNoise < 0.4;

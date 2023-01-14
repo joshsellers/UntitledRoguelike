@@ -30,6 +30,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
     _seedLabel.setPosition(0, 75);
 
+    _playerPosLabel.setFont(_font);
+    _playerPosLabel.setCharacterSize(24);
+    _playerPosLabel.setString("x: 0, y: 0");
+    _playerPosLabel.setPosition(0, 100);
+
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/url_guy_walking-Sheet.png")) {
         std::cout << "failed to load sprite sheet" << std::endl;
@@ -92,6 +97,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
         surface.draw(_seedLabel);
 
+        _playerPosLabel.setString("x: " + std::to_string(_player->getPosition().x) + ", y: " + std::to_string(_player->getPosition().y));
+        surface.draw(_playerPosLabel);
+
         _frameCounter++;
     }
 }
@@ -146,6 +154,8 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         }
         break;
     }
+
+    _player->keyReleased(key);
 }
 
 void Game::mouseButtonPressed(const int mx, const int my, const int button) {
@@ -154,10 +164,7 @@ void Game::mouseButtonPressed(const int mx, const int my, const int button) {
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
     _ui.mouseButtonReleased(mx, my, button);
-    if (!_isPaused && button == sf::Mouse::Button::Left && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == 8) {
-        unsigned int id = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
-        Item::ITEMS[id]->use(_player.get());
-    }
+    if (!_inventoryMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {

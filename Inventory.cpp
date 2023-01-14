@@ -118,6 +118,13 @@ bool Inventory::hasItem(unsigned int itemId) const {
     return false;
 }
 
+int Inventory::findItem(unsigned int itemId) const {
+    for (int i = 0; i < _inventory.size(); i++) {
+        if (getItemIdAt(i) == itemId) return i;
+    }
+    return NO_ITEM;
+}
+
 void Inventory::useItem(size_t inventoryIndex) const {
     if (inventoryIndex < _inventory.size()) Item::ITEMS.at(_inventory.at(inventoryIndex).x)->use(_parent);
     else std::cout << "Invalid inventory index: " << inventoryIndex << ". Inventory size is " << _inventory.size() << std::endl;

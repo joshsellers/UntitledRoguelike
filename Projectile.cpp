@@ -1,7 +1,7 @@
 #include "Projectile.h"
-#include <iostream>
+#include "World.h";
 
-constexpr long double PI = 3.14159265358979L;
+constexpr float LIFETIME = 60 * 5;
 
 Projectile::Projectile(sf::Vector2f pos, float directionAngle, float velocity, unsigned int itemId) : 
     Entity(pos, 0, 1, 1, false), _originalPos(pos), _directionAngle(directionAngle), _velocity(velocity),
@@ -9,14 +9,40 @@ Projectile::Projectile(sf::Vector2f pos, float directionAngle, float velocity, u
 
     _velocityComponents.x = _velocity * std::cos(directionAngle);
     _velocityComponents.y = _velocity * std::sin(directionAngle);
+
+    setMaxHitPoints(1);
+
+    _hitBoxXOffset = 6;
+    _hitBoxYOffset = 8;
+    _hitBox.width = 4;
+    _hitBox.height = 4;
 }
 
 void Projectile::update() {
+    if (_currentTime > LIFETIME) {
+        _isActive = false;
+        return;
+    }
+
+    for (auto& entity : getWorld()->getEntities()) {
+        if (entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()) {
+            if (entity->getHitBox().intersects(_hitBox)) {
+                entity->damage(Item::ITEMS[_itemId]->getDamage());
+                _isActive = false;
+                return;
+            }
+        }
+    }
+
     _pos.x = _velocityComponents.x * _currentTime + _originalPos.x;
     _pos.y = _velocityComponents.y * _currentTime + _originalPos.y;
 
-    _currentTime++;
     _sprite.setPosition(_pos);
+
+    _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
+    _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
+
+    _currentTime++;
 }
 
 void Projectile::draw(sf::RenderTexture& surface) {
@@ -29,4 +55,7 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
     _sprite.setRotation(_directionAngle * (180.f / PI));
+
+    _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
+    _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 }

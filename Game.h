@@ -7,7 +7,7 @@
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
 
-const std::string VERSION = "0.0211";
+const std::string VERSION = "0.0212";
 
 class Game : public UIButtonListener {
 public:
@@ -50,6 +50,7 @@ private:
 	sf::Text _fpsLabel;
 	sf::Text _activeChunksLabel;
 	sf::Text _seedLabel;
+	sf::Text _playerPosLabel;
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;
