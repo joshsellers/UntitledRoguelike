@@ -146,6 +146,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
 void Player::drawTool(sf::RenderTexture& surface) {
     if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && !isSwimming() && (!isDodging() || !isMoving())) {
         sf::RectangleShape meleeHitBoxDisplay;
+        sf::RectangleShape barrelDisplay;
         if (!_gamePaused) {
             sf::IntRect itemTextureRect =
                 Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
@@ -166,15 +167,14 @@ void Player::drawTool(sf::RenderTexture& surface) {
 
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
 
-            if (angle >= -45.f && angle < 45.f) {
+            if (angle >= -45.f && angle < 45.f) 
                 _facingDir = UP;
-            } else if (angle >= 45.f && angle < 135.f) {
+            else if (angle >= 45.f && angle < 135.f)
                 _facingDir = RIGHT;
-            } else if (angle >= 135.f && angle < 225.f) {
+            else if (angle >= 135.f && angle < 225.f) 
                 _facingDir = DOWN;
-            } else if (angle >= 225.f || angle < -45.f) {
+            else if (angle >= 225.f || angle < -45.f)
                 _facingDir = LEFT;
-            }
 
             if (angle >= 0.f && angle < 180.f) _toolSprite.setScale(-1, 1);
             else if (angle >= 180 || angle < 0) _toolSprite.setScale(1, 1);
@@ -223,10 +223,31 @@ void Player::drawTool(sf::RenderTexture& surface) {
 
                 meleeAttack(meleeHitBox, _window->mapPixelToCoords(mPos, surface.getView()));
             }
+
+            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getId() == 8) {
+                _targetPos = _window->mapPixelToCoords(mPos, surface.getView());
+                sf::Vector2f barrelPos = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getBarrelPos();
+                float r = barrelPos.x;
+                sf::Vector2f xAxisPos(handPos.x + r * std::cos((angle - 90.f) * (PI / 180.f)), handPos.y + r * std::sin((angle - 90.f) * (PI / 180.f)));
+                float q = barrelPos.y * _toolSprite.getScale().x;
+                _calculatedBarrelPos = sf::Vector2f(xAxisPos.x + q * std::cos((angle) * (PI / 180.f)), xAxisPos.y + q * std::sin((angle) * (PI / 180.f)));
+
+                if (getWorld()->showDebug()) {
+                    barrelDisplay.setPosition(_calculatedBarrelPos);
+                    barrelDisplay.setSize(sf::Vector2f(1, 1));
+                    barrelDisplay.setFillColor(sf::Color::Transparent);
+                    barrelDisplay.setOutlineColor(sf::Color(0xFF0000FF));
+                    barrelDisplay.setOutlineThickness(1.f);
+                }
+            }
         }
         
         surface.draw(_toolSprite);
-        if (getWorld()->showDebug()) surface.draw(meleeHitBoxDisplay);
+
+        if (getWorld()->showDebug()) {
+            surface.draw(meleeHitBoxDisplay);
+            surface.draw(barrelDisplay);
+        }
     } else _facingDir = (MOVING_DIRECTION)_movingDir;
 }
 

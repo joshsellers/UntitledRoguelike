@@ -154,6 +154,10 @@ void Game::mouseButtonPressed(const int mx, const int my, const int button) {
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
     _ui.mouseButtonReleased(mx, my, button);
+    if (!_isPaused && button == sf::Mouse::Button::Left && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == 8) {
+        unsigned int id = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        Item::ITEMS[id]->use(_player.get());
+    }
 }
 
 void Game::mouseMoved(const int mx, const int my) {

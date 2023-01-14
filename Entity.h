@@ -59,6 +59,9 @@ public:
 
     sf::FloatRect getHitBox() const;
 
+    sf::Vector2f getCalculatedBarrelPos() const;
+    sf::Vector2f getTargetPos() const;
+
 protected:
     const int _spriteWidth, _spriteHeight;
 
@@ -83,6 +86,9 @@ protected:
     World* _world = nullptr;
 
     bool _isActive = true;
+
+    sf::Vector2f _calculatedBarrelPos;
+    sf::Vector2f _targetPos;
 
     sf::FloatRect _hitBox;
     float _hitBoxXOffset;

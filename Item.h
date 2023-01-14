@@ -18,14 +18,15 @@ public:
     static const Item SOMBRERO;
     static const Item AXE;
     static const Item DAGGER;
-    static const Item DESERT_EAGLE;
+    static const Item TEST_AMMO;
+    static const Item HOWDAH;
 
     static std::vector<const Item*> ITEMS;
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage, 
-        const float hitBoxPos, const int hitBoxSize, const std::function<void(Entity*)> use);
+        const float hitBoxPos, const int hitBoxSize, sf::Vector2f barrelPos, const std::function<void(Entity*)> use);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -35,6 +36,8 @@ public:
     float getHitBoxPos() const;
     int getHitBoxSize() const;
     bool isMeleeWeapon() const;
+
+    sf::Vector2f getBarrelPos() const;
 
     sf::IntRect getTextureRect() const;
 
@@ -55,6 +58,8 @@ private:
     const int _damage;
     const float _hitBoxPos;
     const int _hitBoxSize;
+
+    const sf::Vector2f _barrelPos;
 
     const sf::IntRect _textureRect;
 

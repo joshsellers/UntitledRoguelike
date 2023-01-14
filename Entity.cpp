@@ -100,3 +100,11 @@ int Entity::getHitPoints() const {
 sf::FloatRect Entity::getHitBox() const {
     return _hitBox;
 }
+
+sf::Vector2f Entity::getCalculatedBarrelPos() const {
+    return _calculatedBarrelPos;
+}
+
+sf::Vector2f Entity::getTargetPos() const {
+    return _targetPos;
+}
