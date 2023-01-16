@@ -1,21 +1,21 @@
 #include "Projectile.h"
-#include "World.h";
+#include "World.h"
 
 constexpr float LIFETIME = 60 * 5;
 
-Projectile::Projectile(sf::Vector2f pos, float directionAngle, float velocity, unsigned int itemId) : 
-    Entity(pos, 0, 1, 1, false), _originalPos(pos), _directionAngle(directionAngle), _velocity(velocity),
-    _itemId(itemId) {
+Projectile::Projectile(sf::Vector2f pos, float directionAngle, float velocity, const ProjectileData data) :
+    Entity(pos, 0, 1, 1, false), _originalPos(pos), _directionAngle(directionAngle), _velocity(velocity), _data(data),
+    _itemId(data.itemId) {
 
     _velocityComponents.x = _velocity * std::cos(directionAngle);
     _velocityComponents.y = _velocity * std::sin(directionAngle);
 
     setMaxHitPoints(1);
 
-    _hitBoxXOffset = 6;
-    _hitBoxYOffset = 8;
-    _hitBox.width = 4;
-    _hitBox.height = 4;
+    _hitBoxXOffset = _data.hitBox.left;
+    _hitBoxYOffset = _data.hitBox.top;
+    _hitBox.width = _data.hitBox.width;
+    _hitBox.height = _data.hitBox.height;
 }
 
 void Projectile::update() {
@@ -54,7 +54,7 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
-    _sprite.setRotation(_directionAngle * (180.f / PI));
+    if (_data.rotateSprite) _sprite.setRotation(_directionAngle * (180.f / PI));
 
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;

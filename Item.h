@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include "EquipmentType.h"
+#include "ProjectileData.h"
 
 class Entity;
 
@@ -19,7 +20,11 @@ public:
     static const Item AXE;
     static const Item DAGGER;
     static const Item BULLET_455;
+    static const ProjectileData B455;
     static const Item HOWDAH;
+    static const Item POD;
+    static const ProjectileData PODPROJ;
+    static const Item POD_LAUNCHER;
 
     static std::vector<const Item*> ITEMS;
 
@@ -44,6 +49,7 @@ public:
 
     bool isStackable() const;
     unsigned int getStackLimit() const;
+    unsigned int getAmmoId() const;
 
     bool isConsumable() const;
 

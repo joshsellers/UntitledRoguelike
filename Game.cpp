@@ -36,7 +36,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _playerPosLabel.setPosition(0, 100);
 
     _spriteSheet->create(128, 208);
-    if (!_spriteSheet->loadFromFile("res/url_guy_walking-Sheet.png")) {
+    if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
         std::cout << "failed to load sprite sheet" << std::endl;
     }
 

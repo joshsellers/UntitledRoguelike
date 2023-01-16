@@ -151,6 +151,12 @@ void Player::drawTool(sf::RenderTexture& surface) {
             sf::IntRect itemTextureRect =
                 Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
             int spriteX = itemTextureRect.left + TILE_SIZE;
+            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
+                int ammoId = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
+                if (!getInventory().hasItem(ammoId) || getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) != ammoId) {
+                    spriteX += TILE_SIZE * 3;
+                }
+            }
             _toolSprite.setTextureRect(sf::IntRect(
                 spriteX, itemTextureRect.top, TILE_SIZE * 3, TILE_SIZE * 3
             ));
@@ -294,7 +300,9 @@ bool Player::isDodging() const {
 }
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {
-    if (!_gamePaused && button == sf::Mouse::Button::Left && Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
+    if (!_gamePaused && button == sf::Mouse::Button::Left && 
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()
+        && !isSwimming() && !isDodging()) {
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         Item::ITEMS[id]->use(this);
     }
@@ -304,9 +312,9 @@ void Player::keyReleased(sf::Keyboard::Key& key) {
     if (!_gamePaused && key == sf::Keyboard::R) {
         if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
             Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-            if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getStackLimit())) {
+            if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
                 getInventory().equip(
-                    getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getStackLimit()),
+                    getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
                     EQUIPMENT_TYPE::AMMO
                 );
             }

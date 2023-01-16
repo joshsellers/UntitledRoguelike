@@ -50,6 +50,7 @@ const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 8, 
     EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
+const ProjectileData Item::B455(Item::BULLET_455.getId(), sf::IntRect(6, 8, 4, 4), true);
 
 const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large pistol",
@@ -64,12 +65,42 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
 
             float angle = (float)((std::atan2(y, x)));
 
-            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(spawnPos, angle, 5, BULLET_455.getId()));
+            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(spawnPos, angle, 5, B455));
             proj->loadSprite(parent->getWorld()->getSpriteSheet());
             proj->setWorld(parent->getWorld());
             parent->getWorld()->addEntity(proj);
 
             parent->getInventory().removeItem(BULLET_455.getId(), 1);
+        }
+    }
+);
+
+const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), false, 0, false,
+    "A large pod\nAmmunition for the Pod Launcher",
+    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
+    [](Entity* parent) {}
+);
+const ProjectileData Item::PODPROJ(Item::POD.getId(), sf::IntRect(4, 8, 8, 8), true);
+
+const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
+    "Don't vape, kids",
+    EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true,
+    [](Entity* parent) {
+        if (parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) == POD.getId()) {
+            sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
+            sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
+
+            double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
+            double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
+
+            float angle = (float)((std::atan2(y, x)));
+
+            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(spawnPos, angle, 3, PODPROJ));
+            proj->loadSprite(parent->getWorld()->getSpriteSheet());
+            proj->setWorld(parent->getWorld());
+            parent->getWorld()->addEntity(proj);
+
+            parent->getInventory().removeItem(POD.getId(), 1);
         }
     }
 );
@@ -144,6 +175,10 @@ bool Item::isStackable() const {
 */
 unsigned int Item::getStackLimit() const {
     return _stackLimit;
+}
+
+unsigned int Item::getAmmoId() const {
+    return getStackLimit();
 }
 
 bool Item::isConsumable() const {

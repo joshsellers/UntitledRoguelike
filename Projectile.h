@@ -5,7 +5,7 @@
 
 class Projectile : public Entity {
 public:
-    Projectile(sf::Vector2f pos, float directionAngle, float _velocity, unsigned int itemId);
+    Projectile(sf::Vector2f pos, float directionAngle, float velocity, const ProjectileData data);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -22,6 +22,8 @@ private:
     const unsigned int _itemId;
 
     float _currentTime = 0;
+
+    const ProjectileData _data;
 };
 
 #endif 
