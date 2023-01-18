@@ -5,7 +5,7 @@
 
 class Projectile : public Entity {
 public:
-    Projectile(sf::Vector2f pos, float directionAngle, float velocity, const ProjectileData data);
+    Projectile(sf::Vector2f pos, sf::Vector2f shooterVelocity, float directionAngle, float velocity, const ProjectileData data);
 
     void update();
     void draw(sf::RenderTexture& surface);

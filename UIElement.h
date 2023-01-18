@@ -8,7 +8,8 @@
 class UIElement {
 public:
     static sf::Vector2f getRelativePos(sf::Vector2f pos);
-    static float getRelativeSize(float size);
+    static float getRelativeWidth(float size);
+    static float getRelativeHeight(float size);
 
     UIElement(float x, float y, float width, float height, bool drawSprite, bool drawText,
         sf::Font font);

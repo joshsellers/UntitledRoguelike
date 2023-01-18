@@ -30,6 +30,7 @@ public:
     float getBaseSpeed() const;
 
     sf::Vector2f getPosition() const;
+    sf::Vector2f getVelocity() const;
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet) = 0;
 
@@ -72,6 +73,7 @@ protected:
     float _baseSpeed = 0;
 
     sf::Vector2f _pos;
+    sf::Vector2f _velocity;
     int _numSteps = 0;
     int _animSpeed = 3;
 

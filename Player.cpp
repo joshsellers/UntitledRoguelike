@@ -285,6 +285,8 @@ void Player::move(float xa, float ya) {
 
     _pos.x += xa;
     _pos.y += ya;
+    _velocity.x = xa;
+    _velocity.y = ya;
 }
 
 sf::Vector2f Player::getPosition() const {

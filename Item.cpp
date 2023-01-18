@@ -50,7 +50,7 @@ const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 8, 
     EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
-const ProjectileData Item::B455(Item::BULLET_455.getId(), sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), sf::IntRect(6, 8, 4, 4), true);
 
 const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large pistol",
@@ -65,7 +65,9 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
 
             float angle = (float)((std::atan2(y, x)));
 
-            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(spawnPos, angle, 5, B455));
+            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
+                spawnPos, parent->getVelocity(), angle, 5, DATA_B455
+            ));
             proj->loadSprite(parent->getWorld()->getSpriteSheet());
             proj->setWorld(parent->getWorld());
             parent->getWorld()->addEntity(proj);
@@ -80,7 +82,7 @@ const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
-const ProjectileData Item::PODPROJ(Item::POD.getId(), sf::IntRect(4, 8, 8, 8), true);
+const ProjectileData Item::DATA_POD(Item::POD.getId(), sf::IntRect(4, 8, 8, 8), true);
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
@@ -95,7 +97,9 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
 
             float angle = (float)((std::atan2(y, x)));
 
-            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(spawnPos, angle, 3, PODPROJ));
+            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
+                spawnPos, parent->getVelocity(), angle, 3, DATA_POD
+            ));
             proj->loadSprite(parent->getWorld()->getSpriteSheet());
             proj->setWorld(parent->getWorld());
             parent->getWorld()->addEntity(proj);

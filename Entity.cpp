@@ -15,6 +15,8 @@ void Entity::move(float xa, float ya) {
 
     _pos.x += xa;
     _pos.y += ya;
+    _velocity.x = xa;
+    _velocity.y = ya;
 }
 
 bool Entity::isMoving() const {
@@ -35,6 +37,10 @@ float Entity::getBaseSpeed() const {
 
 sf::Vector2f Entity::getPosition() const {
     return _pos;
+}
+
+sf::Vector2f Entity::getVelocity() const {
+    return _velocity;
 }
 
 bool Entity::isProp() const {

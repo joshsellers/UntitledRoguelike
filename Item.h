@@ -20,10 +20,10 @@ public:
     static const Item AXE;
     static const Item DAGGER;
     static const Item BULLET_455;
-    static const ProjectileData B455;
+    static const ProjectileData DATA_B455;
     static const Item HOWDAH;
     static const Item POD;
-    static const ProjectileData PODPROJ;
+    static const ProjectileData DATA_POD;
     static const Item POD_LAUNCHER;
 
     static std::vector<const Item*> ITEMS;

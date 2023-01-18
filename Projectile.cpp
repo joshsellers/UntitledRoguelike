@@ -3,12 +3,12 @@
 
 constexpr float LIFETIME = 60 * 5;
 
-Projectile::Projectile(sf::Vector2f pos, float directionAngle, float velocity, const ProjectileData data) :
+Projectile::Projectile(sf::Vector2f pos, sf::Vector2f shooterVelocity, float directionAngle, float velocity, const ProjectileData data) :
     Entity(pos, 0, 1, 1, false), _originalPos(pos), _directionAngle(directionAngle), _velocity(velocity), _data(data),
     _itemId(data.itemId) {
 
-    _velocityComponents.x = _velocity * std::cos(directionAngle);
-    _velocityComponents.y = _velocity * std::sin(directionAngle);
+    _velocityComponents.x = _velocity * std::cos(directionAngle) + shooterVelocity.x;
+    _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
 
     setMaxHitPoints(1);
 

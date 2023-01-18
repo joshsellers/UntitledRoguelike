@@ -7,7 +7,7 @@
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
 
-const std::string VERSION = "0.0213";
+const std::string VERSION = "0.0214";
 
 class Game : public UIButtonListener {
 public:

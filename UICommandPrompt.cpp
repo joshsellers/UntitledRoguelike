@@ -10,10 +10,10 @@ UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     _bg.setPosition(sf::Vector2f(_x, _y));
     _bg.setFillColor(sf::Color(0x2D2D30FF));
     _bg.setOutlineColor(sf::Color(0x3E3E41FF));
-    _bg.setOutlineThickness(getRelativeSize(0.25f));
+    _bg.setOutlineThickness(getRelativeWidth(0.25f));
 
     float fontSize = 1;
-    int relativeFontSize = getRelativeSize(fontSize);
+    int relativeFontSize = getRelativeWidth(fontSize);
     _text.setFont(_font);
     _text.setCharacterSize(relativeFontSize);
     _text.setFillColor(sf::Color(0x00AA22FF));
@@ -26,11 +26,11 @@ void UICommandPrompt::draw(sf::RenderTexture& surface) {
     float width = _text.getGlobalBounds().width;
     float height = _text.getGlobalBounds().height;
 
-    float x = getRelativeSize(50.f) - width / 2;
-    float y = getRelativeSize(50.f);
+    float x = getRelativeWidth(50.f) - width / 2;
+    float y = getRelativeWidth(50.f);
     _text.setPosition(sf::Vector2f(x, y));
 
-    float padding = getRelativeSize(1.f);
+    float padding = getRelativeWidth(1.f);
     _bg.setPosition(sf::Vector2f(x - padding, y - padding));
     _bg.setSize(sf::Vector2f(width + padding * 2, height + padding * 2));
 

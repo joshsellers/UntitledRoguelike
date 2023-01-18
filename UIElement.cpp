@@ -4,8 +4,12 @@ sf::Vector2f UIElement::getRelativePos(sf::Vector2f pos) {
     return sf::Vector2f((float)WINDOW_WIDTH * (pos.x / 100), (float)WINDOW_HEIGHT * (pos.y / 100));
 }
 
-float UIElement::getRelativeSize(float size) {
-    return (float)WINDOW_WIDTH * (size / 100);
+float UIElement::getRelativeWidth(float size) {
+    return (float)WINDOW_WIDTH * (size / 100.f);
+}
+
+float UIElement::getRelativeHeight(float size) {
+    return (float)WINDOW_HEIGHT * (size / 100.f);
 }
 
 UIElement::UIElement(float x, float y, float width, float height,

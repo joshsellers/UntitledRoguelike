@@ -23,7 +23,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
 
     _tooltipBg.setFillColor(sf::Color(0xFFFFCAFF));
     _tooltipBg.setOutlineColor(sf::Color(0xEEEEB9FF));
-    _tooltipBg.setOutlineThickness(getRelativeSize(0.25f));
+    _tooltipBg.setOutlineThickness(getRelativeWidth(0.25f));
 }
 
 void UIInventoryInterface::update() {}
