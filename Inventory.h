@@ -35,6 +35,7 @@ public:
     void deEquip(EQUIPMENT_TYPE equipType);
     bool isEquipped(int index) const;
     int getEquippedItemId(EQUIPMENT_TYPE equipType) const;
+    int getEquippedIndex(EQUIPMENT_TYPE equipType) const;
 
     void setMaxSize(unsigned int maxSize);
     unsigned int getMaxSize() const;

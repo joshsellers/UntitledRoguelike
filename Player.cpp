@@ -303,6 +303,7 @@ bool Player::isDodging() const {
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {
     if (!_gamePaused && button == sf::Mouse::Button::Left && 
+        getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && 
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()
         && !isSwimming() && !isDodging()) {
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);

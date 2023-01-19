@@ -28,6 +28,9 @@ private:
 
     sf::Vector2f _mousePos;
 
+    sf::RectangleShape _background;
+    sf::RectangleShape _headerBg;
+
     sf::Text _tooltipText;
     sf::RectangleShape _tooltipBg;
 

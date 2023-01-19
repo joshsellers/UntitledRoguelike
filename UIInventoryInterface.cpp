@@ -3,7 +3,7 @@
 #include <iostream>
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
-    _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, true, font), _originalY(_y) {
+    _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, false, font), _originalY(_y) {
     _disableAutomaticTextAlignment = true;
     
     float fontSize = 4;
@@ -13,7 +13,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _text.setFillColor(sf::Color::White);
     _text.setString("INVENTORY");
     sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x, _y)));
-    _text.setPosition(basePos.x - _text.getGlobalBounds().width / 8, 0);
+    _text.setPosition(basePos.x - _text.getGlobalBounds().width / 6, 0);
 
     fontSize = 1;
     relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -24,15 +24,33 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _tooltipBg.setFillColor(sf::Color(0xFFFFCAFF));
     _tooltipBg.setOutlineColor(sf::Color(0xEEEEB9FF));
     _tooltipBg.setOutlineThickness(getRelativeWidth(0.25f));
+
+    _background.setFillColor(sf::Color(0x000044EE));
+    _background.setOutlineColor(sf::Color(0x000066EE));
+    _background.setOutlineThickness(getRelativeWidth(0.75f));
+    _background.setPosition(getRelativePos(0.5f, 0.9f));
+    _background.setSize(sf::Vector2f(getRelativeWidth(25.f), getRelativeHeight(98.3f)));
+
+    _headerBg.setFillColor(sf::Color(0x000044FF));
+    _headerBg.setPosition(
+        _background.getPosition().x,
+        0
+    );
+    _headerBg.setSize(sf::Vector2f(
+        _background.getSize().x,
+        getRelativeHeight(8.f)
+    ));
 }
 
 void UIInventoryInterface::update() {}
 
 void UIInventoryInterface::draw(sf::RenderTexture& surface) {
+    surface.draw(_background);
+
     int mousedOverItemIndex = -1;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * i))));
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * i))));
 
         sf::Text label;
         float fontSize = 1.5;
@@ -72,6 +90,9 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             mousedOverItemIndex = i;
     }
 
+    surface.draw(_headerBg);
+    surface.draw(_text);
+
     if (mousedOverItemIndex >= 0) {
         const Item* item = Item::ITEMS[_source.getItemIdAt(mousedOverItemIndex)];
 
@@ -99,7 +120,7 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
 
 void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const int button) {
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * i))));
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * i))));
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
 
         if (itemBounds.contains(mx, my)) {

@@ -4,6 +4,10 @@ sf::Vector2f UIElement::getRelativePos(sf::Vector2f pos) {
     return sf::Vector2f((float)WINDOW_WIDTH * (pos.x / 100), (float)WINDOW_HEIGHT * (pos.y / 100));
 }
 
+sf::Vector2f UIElement::getRelativePos(float x, float y) {
+    return getRelativePos(sf::Vector2f(x, y));
+}
+
 float UIElement::getRelativeWidth(float size) {
     return (float)WINDOW_WIDTH * (size / 100.f);
 }

@@ -72,7 +72,7 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
             proj->setWorld(parent->getWorld());
             parent->getWorld()->addEntity(proj);
 
-            parent->getInventory().removeItem(BULLET_455.getId(), 1);
+            parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
         }
     }
 );
@@ -104,7 +104,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
             proj->setWorld(parent->getWorld());
             parent->getWorld()->addEntity(proj);
 
-            parent->getInventory().removeItem(POD.getId(), 1);
+            parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
         }
     }
 );

@@ -161,6 +161,10 @@ int Inventory::getEquippedItemId(EQUIPMENT_TYPE equipType) const {
     return NOTHING_EQUIPPED;
 }
 
+int Inventory::getEquippedIndex(EQUIPMENT_TYPE equipType) const {
+    return _equippedItems[(int)equipType];
+}
+
 void Inventory::setMaxSize(unsigned int maxSize) {
     _maxSize = maxSize;
 }
