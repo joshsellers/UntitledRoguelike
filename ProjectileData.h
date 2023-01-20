@@ -4,11 +4,12 @@
 #include <SFML/Graphics/Rect.hpp>
 
 struct ProjectileData {
-    ProjectileData(const unsigned int itemId, const sf::IntRect hitBox, const bool rotateSprite) :
-        itemId(itemId), hitBox(hitBox), rotateSprite(rotateSprite) {
+    ProjectileData(const unsigned int itemId, const float baseVelocity, const sf::IntRect hitBox, const bool rotateSprite) :
+        itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite) {
     }
 
     const unsigned int itemId;
+    const float baseVelocity;
     const sf::IntRect hitBox;
     const bool rotateSprite;
 };

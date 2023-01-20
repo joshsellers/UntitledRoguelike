@@ -91,15 +91,25 @@ int Entity::getMaxHitPoints() const {
     return _maxHitPoints;
 }
 
+int& Entity::getMaxHitPointsRef() {
+    return _maxHitPoints;
+}
+
 void Entity::damage(int damage) {
     _hitPoints -= damage;
 }
 
 void Entity::heal(int hitPoints) {
+    if (_hitPoints + hitPoints > getMaxHitPoints())
+        hitPoints -= _hitPoints + hitPoints - getMaxHitPoints();
     _hitPoints += hitPoints;
 }
 
 int Entity::getHitPoints() const {
+    return _hitPoints;
+}
+
+int& Entity::getHitPointsRef() {
     return _hitPoints;
 }
 

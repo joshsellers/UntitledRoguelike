@@ -6,8 +6,9 @@
 #include "UIHandler.h"
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
+#include "ParticleSystem.h"
 
-const std::string VERSION = "0.0215";
+const std::string VERSION = "0.0216";
 
 class Game : public UIButtonListener {
 public:
@@ -33,6 +34,9 @@ public:
 private:
 	void initUI();
 
+	ParticleSystem _testPSystem = ParticleSystem(1000);
+	sf::Clock _pClock;
+
 	bool _showDebug = false;
 	bool _isPaused = false;
 
@@ -44,6 +48,7 @@ private:
 	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	sf::Font _font;
 	sf::Text _versionLabel;

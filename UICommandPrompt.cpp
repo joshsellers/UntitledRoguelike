@@ -108,6 +108,30 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         if (_world->getPlayer()->freeMove) _world->getPlayer()->setBaseSpeed(8);
         else _world->getPlayer()->setBaseSpeed(BASE_PLAYER_SPEED);
         return "Godmode set to " + (std::string)(_world->getPlayer()->freeMove ? "true" : "false");
+    } else if (commandHeader == "addhp") {
+        if (parsedCommand.size() > 1) {
+            try {
+                int dHp = stoi(parsedCommand.at(1));
+                _world->getPlayer()->heal(dHp);
+                return "Player's HP set to " + std::to_string(_world->getPlayer()->getHitPoints());
+            } catch (std::exception ex) {
+                return ex.what();
+            }
+        } else {
+            return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+        }
+    } else if (commandHeader == "setmaxhp") {
+        if (parsedCommand.size() > 1) {
+            try {
+                int mhp = stoi(parsedCommand.at(1));
+                _world->getPlayer()->setMaxHitPoints(mhp);
+                return "Player's max HP set to " + std::to_string(_world->getPlayer()->getMaxHitPoints());
+            } catch (std::exception ex) {
+                return ex.what();
+            }
+        } else {
+            return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+        }
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }

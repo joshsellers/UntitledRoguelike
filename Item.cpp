@@ -50,30 +50,13 @@ const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 8, 
     EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
-const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
 
 const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
-    "A large pistol",
+    "A large handgun",
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(20, 6), true,
     [](Entity* parent) {
-        if (parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) == BULLET_455.getId()) {
-            sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
-            sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
-
-            double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
-            double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
-
-            float angle = (float)((std::atan2(y, x)));
-
-            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-                spawnPos, parent->getVelocity(), angle, 5, DATA_B455
-            ));
-            proj->loadSprite(parent->getWorld()->getSpriteSheet());
-            proj->setWorld(parent->getWorld());
-            parent->getWorld()->addEntity(proj);
-
-            parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
-        }
+        fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455);
     }
 );
 
@@ -82,30 +65,13 @@ const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
-const ProjectileData Item::DATA_POD(Item::POD.getId(), sf::IntRect(4, 8, 8, 8), true);
+const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true,
     [](Entity* parent) {
-        if (parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) == POD.getId()) {
-            sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
-            sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
-
-            double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
-            double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
-
-            float angle = (float)((std::atan2(y, x)));
-
-            std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-                spawnPos, parent->getVelocity(), angle, 3, DATA_POD
-            ));
-            proj->loadSprite(parent->getWorld()->getSpriteSheet());
-            proj->setWorld(parent->getWorld());
-            parent->getWorld()->addEntity(proj);
-
-            parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
-        }
+        fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD);
     }
 );
 
@@ -128,6 +94,27 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isGun(isGun) {
 
     ITEMS.push_back(this);
+}
+
+void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData) {
+    if (parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) == projData.itemId) {
+        sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
+        sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
+
+        double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
+        double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
+
+        float angle = (float)((std::atan2(y, x)));
+
+        std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
+            spawnPos, parent->getVelocity(), angle, velocity, projData
+        ));
+        proj->loadSprite(parent->getWorld()->getSpriteSheet());
+        proj->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(proj);
+
+        parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
+    }
 }
 
 unsigned int Item::getId() const {

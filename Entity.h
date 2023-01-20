@@ -54,9 +54,11 @@ public:
 
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
+    int& getMaxHitPointsRef();
     virtual void damage(int damage);
     void heal(int hitPoints);
     int getHitPoints() const;
+    int& getHitPointsRef();
 
     sf::FloatRect getHitBox() const;
 

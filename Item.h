@@ -28,6 +28,8 @@ public:
 
     static std::vector<const Item*> ITEMS;
 
+    static void fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData);
+
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,

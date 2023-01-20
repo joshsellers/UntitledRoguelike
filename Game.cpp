@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include "UICommandPrompt.h"
+#include "UIAttributeMeter.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -65,6 +66,16 @@ void Game::initUI() {
     std::shared_ptr<UICommandPrompt> cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(cmdPrompt);
     _ui.addMenu(_commandMenu);
+
+    // HUD
+    std::shared_ptr<UIAttributeMeter> playerHpMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "HP", 50, 93, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
+    ));
+    playerHpMeter->setColor(0xCC0000FF);
+    playerHpMeter->setBackgroundColor(0xAA0000FF);
+    _HUDMenu->addElement(playerHpMeter);
+    _ui.addMenu(_HUDMenu);
+    _HUDMenu->show();
 }
 
 void Game::update() {
@@ -75,6 +86,11 @@ void Game::update() {
 
 void Game::draw(sf::RenderTexture& surface) {
     _world.draw(surface);
+
+    /*_testPSystem.setEmitter(_window->mapPixelToCoords(sf::Mouse::getPosition(*_window), surface.getView()));
+
+    _testPSystem.update(_pClock.restart());
+    surface.draw(_testPSystem);*/
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {
@@ -135,10 +151,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         }
         break;
     case sf::Keyboard::Hyphen:
-        _camera->zoom(2);
+        if (!_commandMenu->isActive()) _camera->zoom(2);
         break;
     case sf::Keyboard::Equal:
-        _camera->zoom(0.5);
+        if (!_commandMenu->isActive()) _camera->zoom(0.5);
         break;
     case sf::Keyboard::Escape:
         if (!_commandMenu->isActive()) {

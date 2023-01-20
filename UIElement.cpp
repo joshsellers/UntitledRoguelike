@@ -34,8 +34,8 @@ UIElement::UIElement(float x, float y, float width, float height,
 void UIElement::render(sf::RenderTexture& surface) {
     if (!_disableAutomaticTextAlignment) {
         _text.setPosition(
-            _sprite.getPosition().x + _sprite.getGlobalBounds().width / 12,
-            _sprite.getPosition().y + _sprite.getGlobalBounds().height / 6
+            _sprite.getPosition().x + _sprite.getGlobalBounds().width / 2 - _text.getGlobalBounds().width / 2,
+            _sprite.getPosition().y + _text.getGlobalBounds().height / 2
         );
     }
     if (_drawSprite) surface.draw(_sprite);
