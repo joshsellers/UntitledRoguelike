@@ -64,6 +64,7 @@ private:
 
         // reset the position of the corresponding vertex
         m_vertices[index].position = m_emitter;
+        m_vertices[index].texCoords = sf::Vector2f(0, 0);
     }
 
     std::vector<Particle> m_particles;

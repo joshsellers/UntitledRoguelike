@@ -2,6 +2,7 @@
 #include <iostream>
 #include "UICommandPrompt.h"
 #include "UIAttributeMeter.h"
+#include "Penguin.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -43,6 +44,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
+
+    std::shared_ptr<Penguin> peng = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(30, 30)));
+    peng->loadSprite(_spriteSheet);
+    peng->setWorld(&_world);
+    _world.addEntity(peng);
 
     initUI();
 }
