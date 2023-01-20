@@ -97,6 +97,9 @@ int& Entity::getMaxHitPointsRef() {
 
 void Entity::damage(int damage) {
     _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+    }
 }
 
 void Entity::heal(int hitPoints) {

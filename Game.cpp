@@ -2,7 +2,6 @@
 #include <iostream>
 #include "UICommandPrompt.h"
 #include "UIAttributeMeter.h"
-#include "Penguin.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -27,15 +26,20 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _activeChunksLabel.setString("0 active chunks");
     _activeChunksLabel.setPosition(0, 50);
 
+    _entityCountLabel.setFont(_font);
+    _entityCountLabel.setCharacterSize(24);
+    _entityCountLabel.setString("0 entities");
+    _entityCountLabel.setPosition(0, 75);
+
     _seedLabel.setFont(_font);
     _seedLabel.setCharacterSize(24);
     _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
-    _seedLabel.setPosition(0, 75);
+    _seedLabel.setPosition(0, 100);
 
     _playerPosLabel.setFont(_font);
     _playerPosLabel.setCharacterSize(24);
     _playerPosLabel.setString("x: 0, y: 0");
-    _playerPosLabel.setPosition(0, 100);
+    _playerPosLabel.setPosition(0, 125);
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
@@ -44,11 +48,6 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
-
-    std::shared_ptr<Penguin> peng = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(30, 30)));
-    peng->loadSprite(_spriteSheet);
-    peng->setWorld(&_world);
-    _world.addEntity(peng);
 
     initUI();
 }
@@ -116,6 +115,10 @@ void Game::drawUI(sf::RenderTexture& surface) {
         int chunkCount = _world.getActiveChunkCount();
         _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount > 1 ? "s" : ""));
         surface.draw(_activeChunksLabel);
+        
+        int entityCount = _world.getEntities().size();
+        _entityCountLabel.setString(std::to_string(entityCount) + " entit" + (entityCount > 1 ? "ies" : "y"));
+        surface.draw(_entityCountLabel);
 
         surface.draw(_seedLabel);
 

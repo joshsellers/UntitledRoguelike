@@ -8,7 +8,7 @@
 #include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
 
-const std::string VERSION = "0.0217";
+const std::string VERSION = "0.0218";
 
 class Game : public UIButtonListener {
 public:
@@ -54,6 +54,7 @@ private:
 	sf::Text _versionLabel;
 	sf::Text _fpsLabel;
 	sf::Text _activeChunksLabel;
+	sf::Text _entityCountLabel;
 	sf::Text _seedLabel;
 	sf::Text _playerPosLabel;
 

@@ -47,6 +47,9 @@ public:
 
     int getActiveChunkCount();
 
+    TERRAIN_TYPE getTerrainDataAt(sf::Vector2f pos);
+    TERRAIN_TYPE getTerrainDataAt(float x, float y);
+
     Chunk* getCurrentChunk();
     TERRAIN_TYPE getTerrainDataAt(Chunk* chunk, sf::Vector2f pos);
 
@@ -86,13 +89,14 @@ private:
     bool chunkContains(Chunk& chunk, sf::Vector2f pos);
 
     sf::Image generateChunkTerrain(Chunk& chunk);
-    void generateChunkProps(Chunk& chunk);
+    void generateChunkEntities(Chunk& chunk);
 
     sf::Font _font; // TEMP
 
     int _seed;
 
     boost::random::mt19937 gen = boost::random::mt19937();
+    boost::random::mt19937 _mobGen = boost::random::mt19937();
 
     void sortEntities();
 

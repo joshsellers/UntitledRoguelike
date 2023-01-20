@@ -8,6 +8,7 @@
 #include "SmallSavannaTree.h"
 #include "LargeSavannaTree.h"
 #include "SmallTundraTree.h"
+#include "Penguin.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -235,16 +236,20 @@ bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
     return pX >= chX && pY >= chY && pX < chX + CHUNK_SIZE && pY < chY + CHUNK_SIZE;
 }
 
-void World::generateChunkProps(Chunk& chunk) {
+void World::generateChunkEntities(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
+    // props
     int grassSpawnRate = 5000;
     int smallTreeSpawnRate = 50000;
     int cactusSpawnRate = 200000;
     int smallSavannaTreeSpawnRate = 200000;
     int largeSavannaTreeSpawnRate = 250000;
     int smallTundraTreeSpawnRate = 300000;
+
+    // mobs
+    int penguinSpawnRate = 80000;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -253,7 +258,6 @@ void World::generateChunkProps(Chunk& chunk) {
             int dX = x - chX;
             int dY = y - chY;
 
-            // TODO store prop sprite sizes somewhere and set their spawn position to x - w / 2, y - h
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
@@ -295,6 +299,14 @@ void World::generateChunkProps(Chunk& chunk) {
                     std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _entityBuffer.push_back(tree);
+                }
+
+                boost::random::uniform_int_distribution<> penguinDist(0, penguinSpawnRate);
+                if (penguinDist(_mobGen) == 0) {
+                    std::shared_ptr<Penguin> peng = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(x, y)));
+                    peng->loadSprite(_spriteSheet);
+                    peng->setWorld(this);
+                    _entityBuffer.push_back(peng);
                 }
             }
         }
@@ -463,7 +475,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     chunk.terrainData = data;
 
-    generateChunkProps(chunk);
+    generateChunkEntities(chunk);
 
     return image;
 }
@@ -489,6 +501,17 @@ TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
 
 void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
     _spriteSheet = spriteSheet;
+}
+
+TERRAIN_TYPE World::getTerrainDataAt(sf::Vector2f pos) {
+    for (Chunk& chunk : _chunks) {
+        if (chunkContains(chunk, pos)) return getTerrainDataAt(&chunk, pos);
+    }
+    return TERRAIN_TYPE::VOID;
+}
+
+TERRAIN_TYPE World::getTerrainDataAt(float x, float y) {
+    return getTerrainDataAt(sf::Vector2f(x, y));
 }
 
 std::shared_ptr<sf::Texture> World::getSpriteSheet() const {

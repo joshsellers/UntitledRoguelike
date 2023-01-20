@@ -47,7 +47,7 @@ const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
 
 const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 8, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
-    EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false,
+    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
 const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
@@ -62,7 +62,7 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
 
 const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), false, 0, false,
     "A large pod\nAmmunition for the Pod Launcher",
-    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
+    EQUIPMENT_TYPE::AMMO, 20, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
 );
 const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
