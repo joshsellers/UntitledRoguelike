@@ -75,6 +75,21 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     }
 );
 
+const Item Item::WIFE_BEATER(11, "Wife Beater", sf::IntRect(12, 26, 1, 1), false, 0, false,
+    "It's dirty",
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {}
+);
+
+const Item Item::JORTS(12, "Jorts", sf::IntRect(16, 26, 1, 1), false, 0, false,
+    "Don't wear these",
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {}
+);
+
+const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26, 1, 1), false, 0, false,
+    "These help you go a little faster",
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {}
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, 

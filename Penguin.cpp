@@ -2,7 +2,6 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "Util.h"
-#include <iostream>
 
 Penguin::Penguin(sf::Vector2f pos) :
 Entity(pos, 0.5, 1, 1, false) {
@@ -19,6 +18,11 @@ Entity(pos, 0.5, 1, 1, false) {
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    _canPickUpItems = true;
+
+    boost::random::uniform_int_distribution<> hItemDist(Item::WIFE_BEATER.getId(), Item::WHITE_TENNIS_SHOES.getId());
+    getInventory().addItem(hItemDist(_gen), 1);
 }
 
 void Penguin::update() {
@@ -89,6 +93,16 @@ void Penguin::draw(sf::RenderTexture& surface) {
     else _sprite.setScale(1, 1);
 
     surface.draw(_sprite);
+}
+
+void Penguin::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+        }
+    }
 }
 
 void Penguin::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

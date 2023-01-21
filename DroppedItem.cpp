@@ -12,7 +12,7 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 void DroppedItem::update() {
     if (isActive()) {
         for (auto& entity : getWorld()->getEntities()) {
-            if (entity->canPickUpItems() &&
+            if (entity->canPickUpItems() && entity->isActive() && 
                 entity->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
                 entity->getInventory().addItem(_itemId, _amount);
                 _isActive = false;

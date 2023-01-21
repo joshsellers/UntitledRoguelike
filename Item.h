@@ -25,6 +25,9 @@ public:
     static const Item POD;
     static const ProjectileData DATA_POD;
     static const Item POD_LAUNCHER;
+    static const Item WIFE_BEATER;
+    static const Item JORTS;
+    static const Item WHITE_TENNIS_SHOES;
 
     static std::vector<const Item*> ITEMS;
 

@@ -95,8 +95,8 @@ protected:
     sf::Vector2f _targetPos;
 
     sf::FloatRect _hitBox;
-    float _hitBoxXOffset;
-    float _hitBoxYOffset;
+    float _hitBoxXOffset = 0;
+    float _hitBoxYOffset = 0;
 
     int _hitPoints = 0;
 

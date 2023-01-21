@@ -13,6 +13,8 @@ public:
 
     void draw(sf::RenderTexture& surface);
 
+    void damage(int damage);
+
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 private:
     sf::Vector2f _targetPos;
