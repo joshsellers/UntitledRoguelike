@@ -43,6 +43,10 @@ sf::Vector2f Entity::getVelocity() const {
     return _velocity;
 }
 
+bool Entity::isMob() const {
+    return _isMob;
+}
+
 bool Entity::isProp() const {
     return _isProp;
 }
@@ -77,6 +81,50 @@ World* Entity::getWorld() const {
 
 bool Entity::isActive() const {
     return _isActive;
+}
+
+void Entity::deactivate() {
+    _isActive = false;
+}
+
+bool Entity::isDormant() const {
+    return _isDormant;
+}
+
+void Entity::setDormant(bool dormant) {
+    _isDormant = dormant;
+}
+
+int Entity::getDormancyTimeout() const {
+    return _dormancyTimeout;
+}
+
+int Entity::getDormancyTime() const {
+    return _dormancyTimer;
+}
+
+void Entity::resetDormancyTimer() {
+    _dormancyTimer = 0;
+}
+
+void Entity::incrementDormancyTimer() {
+    _dormancyTimer++;
+}
+
+int Entity::getMaxTimeOutOfChunk() const {
+    return _maxTimeOutOfChunk;
+}
+
+int Entity::getTimeOutOfChunk() const {
+    return _outOfChunkTimer;
+}
+
+void Entity::resetOutOfChunkTimer() {
+    _outOfChunkTimer = 0;
+}
+
+void Entity::incrementOutOfChunkTimer() {
+    _outOfChunkTimer++;
 }
 
 bool Entity::isDamageable() const {

@@ -9,6 +9,7 @@
 #include "LargeSavannaTree.h"
 #include "SmallTundraTree.h"
 #include "Penguin.h"
+#include "Turtle.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -30,6 +31,8 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
 }
 
 void World::update() {
+    spawnMobs();
+
     purgeEntityBuffer();
 
     updateEntities();
@@ -66,7 +69,7 @@ void World::draw(sf::RenderTexture& surface) {
     }
 
     for (auto& entity : _entities) {
-        entity->draw(surface);
+        if (!entity->isDormant()) entity->draw(surface);
         
         if (showDebug() && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -77,8 +80,96 @@ void World::draw(sf::RenderTexture& surface) {
             hitBox.setOutlineColor(sf::Color(0xFF0000FF));
             hitBox.setOutlineThickness(1.f);
             surface.draw(hitBox);
+
+            if (entity->isDormant()) {
+                sf::CircleShape dormantMarker;
+                dormantMarker.setPosition(entity->getPosition());
+                dormantMarker.setRadius(25);
+                dormantMarker.setFillColor(sf::Color(0x00FF00FF));
+                surface.draw(dormantMarker);
+            }
         }
     }
+}
+
+void World::spawnMobs() {
+    constexpr float MOB_SPAWN_RATE_SECONDS = 5.f;
+    constexpr int MOB_SPAWN_CHANCE = 9;
+    constexpr float MIN_DIST = 180.f;
+    constexpr int MIN_PACK_AMOUNT = 1;
+    constexpr int MAX_PACK_AMOUNT = 6;
+    constexpr int PACK_SPREAD = 20;
+
+    if (getMobCount() < MAX_ACTIVE_MOBS && _mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS) {
+        _mobSpawnClock.restart();
+        boost::random::uniform_int_distribution<> skipChunk(0, MOB_SPAWN_CHANCE);
+        for (auto& chunk : _chunks) {
+            if (skipChunk(_mobGen) == 0) {
+                boost::random::uniform_int_distribution<> randX(chunk.pos.x, chunk.pos.x + CHUNK_SIZE);
+                boost::random::uniform_int_distribution<> randY(chunk.pos.y, chunk.pos.y + CHUNK_SIZE);
+                float x = randX(_mobGen);
+                float y = randY(_mobGen);
+
+                if (std::abs(x - _player->getPosition().x) > MIN_DIST || std::abs(y - _player->getPosition().y) > MIN_DIST) {
+                    TERRAIN_TYPE terrainType = getTerrainDataAt(&chunk, sf::Vector2f(x, y));
+                    boost::random::uniform_int_distribution<> randPackAmount(MIN_PACK_AMOUNT, MAX_PACK_AMOUNT);
+                    int packAmount = randPackAmount(_mobGen);
+                    MOB_TYPE mobType{};
+                    switch (terrainType) {
+                        case TERRAIN_TYPE::VOID:
+                            return;
+                        case TERRAIN_TYPE::WATER:
+                            return; // for now...
+                        case TERRAIN_TYPE::TUNDRA:
+                        {
+                            // select between random types of mobs
+                            boost::random::uniform_int_distribution<> randMobType(0, TUNDRA_MOB_COUNT - 1);
+                            mobType = TUNDRA_MOBS[randMobType(_mobGen)];
+                        }
+                        break;
+                        case TERRAIN_TYPE::GRASS_LOW: 
+                        {
+                            boost::random::uniform_int_distribution<> randMobType(0, GRASS_MOB_COUNT - 1);
+                            mobType = GRASS_MOBS[randMobType(_mobGen)];
+                        }
+                        break;
+                        case TERRAIN_TYPE::GRASS_HIGH:
+                        {
+                            boost::random::uniform_int_distribution<> randMobType(0, GRASS_MOB_COUNT - 1);
+                            mobType = GRASS_MOBS[randMobType(_mobGen)];
+                        }
+                        break;
+                        default:
+                            return;
+                    }
+
+                    boost::random::uniform_int_distribution<> randXi(x - PACK_SPREAD, x + PACK_SPREAD);
+                    boost::random::uniform_int_distribution<> randYi(y - PACK_SPREAD, y + PACK_SPREAD);
+                    for (int i = 0; i < packAmount; i++) {
+                        int xi = randXi(_mobGen);
+                        int yi = randYi(_mobGen);
+                        std::shared_ptr<Entity> mob = nullptr;
+                        
+                        switch (mobType) {
+                            case MOB_TYPE::PENGUIN:
+                                mob = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::TURTLE:
+                                mob = std::shared_ptr<Turtle>(new Turtle(sf::Vector2f(xi, yi)));
+                                break;
+                            default:
+                                return;
+                        }
+
+                        mob->loadSprite(_spriteSheet);
+                        mob->setWorld(this);
+                        addEntity(mob);
+                    }
+                }
+            } else continue;
+        }
+    }
+
 }
 
 void World::purgeEntityBuffer() {
@@ -102,12 +193,19 @@ void World::updateEntities() {
     for (int j = 0; j < _entities.size(); j++) {
         auto& entity = _entities.at(j);
 
-        if (!entity->isProp() && entity->isActive()) {
+        if (!entity->isProp() && entity->isActive() && !entity->isMob()) {
             entity->update();
             continue;
         } else if (!entity->isActive()) {
-            // this causes a crash if there's a bunch of projectiles 
+            // this crashes the game if there's a bunch of projectiles 
             //_entities.erase(_entities.begin() + j);
+        } else if (entity->isDormant()) {
+            if (entity->getDormancyTime() >= entity->getDormancyTimeout()) {
+                entity->deactivate();
+                continue;
+            }
+
+            entity->incrementDormancyTimer();
         }
 
         int notInChunkCount = 0;
@@ -117,8 +215,23 @@ void World::updateEntities() {
             }
         }
 
-        if (notInChunkCount == _chunks.size()) _entities.erase(_entities.begin() + j);
-        else entity->update();
+        if (notInChunkCount == _chunks.size() && entity->isProp()) _entities.erase(_entities.begin() + j);
+        else if (notInChunkCount == _chunks.size() && entity->isMob() && !entity->isDormant()) {
+            if (entity->getTimeOutOfChunk() >= entity->getMaxTimeOutOfChunk()) {
+                entity->setDormant(true);
+                continue;
+            }
+
+            entity->incrementOutOfChunkTimer();
+            entity->update();
+        } else if (notInChunkCount < _chunks.size() && entity->isMob() && entity->isDormant()) {
+            entity->setDormant(false);
+            entity->resetDormancyTimer();
+        } else if (notInChunkCount < _chunks.size() && entity->isMob()) {
+            entity->resetOutOfChunkTimer();
+            entity->update();
+        }
+        else if (!entity->isDormant()) entity->update();
     }
 }
 
@@ -240,16 +353,12 @@ void World::generateChunkEntities(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    // props
     int grassSpawnRate = 5000;
     int smallTreeSpawnRate = 50000;
     int cactusSpawnRate = 200000;
     int smallSavannaTreeSpawnRate = 200000;
     int largeSavannaTreeSpawnRate = 250000;
     int smallTundraTreeSpawnRate = 300000;
-
-    // mobs
-    int penguinSpawnRate = 80000;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -299,14 +408,6 @@ void World::generateChunkEntities(Chunk& chunk) {
                     std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _entityBuffer.push_back(tree);
-                }
-
-                boost::random::uniform_int_distribution<> penguinDist(0, penguinSpawnRate);
-                if (penguinDist(_mobGen) == 0) {
-                    std::shared_ptr<Penguin> peng = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(x, y)));
-                    peng->loadSprite(_spriteSheet);
-                    peng->setWorld(this);
-                    _entityBuffer.push_back(peng);
                 }
             }
         }
@@ -499,10 +600,6 @@ TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
     } else return TERRAIN_TYPE::VOID;
 }
 
-void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
-    _spriteSheet = spriteSheet;
-}
-
 TERRAIN_TYPE World::getTerrainDataAt(sf::Vector2f pos) {
     for (Chunk& chunk : _chunks) {
         if (chunkContains(chunk, pos)) return getTerrainDataAt(&chunk, pos);
@@ -512,6 +609,10 @@ TERRAIN_TYPE World::getTerrainDataAt(sf::Vector2f pos) {
 
 TERRAIN_TYPE World::getTerrainDataAt(float x, float y) {
     return getTerrainDataAt(sf::Vector2f(x, y));
+}
+
+void World::loadSpriteSheet(std::shared_ptr<sf::Texture> spriteSheet) {
+    _spriteSheet = spriteSheet;
 }
 
 std::shared_ptr<sf::Texture> World::getSpriteSheet() const {
@@ -532,6 +633,13 @@ bool World::showDebug() const {
 
 std::shared_ptr<Player> World::getPlayer() const {
     return _player;
+}
+
+int World::getMobCount() const {
+    int count = 0;
+    for (auto& entity : getEntities())
+        if (entity->isMob() && entity->isActive()) count++;
+    return count;
 }
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {

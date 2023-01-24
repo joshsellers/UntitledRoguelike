@@ -7,6 +7,9 @@
 constexpr int SPRITE_SHEET_SHIFT = 4;
 constexpr int TILE_SIZE = 16;
 
+constexpr int DEFAULT_DORMANCY_TIMEOUT = 60 * 30;
+constexpr int DEFAULT_MAX_TIME_OUT_OF_CHUNK = 60 * 15;
+
 enum MOVING_DIRECTION {
     UP = 2,
     DOWN = 0,
@@ -34,6 +37,7 @@ public:
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet) = 0;
 
+    bool isMob() const;
     bool isProp() const;
     bool canPickUpItems() const;
 
@@ -49,6 +53,19 @@ public:
     World* getWorld() const;
 
     bool isActive() const;
+    void deactivate();
+
+    bool isDormant() const;
+    void setDormant(bool dormant);
+    int getDormancyTimeout() const;
+    int getDormancyTime() const;
+    void resetDormancyTimer();
+    void incrementDormancyTimer();
+
+    int getMaxTimeOutOfChunk() const;
+    int getTimeOutOfChunk() const;
+    void resetOutOfChunkTimer();
+    void incrementOutOfChunkTimer();
 
     bool isDamageable() const;
 
@@ -82,6 +99,7 @@ protected:
     bool _isMoving = false;
     unsigned int _movingDir = DOWN;
 
+    bool _isMob = false;
     const bool _isProp = false;
     bool _canPickUpItems = false;
 
@@ -90,6 +108,13 @@ protected:
     World* _world = nullptr;
 
     bool _isActive = true;
+    bool _isDormant = false;
+
+    int _dormancyTimer = 0;
+    int _dormancyTimeout = DEFAULT_DORMANCY_TIMEOUT;
+
+    int _outOfChunkTimer = 0;
+    int _maxTimeOutOfChunk = DEFAULT_MAX_TIME_OUT_OF_CHUNK;
 
     sf::Vector2f _calculatedBarrelPos;
     sf::Vector2f _targetPos;

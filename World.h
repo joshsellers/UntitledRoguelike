@@ -14,22 +14,36 @@ constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
 
 enum class TERRAIN_COLOR : sf::Uint32 {
-    WATER_DEEP = 0X3370CC,
-    WATER_MID = 0X4084E2,
-    WATER_SHALLOW = 0X55AEF0,
+    WATER_DEEP = 0x3370CC,
+    WATER_MID = 0x4084E2,
+    WATER_SHALLOW = 0x55AEF0,
 
-    SAND = 0XF7E898,
-    DIRT_LOW = 0X77C73A,
-    DIRT_HIGH = 0X417D13,
+    SAND = 0xF7E898,
+    DIRT_LOW = 0x77C73A,
+    DIRT_HIGH = 0x417D13,
 
-    MOUNTAIN_LOW = 0X5B5E5C,
-    MOUNTAIN_MID = 0X414545,
-    MOUNTAIN_HIGH = 0XE2EDEC,
+    MOUNTAIN_LOW = 0x5B5E5C,
+    MOUNTAIN_MID = 0x414545,
+    MOUNTAIN_HIGH = 0xE2EDEC,
 
     TUNDRA = MOUNTAIN_HIGH,
-    SAVANNA = 0X95A54F, //0XB5954F
-    DESERT = 0XFDE898
+    SAVANNA = 0x95A54F, //0xB5954F
+    DESERT = 0xFDE898
 };
+
+enum class MOB_TYPE : int {
+    PENGUIN = 0,
+    TURTLE = 1
+};
+
+constexpr int TUNDRA_MOB_COUNT = 1;
+constexpr MOB_TYPE TUNDRA_MOBS[TUNDRA_MOB_COUNT] = { MOB_TYPE::PENGUIN };
+
+constexpr int GRASS_MOB_COUNT = 1;
+constexpr MOB_TYPE GRASS_MOBS[GRASS_MOB_COUNT] = { MOB_TYPE::TURTLE };
+
+
+constexpr int MAX_ACTIVE_MOBS = 15;
 
 class World {
 public:
@@ -38,12 +52,6 @@ public:
     void update();
 
     void draw(sf::RenderTexture& surface);
-
-    void purgeEntityBuffer();
-    void updateEntities();
-    void eraseChunks(int pX, int pY);
-    void findCurrentChunk(int pX, int pY);
-    void loadNewChunks(int pX, int pY);
 
     int getActiveChunkCount();
 
@@ -60,6 +68,8 @@ public:
 
     void addEntity(std::shared_ptr<Entity> entity);
     std::vector<std::shared_ptr<Entity>> getEntities() const;
+
+    int getMobCount() const;
 
     std::shared_ptr<Player> getPlayer() const;
 
@@ -84,6 +94,16 @@ private:
     std::vector<sf::Vector2f> _destroyedProps;
     bool isPropDestroyedAt(sf::Vector2f pos) const;
 
+    void spawnMobs();
+    sf::Clock _mobSpawnClock;
+    boost::random::mt19937 _mobGen = boost::random::mt19937();
+
+    void purgeEntityBuffer();
+    void updateEntities();
+    void eraseChunks(int pX, int pY);
+    void findCurrentChunk(int pX, int pY);
+    void loadNewChunks(int pX, int pY);
+
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);
     bool chunkContains(Chunk& chunk, sf::Vector2f pos);
@@ -96,7 +116,6 @@ private:
     int _seed;
 
     boost::random::mt19937 gen = boost::random::mt19937();
-    boost::random::mt19937 _mobGen = boost::random::mt19937();
 
     void sortEntities();
 

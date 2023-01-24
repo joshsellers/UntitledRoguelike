@@ -1,20 +1,21 @@
-#include "Penguin.h"
+#include "Turtle.h"
+
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "Util.h"
 
-Penguin::Penguin(sf::Vector2f pos) :
-Entity(pos, 0.5, 1, 1, false) {
+Turtle::Turtle(sf::Vector2f pos) :
+    Entity(pos, 0.25, 1, 1, false) {
     _targetPos = _pos;
     _gen.seed(_pos.x + _pos.y);
 
     setMaxHitPoints(20);
     heal(getMaxHitPoints());
 
-    _hitBoxXOffset = -TILE_SIZE / 2 + 3;
-    _hitBoxYOffset = 0;
-    _hitBox.width = TILE_SIZE - 6;
-    _hitBox.height = TILE_SIZE;
+    _hitBoxXOffset = -TILE_SIZE / 2;
+    _hitBoxYOffset = 6;
+    _hitBox.width = TILE_SIZE;
+    _hitBox.height = 10;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -23,7 +24,7 @@ Entity(pos, 0.5, 1, 1, false) {
     _isMob = true;
 }
 
-void Penguin::update() {
+void Turtle::update() {
     float xa = 0, ya = 0;
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE;
@@ -80,20 +81,18 @@ void Penguin::update() {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
-void Penguin::draw(sf::RenderTexture& surface) {
-    int xOffset = getMovingDir() == UP ? TILE_SIZE : 0;
+void Turtle::draw(sf::RenderTexture& surface) {
+    int xOffset = getMovingDir() * TILE_SIZE;
     int yOffset = isMoving() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        8 * TILE_SIZE + xOffset, 4 * TILE_SIZE + yOffset, TILE_SIZE, TILE_SIZE
+        8 * TILE_SIZE + xOffset, 8 * TILE_SIZE + yOffset, TILE_SIZE, TILE_SIZE
     ));
-    if (getMovingDir() == LEFT) _sprite.setScale(-1, 1);
-    else _sprite.setScale(1, 1);
 
     surface.draw(_sprite);
 }
 
-void Penguin::damage(int damage) {
+void Turtle::damage(int damage) {
     _hitPoints -= damage;
     if (_hitPoints <= 0) {
         _isActive = false;
@@ -103,9 +102,9 @@ void Penguin::damage(int damage) {
     }
 }
 
-void Penguin::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+void Turtle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(8 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+    _sprite.setTextureRect(sf::IntRect(8 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin(TILE_SIZE / 2, 0);
 }
