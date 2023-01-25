@@ -8,7 +8,7 @@
 #include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
 
-const std::string VERSION = "0.0220";
+const std::string VERSION = "0.0221";
 
 class Game : public UIButtonListener {
 public:
@@ -33,9 +33,6 @@ public:
 
 private:
 	void initUI();
-
-	ParticleSystem _testPSystem = ParticleSystem(1);
-	sf::Clock _pClock;
 
 	bool _showDebug = false;
 	bool _isPaused = false;

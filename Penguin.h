@@ -17,7 +17,6 @@ public:
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 private:
-    sf::Vector2f _targetPos;
 
     boost::random::mt19937 _gen = boost::random::mt19937();
 };

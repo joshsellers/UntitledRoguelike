@@ -10,6 +10,7 @@
 #include "SmallTundraTree.h"
 #include "Penguin.h"
 #include "Turtle.h"
+#include "PlantMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -121,24 +122,17 @@ void World::spawnMobs() {
                         case TERRAIN_TYPE::WATER:
                             return; // for now...
                         case TERRAIN_TYPE::TUNDRA:
-                        {
-                            // select between random types of mobs
-                            boost::random::uniform_int_distribution<> randMobType(0, TUNDRA_MOB_COUNT - 1);
-                            mobType = TUNDRA_MOBS[randMobType(_mobGen)];
-                        }
-                        break;
+                            mobType = TUNDRA_MOBS[getRandMobType(TUNDRA_MOB_COUNT)];
+                            break;
                         case TERRAIN_TYPE::GRASS_LOW: 
-                        {
-                            boost::random::uniform_int_distribution<> randMobType(0, GRASS_MOB_COUNT - 1);
-                            mobType = GRASS_MOBS[randMobType(_mobGen)];
-                        }
-                        break;
+                            mobType = GRASS_MOBS[getRandMobType(GRASS_MOB_COUNT)];
+                            break;
                         case TERRAIN_TYPE::GRASS_HIGH:
-                        {
-                            boost::random::uniform_int_distribution<> randMobType(0, GRASS_MOB_COUNT - 1);
-                            mobType = GRASS_MOBS[randMobType(_mobGen)];
-                        }
-                        break;
+                            mobType = GRASS_MOBS[getRandMobType(GRASS_MOB_COUNT)];
+                            break;
+                        case TERRAIN_TYPE::SAVANNA:
+                            mobType = SAVANNA_MOBS[getRandMobType(SAVANNA_MOB_COUNT)];
+                            break;
                         default:
                             return;
                     }
@@ -157,6 +151,9 @@ void World::spawnMobs() {
                             case MOB_TYPE::TURTLE:
                                 mob = std::shared_ptr<Turtle>(new Turtle(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::PLANT_MAN:
+                                mob = std::shared_ptr<PlantMan>(new PlantMan(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }
@@ -169,7 +166,11 @@ void World::spawnMobs() {
             } else continue;
         }
     }
+}
 
+int World::getRandMobType(int mobListSize) {
+    boost::random::uniform_int_distribution<> randMobType(0, mobListSize - 1);
+    return randMobType(_mobGen);
 }
 
 void World::purgeEntityBuffer() {
@@ -495,10 +496,12 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
+            double xOffset = 20000.;
+            double yOffset = 20000.;
             int biomeOctaves = 2;
             float biomeSampleRate = 0.00001;
-            double temperatureNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 10, biomeOctaves);
-            double precipitationNoise = perlin.normalizedOctave3D_01(x * biomeSampleRate, y * biomeSampleRate, 40, biomeOctaves);
+            double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
+            double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
             float tundraTemp = 0.460 + 0.0075;
             float tundraPrecLow = 0.240 - 0.0075;
@@ -677,4 +680,10 @@ bool World::isPropDestroyedAt(sf::Vector2f pos) const {
     for (auto& prop : _destroyedProps)
         if (prop.x == pos.x && prop.y == pos.y) return true;
     return false;
+}
+
+void World::reseed(const unsigned int seed) {
+    _seed = seed;
+    srand(_seed);
+    gen.seed(_seed);
 }

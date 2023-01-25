@@ -91,11 +91,6 @@ void Game::update() {
 
 void Game::draw(sf::RenderTexture& surface) {
     _world.draw(surface);
-
-    /*_testPSystem.setEmitter(_window->mapPixelToCoords(sf::Mouse::getPosition(*_window), surface.getView()));
-
-    _testPSystem.update(_pClock.restart());
-    surface.draw(_testPSystem);*/
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {
@@ -120,6 +115,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _entityCountLabel.setString(std::to_string(entityCount) + " entit" + (entityCount > 1 ? "ies" : "y"));
         surface.draw(_entityCountLabel);
 
+        _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
         surface.draw(_seedLabel);
 
         _playerPosLabel.setString("x: " + std::to_string(_player->getPosition().x) + ", y: " + std::to_string(_player->getPosition().y));

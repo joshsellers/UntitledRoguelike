@@ -14,6 +14,15 @@ long long currentTimeMillis() {
     return millis.count();
 }
 
+long long currentTimeNano() {
+    auto time = std::chrono::system_clock::now();
+
+    auto since_epoch = time.time_since_epoch();
+    auto nano = std::chrono::duration_cast<std::chrono::nanoseconds>
+        (since_epoch);
+    return nano.count();
+}
+
 std::string trimString(std::string str) {
     if (str.find(".") != std::string::npos) {
         for (std::string::size_type s = str.length() - 1; s > 0; --s) {

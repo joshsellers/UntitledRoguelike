@@ -1,12 +1,13 @@
-#ifndef _TURTLE_H
-#define _TURTLE_H
+#ifndef _PLANT_MAN_H
+#define _PLANT_MAN_H
 
 #include "Entity.h"
 #include <boost/random/mersenne_twister.hpp>
 
-class Turtle : public Entity {
+
+class PlantMan : public Entity {
 public:
-    Turtle(sf::Vector2f pos);
+    PlantMan(sf::Vector2f pos);
 
     void update();
 

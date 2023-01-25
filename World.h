@@ -33,14 +33,22 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
 enum class MOB_TYPE : int {
     PENGUIN = 0,
-    TURTLE = 1
+    TURTLE = 1,
+    PLANT_MAN = 2
 };
 
 constexpr int TUNDRA_MOB_COUNT = 1;
 constexpr MOB_TYPE TUNDRA_MOBS[TUNDRA_MOB_COUNT] = { MOB_TYPE::PENGUIN };
 
-constexpr int GRASS_MOB_COUNT = 1;
-constexpr MOB_TYPE GRASS_MOBS[GRASS_MOB_COUNT] = { MOB_TYPE::TURTLE };
+constexpr int GRASS_MOB_COUNT = 7;
+constexpr MOB_TYPE GRASS_MOBS[GRASS_MOB_COUNT] = { 
+    MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
+    MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
+    MOB_TYPE::PLANT_MAN 
+};
+
+constexpr int SAVANNA_MOB_COUNT = 1;
+constexpr MOB_TYPE SAVANNA_MOBS[SAVANNA_MOB_COUNT] = { MOB_TYPE::PLANT_MAN };
 
 
 constexpr int MAX_ACTIVE_MOBS = 15;
@@ -77,6 +85,8 @@ public:
 
     void propDestroyedAt(sf::Vector2f pos);
 
+    void reseed(const unsigned int seed);
+
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 
@@ -95,6 +105,7 @@ private:
     bool isPropDestroyedAt(sf::Vector2f pos) const;
 
     void spawnMobs();
+    int getRandMobType(int mobListSize);
     sf::Clock _mobSpawnClock;
     boost::random::mt19937 _mobGen = boost::random::mt19937();
 
@@ -113,7 +124,7 @@ private:
 
     sf::Font _font; // TEMP
 
-    int _seed;
+    unsigned int _seed;
 
     boost::random::mt19937 gen = boost::random::mt19937();
 

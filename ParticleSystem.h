@@ -7,10 +7,10 @@ public:
 
     ParticleSystem(unsigned int count) :
         m_particles(count),
-        m_vertices(sf::Points, count),
+        m_vertices(sf::Quads, count * 4),
         m_lifetime(sf::seconds(3.f)),
-        m_emitter(0.f, 0.f) {
-    }
+        m_emitter(0.f, 0.f)
+    {}
 
     void setEmitter(sf::Vector2f position) {
         m_emitter = position;
@@ -63,8 +63,8 @@ private:
         m_particles[index].lifetime = sf::milliseconds((std::rand() % 2000) + 1000);
 
         // reset the position of the corresponding vertex
-        m_vertices[index].position = m_emitter;
-        m_vertices[index].texCoords = sf::Vector2f(0, 0);
+        m_vertices[index].position = sf::Vector2f(m_emitter.x + index, m_emitter.y + index);
+        m_vertices[index].texCoords = sf::Vector2f(index * 16, index * 16);
     }
 
     std::vector<Particle> m_particles;

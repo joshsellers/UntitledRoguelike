@@ -9,6 +9,8 @@ int randomInt(int min, int max);
 
 long long currentTimeMillis();
 
+long long currentTimeNano();
+
 std::string trimString(std::string str);
 
 #endif

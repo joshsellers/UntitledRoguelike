@@ -132,6 +132,24 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         } else {
             return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
         }
+    } else if (commandHeader == "killall") {
+        for (auto& entity : _world->getEntities()) {
+            entity->deactivate();
+        }
+        _world->getPlayer()->activate();
+        return "Set all entities to inactive";
+    } else if (commandHeader == "reseed") {
+        if (parsedCommand.size() > 1) {
+            try {
+                unsigned int seed = stoul(parsedCommand.at(1));
+                _world->reseed(seed);
+                return "World seed set to " + std::to_string(_world->getSeed());
+            } catch (std::exception ex) {
+                return ex.what();
+            }
+        } else {
+            return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+        }
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }

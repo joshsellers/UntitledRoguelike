@@ -1,19 +1,19 @@
-#include "Penguin.h"
+#include "PlantMan.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "Util.h"
 
-Penguin::Penguin(sf::Vector2f pos) :
-Entity(pos, 0.5, 1, 1, false) {
+PlantMan::PlantMan(sf::Vector2f pos) :
+    Entity(pos, 1, 1, 1, false) {
     _gen.seed(currentTimeNano());
 
-    setMaxHitPoints(20);
+    setMaxHitPoints(75);
     heal(getMaxHitPoints());
 
-    _hitBoxXOffset = -TILE_SIZE / 2 + 3;
+    _hitBoxXOffset = -TILE_SIZE / 2;
     _hitBoxYOffset = 0;
-    _hitBox.width = TILE_SIZE - 6;
-    _hitBox.height = TILE_SIZE;
+    _hitBox.width = TILE_SIZE;
+    _hitBox.height = TILE_SIZE * 3;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -22,9 +22,9 @@ Entity(pos, 0.5, 1, 1, false) {
     _isMob = true;
 }
 
-void Penguin::update() {
+void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
-    feetPos.y += TILE_SIZE;
+    feetPos.y += TILE_SIZE * 3;
 
     wander(feetPos, _gen);
 
@@ -33,20 +33,18 @@ void Penguin::update() {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
-void Penguin::draw(sf::RenderTexture& surface) {
-    int xOffset = getMovingDir() == UP ? TILE_SIZE : 0;
-    int yOffset = isMoving() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
+void PlantMan::draw(sf::RenderTexture& surface) {
+    int xOffset = getMovingDir() * TILE_SIZE;
+    int yOffset = isMoving() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 3: 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        8 * TILE_SIZE + xOffset, 4 * TILE_SIZE + yOffset, TILE_SIZE, TILE_SIZE
+        24 * TILE_SIZE + xOffset, 13 * TILE_SIZE + yOffset, TILE_SIZE, TILE_SIZE * 3
     ));
-    if (getMovingDir() == LEFT) _sprite.setScale(-1, 1);
-    else _sprite.setScale(1, 1);
 
     surface.draw(_sprite);
 }
 
-void Penguin::damage(int damage) {
+void PlantMan::damage(int damage) {
     _hitPoints -= damage;
     if (_hitPoints <= 0) {
         _isActive = false;
@@ -56,9 +54,9 @@ void Penguin::damage(int damage) {
     }
 }
 
-void Penguin::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+void PlantMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(8 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+    _sprite.setTextureRect(sf::IntRect(24 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE * 3));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin(TILE_SIZE / 2, 0);
 }

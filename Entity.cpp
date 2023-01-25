@@ -1,10 +1,14 @@
 #include "Entity.h"
+#include <boost/random/uniform_int_distribution.hpp>
+#include "World.h"
 
 Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp) {
 
     _pos = _isProp ? sf::Vector2f(pos.x - (_spriteWidth * TILE_SIZE) / 2, pos.y - (_spriteHeight * TILE_SIZE)) : pos;
     _baseSpeed = baseSpeed;
+
+    _wanderTargetPos = _pos;
 }
 
 void Entity::move(float xa, float ya) {
@@ -17,6 +21,60 @@ void Entity::move(float xa, float ya) {
     _pos.y += ya;
     _velocity.x = xa;
     _velocity.y = ya;
+}
+
+void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator) {
+    if (_world != nullptr) {
+        float xa = 0, ya = 0;
+
+        boost::random::uniform_int_distribution<> shouldMove(0, 100);
+        if (_wanderTargetPos == feetPos && shouldMove(generator) == 0 ||
+            _world->getTerrainDataAt(_wanderTargetPos) == TERRAIN_TYPE::WATER) {
+            const int maxDist = _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER ? 200 : 100;
+            boost::random::uniform_int_distribution<> xDist(-maxDist, maxDist);
+            boost::random::uniform_int_distribution<> yDist(-maxDist, maxDist);
+            _wanderTargetPos.x = feetPos.x + xDist(generator);
+            _wanderTargetPos.y = feetPos.y + yDist(generator);
+        } else if (feetPos.x < _wanderTargetPos.x) {
+            if (_world->getTerrainDataAt(feetPos.x + getBaseSpeed(), feetPos.y) == TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                xa += getBaseSpeed();
+                _movingDir = RIGHT;
+            }
+        } else if (feetPos.x > _wanderTargetPos.x) {
+            if (_world->getTerrainDataAt(feetPos.x - getBaseSpeed(), feetPos.y) == TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                xa -= getBaseSpeed();
+                _movingDir = LEFT;
+            }
+        } else if (feetPos.y < _wanderTargetPos.y) {
+            if (_world->getTerrainDataAt(feetPos.x, feetPos.y + getBaseSpeed()) == TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                ya += getBaseSpeed();
+                _movingDir = DOWN;
+            }
+        } else if (feetPos.y > _wanderTargetPos.y) {
+            if (_world->getTerrainDataAt(feetPos.x, feetPos.y - getBaseSpeed()) == TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                ya -= getBaseSpeed();
+                _movingDir = UP;
+            }
+        }
+
+        move(xa, ya);
+    }
 }
 
 bool Entity::isMoving() const {
@@ -85,6 +143,10 @@ bool Entity::isActive() const {
 
 void Entity::deactivate() {
     _isActive = false;
+}
+
+void Entity::activate() {
+    _isActive = true;
 }
 
 bool Entity::isDormant() const {

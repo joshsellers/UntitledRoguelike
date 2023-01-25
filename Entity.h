@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Inventory.h"
+#include <boost/random/mersenne_twister.hpp>
 
 constexpr int SPRITE_SHEET_SHIFT = 4;
 constexpr int TILE_SIZE = 16;
@@ -54,6 +55,7 @@ public:
 
     bool isActive() const;
     void deactivate();
+    void activate();
 
     bool isDormant() const;
     void setDormant(bool dormant);
@@ -98,6 +100,9 @@ protected:
 
     bool _isMoving = false;
     unsigned int _movingDir = DOWN;
+
+    void wander(sf::Vector2f feetPos, boost::random::mt19937& generator);
+    sf::Vector2f _wanderTargetPos;
 
     bool _isMob = false;
     const bool _isProp = false;
