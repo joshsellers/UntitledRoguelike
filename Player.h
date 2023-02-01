@@ -28,6 +28,8 @@ public:
     bool isSwimming() const;
     bool isDodging() const;
 
+    void damage(int damage);
+
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     bool freeMove = false;

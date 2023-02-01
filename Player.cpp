@@ -1,8 +1,8 @@
 #include "Player.h"
-#include "World.h"
 #include <iostream>
 #include "Item.h"
 #include "Globals.h"
+#include "World.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
@@ -10,6 +10,14 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 
     setMaxHitPoints(100);
     heal(getMaxHitPoints());
+
+    _hitBoxXOffset = 0;
+    _hitBoxYOffset = 0;
+    _hitBox.width = TILE_SIZE;
+    _hitBox.height = TILE_SIZE * 2;
+
+    _hitBox.left = getPosition().x + _hitBoxXOffset;
+    _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
 void Player::update() {
@@ -56,7 +64,17 @@ void Player::update() {
 
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
 
-    _sprite.setPosition(getPosition());
+    _sprite.setPosition(getPosition()); 
+
+    if (isSwimming()) {
+        _hitBoxYOffset = TILE_SIZE;
+        _hitBox.height = TILE_SIZE;
+    } else {
+        _hitBoxYOffset = 0;
+        _hitBox.height = TILE_SIZE * 2;
+    }
+    _hitBox.left = getPosition().x + _hitBoxXOffset;
+    _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
 void Player::draw(sf::RenderTexture& surface) {
@@ -96,6 +114,57 @@ void Player::draw(sf::RenderTexture& surface) {
         if (!isDodging() || !isMoving()) drawEquipables(surface);
         drawTool(surface);
     }
+
+    //// i guess whatever 16 is multiplied by has to be odd
+    //int dist = 16 * 79;
+    //sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+    //sf::Vector2i goal(_window->mapPixelToCoords(mPos, surface.getView()).x, _window->mapPixelToCoords(mPos, surface.getView()).y);
+    //sf::Vector2i cLoc(((int)getPosition().x) + PLAYER_WIDTH / 2, ((int)getPosition().y) + PLAYER_HEIGHT / 2);
+    //SearchArea searchArea = PathFinder::createSearchArea(sf::Vector2i(cLoc.x - dist / 2, cLoc.y - dist / 2), dist, this, *getWorld());
+    //std::unordered_map<sf::Vector2i, sf::Vector2i> map = PathFinder::breadthFirstSearch(searchArea, cLoc, goal);
+
+    //std::cout << searchArea.walls.size() << std::endl;
+    //for (auto& point : map) {
+    //    if (sf::IntRect(point.first.x, point.first.y, 16, 16).contains(goal)) {
+    //        goal = point.first;
+    //        break;
+    //    }
+    //    /*sf::RectangleShape a;
+    //    a.setPosition(point.first.x, point.first.y);
+    //    a.setSize(sf::Vector2f(10, 10));
+    //    a.setFillColor(sf::Color(0xFF0000FF));
+    //    surface.draw(a);
+
+    //    sf::RectangleShape b;
+    //    b.setPosition(point.second.x, point.second.y);
+    //    b.setSize(sf::Vector2f(5, 5));
+    //    b.setFillColor(sf::Color(0x00FF00FF));
+    //    surface.draw(b);
+
+    //    sf::RectangleShape c;
+    //    c.setPosition(goal.x, goal.y);
+    //    c.setSize(sf::Vector2f(5, 5));
+    //    c.setFillColor(sf::Color(0x0000FFFF));
+    //    surface.draw(c);*/
+    //}
+
+    //for (auto& wall : searchArea.walls) {
+    //    sf::RectangleShape a;
+    //    a.setPosition(wall.x, wall.y);
+    //    a.setSize(sf::Vector2f(16, 16));
+    //    a.setFillColor(sf::Color(0xFF000099));
+    //    surface.draw(a);
+    //}
+
+    //std::vector<sf::Vector2i> path = PathFinder::reconstruct_path(cLoc, goal, map);
+
+    //for (auto& point : path) {
+    //    sf::RectangleShape a;
+    //    a.setPosition(point.x, point.y);
+    //    a.setSize(sf::Vector2f(16, 16));
+    //    a.setFillColor(sf::Color(0xFF00FF99));
+    //    surface.draw(a);
+    //}
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {
@@ -267,7 +336,7 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
     const int threshold = 25;
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
         for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
+            if (!entity->compare(this) && entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
                 entity->damage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage());
             }
         }
@@ -302,6 +371,15 @@ bool Player::isSwimming() const {
 
 bool Player::isDodging() const {
     return _isDodging;
+}
+
+void Player::damage(int damage) {
+    if (!isDodging()) {
+        _hitPoints -= damage;
+        if (_hitPoints <= 0) {
+            _isActive = false;
+        }
+    }
 }
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {

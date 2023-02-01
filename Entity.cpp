@@ -193,6 +193,23 @@ bool Entity::isDamageable() const {
     return getMaxHitPoints() > 0;
 }
 
+void Entity::knockBack(float amt, MOVING_DIRECTION dir) {
+    switch (dir) {
+        case UP:
+            move(0, -amt);
+            break;
+        case DOWN:
+            move(0, amt);
+            break;
+        case LEFT:
+            move(-amt, 0);
+            break;
+        case RIGHT:
+            move(amt, 0);
+            break;
+    }
+}
+
 void Entity::setMaxHitPoints(int maxHitPoints) {
     _maxHitPoints = maxHitPoints;
 }
@@ -236,4 +253,8 @@ sf::Vector2f Entity::getCalculatedBarrelPos() const {
 
 sf::Vector2f Entity::getTargetPos() const {
     return _targetPos;
+}
+
+bool Entity::compare(Entity* entity) const {
+    return entity->_hitBox == _hitBox;
 }

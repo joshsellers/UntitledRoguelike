@@ -18,6 +18,8 @@ public:
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 private:
 
+    int _currentPathIndex = 1;
+
     boost::random::mt19937 _gen = boost::random::mt19937();
 };
 

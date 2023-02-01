@@ -51,7 +51,7 @@ void World::update() {
 void World::draw(sf::RenderTexture& surface) {
     sortEntities();
 
-    for (Chunk& chunk : _chunks) {
+     for (Chunk& chunk : _chunks) {
         surface.draw(chunk.sprite);
         /*sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
 

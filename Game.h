@@ -8,7 +8,7 @@
 #include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
 
-const std::string VERSION = "0.0221";
+const std::string VERSION = "0.0223";
 
 class Game : public UIButtonListener {
 public:

@@ -2,6 +2,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "Util.h"
+#include "PathFinder.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
     Entity(pos, 1, 1, 1, false) {
@@ -26,7 +27,16 @@ void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 3;
 
-    wander(feetPos, _gen);
+    
+
+    for (auto& entity : getWorld()->getEntities()) {
+        if (entity->isActive() && !entity->isMob() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
+            entity->damage(5);
+            entity->knockBack(20.f, getMovingDir());
+            break;
+        }
+    }
+
 
     _sprite.setPosition(getPosition());
     _hitBox.left = getPosition().x + _hitBoxXOffset;
@@ -42,6 +52,48 @@ void PlantMan::draw(sf::RenderTexture& surface) {
     ));
 
     surface.draw(_sprite);
+
+    int dist = 16 * 79;
+    sf::Vector2i goal((int)_world->getPlayer()->getPosition().x, (int)_world->getPlayer()->getPosition().y);
+    sf::Vector2i cLoc(((int)getPosition().x) + PLAYER_WIDTH / 2, ((int)getPosition().y) + 48 / 2);
+    SearchArea searchArea = PathFinder::createSearchArea(sf::Vector2i(cLoc.x - dist / 2, cLoc.y - dist / 2), dist, this, *getWorld());
+    std::unordered_map<sf::Vector2i, sf::Vector2i> map = PathFinder::breadthFirstSearch(searchArea, cLoc, goal);
+
+    for (auto& point : map) {
+        if (sf::IntRect(point.first.x, point.first.y, GRID_UNIT_SIZE, GRID_UNIT_SIZE).contains(goal)) {
+            goal = point.first;
+            break;
+        }
+    }
+
+    std::vector<sf::Vector2i> path = PathFinder::reconstruct_path(cLoc, goal, map);
+    if (path.size()) {
+        sf::Vector2i goalPos = path.at(0);
+        int xa = 0, ya = 0;
+        if (goalPos.y < cLoc.y) {
+            ya--;
+            _movingDir = UP;
+        } else if (goalPos.y > cLoc.y) {
+            ya++;
+            _movingDir = DOWN;
+        } else if (goalPos.x < cLoc.x) {
+            xa--;
+            _movingDir = LEFT;
+        } else if (goalPos.x > cLoc.x) {
+            xa++;
+            _movingDir = RIGHT;
+        }
+
+        move(xa, ya);
+    }
+
+    for (auto& point : path) {
+        sf::RectangleShape a;
+        a.setPosition(point.x, point.y);
+        a.setSize(sf::Vector2f(16, 16));
+        a.setFillColor(sf::Color(0xFF00FF99));
+        surface.draw(a);
+    }
 }
 
 void PlantMan::damage(int damage) {

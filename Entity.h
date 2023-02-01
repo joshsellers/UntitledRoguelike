@@ -70,6 +70,8 @@ public:
     void incrementOutOfChunkTimer();
 
     bool isDamageable() const;
+    
+    void knockBack(float amt, MOVING_DIRECTION dir);
 
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
@@ -83,6 +85,8 @@ public:
 
     sf::Vector2f getCalculatedBarrelPos() const;
     sf::Vector2f getTargetPos() const;
+
+    bool compare(Entity* entity) const;
 
 protected:
     const int _spriteWidth, _spriteHeight;
