@@ -53,7 +53,7 @@ void PlantMan::draw(sf::RenderTexture& surface) {
 
     surface.draw(_sprite);
 
-    int dist = 16 * 79;
+    int dist = GRID_UNIT_SIZE * 79;
     sf::Vector2i goal((int)_world->getPlayer()->getPosition().x, (int)_world->getPlayer()->getPosition().y);
     sf::Vector2i cLoc(((int)getPosition().x) + PLAYER_WIDTH / 2, ((int)getPosition().y) + 48 / 2);
     SearchArea searchArea = PathFinder::createSearchArea(sf::Vector2i(cLoc.x - dist / 2, cLoc.y - dist / 2), dist, this, *getWorld());
@@ -90,7 +90,7 @@ void PlantMan::draw(sf::RenderTexture& surface) {
     for (auto& point : path) {
         sf::RectangleShape a;
         a.setPosition(point.x, point.y);
-        a.setSize(sf::Vector2f(16, 16));
+        a.setSize(sf::Vector2f(GRID_UNIT_SIZE, GRID_UNIT_SIZE));
         a.setFillColor(sf::Color(0xFF00FF99));
         surface.draw(a);
     }

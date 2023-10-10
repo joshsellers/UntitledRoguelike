@@ -1,6 +1,8 @@
 #include "UICommandPrompt.h"
 #include <iostream>
 #include <boost/algorithm/string.hpp>
+#include "PlantMan.h"
+#include "Util.h"
 
 UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     UIElement(30, 30, 4, 4, false, false, font) {
@@ -147,6 +149,30 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
             } catch (std::exception ex) {
                 return ex.what();
             }
+        } else {
+            return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+        }
+    } else if (commandHeader == "summon") {
+        if (parsedCommand.size() > 1) {
+            const std::string entityName = parsedCommand.at(1);
+            const sf::Vector2f playerPos = _world->getPlayer()->getPosition();
+            const int offsetX = randomInt(8, 16);
+            const int offsetY = randomInt(8, 16);
+            const int signX = randomInt(-1, 0);
+            const int signY = randomInt(-1, 0);
+            const sf::Vector2f pos(playerPos.x + (offsetX * (signX == 0 ? 1 : signX)), playerPos.y + (offsetY * (signY == 0 ? 1 : signY)));
+
+            std::shared_ptr<Entity> entity = nullptr;
+            if (entityName == "plantman") {
+                entity = std::shared_ptr<PlantMan>(new PlantMan(pos));
+            } else {
+                return entityName + " is not a valid entity name";
+            }
+
+            entity->loadSprite(_world->getSpriteSheet());
+            entity->setWorld(_world);
+            _world->addEntity(entity);
+            return "Spawned one " + entityName;
         } else {
             return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
         }

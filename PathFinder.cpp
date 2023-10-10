@@ -69,13 +69,13 @@ SearchArea PathFinder::createSearchArea(sf::Vector2i pos, int size, Entity* sour
             if (world.getTerrainDataAt(x, y) == TERRAIN_TYPE::WATER) {
                 searchArea.walls.insert(sf::Vector2i(x, y));
             }
-            /*for (auto& entity : world.getEntities()) {
+            for (auto& entity : world.getEntities()) {
                 sf::FloatRect entityBounds = entity->getHitBox();
                 sf::FloatRect tileBounds(x - GRID_UNIT_SIZE / 4, y - GRID_UNIT_SIZE / 4, GRID_UNIT_SIZE, GRID_UNIT_SIZE);
                 if (entity->isMob() && entity->isActive() && !entity->compare(source) && entityBounds.intersects(tileBounds)) {
                     searchArea.walls.insert(sf::Vector2i(x, y));
                 }
-            }*/
+            }
         }
     } 
 
