@@ -25,9 +25,9 @@ public:
 
     sf::Vector2f getPosition() const;
 
-    bool isSwimming() const;
     bool isDodging() const;
 
+    void knockBack(float amt, MOVING_DIRECTION dir);
     void damage(int damage);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
@@ -57,8 +57,6 @@ private:
     void drawEquipables(sf::RenderTexture& surface);
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
     void drawTool(sf::RenderTexture& surface);
-
-    bool _isSwimming = false;
 
     float _sprintMultiplier = 2;
 

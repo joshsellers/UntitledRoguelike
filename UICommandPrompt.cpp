@@ -3,6 +3,8 @@
 #include <boost/algorithm/string.hpp>
 #include "PlantMan.h"
 #include "Util.h"
+#include "Turtle.h"
+#include "Penguin.h"
 
 UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     UIElement(30, 30, 4, 4, false, false, font) {
@@ -22,6 +24,7 @@ UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
 }
 
 void UICommandPrompt::update() {
+
 }
 
 void UICommandPrompt::draw(sf::RenderTexture& surface) {
@@ -52,6 +55,25 @@ void UICommandPrompt::mouseMoved(const int mx, const int my) {
 void UICommandPrompt::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
 }
 
+void UICommandPrompt::keyReleased(sf::Keyboard::Key& key) {
+    switch (key) {
+        case sf::Keyboard::Up:
+            if (_historyIndex > 0) {
+                _historyIndex--;
+            }
+            break;
+        case sf::Keyboard::Down:
+            if (_historyIndex < _history.size() - 1) {
+                _historyIndex++;
+            }
+            break;
+        default:
+            return;
+    }
+
+    if (_history.size()) _text.setString(_history.at(_historyIndex));
+}
+
 void UICommandPrompt::textEntered(const sf::Uint32 character) {
     sf::String userInput = _text.getString();
     if (character != 13) {
@@ -62,6 +84,14 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
         }
         _text.setString(userInput);
     } else {
+        for (int i = 0; i < _history.size(); i++) {
+            if (_history.at(i) == userInput) {
+                _history.erase(_history.begin() + i);
+                break;
+            }
+        }
+        if (userInput != "") _history.push_back(userInput);
+        _historyIndex = _history.size();
         std::cout << processCommand(userInput) << std::endl;
         _text.setString("");
     }
@@ -156,23 +186,39 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         if (parsedCommand.size() > 1) {
             const std::string entityName = parsedCommand.at(1);
             const sf::Vector2f playerPos = _world->getPlayer()->getPosition();
-            const int offsetX = randomInt(8, 16);
-            const int offsetY = randomInt(8, 16);
-            const int signX = randomInt(-1, 0);
-            const int signY = randomInt(-1, 0);
-            const sf::Vector2f pos(playerPos.x + (offsetX * (signX == 0 ? 1 : signX)), playerPos.y + (offsetY * (signY == 0 ? 1 : signY)));
 
-            std::shared_ptr<Entity> entity = nullptr;
-            if (entityName == "plantman") {
-                entity = std::shared_ptr<PlantMan>(new PlantMan(pos));
-            } else {
-                return entityName + " is not a valid entity name";
+            int amt = 1;
+            if (parsedCommand.size() > 2) {
+                try {
+                    amt = stoi(parsedCommand.at(2));
+                } catch (std::exception ex) {
+                    return ex.what();
+                }
             }
 
-            entity->loadSprite(_world->getSpriteSheet());
-            entity->setWorld(_world);
-            _world->addEntity(entity);
-            return "Spawned one " + entityName;
+            for (int i = 0; i < amt; i++) {
+                const int offsetX = randomInt(16, 32);
+                const int offsetY = randomInt(16, 32);
+                const int signX = randomInt(-1, 0);
+                const int signY = randomInt(-1, 0);
+                const sf::Vector2f pos(playerPos.x + (offsetX * (signX == 0 ? 1 : signX)), playerPos.y + (offsetY * (signY == 0 ? 1 : signY)));
+
+                std::shared_ptr<Entity> entity = nullptr;
+                if (entityName == "plantman") {
+                    entity = std::shared_ptr<PlantMan>(new PlantMan(pos));
+                } else if (entityName == "turtle") {
+                    entity = std::shared_ptr<Turtle>(new Turtle(pos));
+                } else if (entityName == "penguin") {
+                    entity = std::shared_ptr<Penguin>(new Penguin(pos));
+                } else {
+                    return entityName + " is not a valid entity name";
+                }
+
+                entity->loadSprite(_world->getSpriteSheet());
+                entity->setWorld(_world);
+                _world->addEntity(entity);
+            }
+            return "Spawned " + std::to_string(amt) + " " + entityName + (amt > 1 ? "s" : "");
         } else {
             return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
         }

@@ -365,16 +365,31 @@ sf::Vector2f Player::getPosition() const {
     return _pos;
 }
 
-bool Player::isSwimming() const {
-    return _isSwimming;
-}
-
 bool Player::isDodging() const {
     return _isDodging;
 }
 
+void Player::knockBack(float amt, MOVING_DIRECTION dir) {
+    if (!freeMove) {
+        switch (dir) {
+            case UP:
+                move(0, -amt);
+                break;
+            case DOWN:
+                move(0, amt);
+                break;
+            case LEFT:
+                move(-amt, 0);
+                break;
+            case RIGHT:
+                move(amt, 0);
+                break;
+        }
+    }
+}
+
 void Player::damage(int damage) {
-    if (!isDodging()) {
+    if (!isDodging() && !freeMove) {
         _hitPoints -= damage;
         if (_hitPoints <= 0) {
             _isActive = false;

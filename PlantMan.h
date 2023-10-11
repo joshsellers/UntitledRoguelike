@@ -17,6 +17,7 @@ public:
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 private:
+    sf::Sprite _wavesSprite;
 
     int _currentPathIndex = 1;
 

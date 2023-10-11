@@ -132,6 +132,7 @@ void Game::buttonPressed(std::string buttonCode) {
 }
 
 void Game::keyPressed(sf::Keyboard::Key& key) {
+    _ui.keyPressed(key);
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
@@ -176,6 +177,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         break;
     }
 
+    _ui.keyReleased(key);
     _player->keyReleased(key);
 }
 

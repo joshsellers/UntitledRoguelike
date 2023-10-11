@@ -518,14 +518,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool desert = temperatureNoise > desertTemp && precipitationNoise < desertPrec;
             bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;
 
-            /*bool tundra = temperatureNoise < 0.455 && precipitationNoise >= 0.245 && precipitationNoise < 0.655;
-            bool desert = temperatureNoise > 0.545 && precipitationNoise < 0.455;
-            bool savanna = temperatureNoise > 0.545 && precipitationNoise >= 0.320 && precipitationNoise < 0.655;*/
-
-            /*bool tundra = temperatureNoise < 0.4 && precipitationNoise >= 0.3 && precipitationNoise < 0.6;
-            bool desert = temperatureNoise > 0.6 && precipitationNoise < 0.4;
-            bool savanna = temperatureNoise > 0.6 && precipitationNoise >= 0.375 && precipitationNoise < 0.6;*/
-
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
             if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
                 bool high = terrainType == TERRAIN_TYPE::GRASS_HIGH;

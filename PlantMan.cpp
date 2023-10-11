@@ -2,13 +2,12 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "Util.h"
-#include "PathFinder.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
     Entity(pos, 1, 1, 1, false) {
     _gen.seed(currentTimeNano());
 
-    setMaxHitPoints(75);
+    setMaxHitPoints(40);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -TILE_SIZE / 2;
@@ -27,73 +26,93 @@ void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 3;
 
-    
+    for (auto& entity : getWorld()->getEntities()) {
+        if (entity->isMob() && entity->isActive() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
+            const sf::Vector2f ePos = entity->getPosition();
+
+            MOVING_DIRECTION dir = UP;
+            if (ePos.x < getPosition().x) dir = LEFT;
+            else if (ePos.x > getPosition().x) dir = RIGHT;
+            if (ePos.y < getPosition().y) dir = UP;
+            else if (ePos.y > getPosition().y) dir = DOWN;
+            entity->knockBack(1.f, dir);
+        }
+    }
 
     for (auto& entity : getWorld()->getEntities()) {
-        if (entity->isActive() && !entity->isMob() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
+        if (!entity->isProp() && entity->isActive() && !entity->isMob() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
             entity->damage(5);
             entity->knockBack(20.f, getMovingDir());
             break;
         }
     }
 
+    sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
+    sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + 48);
+
+    float xa = 0.f, ya = 0.f;
+    if (goalPos.y < cLoc.y) {
+        ya--;
+        _movingDir = UP;
+    } else if (goalPos.y > cLoc.y) {
+        ya++;
+        _movingDir = DOWN;
+    }
+
+    if (goalPos.x < cLoc.x) {
+        xa--;
+        _movingDir = LEFT;
+    } else if (goalPos.x > cLoc.x) {
+        xa++;
+        _movingDir = RIGHT;
+    }
+
+    if (xa && ya) {
+        xa *= 0.785398;
+        ya *= 0.785398;
+    }
+    move(xa, ya);
+
 
     _sprite.setPosition(getPosition());
+
+    if (isSwimming()) {
+        _hitBoxYOffset = TILE_SIZE;
+        _hitBox.height = TILE_SIZE * 3 / 2;
+    } else {
+        _hitBoxYOffset = 0;
+        _hitBox.height = TILE_SIZE * 3;
+    }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
 void PlantMan::draw(sf::RenderTexture& surface) {
+    sf::Vector2f feetPos = getPosition();
+    feetPos.y += TILE_SIZE * 3;
+    TERRAIN_TYPE terrainType = _world->getTerrainDataAt(
+        feetPos
+    );
+    _isSwimming = terrainType == TERRAIN_TYPE::WATER;
+
+    if (isSwimming()) {
+        _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+
+        int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
+
+        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE * 3) / 2 + 9));
+        surface.draw(_wavesSprite);
+    }
+
     int xOffset = getMovingDir() * TILE_SIZE;
-    int yOffset = isMoving() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 3: 0;
+    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 3 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        24 * TILE_SIZE + xOffset, 13 * TILE_SIZE + yOffset, TILE_SIZE, TILE_SIZE * 3
+        24 * TILE_SIZE + xOffset, 13 * TILE_SIZE + yOffset, TILE_SIZE, isSwimming() ? TILE_SIZE * 3 / 2 : TILE_SIZE * 3
     ));
 
     surface.draw(_sprite);
-
-    int dist = GRID_UNIT_SIZE * 79;
-    sf::Vector2i goal((int)_world->getPlayer()->getPosition().x, (int)_world->getPlayer()->getPosition().y);
-    sf::Vector2i cLoc(((int)getPosition().x) + PLAYER_WIDTH / 2, ((int)getPosition().y) + 48 / 2);
-    SearchArea searchArea = PathFinder::createSearchArea(sf::Vector2i(cLoc.x - dist / 2, cLoc.y - dist / 2), dist, this, *getWorld());
-    std::unordered_map<sf::Vector2i, sf::Vector2i> map = PathFinder::breadthFirstSearch(searchArea, cLoc, goal);
-
-    for (auto& point : map) {
-        if (sf::IntRect(point.first.x, point.first.y, GRID_UNIT_SIZE, GRID_UNIT_SIZE).contains(goal)) {
-            goal = point.first;
-            break;
-        }
-    }
-
-    std::vector<sf::Vector2i> path = PathFinder::reconstruct_path(cLoc, goal, map);
-    if (path.size()) {
-        sf::Vector2i goalPos = path.at(0);
-        int xa = 0, ya = 0;
-        if (goalPos.y < cLoc.y) {
-            ya--;
-            _movingDir = UP;
-        } else if (goalPos.y > cLoc.y) {
-            ya++;
-            _movingDir = DOWN;
-        } else if (goalPos.x < cLoc.x) {
-            xa--;
-            _movingDir = LEFT;
-        } else if (goalPos.x > cLoc.x) {
-            xa++;
-            _movingDir = RIGHT;
-        }
-
-        move(xa, ya);
-    }
-
-    for (auto& point : path) {
-        sf::RectangleShape a;
-        a.setPosition(point.x, point.y);
-        a.setSize(sf::Vector2f(GRID_UNIT_SIZE, GRID_UNIT_SIZE));
-        a.setFillColor(sf::Color(0xFF00FF99));
-        surface.draw(a);
-    }
 }
 
 void PlantMan::damage(int damage) {
@@ -111,4 +130,8 @@ void PlantMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTextureRect(sf::IntRect(24 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE * 3));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin(TILE_SIZE / 2, 0);
+
+    _wavesSprite.setTexture(*spriteSheet);
+    _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
+    _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + 48 / 2));
 }

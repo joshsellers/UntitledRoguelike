@@ -44,6 +44,10 @@ void UIElement::render(sf::RenderTexture& surface) {
     draw(surface);
 }
 
+void UIElement::keyPressed(sf::Keyboard::Key& key) {}
+
+void UIElement::keyReleased(sf::Keyboard::Key& key) {}
+
 void UIElement::show() {
     _isActive = true;
 }

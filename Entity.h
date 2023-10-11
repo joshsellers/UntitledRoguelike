@@ -30,6 +30,8 @@ public:
     bool isMoving() const;
     MOVING_DIRECTION getMovingDir() const;
 
+    bool isSwimming() const;
+
     void setBaseSpeed(float speed);
     float getBaseSpeed() const;
 
@@ -71,7 +73,7 @@ public:
 
     bool isDamageable() const;
     
-    void knockBack(float amt, MOVING_DIRECTION dir);
+    virtual void knockBack(float amt, MOVING_DIRECTION dir);
 
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
@@ -104,6 +106,8 @@ protected:
 
     bool _isMoving = false;
     unsigned int _movingDir = DOWN;
+
+    bool _isSwimming = false;
 
     void wander(sf::Vector2f feetPos, boost::random::mt19937& generator);
     sf::Vector2f _wanderTargetPos;

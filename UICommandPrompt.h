@@ -15,6 +15,7 @@ public:
     void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
+    void keyReleased(sf::Keyboard::Key& key);
     void textEntered(const sf::Uint32 character);
 
 private:
@@ -22,6 +23,8 @@ private:
 
     sf::RectangleShape _bg;
 
+    sf::Uint32 _historyIndex = 0;
+    std::vector<sf::String> _history;
     std::string processCommand(sf::String command);
 };
 

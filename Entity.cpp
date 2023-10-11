@@ -12,9 +12,20 @@ Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const i
 }
 
 void Entity::move(float xa, float ya) {
+    xa *= _baseSpeed;
+    ya *= _baseSpeed;
+
+    if (isSwimming()) {
+        xa /= 2;
+        ya /= 2;
+    }
+
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
         _isMoving = true;
+    } else if (isSwimming()) {
+        _numSteps++;
+        _isMoving = false;
     } else _isMoving = false;
 
     _pos.x += xa;
@@ -83,6 +94,10 @@ bool Entity::isMoving() const {
 
 MOVING_DIRECTION Entity::getMovingDir() const {
     return (MOVING_DIRECTION)_movingDir;
+}
+
+bool Entity::isSwimming() const {
+    return _isSwimming;
 }
 
 void Entity::setBaseSpeed(float speed) {

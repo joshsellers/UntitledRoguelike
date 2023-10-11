@@ -18,6 +18,18 @@ void UIMenu::addElement(std::shared_ptr<UIElement> element) {
     _elements.push_back(element);
 }
 
+void UIMenu::keyPressed(sf::Keyboard::Key& key) {
+    for (auto& element : _elements) {
+        if (element->isActive()) element->keyPressed(key);
+    }
+}
+
+void UIMenu::keyReleased(sf::Keyboard::Key& key) {
+    for (auto& element : _elements) {
+        if (element->isActive()) element->keyReleased(key);
+    }
+}
+
 void UIMenu::mouseButtonPressed(const int mx, const int my, const int button) {
     for (auto& element : _elements) {
         if (element->isActive()) element->mouseButtonPressed(mx, my, button);
