@@ -34,6 +34,203 @@ void Entity::move(float xa, float ya) {
     _velocity.y = ya;
 }
 
+void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, float visionRange) {
+    sf::Vector2f acceleration(xa, ya);
+
+    acceleration += separate(acceleration, sameTypeOnly, minDist);
+    acceleration += align(sameTypeOnly, visionRange);
+    acceleration += cohesion(acceleration, sameTypeOnly, visionRange);
+
+    acceleration.x *= 0.4f;
+    acceleration.y *= 0.4f;
+    
+    _velocity += acceleration;
+
+    float size = sqrt(_velocity.x * _velocity.x + _velocity.y * _velocity.y);
+    if (size > _baseSpeed) {
+        _velocity.x /= size;
+        _velocity.y /= size;
+    }
+
+    if (isSwimming()) {
+        _velocity.x /= 2.f;
+        _velocity.y /= 2.f;
+    }
+
+    _pos += _velocity;
+
+    if (std::abs(_velocity.x) > 0 || std::abs(_velocity.y) > 0) {
+        _numSteps++;
+        _isMoving = true;
+    } else if (isSwimming()) {
+        _numSteps++;
+        _isMoving = false;
+    } else _isMoving = false;
+
+    if (std::abs(_velocity.x) < std::abs(_velocity.y)) {
+        if (_velocity.y < 0) _movingDir = UP;
+        else if (_velocity.y > 0) _movingDir = DOWN;
+    } else if (std::abs(_velocity.x) > std::abs(_velocity.y)) {
+        if (_velocity.x < 0) _movingDir = LEFT;
+        else if (_velocity.x > 0) _movingDir = RIGHT;
+    }
+}
+
+const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist) {
+    sf::Vector2f steer(0, 0);
+    int count = 0;
+    for (auto& entity : _world->getEntities()) {
+        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+            && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
+            float dx = getPosition().x - entity->getPosition().x;
+            float dy = getPosition().y - entity->getPosition().y;
+            float dist = sqrt(dx * dx + dy * dy);
+
+            if (dist > 0 && dist < minDist) {
+                count++;
+
+                sf::Vector2f diff(getPosition().x - entity->getPosition().x, getPosition().y - entity->getPosition().y);
+                float magnitude = sqrt(diff.x * diff.x + diff.y * diff.y);
+
+                // normalize 
+                if (magnitude > 0) {
+                    diff.x /= magnitude;
+                    diff.y /= magnitude;
+                }
+
+                // divScalar
+                diff.x /= dist;
+                diff.y /= dist;
+
+                steer += diff;
+            }
+        }
+    }
+
+    if (count > 0) {
+        steer.x /= (float) count;
+        steer.y /= (float) count;
+    }
+    float steerMagnitude = sqrt(steer.x * steer.x + steer.y * steer.y);
+    if (steerMagnitude > 0) {
+        steer.x /= steerMagnitude;
+        steer.y /= steerMagnitude;
+
+        steer.x *= _baseSpeed;
+        steer.y *= _baseSpeed;
+
+        steer -= _velocity;
+
+        float size = steerMagnitude;
+        float max = 0.5f;
+        if (size > max) {
+            steer.x /= size;
+            steer.y /= size;
+        }
+    }
+
+    return steer;
+}
+
+const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
+    sf::Vector2f sum(0, 0);
+    int count = 0;
+
+    for (auto& entity : _world->getEntities()) {
+        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+            && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
+            float dx = getPosition().x - entity->getPosition().x;
+            float dy = getPosition().y - entity->getPosition().y;
+            float dist = sqrt(dx * dx + dy * dy);
+
+            if (dist < visionRange) {
+                count++;
+                sum += entity->getVelocity();
+            }
+        }
+    }
+
+    if (count > 0) {
+        sum.x /= (float)count;
+        sum.y /= (float)count;
+
+        float sumMagnitude = sqrt(sum.x * sum.x + sum.y * sum.y);
+        if (sumMagnitude > 0) {
+            sum.x /= sumMagnitude;
+            sum.y /= sumMagnitude;
+        }
+        
+        sum.x *= _baseSpeed;
+        sum.y *= _baseSpeed;
+
+        sf::Vector2f steer(0, 0);
+        steer = sum - _velocity;
+
+        float size = sqrt(steer.x * steer.x + steer.y * steer.y);
+        float max = 0.5f;
+        if (size > max) {
+            steer.x /= size;
+            steer.y /= size;
+        }
+
+        return steer;
+    } else {
+        return sf::Vector2f(0, 0);
+    }
+}
+
+const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly, float visionRange) {
+    sf::Vector2f sum(0, 0);
+    int count = 0;
+
+    for (auto& entity : _world->getEntities()) {
+        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+            && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
+            float dx = getPosition().x - entity->getPosition().x;
+            float dy = getPosition().y - entity->getPosition().y;
+            float dist = sqrt(dx * dx + dy * dy);
+
+            if (dist < visionRange) {
+                count++;
+                sum += entity->getPosition();
+            }
+        }
+    }
+
+    if (count > 0) {
+        sum.x /= (float) count;
+        sum.y /= (float) count;
+
+        // seek
+        sf::Vector2f desired(0, 0);
+        desired -= sum;
+
+        float magnitude = sqrt(desired.x * desired.x + desired.y * desired.y);
+
+        // normalize 
+        if (magnitude > 0) {
+            desired.x /= magnitude;
+            desired.y /= magnitude;
+        }
+
+        desired.x *= _baseSpeed;
+        desired.y *= _baseSpeed;
+
+        //acceleration = desired - _velocity;
+
+        float size = sqrt(acceleration.x * acceleration.x + acceleration.y * acceleration.y);
+        float max = 0.5f;
+        if (size > max) {
+            acceleration.x /= size;
+            acceleration.y /= size;
+        }
+
+        return acceleration;
+    } else {
+        return sf::Vector2f(0, 0);
+    }
+}
+
 void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator) {
     if (_world != nullptr) {
         float xa = 0, ya = 0;
@@ -272,4 +469,8 @@ sf::Vector2f Entity::getTargetPos() const {
 
 bool Entity::compare(Entity* entity) const {
     return entity->_hitBox == _hitBox;
+}
+
+const std::string& Entity::getEntityType() const {
+    return _entityType;
 }

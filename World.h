@@ -40,11 +40,12 @@ enum class MOB_TYPE : int {
 constexpr int TUNDRA_MOB_COUNT = 1;
 constexpr MOB_TYPE TUNDRA_MOBS[TUNDRA_MOB_COUNT] = { MOB_TYPE::PENGUIN };
 
-constexpr int GRASS_MOB_COUNT = 7;
+constexpr int GRASS_MOB_COUNT = 8;
+// figure out how to do this better
 constexpr MOB_TYPE GRASS_MOBS[GRASS_MOB_COUNT] = { 
     MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
     MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
-    MOB_TYPE::PLANT_MAN 
+    MOB_TYPE::PLANT_MAN, MOB_TYPE::PLANT_MAN
 };
 
 constexpr int SAVANNA_MOB_COUNT = 1;

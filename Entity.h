@@ -90,7 +90,11 @@ public:
 
     bool compare(Entity* entity) const;
 
+    const std::string& getEntityType() const;
+
 protected:
+    std::string _entityType = "";
+
     const int _spriteWidth, _spriteHeight;
 
     bool _displayBottom = false;
@@ -108,7 +112,8 @@ protected:
     unsigned int _movingDir = DOWN;
 
     bool _isSwimming = false;
-
+    
+    void hoardMove(float xa, float ya, bool sameTypeOnly = false, float minDist = 32.f, float visionRange = 100.f);
     void wander(sf::Vector2f feetPos, boost::random::mt19937& generator);
     sf::Vector2f _wanderTargetPos;
 
@@ -140,5 +145,9 @@ protected:
 
 private:
     int _maxHitPoints = 0;
+
+    const sf::Vector2f separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist);
+    const sf::Vector2f align(bool sameTypeOnly, float visionRange);
+    const sf::Vector2f cohesion(sf::Vector2f acceleration, bool sameTypeOnly, float visionRange);
 };
 #endif // !_ENTITY_H

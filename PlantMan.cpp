@@ -4,7 +4,7 @@
 #include "Util.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
-    Entity(pos, 1, 1, 1, false) {
+    Entity(pos, 3, 1, 1, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(40);
@@ -20,24 +20,13 @@ PlantMan::PlantMan(sf::Vector2f pos) :
 
     _canPickUpItems = true;
     _isMob = true;
+
+    _entityType = "plantman";
 }
 
 void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 3;
-
-    for (auto& entity : getWorld()->getEntities()) {
-        if (entity->isMob() && entity->isActive() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
-            const sf::Vector2f ePos = entity->getPosition();
-
-            MOVING_DIRECTION dir = UP;
-            if (ePos.x < getPosition().x) dir = LEFT;
-            else if (ePos.x > getPosition().x) dir = RIGHT;
-            if (ePos.y < getPosition().y) dir = UP;
-            else if (ePos.y > getPosition().y) dir = DOWN;
-            entity->knockBack(1.f, dir);
-        }
-    }
 
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->isProp() && entity->isActive() && !entity->isMob() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
@@ -53,26 +42,26 @@ void PlantMan::update() {
     float xa = 0.f, ya = 0.f;
     if (goalPos.y < cLoc.y) {
         ya--;
-        _movingDir = UP;
+        //_movingDir = UP;
     } else if (goalPos.y > cLoc.y) {
         ya++;
-        _movingDir = DOWN;
+        //_movingDir = DOWN;
     }
 
     if (goalPos.x < cLoc.x) {
         xa--;
-        _movingDir = LEFT;
+        //_movingDir = LEFT;
     } else if (goalPos.x > cLoc.x) {
         xa++;
-        _movingDir = RIGHT;
+        //_movingDir = RIGHT;
     }
 
     if (xa && ya) {
         xa *= 0.785398;
         ya *= 0.785398;
     }
-    move(xa, ya);
 
+    hoardMove(xa, ya, true);
 
     _sprite.setPosition(getPosition());
 

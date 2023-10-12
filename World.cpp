@@ -505,7 +505,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             float tundraTemp = 0.460 + 0.0075;
             float tundraPrecLow = 0.240 - 0.0075;
-            float tundraPrecHigh = 0.660 + 0.0075;
+            float tundraPrecHigh = 0.500 + 0.0075;
 
             float desertTemp = 0.540 - 0.0075;
             float desertPrec = 0.460 + 0.0075;
