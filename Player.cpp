@@ -3,6 +3,7 @@
 #include "Item.h"
 #include "Globals.h"
 #include "World.h"
+#include "GameController.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
@@ -21,22 +22,30 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 }
 
 void Player::update() {
+    float xAxis = 0;
+    float yAxis = 0;
+    if (GameController::isConnected()) {
+        xAxis = GameController::getLeftStickXAxis();
+        yAxis = GameController::getLeftStickYAxis();
+    }
+
     float xa = 0, ya = 0;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || (std::abs(yAxis) > std::abs(xAxis) && yAxis < 0)) {
         ya = -getBaseSpeed();
         _movingDir = UP;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || (std::abs(yAxis) > std::abs(xAxis) && yAxis > 0)) {
         ya = getBaseSpeed();
         _movingDir = DOWN;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (std::abs(yAxis) < std::abs(xAxis) && xAxis < 0)) {
         xa = -getBaseSpeed();
         _movingDir = LEFT;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || (std::abs(yAxis) < std::abs(xAxis) && xAxis > 0)) {
         xa = getBaseSpeed();
         _movingDir = RIGHT;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove)) {
+    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || GameController::isButtonPressed(CONTROLLER_BUTTON::LEFT_BUMPER)) 
+        && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove)) {
         xa *= _sprintMultiplier;
         ya *= _sprintMultiplier;
         _animSpeed = 2;
@@ -48,7 +57,8 @@ void Player::update() {
         ya /= 2;
     }
 
-    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _dodgeKeyReleased) {
+    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() 
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || GameController::isButtonPressed(CONTROLLER_BUTTON::A)) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
     } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
@@ -60,7 +70,7 @@ void Player::update() {
         _dodgeSpeedMultiplier = 1.f;
     }
 
-    _dodgeKeyReleased = !sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+    _dodgeKeyReleased = !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !GameController::isButtonPressed(CONTROLLER_BUTTON::A);
 
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
 
@@ -244,6 +254,13 @@ void Player::drawTool(sf::RenderTexture& surface) {
             double y = (double)(mPos.y - center.y);
 
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+            if (GameController::isConnected()) { 
+                angle = (float)(((std::atan2(GameController::getRightStickYAxis(), GameController::getRightStickXAxis()))) * (180. / PI)) + 90.f;
+                if (angle == 90.f) { // fix this it doesn't work
+                    angle = _joystickLastAngle;
+                }
+                _joystickLastAngle = angle;
+            }
 
             if (angle >= -45.f && angle < 45.f) 
                 _facingDir = UP;

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include "Util.h"
+#include "GameController.h"
 
 
 int main() {
@@ -37,6 +38,20 @@ int main() {
     sf::Sprite uiSurfaceSprite;
     uiSurfaceSprite.setTexture(uiSurfaceTexture);
 
+    // Controller
+    bool controllerConnected = false;
+    int controllerId = -1;
+    for (int i = 0; i < 7; i++) {
+        if (sf::Joystick::isConnected(i)) {
+            controllerConnected = true;
+            controllerId = i;
+            break;
+        }
+    }
+    GameController::setControllerId(controllerId);
+    std::cout << "Controller is " << (controllerConnected ? "" : "not ") << "connected" << std::endl;
+    std::cout << "Controller id: " << controllerId << std::endl;
+
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {
@@ -69,6 +84,15 @@ int main() {
                 break;
             case sf::Event::TextEntered:
                 game.textEntered(event.text.unicode);
+                break;
+            case sf::Event::JoystickConnected:
+                std::cout << "Controller connected: " << event.joystickConnect.joystickId << std::endl;
+                break;
+            case sf::Event::JoystickDisconnected:
+                std::cout << "Controller disconnected: " << event.joystickConnect.joystickId << std::endl;
+                break;
+            case sf::Event::JoystickMoved:
+                //std::cout << "id: " << event.joystickMove.joystickId << " axis" << event.joystickMove.axis << " pos" << event.joystickMove.position << std::endl;
                 break;
             }
         }

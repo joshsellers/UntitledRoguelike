@@ -71,7 +71,7 @@ void UICommandPrompt::keyReleased(sf::Keyboard::Key& key) {
             return;
     }
 
-    if (_history.size()) _text.setString(_history.at(_historyIndex));
+    if (_history.size() && _historyIndex < _history.size()) _text.setString(_history.at(_historyIndex));
 }
 
 void UICommandPrompt::textEntered(const sf::Uint32 character) {

@@ -77,6 +77,8 @@ private:
     unsigned int _meleeAttackDelayCounter = 0;
 
     sf::RenderWindow* _window;
+
+    float _joystickLastAngle = 0.f;
 };
 
 #endif

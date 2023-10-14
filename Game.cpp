@@ -84,6 +84,11 @@ void Game::initUI() {
 }
 
 void Game::update() {
+    float leftStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+    float leftStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+    float rightStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
+    float rightStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
+
     _ui.update();
     if (!_isPaused) _world.update();
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
