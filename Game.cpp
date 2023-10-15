@@ -49,6 +49,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
 
+    GameController::addListener(_player);
+
     initUI();
 }
 
@@ -184,6 +186,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
 
     _ui.keyReleased(key);
     _player->keyReleased(key);
+}
+
+void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    if (!_inventoryMenu->isActive()) _player->controllerButtonReleased(button);
 }
 
 void Game::mouseButtonPressed(const int mx, const int my, const int button) {

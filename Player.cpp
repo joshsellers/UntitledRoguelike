@@ -3,7 +3,6 @@
 #include "Item.h"
 #include "Globals.h"
 #include "World.h"
-#include "GameController.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
@@ -254,12 +253,25 @@ void Player::drawTool(sf::RenderTexture& surface) {
             double y = (double)(mPos.y - center.y);
 
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+
             if (GameController::isConnected()) { 
                 angle = (float)(((std::atan2(GameController::getRightStickYAxis(), GameController::getRightStickXAxis()))) * (180. / PI)) + 90.f;
-                if (angle == 90.f) { // fix this it doesn't work
-                    angle = _joystickLastAngle;
+                if (GameController::isRightStickDeadZoned()) {
+                    switch (_movingDir) {
+                        case UP:
+                            angle = 0.f;
+                            break;
+                        case DOWN:
+                            angle = 180.f;
+                            break;
+                        case LEFT:
+                            angle = 270.f;
+                            break;
+                        case RIGHT:
+                            angle = 90.f;
+                            break;
+                    }
                 }
-                _joystickLastAngle = angle;
             }
 
             if (angle >= -45.f && angle < 45.f) 
@@ -415,8 +427,40 @@ void Player::damage(int damage) {
 }
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {
-    if (!_gamePaused && button == sf::Mouse::Button::Left && 
-        getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && 
+    if (button == sf::Mouse::Button::Left) {
+        fireWeapon();
+    }
+}
+
+void Player::keyReleased(sf::Keyboard::Key& key) {
+    if (key == sf::Keyboard::R) {
+        reloadWeapon();
+    }
+}
+
+void Player::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    switch (button) {
+        case CONTROLLER_BUTTON::X:
+            reloadWeapon();
+            break;
+        default:
+            break;
+    }
+}
+
+void Player::controllerButtonPressed(CONTROLLER_BUTTON button) {
+    switch (button) {
+        case CONTROLLER_BUTTON::RIGHT_TRIGGER:
+            fireWeapon();
+            break;
+        default:
+            break;
+    }
+}
+
+void Player::fireWeapon() {
+    if (!_gamePaused &&
+        getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()
         && !isSwimming() && !isDodging()) {
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
@@ -424,16 +468,14 @@ void Player::mouseButtonReleased(const int mx, const int my, const int button) {
     }
 }
 
-void Player::keyReleased(sf::Keyboard::Key& key) {
-    if (!_gamePaused && key == sf::Keyboard::R) {
-        if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
-            Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-            if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
-                getInventory().equip(
-                    getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
-                    EQUIPMENT_TYPE::AMMO
-                );
-            }
+void Player::reloadWeapon() {
+    if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
+        if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
+            getInventory().equip(
+                getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
+                EQUIPMENT_TYPE::AMMO
+            );
         }
     }
 }

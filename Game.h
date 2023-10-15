@@ -7,8 +7,9 @@
 #include "UIButton.h"
 #include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
+#include "GameController.h"
 
-const std::string VERSION = "0.0226";
+const std::string VERSION = "0.0227";
 
 class Game : public UIButtonListener {
 public:
@@ -23,6 +24,8 @@ public:
 
 	void keyPressed(sf::Keyboard::Key& key);
 	void keyReleased(sf::Keyboard::Key& key); 
+
+	void controllerButtonReleased(CONTROLLER_BUTTON button);
 	
 	void mouseButtonPressed(const int mx, const int my, const int button);
 	void mouseButtonReleased(const int mx, const int my, const int button);

@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
+#include "GameController.h"
 
 constexpr int PLAYER_WIDTH = 16;
 constexpr int PLAYER_HEIGHT = 32;
@@ -13,7 +14,7 @@ constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
 constexpr long double PI = 3.14159265358979L;
 
-class Player : public Entity {
+class Player : public Entity, public GameControllerListener {
 public:
     Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused);
 
@@ -36,6 +37,9 @@ public:
 
     void mouseButtonReleased(const int mx, const int my, const int button);
     void keyReleased(sf::Keyboard::Key& key);
+
+    void controllerButtonReleased(CONTROLLER_BUTTON button);
+    void controllerButtonPressed(CONTROLLER_BUTTON button);
 
 private:
     bool& _gamePaused;
@@ -72,13 +76,14 @@ private:
     float _dodgeSpeedMultiplier = 1.f;
     bool _dodgeKeyReleased = true;
 
+    void fireWeapon();
+    void reloadWeapon();
+
     void meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos);
     sf::Vector2f _lastMousePos;
     unsigned int _meleeAttackDelayCounter = 0;
 
     sf::RenderWindow* _window;
-
-    float _joystickLastAngle = 0.f;
 };
 
 #endif

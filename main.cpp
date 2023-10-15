@@ -48,7 +48,7 @@ int main() {
             break;
         }
     }
-    GameController::setControllerId(controllerId);
+    if (controllerId != - 1) GameController::setControllerId(controllerId);
     std::cout << "Controller is " << (controllerConnected ? "" : "not ") << "connected" << std::endl;
     std::cout << "Controller id: " << controllerId << std::endl;
 
@@ -92,7 +92,10 @@ int main() {
                 std::cout << "Controller disconnected: " << event.joystickConnect.joystickId << std::endl;
                 break;
             case sf::Event::JoystickMoved:
-                //std::cout << "id: " << event.joystickMove.joystickId << " axis" << event.joystickMove.axis << " pos" << event.joystickMove.position << std::endl;
+                GameController::updateControllerAxisValue((CONTROLLER_AXIS)event.joystickMove.axis, event.joystickMove.position);
+                break;
+            case sf::Event::JoystickButtonReleased:
+                game.controllerButtonReleased((CONTROLLER_BUTTON)event.joystickButton.button);
                 break;
             }
         }
