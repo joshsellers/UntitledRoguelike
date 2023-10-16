@@ -33,7 +33,7 @@ public:
     }
 
     static bool isButtonPressed(CONTROLLER_BUTTON button) {
-        return sf::Joystick::isButtonPressed(getControllerId(), (unsigned int) button);
+        return sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)button);
     }
 
     static void setDeadZone(float deadZone) {
@@ -56,29 +56,23 @@ public:
         return sf::Joystick::isConnected(getControllerId());
     }
 
-    // replace this with receiveControllerEvent(event) and send all joystick events to GameController so that
-    // they can be passed to listeners
-    static void updateControllerAxisValue(CONTROLLER_AXIS axis, float value) {
-        if (axis == CONTROLLER_AXIS::TRIGGERS) {
-            float deadZonedValue = std::abs(value) > _triggerDeadZone ? std::abs(value) : 0;
-
-            if (deadZonedValue == 0) {
-                if (_lastRightTriggerValue > 0)
-                    listenerButtonReleaseCallback(CONTROLLER_BUTTON::RIGHT_TRIGGER);
-                if (_lastLeftTriggerValue > 0)
-                    listenerButtonReleaseCallback(CONTROLLER_BUTTON::LEFT_TRIGGER);
-                
-                _lastRightTriggerValue = deadZonedValue;
-                _lastLeftTriggerValue = deadZonedValue;
-            } else if (value < 0) {
-                if (deadZonedValue > _triggerPressThreshold && _lastRightTriggerValue <= _triggerPressThreshold) 
-                    listenerButtonPressCallback(CONTROLLER_BUTTON::RIGHT_TRIGGER);
-                _lastRightTriggerValue = deadZonedValue;
-            } else if (value > 0) {
-                if (deadZonedValue > _triggerPressThreshold && _lastLeftTriggerValue <= _triggerPressThreshold) 
-                    listenerButtonPressCallback(CONTROLLER_BUTTON::LEFT_TRIGGER);
-                _lastLeftTriggerValue = deadZonedValue;
-            }
+    static void receiveControllerEvent(sf::Event& event) {
+        switch (event.type) {
+            case sf::Event::JoystickMoved: 
+                updateControllerAxisValue((CONTROLLER_AXIS)event.joystickMove.axis, event.joystickMove.position);
+                break;
+            case sf::Event::JoystickConnected:
+                std::cout << "Controller connected: " << event.joystickConnect.joystickId << std::endl;
+                break;
+            case sf::Event::JoystickDisconnected:
+                std::cout << "Controller disconnected: " << event.joystickConnect.joystickId << std::endl;
+                break;
+            case sf::Event::JoystickButtonReleased:
+                listenerButtonReleaseCallback((CONTROLLER_BUTTON)event.joystickButton.button);
+                break;
+            case sf::Event::JoystickButtonPressed:
+                listenerButtonPressCallback((CONTROLLER_BUTTON)event.joystickButton.button);
+                break;
         }
     }
 
@@ -96,11 +90,52 @@ private:
     inline static float _triggerDeadZone = 1.f;
     inline static float _triggerPressThreshold = 50.f;
 
+    inline static float _lastDPadXValue = 0.f;
+    inline static float _lastDPadYValue = 0.f;
+
     static float removeDeadZone(float axisValue) {
         return std::abs(axisValue) > _deadZone ? axisValue : 0.f;
     }
 
-    inline static std::vector <std::shared_ptr<GameControllerListener>> _listeners;
+    static void updateControllerAxisValue(CONTROLLER_AXIS axis, float value) {
+        switch (axis) {
+            case CONTROLLER_AXIS::TRIGGERS:
+            {
+                float deadZonedValue = std::abs(value) > _triggerDeadZone ? std::abs(value) : 0;
+
+                if (deadZonedValue == 0) {
+                    if (_lastRightTriggerValue > 0)
+                        listenerButtonReleaseCallback(CONTROLLER_BUTTON::RIGHT_TRIGGER);
+                    if (_lastLeftTriggerValue > 0)
+                        listenerButtonReleaseCallback(CONTROLLER_BUTTON::LEFT_TRIGGER);
+
+                    _lastRightTriggerValue = deadZonedValue;
+                    _lastLeftTriggerValue = deadZonedValue;
+                } else if (value < 0) {
+                    if (deadZonedValue > _triggerPressThreshold && _lastRightTriggerValue <= _triggerPressThreshold)
+                        listenerButtonPressCallback(CONTROLLER_BUTTON::RIGHT_TRIGGER);
+                    _lastRightTriggerValue = deadZonedValue;
+                } else if (value > 0) {
+                    if (deadZonedValue > _triggerPressThreshold && _lastLeftTriggerValue <= _triggerPressThreshold)
+                        listenerButtonPressCallback(CONTROLLER_BUTTON::LEFT_TRIGGER);
+                    _lastLeftTriggerValue = deadZonedValue;
+                }
+                break;
+            }
+            case CONTROLLER_AXIS::DPAD_X:
+                if (value == 0 && _lastDPadXValue == -100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_LEFT);
+                else if (value == 0 && _lastDPadXValue == 100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_RIGHT);
+                _lastDPadXValue = value;
+                break;
+            case CONTROLLER_AXIS::DPAD_Y:
+                if (value == 0 && _lastDPadYValue == -100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_DOWN);
+                else if (value == 0 && _lastDPadYValue == 100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_UP);
+                _lastDPadYValue = value;
+                break;
+        }
+    }
+
+    inline static std::vector<std::shared_ptr<GameControllerListener>> _listeners;
     static void listenerButtonReleaseCallback(CONTROLLER_BUTTON button) {
         for (auto& listener : _listeners)
             listener->controllerButtonReleased(button);

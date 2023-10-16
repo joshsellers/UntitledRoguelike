@@ -4,8 +4,9 @@
 #include <vector>
 #include <memory>
 #include "UIMenu.h"
+#include "GameControllerListener.h"
 
-class UIHandler {
+class UIHandler : public GameControllerListener {
 public:
     UIHandler();
 
@@ -13,6 +14,9 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void addMenu(std::shared_ptr<UIMenu> menu);
+
+    void controllerButtonReleased(CONTROLLER_BUTTON button);
+    void controllerButtonPressed(CONTROLLER_BUTTON button);
 
     void keyPressed(sf::Keyboard::Key& key);
     void keyReleased(sf::Keyboard::Key& key);

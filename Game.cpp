@@ -50,6 +50,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _world.loadSpriteSheet(_spriteSheet);
 
     GameController::addListener(_player);
+    GameController::addListener(_ui);
 
     initUI();
 }
@@ -60,19 +61,19 @@ void Game::initUI() {
         1, 5, 9, 3, "quit game", _font, this, "exit"
     ));
     _pauseMenu->addElement(exitButton);
-    _ui.addMenu(_pauseMenu);
+    _ui->addMenu(_pauseMenu);
 
     // Inventory menu
     std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
         _player->getInventory(), _font, _spriteSheet
     ));
     _inventoryMenu->addElement(inventoryInterface);
-    _ui.addMenu(_inventoryMenu);
+    _ui->addMenu(_inventoryMenu);
 
     // Command prompt menu
     std::shared_ptr<UICommandPrompt> cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(cmdPrompt);
-    _ui.addMenu(_commandMenu);
+    _ui->addMenu(_commandMenu);
 
     // HUD
     std::shared_ptr<UIAttributeMeter> playerHpMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
@@ -81,7 +82,7 @@ void Game::initUI() {
     playerHpMeter->setColor(0xCC0000FF);
     playerHpMeter->setBackgroundColor(0xAA0000FF);
     _HUDMenu->addElement(playerHpMeter);
-    _ui.addMenu(_HUDMenu);
+    _ui->addMenu(_HUDMenu);
     _HUDMenu->show();
 }
 
@@ -91,7 +92,7 @@ void Game::update() {
     float rightStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
     float rightStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
 
-    _ui.update();
+    _ui->update();
     if (!_isPaused) _world.update();
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
@@ -101,7 +102,7 @@ void Game::draw(sf::RenderTexture& surface) {
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {
-    _ui.draw(surface);
+    _ui->draw(surface);
 
     if (_showDebug) {
         surface.draw(_versionLabel);
@@ -139,7 +140,7 @@ void Game::buttonPressed(std::string buttonCode) {
 }
 
 void Game::keyPressed(sf::Keyboard::Key& key) {
-    _ui.keyPressed(key);
+    _ui->keyPressed(key);
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
@@ -170,7 +171,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         if (!_commandMenu->isActive()) _camera->zoom(0.5);
         break;
     case sf::Keyboard::Escape:
-        if (!_commandMenu->isActive()) {
+        if (!_commandMenu->isActive() && !_inventoryMenu->isActive()) {
             if (_pauseMenu->isActive()) _pauseMenu->hide();
             else _pauseMenu->show();
             _isPaused = !_isPaused;
@@ -180,35 +181,34 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         if (!_commandMenu->isActive()) {
             if (_inventoryMenu->isActive()) _inventoryMenu->hide();
             else _inventoryMenu->show();
+
+            // this causes non-critical visual problems that i would like to not have happen
+            //_isPaused = _inventoryMenu->isActive();
         }
         break;
     }
 
-    _ui.keyReleased(key);
+    _ui->keyReleased(key);
     _player->keyReleased(key);
 }
 
-void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
-    if (!_inventoryMenu->isActive()) _player->controllerButtonReleased(button);
-}
-
 void Game::mouseButtonPressed(const int mx, const int my, const int button) {
-    _ui.mouseButtonPressed(mx, my, button);
+    _ui->mouseButtonPressed(mx, my, button);
 }
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
-    _ui.mouseButtonReleased(mx, my, button);
+    _ui->mouseButtonReleased(mx, my, button);
     if (!_inventoryMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {
-    _ui.mouseMoved(mx, my);
+    _ui->mouseMoved(mx, my);
 }
 
 void Game::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
-    _ui.mouseWheelScrolled(mouseWheelScroll);
+    _ui->mouseWheelScrolled(mouseWheelScroll);
 }
 
 void Game::textEntered(sf::Uint32 character) {
-    _ui.textEntered(character);
+    _ui->textEntered(character);
 }

@@ -122,7 +122,7 @@ void Item::fireTargetedProjectile(const float velocity, Entity* parent, const Pr
         float angle = (float)((std::atan2(y, x)));
 
         std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-            spawnPos, parent->getVelocity(), angle, velocity, projData
+            spawnPos, parent, angle, velocity, projData
         ));
         proj->loadSprite(parent->getWorld()->getSpriteSheet());
         proj->setWorld(parent->getWorld());

@@ -14,6 +14,8 @@ public:
 
     void addElement(std::shared_ptr<UIElement> element);
 
+    void controllerButtonReleased(CONTROLLER_BUTTON button);
+
     void keyPressed(sf::Keyboard::Key& key);
     void keyReleased(sf::Keyboard::Key& key);
     void mouseButtonPressed(const int mx, const int my, const int button);

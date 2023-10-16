@@ -4,6 +4,7 @@
 #include <memory>
 #include "Globals.h"
 #include <SFML/Graphics.hpp>
+#include "GameControllerButtons.h"
 
 class UIElement {
 public:
@@ -18,6 +19,8 @@ public:
     virtual void update() = 0;
     virtual void draw(sf::RenderTexture& surface) = 0;
     void render(sf::RenderTexture& surface);
+
+    virtual void controllerButtonReleased(CONTROLLER_BUTTON button);
 
     virtual void keyPressed(sf::Keyboard::Key& key);
     virtual void keyReleased(sf::Keyboard::Key& key);

@@ -77,7 +77,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         itemSprite.setScale(sf::Vector2f(_width / itemSprite.getGlobalBounds().width, _height / itemSprite.getGlobalBounds().height));
         itemSprite.setPosition(itemPos);
 
-        if (bg.getGlobalBounds().contains(_mousePos)) {
+        if (bg.getGlobalBounds().contains(_mousePos) || i == _gamepadSelectedItemIndex) {
             bg.setFillColor(sf::Color(0x0000FFFF));
         } else bg.setFillColor(sf::Color(0x000099FF));
 
@@ -113,6 +113,29 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         surface.draw(_tooltipBg);
         surface.draw(_tooltipText);
+    }
+}
+
+void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    switch (button) {
+        case CONTROLLER_BUTTON::DPAD_DOWN:
+            if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() - 1) {
+                _gamepadSelectedItemIndex++;
+
+                if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
+                    sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+                    _y -= ((_height + (_height / 8) * 2)) / (float)WINDOW_HEIGHT * 100.f; // this is almost it i think we need to account for ITEM_SPACING somehow
+                }
+            }
+            break;
+        case CONTROLLER_BUTTON::DPAD_UP:
+            if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex > 0) {
+                _gamepadSelectedItemIndex--;
+
+                if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
+                    _y += ((_height + (_height / 8) * 2)) / (float)WINDOW_HEIGHT * 100.f;
+                }
+            }
     }
 }
 
@@ -155,6 +178,7 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
 }
 
 void UIInventoryInterface::mouseMoved(const int mx, const int my) {
+    _gamepadSelectedItemIndex = -1;
     _mousePos = sf::Vector2f(mx, my);
 }
 
@@ -166,5 +190,6 @@ void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
 
 void UIInventoryInterface::hide() {
     _isActive = false;
+    _gamepadSelectedItemIndex = -1;
     _y = _originalY;
 }

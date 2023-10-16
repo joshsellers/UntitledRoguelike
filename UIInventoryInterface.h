@@ -14,6 +14,8 @@ public:
     void update();
     void draw(sf::RenderTexture& surface);
 
+    void controllerButtonReleased(CONTROLLER_BUTTON button);
+
     void mouseButtonPressed(const int mx, const int my, const int button);
     void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
@@ -35,6 +37,8 @@ private:
     sf::RectangleShape _tooltipBg;
 
     const float _originalY;
+
+    int _gamepadSelectedItemIndex = -1;
 };
 
 #endif

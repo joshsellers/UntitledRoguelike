@@ -3,9 +3,11 @@
 
 constexpr float LIFETIME = 60 * 5;
 
-Projectile::Projectile(sf::Vector2f pos, sf::Vector2f shooterVelocity, float directionAngle, float velocity, const ProjectileData data) :
-    Entity(pos, 0, 1, 1, false), _originalPos(pos), _directionAngle(directionAngle), _velocity(velocity), _data(data),
+Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data) :
+    Entity(pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
     _itemId(data.itemId) {
+
+    sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
 
     _velocityComponents.x = _velocity * std::cos(directionAngle) + shooterVelocity.x;
     _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
@@ -25,7 +27,7 @@ void Projectile::update() {
     }
 
     for (auto& entity : getWorld()->getEntities()) {
-        if (entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()) {
+        if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()) {
             if (entity->getHitBox().intersects(_hitBox)) {
                 entity->damage(Item::ITEMS[_itemId]->getDamage());
                 _isActive = false;

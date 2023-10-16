@@ -86,16 +86,19 @@ int main() {
                 game.textEntered(event.text.unicode);
                 break;
             case sf::Event::JoystickConnected:
-                std::cout << "Controller connected: " << event.joystickConnect.joystickId << std::endl;
+                GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickDisconnected:
-                std::cout << "Controller disconnected: " << event.joystickConnect.joystickId << std::endl;
+                GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickMoved:
-                GameController::updateControllerAxisValue((CONTROLLER_AXIS)event.joystickMove.axis, event.joystickMove.position);
+                GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickButtonReleased:
-                game.controllerButtonReleased((CONTROLLER_BUTTON)event.joystickButton.button);
+                GameController::receiveControllerEvent(event);
+                break;
+            case sf::Event::JoystickButtonPressed:
+                GameController::receiveControllerEvent(event);
                 break;
             }
         }

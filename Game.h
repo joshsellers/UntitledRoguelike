@@ -9,7 +9,7 @@
 #include "ParticleSystem.h"
 #include "GameController.h"
 
-const std::string VERSION = "0.0227";
+const std::string VERSION = "0.0228";
 
 class Game : public UIButtonListener {
 public:
@@ -24,8 +24,6 @@ public:
 
 	void keyPressed(sf::Keyboard::Key& key);
 	void keyReleased(sf::Keyboard::Key& key); 
-
-	void controllerButtonReleased(CONTROLLER_BUTTON button);
 	
 	void mouseButtonPressed(const int mx, const int my, const int button);
 	void mouseButtonReleased(const int mx, const int my, const int button);
@@ -44,7 +42,7 @@ private:
 
 	sf::View* _camera;
 
-	UIHandler _ui;
+	std::shared_ptr<UIHandler> _ui = std::shared_ptr<UIHandler>(new UIHandler());
 	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
