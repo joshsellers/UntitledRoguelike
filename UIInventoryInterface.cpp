@@ -1,6 +1,8 @@
 #include "UIInventoryInterface.h"
 #include "Item.h"
 #include <iostream>
+#include "Util.h"
+#include "GameController.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, false, font), _originalY(_y) {
@@ -42,7 +44,15 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     ));
 }
 
-void UIInventoryInterface::update() {}
+void UIInventoryInterface::update() {
+    if (GameController::isButtonPressed(CONTROLLER_BUTTON::DPAD_UP) 
+        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME) {
+        gamepadScrollUp();
+    } else if (GameController::isButtonPressed(CONTROLLER_BUTTON::DPAD_DOWN)
+        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME) {
+        gamepadScrollDown();
+    }
+}
 
 void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_background);
@@ -93,8 +103,10 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_headerBg);
     surface.draw(_text);
 
-    if (mousedOverItemIndex >= 0) {
-        const Item* item = Item::ITEMS[_source.getItemIdAt(mousedOverItemIndex)];
+    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize())) {
+        const Item* item = Item::ITEMS[
+            _source.getItemIdAt(_gamepadShowTooltip ? _gamepadSelectedItemIndex : mousedOverItemIndex)
+        ];
 
         float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
 
@@ -102,6 +114,13 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         float textWidth = _tooltipText.getGlobalBounds().width;
         float textHeight = _tooltipText.getGlobalBounds().height;
         sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
+
+        if (_gamepadShowTooltip) {
+            sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+            pos.x = _background.getGlobalBounds().width;
+            pos.y = itemPos.y;
+        }
+
         _tooltipText.setPosition(pos);
 
         float padding = (float)WINDOW_HEIGHT * (1.f / 100);
@@ -116,26 +135,80 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     }
 }
 
+void UIInventoryInterface::useItem(int index) {
+    const Item* item = Item::ITEMS[_source.getItemIdAt(index)];
+
+    if (item->isConsumable()) {
+        item->use(_source.getParent());
+        _source.removeItemAt(index, 1);
+    } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
+        if (_source.isEquipped(index)) {
+            _source.deEquip(item->getEquipmentType());
+        } else {
+            _source.equip(index, item->getEquipmentType());
+        }
+    }
+}
+
+void UIInventoryInterface::dropItem(int index) {
+    _source.dropItem(_source.getItemIdAt(index), 1);
+    _source.removeItemAt(index, 1);
+}
+
+void UIInventoryInterface::dropStack(int index) {
+    _source.dropItem(_source.getItemIdAt(index), _source.getItemAmountAt(index));
+    _source.removeItemAt(index, _source.getItemAmountAt(index));
+}
+
 void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    if (_gamepadSelectedItemIndex != -1 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize()) {
+        switch (button) {
+            case CONTROLLER_BUTTON::A:
+                useItem(_gamepadSelectedItemIndex);
+                break;
+            case CONTROLLER_BUTTON::LEFT_STICK:
+                _gamepadShowTooltip = !_gamepadShowTooltip;
+                break;
+            case CONTROLLER_BUTTON::Y:
+                dropItem(_gamepadSelectedItemIndex);
+                break;
+            case CONTROLLER_BUTTON::RIGHT_STICK:
+                dropStack(_gamepadSelectedItemIndex);
+                break;
+        }
+    }
+}
+
+void UIInventoryInterface::controllerButtonPressed(CONTROLLER_BUTTON button) {
     switch (button) {
         case CONTROLLER_BUTTON::DPAD_DOWN:
-            if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() - 1) {
-                _gamepadSelectedItemIndex++;
-
-                if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
-                    sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
-                    _y -= ((_height + (_height / 8) * 2)) / (float)WINDOW_HEIGHT * 100.f; // this is almost it i think we need to account for ITEM_SPACING somehow
-                }
-            }
+            _lastDPadPressTime = currentTimeMillis();
+            gamepadScrollDown();
             break;
         case CONTROLLER_BUTTON::DPAD_UP:
-            if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex > 0) {
-                _gamepadSelectedItemIndex--;
+            _lastDPadPressTime = currentTimeMillis();
+            gamepadScrollUp();
+            break;
+    }
+}
 
-                if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
-                    _y += ((_height + (_height / 8) * 2)) / (float)WINDOW_HEIGHT * 100.f;
-                }
-            }
+void UIInventoryInterface::gamepadScrollDown() {
+    if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() - 1) {
+        _gamepadSelectedItemIndex++;
+
+        if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
+            _y -= ITEM_SPACING;
+        }
+    }
+}
+
+void UIInventoryInterface::gamepadScrollUp() {
+    if (_source.getCurrentSize() > 0 && _gamepadSelectedItemIndex > 0) {
+        _gamepadSelectedItemIndex--;
+
+        if (_gamepadSelectedItemIndex >= 11 && (int)_source.getCurrentSize() > 13) {
+            _y += ITEM_SPACING;
+        }
     }
 }
 
@@ -147,28 +220,15 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
 
         if (itemBounds.contains(mx, my)) {
-            const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
-
             switch (button) {
             case sf::Mouse::Left:
-                if (item->isConsumable()) {
-                    item->use(_source.getParent());
-                    _source.removeItemAt(i, 1);
-                } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
-                    if (_source.isEquipped(i)) {
-                        _source.deEquip(item->getEquipmentType());
-                    } else {
-                        _source.equip(i, item->getEquipmentType());
-                    }
-                }
+                useItem(i);
                 break;
             case sf::Mouse::Right:
-                _source.dropItem(_source.getItemIdAt(i), 1);
-                _source.removeItemAt(i, 1);
+                dropItem(i);
                 break;
             case sf::Mouse::Middle:
-                _source.dropItem(_source.getItemIdAt(i), _source.getItemAmountAt(i));
-                _source.removeItemAt(i, _source.getItemAmountAt(i));
+                dropStack(i);
                 break;
             }
 
@@ -179,6 +239,7 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
 
 void UIInventoryInterface::mouseMoved(const int mx, const int my) {
     _gamepadSelectedItemIndex = -1;
+    _gamepadShowTooltip = false;
     _mousePos = sf::Vector2f(mx, my);
 }
 
@@ -191,5 +252,7 @@ void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
 void UIInventoryInterface::hide() {
     _isActive = false;
     _gamepadSelectedItemIndex = -1;
+    _gamepadShowTooltip = false;
     _y = _originalY;
 }
+

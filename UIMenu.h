@@ -15,6 +15,7 @@ public:
     void addElement(std::shared_ptr<UIElement> element);
 
     void controllerButtonReleased(CONTROLLER_BUTTON button);
+    void controllerButtonPressed(CONTROLLER_BUTTON button);
 
     void keyPressed(sf::Keyboard::Key& key);
     void keyReleased(sf::Keyboard::Key& key);
@@ -29,10 +30,19 @@ public:
     void hide();
 
     bool isActive() const;
+
+    bool useGamepadConfiguration = false;
+
+    void defineSelectionGrid(std::vector<std::vector<int>> grid);
+
 private:
     bool _isActive = false;
 
     std::vector<std::shared_ptr<UIElement>> _elements;
+
+    int _selectedItemX = -1;
+    int _selectedItemY = -1;
+    std::vector<std::vector<int>> _selectionGrid;
 };
 
 #endif 

@@ -9,9 +9,9 @@
 #include "ParticleSystem.h"
 #include "GameController.h"
 
-const std::string VERSION = "0.0228";
+const std::string VERSION = "0.0300";
 
-class Game : public UIButtonListener {
+class Game : public UIButtonListener, public GameControllerListener {
 public:
 	Game(sf::View* camera, sf::RenderWindow* window);
 
@@ -29,6 +29,9 @@ public:
 	void mouseButtonReleased(const int mx, const int my, const int button);
 	void mouseMoved(const int mx, const int my);
 	void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
+
+	void controllerButtonPressed(CONTROLLER_BUTTON button);
+	void controllerButtonReleased(CONTROLLER_BUTTON button);
 
 	void textEntered(sf::Uint32 character);
 
@@ -63,7 +66,8 @@ private:
 	std::shared_ptr<Player> _player;
 	World _world;
 
-
+	void togglePauseMenu();
+	void toggleInventoryMenu();
 };
 
 #endif 

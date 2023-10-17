@@ -46,6 +46,9 @@ void UIElement::render(sf::RenderTexture& surface) {
 
 void UIElement::controllerButtonReleased(CONTROLLER_BUTTON button) {}
 
+void UIElement::controllerButtonPressed(CONTROLLER_BUTTON button) {
+}
+
 void UIElement::keyPressed(sf::Keyboard::Key& key) {}
 
 void UIElement::keyReleased(sf::Keyboard::Key& key) {}
@@ -60,4 +63,12 @@ void UIElement::hide() {
 
 bool UIElement::isActive() const {
     return _isActive;
+}
+
+void UIElement::setSelectionId(int selectionId) {
+    _selectionId = selectionId;
+}
+
+int UIElement::getSelectionId() {
+    return _selectionId;
 }

@@ -60,7 +60,29 @@ void Game::initUI() {
     std::shared_ptr<UIButton> exitButton = std::shared_ptr<UIButton>(new UIButton(
         1, 5, 9, 3, "quit game", _font, this, "exit"
     ));
+    exitButton->setSelectionId(0);
     _pauseMenu->addElement(exitButton);
+
+    std::shared_ptr<UIButton> saveButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 11, 9, 3, "save game", _font, this, "save"
+    ));
+    saveButton->setSelectionId(1);
+    _pauseMenu->addElement(saveButton);
+
+    std::shared_ptr<UIButton> settingsButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 17, 9, 3, "settings", _font, this, "settings"
+    ));
+    settingsButton->setSelectionId(2);
+    _pauseMenu->addElement(settingsButton);
+
+    _pauseMenu->useGamepadConfiguration = true;
+    _pauseMenu->defineSelectionGrid(
+        {
+            {exitButton->getSelectionId()},
+            {saveButton->getSelectionId()},
+            {settingsButton->getSelectionId()}
+        }
+    );
     _ui->addMenu(_pauseMenu);
 
     // Inventory menu
@@ -171,20 +193,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         if (!_commandMenu->isActive()) _camera->zoom(0.5);
         break;
     case sf::Keyboard::Escape:
-        if (!_commandMenu->isActive() && !_inventoryMenu->isActive()) {
-            if (_pauseMenu->isActive()) _pauseMenu->hide();
-            else _pauseMenu->show();
-            _isPaused = !_isPaused;
-        }
+        togglePauseMenu();
         break;
     case sf::Keyboard::I:
-        if (!_commandMenu->isActive()) {
-            if (_inventoryMenu->isActive()) _inventoryMenu->hide();
-            else _inventoryMenu->show();
-
-            // this causes non-critical visual problems that i would like to not have happen
-            //_isPaused = _inventoryMenu->isActive();
-        }
+        toggleInventoryMenu();
         break;
     }
 
@@ -207,6 +219,38 @@ void Game::mouseMoved(const int mx, const int my) {
 
 void Game::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
     _ui->mouseWheelScrolled(mouseWheelScroll);
+}
+
+void Game::controllerButtonPressed(CONTROLLER_BUTTON button) {
+}
+
+void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    switch (button) {
+        case CONTROLLER_BUTTON::START:
+            togglePauseMenu();
+            break;
+        case CONTROLLER_BUTTON::SELECT:
+            toggleInventoryMenu();
+            break;
+    }
+}
+
+void Game::togglePauseMenu() {
+    if (!_commandMenu->isActive() && !_inventoryMenu->isActive()) {
+        if (_pauseMenu->isActive()) _pauseMenu->hide();
+        else _pauseMenu->show();
+        _isPaused = !_isPaused;
+    }
+}
+
+void Game::toggleInventoryMenu() {
+    if (!_commandMenu->isActive()) {
+        if (_inventoryMenu->isActive()) _inventoryMenu->hide();
+        else _inventoryMenu->show();
+
+        // this causes non-critical visual problems that i would like to not have happen
+        //_isPaused = _inventoryMenu->isActive();
+    }
 }
 
 void Game::textEntered(sf::Uint32 character) {

@@ -21,6 +21,7 @@ public:
     void render(sf::RenderTexture& surface);
 
     virtual void controllerButtonReleased(CONTROLLER_BUTTON button);
+    virtual void controllerButtonPressed(CONTROLLER_BUTTON button);
 
     virtual void keyPressed(sf::Keyboard::Key& key);
     virtual void keyReleased(sf::Keyboard::Key& key);
@@ -33,6 +34,11 @@ public:
     virtual void show();
     virtual void hide();
     bool isActive() const;
+
+    void setSelectionId(int selectionId);
+    int getSelectionId();
+
+    friend class UIMenu;
 
 protected:
     float _x, _y;
@@ -48,6 +54,9 @@ protected:
     bool _disableAutomaticTextAlignment = false;
 
     bool _isActive = false;
+
+    bool _isSelected = false;
+    int _selectionId;
 
 private:
     bool _drawSprite = true;

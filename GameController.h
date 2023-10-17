@@ -33,7 +33,9 @@ public:
     }
 
     static bool isButtonPressed(CONTROLLER_BUTTON button) {
-        return sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)button);
+        return (unsigned int)button < (unsigned int)CONTROLLER_BUTTON::LEFT_TRIGGER ?
+            sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)button)
+            : _triggerIsPressed[(int)button - (int)CONTROLLER_BUTTON::LEFT_TRIGGER];
     }
 
     static void setDeadZone(float deadZone) {
@@ -93,6 +95,8 @@ private:
     inline static float _lastDPadXValue = 0.f;
     inline static float _lastDPadYValue = 0.f;
 
+    inline static bool _triggerIsPressed[(int)CONTROLLER_BUTTON::DPAD_RIGHT - (int)CONTROLLER_BUTTON::LEFT_TRIGGER + 1];
+
     static float removeDeadZone(float axisValue) {
         return std::abs(axisValue) > _deadZone ? axisValue : 0.f;
     }
@@ -124,12 +128,16 @@ private:
             }
             case CONTROLLER_AXIS::DPAD_X:
                 if (value == 0 && _lastDPadXValue == -100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_LEFT);
+                else if (value == -100 && _lastDPadXValue == 0) listenerButtonPressCallback(CONTROLLER_BUTTON::DPAD_LEFT);
                 else if (value == 0 && _lastDPadXValue == 100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_RIGHT);
+                else if (value == 100 && _lastDPadXValue == 0) listenerButtonPressCallback(CONTROLLER_BUTTON::DPAD_RIGHT);
                 _lastDPadXValue = value;
                 break;
             case CONTROLLER_AXIS::DPAD_Y:
                 if (value == 0 && _lastDPadYValue == -100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_DOWN);
+                else if (value == -100 && _lastDPadYValue == 0) listenerButtonPressCallback(CONTROLLER_BUTTON::DPAD_DOWN);
                 else if (value == 0 && _lastDPadYValue == 100) listenerButtonReleaseCallback(CONTROLLER_BUTTON::DPAD_UP);
+                else if (value == 100 && _lastDPadYValue == 0) listenerButtonPressCallback(CONTROLLER_BUTTON::DPAD_UP);
                 _lastDPadYValue = value;
                 break;
         }
@@ -137,11 +145,17 @@ private:
 
     inline static std::vector<std::shared_ptr<GameControllerListener>> _listeners;
     static void listenerButtonReleaseCallback(CONTROLLER_BUTTON button) {
+        if ((int)button >= (int)CONTROLLER_BUTTON::LEFT_TRIGGER)
+            _triggerIsPressed[(int)button - (int)CONTROLLER_BUTTON::LEFT_TRIGGER] = false;
+
         for (auto& listener : _listeners)
             listener->controllerButtonReleased(button);
     }
 
     static void listenerButtonPressCallback(CONTROLLER_BUTTON button) {
+        if ((int)button >= (int)CONTROLLER_BUTTON::LEFT_TRIGGER)
+            _triggerIsPressed[(int)button - (int)CONTROLLER_BUTTON::LEFT_TRIGGER] = true;
+
         for (auto& listener : _listeners)
             listener->controllerButtonPressed(button);
     }

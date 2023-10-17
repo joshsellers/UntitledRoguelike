@@ -103,9 +103,9 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
 
 void UIButton::update() {
     sf::FloatRect bounds = _sprite.getGlobalBounds();
-    if (!_mouseDown && bounds.contains(_mx, _my)) {
+    if (!_mouseDown && (bounds.contains(_mx, _my) || _isSelected)) {
         _sprite.setTexture(*_hoverTexture);
-    } else if (bounds.contains(_mx, _my)) {
+    } else if (bounds.contains(_mx, _my) || (_mouseDown && _isSelected)) {
         _sprite.setTexture(*_clickTexture);
     } else {
         _sprite.setTexture(*_texture);
@@ -113,6 +113,17 @@ void UIButton::update() {
 }
 
 void UIButton::draw(sf::RenderTexture& surface) {}
+
+void UIButton::controllerButtonPressed(CONTROLLER_BUTTON button) {
+    if (_isSelected && button == CONTROLLER_BUTTON::A) _mouseDown = true;
+}
+
+void UIButton::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    if (_isSelected && button == CONTROLLER_BUTTON::A) {
+        _mouseDown = false;
+        _listener->buttonPressed(_buttonCode);
+    }
+}
 
 void UIButton::mouseButtonPressed(const int mx, const int my, const int button) {
     _mouseDown = true;

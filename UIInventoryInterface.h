@@ -7,6 +7,8 @@
 constexpr int ITEM_SPACING = 7;
 constexpr float SCROLL_RATE = 2.f;
 
+constexpr long long DPAD_HOLD_TIME = 250LL;
+
 class UIInventoryInterface : public UIElement {
 public:
     UIInventoryInterface(Inventory& source, sf::Font, std::shared_ptr<sf::Texture> spriteSheet);
@@ -15,6 +17,7 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void controllerButtonReleased(CONTROLLER_BUTTON button);
+    void controllerButtonPressed(CONTROLLER_BUTTON button);
 
     void mouseButtonPressed(const int mx, const int my, const int button);
     void mouseButtonReleased(const int mx, const int my, const int button);
@@ -39,6 +42,16 @@ private:
     const float _originalY;
 
     int _gamepadSelectedItemIndex = -1;
+    bool _gamepadShowTooltip = false;
+
+    long long _lastDPadPressTime = 0LL;
+
+    void useItem(int index);
+    void dropItem(int index);
+    void dropStack(int index);
+
+    void gamepadScrollDown();
+    void gamepadScrollUp();
 };
 
 #endif

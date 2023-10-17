@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "game.h"
 #include <iostream>
 #include "Util.h"
 #include "GameController.h"
@@ -19,7 +19,8 @@ int main() {
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 
     srand(currentTimeMillis());
-    Game game(&camera, &window);
+    std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
+    GameController::addListener(game);
 
     sf::Event event;
 
@@ -59,31 +60,32 @@ int main() {
                 window.close();
                 break;
             case sf::Event::KeyPressed:
-                game.keyPressed(event.key.code);
+                game->keyPressed(event.key.code);
                 break;
             case sf::Event::KeyReleased:
-                game.keyReleased(event.key.code);
+                game->keyReleased(event.key.code);
                 break;
             case sf::Event::MouseButtonPressed:
-                game.mouseButtonPressed(
+                game->mouseButtonPressed(
                     event.mouseButton.x, event.mouseButton.y, event.mouseButton.button
                 );
                 break;
             case sf::Event::MouseButtonReleased:
-                game.mouseButtonReleased(
+                game->mouseButtonReleased(
                     event.mouseButton.x, event.mouseButton.y, event.mouseButton.button
                 );
                 break;
             case sf::Event::MouseMoved:
-                game.mouseMoved(
+                window.setMouseCursorVisible(true);
+                game->mouseMoved(
                     event.mouseMove.x, event.mouseMove.y
                 );
                 break;
             case sf::Event::MouseWheelScrolled:
-                game.mouseWheelScrolled(event.mouseWheelScroll);
+                game->mouseWheelScrolled(event.mouseWheelScroll);
                 break;
             case sf::Event::TextEntered:
-                game.textEntered(event.text.unicode);
+                game->textEntered(event.text.unicode);
                 break;
             case sf::Event::JoystickConnected:
                 GameController::receiveControllerEvent(event);
@@ -92,28 +94,31 @@ int main() {
                 GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickMoved:
+                window.setMouseCursorVisible(false);
                 GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickButtonReleased:
+                window.setMouseCursorVisible(false);
                 GameController::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickButtonPressed:
+                window.setMouseCursorVisible(false);
                 GameController::receiveControllerEvent(event);
                 break;
             }
         }
 
-        game.update();
+        game->update();
 
         mainSurface.setView(camera);
 
         mainSurface.clear();
-        game.draw(mainSurface);
+        game->draw(mainSurface);
 
         mainSurface.display();
 
         uiSurface.clear(sf::Color::Transparent);
-        game.drawUI(uiSurface);
+        game->drawUI(uiSurface);
         uiSurface.display();
 
         window.clear();
