@@ -474,3 +474,23 @@ bool Entity::compare(Entity* entity) const {
 const std::string& Entity::getEntityType() const {
     return _entityType;
 }
+
+unsigned int Entity::getMagazineAmmoType() {
+    return _magazineAmmoType;
+}
+
+int Entity::getMagazineSize() {
+    return _magazineSize;
+}
+
+int Entity::getMagazineContents() {
+    return _magazineContents;
+}
+
+void Entity::decrementMagazine() {
+    if (_magazineContents != 0) _magazineContents--;
+}
+
+void Entity::emptyMagazine() {
+    _magazineContents = 0;
+}

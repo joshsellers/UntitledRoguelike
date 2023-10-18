@@ -20,6 +20,10 @@ Entity(pos, 0.5, 1, 1, false) {
 
     _canPickUpItems = true;
     _isMob = true;
+
+    sf::Vector2f feetPos = getPosition();
+    feetPos.y += TILE_SIZE;
+    _wanderTargetPos = feetPos;
 }
 
 void Penguin::update() {

@@ -36,7 +36,8 @@ public:
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
-        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const std::function<void(Entity*)> use);
+        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun,
+        const std::function<void(Entity*)> use, const int magazineSize = 0);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -49,6 +50,7 @@ public:
 
     sf::Vector2f getBarrelPos() const;
     bool isGun() const;
+    const int getMagazineSize() const;
 
     sf::IntRect getTextureRect() const;
 
@@ -73,6 +75,7 @@ private:
 
     const sf::Vector2f _barrelPos;
     const bool _isGun;
+    const int _magazineSize;
 
     const sf::IntRect _textureRect;
 

@@ -222,6 +222,16 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         } else {
             return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
         }
+    } else if (commandHeader == "respawn") {
+        for (auto& entity : _world->getEntities()) {
+            if (entity->compare(_world->getPlayer().get())) {
+                return "Did not respawn because player has not been despawned";
+            }
+        }
+
+        std::cout << processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints())) << std::endl;
+        _world->addEntity(_world->getPlayer());
+        return "Player respawned at full health";
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }

@@ -57,6 +57,8 @@ private:
     };
 
     Entity* _parent;
+
+    void emptyAmmoMagazine(EQUIPMENT_TYPE equipType);
 };
 
 #endif

@@ -45,7 +45,7 @@ const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     [](Entity* parent) {}
 );
 
-const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 8, false,
+const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 999, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
@@ -57,10 +57,10 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(20, 6), true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455);
-    }
+    }, 8
 );
 
-const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), false, 0, false,
+const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 999, false,
     "A large pod\nAmmunition for the Pod Launcher",
     EQUIPMENT_TYPE::AMMO, 20, 0, 0, sf::Vector2f(), false,
     [](Entity* parent) {}
@@ -72,7 +72,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD);
-    }
+    }, 1
 );
 
 const Item Item::WIFE_BEATER(11, "Wife Beater", sf::IntRect(12, 26, 1, 1), false, 0, false,
@@ -92,10 +92,10 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
 
 std::vector<const Item*> Item::ITEMS;
 
-Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable, 
+Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
     const unsigned int stackLimit, const bool isConsumable,
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
-    const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const std::function<void(Entity*)> use) :
+    const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const std::function<void(Entity*)> use, const int magazineSize) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
             textureRect.left << SPRITE_SHEET_SHIFT, 
@@ -106,13 +106,13 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isStackable(isStackable), _stackLimit(stackLimit), 
     _isConsumable(isConsumable), _use(use), _description(description), 
     _equipType(equipType), _damage(damage), _hitBoxSize(hitBoxSize), _hitBoxPos(hitBoxPos), _barrelPos(barrelPos),
-    _isGun(isGun) {
+    _isGun(isGun), _magazineSize(magazineSize) {
 
     ITEMS.push_back(this);
 }
 
 void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData) {
-    if (parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) == projData.itemId) {
+    if (parent->getMagazineAmmoType() == projData.itemId && parent->getMagazineContents() > 0) {
         sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
         sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
 
@@ -128,7 +128,7 @@ void Item::fireTargetedProjectile(const float velocity, Entity* parent, const Pr
         proj->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(proj);
 
-        parent->getInventory().removeItemAt(parent->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), 1);
+        parent->decrementMagazine();
     }
 }
 
@@ -166,6 +166,10 @@ sf::Vector2f Item::getBarrelPos() const {
 
 bool Item::isGun() const {
     return _isGun;
+}
+
+const int Item::getMagazineSize() const {
+    return _magazineSize;
 }
 
 sf::IntRect Item::getTextureRect() const {

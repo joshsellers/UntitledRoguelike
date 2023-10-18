@@ -92,6 +92,12 @@ public:
 
     const std::string& getEntityType() const;
 
+    unsigned int getMagazineAmmoType();
+    int getMagazineSize();
+    int getMagazineContents();
+    void decrementMagazine();
+    void emptyMagazine();
+
 protected:
     std::string _entityType = "";
 
@@ -142,6 +148,10 @@ protected:
     float _hitBoxYOffset = 0;
 
     int _hitPoints = 0;
+
+    unsigned int _magazineAmmoType;
+    int _magazineSize = 0;
+    int _magazineContents = 0;
 
 private:
     int _maxHitPoints = 0;

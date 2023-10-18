@@ -140,11 +140,13 @@ unsigned int Inventory::getItemAmountAt(unsigned int index) const {
 
 void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
     if (equipType != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
+        if (index != NOTHING_EQUIPPED && Item::ITEMS[getItemIdAt(index)]->isGun()) emptyAmmoMagazine(equipType);
         _equippedItems[(int)equipType] = index;
     }
 }
 
 void Inventory::deEquip(EQUIPMENT_TYPE equipType) {
+    emptyAmmoMagazine(equipType);
     equip(NOTHING_EQUIPPED, equipType);
 }
 
@@ -179,4 +181,12 @@ unsigned int Inventory::getCurrentSize() const {
 
 Entity* Inventory::getParent() const {
     return _parent;
+}
+
+void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
+    if (getEquippedItemId(equipType) != NOTHING_EQUIPPED && Item::ITEMS[getEquippedItemId(equipType)]->isGun()) {
+        const Item* weapon = Item::ITEMS[getEquippedItemId(equipType)];
+        addItem(weapon->getAmmoId(), _parent->getMagazineContents());
+        _parent->emptyMagazine();
+    }
 }

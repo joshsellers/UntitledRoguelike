@@ -234,7 +234,7 @@ void Player::drawTool(sf::RenderTexture& surface) {
             int spriteX = itemTextureRect.left + TILE_SIZE;
             if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
                 int ammoId = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
-                if (!getInventory().hasItem(ammoId) || getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO) != ammoId) {
+                if (getMagazineAmmoType() != ammoId || getMagazineContents() == 0) {
                     spriteX += TILE_SIZE * 3;
                 }
             }
@@ -476,6 +476,18 @@ void Player::reloadWeapon() {
                 getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
                 EQUIPMENT_TYPE::AMMO
             );
+
+            if (getMagazineContents() == 0) {
+                const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+                const Item* ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
+                const unsigned int removeAmount = std::min(
+                    (unsigned int)weapon->getMagazineSize(), getInventory().getItemAmountAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO))
+                );
+                getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
+                _magazineAmmoType = ammo->getId();
+                _magazineSize = weapon->getMagazineSize();
+                _magazineContents = (int)removeAmount;
+            }
         }
     }
 }

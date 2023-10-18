@@ -21,6 +21,10 @@ Turtle::Turtle(sf::Vector2f pos) :
 
     _canPickUpItems = true;
     _isMob = true;
+
+    sf::Vector2f feetPos = getPosition();
+    feetPos.y += TILE_SIZE;
+    _wanderTargetPos = feetPos;
 }
 
 void Turtle::update() {

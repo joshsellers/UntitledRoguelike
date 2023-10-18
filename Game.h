@@ -9,7 +9,7 @@
 #include "ParticleSystem.h"
 #include "GameController.h"
 
-const std::string VERSION = "0.0300";
+const std::string VERSION = "0.0301";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
