@@ -72,3 +72,7 @@ void UIElement::setSelectionId(int selectionId) {
 int UIElement::getSelectionId() {
     return _selectionId;
 }
+
+void UIElement::setCharacterSize(float size) {
+    _text.setCharacterSize(getRelativeWidth(size));
+}

@@ -32,7 +32,7 @@ UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, f
 void UIAttributeMeter::update() {
     _bar.setSize(sf::Vector2f(_width * ((float)_attribute / (float)_attributeMax), _height));
 
-    _text.setString(_attName + ": " + std::to_string(_attribute) + "/" + std::to_string(_attributeMax));
+    if (_useDefaultLabel) _text.setString(_attName + ": " + std::to_string(_attribute) + "/" + std::to_string(_attributeMax));
     _text.setPosition(
         _background.getPosition().x + _background.getSize().x / 2 - _text.getGlobalBounds().width / 2,
         _background.getPosition().y + _background.getSize().y / 2 - _text.getGlobalBounds().height / 2
@@ -66,6 +66,14 @@ void UIAttributeMeter::showText() {
 
 void UIAttributeMeter::hideText() {
     _showText = false;
+}
+
+void UIAttributeMeter::setText(const sf::String text) {
+    _text.setString(text);
+}
+
+void UIAttributeMeter::useDefaultLabel(bool useDefaultLabel) {
+    _useDefaultLabel = useDefaultLabel;
 }
 
 void UIAttributeMeter::setColor(sf::Uint32 color) {

@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <iostream>
 #include "UICommandPrompt.h"
-#include "UIAttributeMeter.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -85,13 +84,6 @@ void Game::initUI() {
     );
     _ui->addMenu(_pauseMenu);
 
-    // Inventory menu
-    std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
-        _player->getInventory(), _font, _spriteSheet
-    ));
-    _inventoryMenu->addElement(inventoryInterface);
-    _ui->addMenu(_inventoryMenu);
-
     // Command prompt menu
     std::shared_ptr<UICommandPrompt> cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(cmdPrompt);
@@ -104,8 +96,25 @@ void Game::initUI() {
     playerHpMeter->setColor(0xCC0000FF);
     playerHpMeter->setBackgroundColor(0xAA0000FF);
     _HUDMenu->addElement(playerHpMeter);
+
+    _magazineMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "", 90, 92, 6, 3.f, _player->getMagazineContents(), _player->getMagazineSize(), _font
+    ));
+    _magazineMeter->setBackgroundColor(0x55555599);
+    _magazineMeter->setColor(0x99999999);
+    _magazineMeter->useDefaultLabel(false);
+    _magazineMeter->setCharacterSize(2);
+    _HUDMenu->addElement(_magazineMeter);
     _ui->addMenu(_HUDMenu);
     _HUDMenu->show();
+    _magazineMeter->hide();
+
+    // Inventory menu
+    std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
+        _player->getInventory(), _font, _spriteSheet
+    ));
+    _inventoryMenu->addElement(inventoryInterface);
+    _ui->addMenu(_inventoryMenu);
 }
 
 void Game::update() {
@@ -115,7 +124,24 @@ void Game::update() {
     float rightStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
 
     _ui->update();
-    if (!_isPaused) _world.update();
+    if (!_isPaused) {
+        _world.update();
+
+        int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        if (equippedTool != NOTHING_EQUIPPED && Item::ITEMS[equippedTool]->isGun()) {
+            int ammoIndex = _player->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO);
+            int ammoCount = ammoIndex == NOTHING_EQUIPPED ? 0 : _player->getInventory().getItemAmountAt(ammoIndex);
+
+            _magazineMeter->show();
+            if (ammoIndex != NOTHING_EQUIPPED && _player->getInventory().getItemIdAt(ammoIndex) == Item::ITEMS[equippedTool]->getAmmoId()) {
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":" + std::to_string(ammoCount)));
+            } else {
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":0"));
+            }
+        } else {
+            _magazineMeter->hide();
+        }
+    }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
 

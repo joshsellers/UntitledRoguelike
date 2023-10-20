@@ -475,15 +475,15 @@ const std::string& Entity::getEntityType() const {
     return _entityType;
 }
 
-unsigned int Entity::getMagazineAmmoType() {
+unsigned int Entity::getMagazineAmmoType() const {
     return _magazineAmmoType;
 }
 
-int Entity::getMagazineSize() {
+int& Entity::getMagazineSize() {
     return _magazineSize;
 }
 
-int Entity::getMagazineContents() {
+int& Entity::getMagazineContents() {
     return _magazineContents;
 }
 

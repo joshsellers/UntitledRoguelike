@@ -140,7 +140,10 @@ unsigned int Inventory::getItemAmountAt(unsigned int index) const {
 
 void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
     if (equipType != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
-        if (index != NOTHING_EQUIPPED && Item::ITEMS[getItemIdAt(index)]->isGun()) emptyAmmoMagazine(equipType);
+        if (index != NOTHING_EQUIPPED 
+            && Item::ITEMS[getItemIdAt(index)]->getEquipmentType() == EQUIPMENT_TYPE::TOOL
+            && getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED
+            && Item::ITEMS[getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) emptyAmmoMagazine(equipType);
         _equippedItems[(int)equipType] = index;
     }
 }

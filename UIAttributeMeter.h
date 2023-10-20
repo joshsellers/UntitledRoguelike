@@ -18,6 +18,9 @@ public:
 
     void showText();
     void hideText();
+    void setText(const sf::String text);
+
+    void useDefaultLabel(bool useDefaultLabel);
 
     void setColor(sf::Uint32 color);
     void setBackgroundColor(sf::Uint32 color);
@@ -35,6 +38,8 @@ private:
     sf::RectangleShape _background;
 
     bool _showText = true;
+
+    bool _useDefaultLabel = true;
 };
 
 #endif

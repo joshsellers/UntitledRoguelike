@@ -8,8 +8,9 @@
 #include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
 #include "GameController.h"
+#include "UIAttributeMeter.h"
 
-const std::string VERSION = "0.0301";
+const std::string VERSION = "0.0302";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -50,6 +51,8 @@ private:
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 
 	sf::Font _font;
 	sf::Text _versionLabel;

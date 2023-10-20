@@ -92,9 +92,9 @@ public:
 
     const std::string& getEntityType() const;
 
-    unsigned int getMagazineAmmoType();
-    int getMagazineSize();
-    int getMagazineContents();
+    unsigned int getMagazineAmmoType() const;
+    int& getMagazineSize();
+    int& getMagazineContents();
     void decrementMagazine();
     void emptyMagazine();
 

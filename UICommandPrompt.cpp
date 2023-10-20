@@ -117,6 +117,12 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
                 for (int id = Item::TOP_HAT.getId(); id < Item::DRESS_SHOES.getId() + 1; id++)
                     _world->getPlayer()->getInventory().addItem(id, 1);
                 return "Player given tuxedo";
+            } else if (parsedCommand.at(1) == "nottux") {
+                processCommand("give:" + std::to_string(Item::SOMBRERO.getId()));
+                processCommand("give:" + std::to_string(Item::WIFE_BEATER.getId()));
+                processCommand("give:" + std::to_string(Item::JORTS.getId()));
+                processCommand("give:" + std::to_string(Item::WHITE_TENNIS_SHOES.getId()));
+                return "Player given Spencer's outfit";
             } else {
                 try {
                     int itemId = stoi(parsedCommand.at(1));
@@ -230,6 +236,7 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         }
 
         std::cout << processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints())) << std::endl;
+        _world->getPlayer()->activate();
         _world->addEntity(_world->getPlayer());
         return "Player respawned at full health";
     } else {
