@@ -5,6 +5,7 @@
 #include "Util.h"
 #include "Turtle.h"
 #include "Penguin.h"
+#include <regex>
 
 UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     UIElement(30, 30, 4, 4, false, false, font) {
@@ -32,7 +33,7 @@ void UICommandPrompt::draw(sf::RenderTexture& surface) {
     float height = _text.getGlobalBounds().height;
 
     float x = getRelativeWidth(50.f) - width / 2;
-    float y = getRelativeWidth(50.f);
+    float y = getRelativeHeight(88.f);
     _text.setPosition(sf::Vector2f(x, y));
 
     float padding = getRelativeWidth(1.f);
@@ -123,6 +124,26 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
                 processCommand("give:" + std::to_string(Item::JORTS.getId()));
                 processCommand("give:" + std::to_string(Item::WHITE_TENNIS_SHOES.getId()));
                 return "Player given Spencer's outfit";
+            } else if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
+                const Item* item = nullptr;
+                for (int i = 0; i < Item::ITEMS.size(); i++) {
+                    std::string itemName = Item::ITEMS[i]->getName();
+                    boost::to_lower(itemName);
+                    if (parsedCommand.at(1) == itemName) {
+                        try {
+                            item = Item::ITEMS[i];
+                            int amount = 1;
+                            if (parsedCommand.size() == 3)
+                                amount = stoi(parsedCommand.at(2));
+
+                            _world->getPlayer()->getInventory().addItem(i, amount);
+                            return "Player given " + std::to_string(amount) + " " + Item::ITEMS[i]->getName() + (amount > 1 ? "s" : "");
+                        } catch (std::exception ex) {
+                            return ex.what();
+                        }
+                    }
+                }
+                return parsedCommand.at(1) + " is not a valid item";
             } else {
                 try {
                     int itemId = stoi(parsedCommand.at(1));
@@ -255,6 +276,11 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         } else {
             return "No gamepad connected";
         }
+    } else if (commandHeader == "clear inventory") {
+        while (_world->getPlayer()->getInventory().getCurrentSize() != 0) {
+            _world->getPlayer()->getInventory().removeItemAt(0, _world->getPlayer()->getInventory().getItemAmountAt(0));
+        }
+        return "Removed all items from player's inventory";
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }

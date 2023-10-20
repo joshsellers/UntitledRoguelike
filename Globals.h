@@ -4,6 +4,8 @@
 extern unsigned int WINDOW_WIDTH, WINDOW_HEIGHT;
 extern float RELATIVE_WINDOW_SIZE;
 
+extern bool FULLSCREEN;
+
 extern int SCALE;
 extern int WIDTH;
 extern int HEIGHT;

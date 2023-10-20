@@ -28,6 +28,7 @@ public:
     static const Item WIFE_BEATER;
     static const Item JORTS;
     static const Item WHITE_TENNIS_SHOES;
+    static const Item APPLE;
 
     static std::vector<const Item*> ITEMS;
 
@@ -37,7 +38,7 @@ public:
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun,
-        const std::function<void(Entity*)> use, const int magazineSize = 0);
+        const std::function<bool(Entity*)> use, const int magazineSize = 0);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -60,7 +61,7 @@ public:
 
     bool isConsumable() const;
 
-    void use(Entity* parent) const;
+    bool use(Entity* parent) const;
 
     EQUIPMENT_TYPE getEquipmentType() const;
 
@@ -84,7 +85,7 @@ private:
 
     const bool _isConsumable;
 
-    const std::function<void(Entity*)> _use;
+    const std::function<bool(Entity*)> _use;
 
     const EQUIPMENT_TYPE _equipType;
 };

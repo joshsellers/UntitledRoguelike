@@ -139,8 +139,7 @@ void UIInventoryInterface::useItem(int index) {
     const Item* item = Item::ITEMS[_source.getItemIdAt(index)];
 
     if (item->isConsumable()) {
-        item->use(_source.getParent());
-        _source.removeItemAt(index, 1);
+        if (item->use(_source.getParent())) _source.removeItemAt(index, 1);
     } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
         if (_source.isEquipped(index)) {
             _source.deEquip(item->getEquipmentType());

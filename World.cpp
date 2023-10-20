@@ -354,12 +354,12 @@ void World::generateChunkEntities(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    int grassSpawnRate = 5000;
-    int smallTreeSpawnRate = 50000;
-    int cactusSpawnRate = 200000;
-    int smallSavannaTreeSpawnRate = 200000;
-    int largeSavannaTreeSpawnRate = 250000;
-    int smallTundraTreeSpawnRate = 300000;
+    const int grassSpawnRate = 5000;
+    const int smallTreeSpawnRate = 37500;
+    const int cactusSpawnRate = 200000;
+    const int smallSavannaTreeSpawnRate = 200000;
+    const int largeSavannaTreeSpawnRate = 250000;
+    const int smallTundraTreeSpawnRate = 300000;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);

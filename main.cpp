@@ -4,16 +4,21 @@
 #include "GameController.h"
 
 int main() {
+    if (FULLSCREEN) {
+        HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
+    }
+
     float screenHeight = sf::VideoMode::getDesktopMode().height;
-    float screenWidth = screenHeight * ((float)WIDTH / (float)HEIGHT);
+    float screenWidth = FULLSCREEN ? sf::VideoMode::getDesktopMode().width : screenHeight * ((float)WIDTH / (float)HEIGHT);
 
     unsigned int windowWidth = screenWidth * RELATIVE_WINDOW_SIZE;
     unsigned int windowHeight = screenHeight * RELATIVE_WINDOW_SIZE;
     WINDOW_WIDTH = windowWidth;
     WINDOW_HEIGHT = windowHeight;
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "");
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(FULLSCREEN);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 

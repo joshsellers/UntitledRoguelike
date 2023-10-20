@@ -10,7 +10,7 @@
 #include "GameController.h"
 #include "UIAttributeMeter.h"
 
-const std::string VERSION = "0.0303";
+const std::string VERSION = "0.0304";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:

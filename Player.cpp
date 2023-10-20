@@ -419,6 +419,10 @@ void Player::knockBack(float amt, MOVING_DIRECTION dir) {
 
 void Player::damage(int damage) {
     if (!isDodging() && !freeMove) {
+        if (GameController::isConnected()) {
+            int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
+            GameController::vibrate(vibrationAmount, 250);
+        }
         _hitPoints -= damage;
         if (_hitPoints <= 0) {
             _isActive = false;
