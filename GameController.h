@@ -4,6 +4,12 @@
 #include <SFML/Window/Joystick.hpp>
 #include "GameControllerListener.h"
 #include <iostream>
+#include <windows.h>
+#include <Xinput.h>
+#include <thread>
+#include "Util.h"
+
+constexpr int MAX_CONTROLLER_VIBRATION = 65535;
 
 class GameController {
 public:
@@ -14,6 +20,14 @@ public:
 
     static unsigned int getControllerId() {
         return _id;
+    }
+
+    static void vibrate(int vibrationAmount, long long time) {
+        if (_isVibrating) return;
+        vibrationAmount = std::min(MAX_CONTROLLER_VIBRATION, vibrationAmount);
+        _isVibrating = true;
+        std::thread vibrateThread(&GameController::runVibration, vibrationAmount, time);
+        vibrateThread.detach();
     }
 
     static float getLeftStickXAxis() {
@@ -96,6 +110,24 @@ private:
     inline static float _lastDPadYValue = 0.f;
 
     inline static bool _triggerIsPressed[(int)CONTROLLER_BUTTON::DPAD_RIGHT - (int)CONTROLLER_BUTTON::LEFT_TRIGGER + 1];
+
+    inline static bool _isVibrating = false;
+
+    static void runVibration(int vibrationAmount, long long time) {
+        XINPUT_VIBRATION vibration;
+        ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+        vibration.wLeftMotorSpeed = vibrationAmount;
+        vibration.wRightMotorSpeed = vibrationAmount;
+        XInputSetState(0, &vibration);
+
+        Sleep(time);
+
+        vibration.wLeftMotorSpeed = 0;
+        vibration.wRightMotorSpeed = 0;
+        XInputSetState(0, &vibration);
+
+        _isVibrating = false;
+    }
 
     static float removeDeadZone(float axisValue) {
         return std::abs(axisValue) > _deadZone ? axisValue : 0.f;

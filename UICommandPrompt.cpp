@@ -239,6 +239,22 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
         _world->getPlayer()->activate();
         _world->addEntity(_world->getPlayer());
         return "Player respawned at full health";
+    } else if (commandHeader == "vibrate") {
+        if (GameController::isConnected()) {
+            if (parsedCommand.size() > 2) {
+                try {
+                    int vibrationAmount = std::stoi(parsedCommand[1]);
+                    long long time = std::stoll(parsedCommand[2]);
+
+                    GameController::vibrate(vibrationAmount, time);
+                    return "Controller vibrating at strength " + std::to_string(vibrationAmount) + " for " + std::to_string(time) + " milliseconds";
+                } catch (std::exception ex) {
+                    return ex.what();
+                }
+            } else return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+        } else {
+            return "No gamepad connected";
+        }
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }

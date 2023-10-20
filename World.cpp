@@ -117,7 +117,7 @@ void World::spawnMobs() {
                     int packAmount = randPackAmount(_mobGen);
                     MOB_TYPE mobType{};
                     switch (terrainType) {
-                        case TERRAIN_TYPE::VOID:
+                        case TERRAIN_TYPE::EMPTY:
                             return;
                         case TERRAIN_TYPE::WATER:
                             return; // for now...
@@ -585,21 +585,21 @@ Chunk* World::getCurrentChunk() {
 }
 
 TERRAIN_TYPE World::getTerrainDataAt(Chunk* chunk, sf::Vector2f pos) {
-    if (chunk == nullptr || chunk->terrainData.size() == 0) return TERRAIN_TYPE::VOID;
+    if (chunk == nullptr || chunk->terrainData.size() == 0) return TERRAIN_TYPE::EMPTY;
 
     int x = (int)pos.x - (int)chunk->pos.x;
     int y = (int)pos.y - (int)chunk->pos.y;
 
     if (x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE) {
         return chunk->terrainData[x + y * CHUNK_SIZE];
-    } else return TERRAIN_TYPE::VOID;
+    } else return TERRAIN_TYPE::EMPTY;
 }
 
 TERRAIN_TYPE World::getTerrainDataAt(sf::Vector2f pos) {
     for (Chunk& chunk : _chunks) {
         if (chunkContains(chunk, pos)) return getTerrainDataAt(&chunk, pos);
     }
-    return TERRAIN_TYPE::VOID;
+    return TERRAIN_TYPE::EMPTY;
 }
 
 TERRAIN_TYPE World::getTerrainDataAt(float x, float y) {

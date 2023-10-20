@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "GameController.h"
 
-
 int main() {
     float screenHeight = sf::VideoMode::getDesktopMode().height;
     float screenWidth = screenHeight * ((float)WIDTH / (float)HEIGHT);

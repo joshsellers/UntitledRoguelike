@@ -8,7 +8,7 @@ constexpr int CHUNK_SIZE = 550;
 // full size 550
 
 enum class TERRAIN_TYPE : unsigned int {
-    VOID          = 0,
+    EMPTY          = 0,
     WATER         = 1,
     GRASS_LOW     = 2,
     GRASS_HIGH    = 3,
