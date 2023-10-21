@@ -58,6 +58,8 @@ class World {
 public:
     World(std::shared_ptr<Player> player, bool& showDebug);
 
+    void init(unsigned int seed);
+
     void update();
 
     void draw(sf::RenderTexture& surface);

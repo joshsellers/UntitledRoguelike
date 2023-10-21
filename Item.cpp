@@ -2,53 +2,46 @@
 #include "World.h"
 #include "Projectile.h"
 #include <iostream>
+#include "SoundManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
-    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false
 ); 
 
 const Item Item::TUX_VEST(1, "Tuxedo Vest", sf::IntRect(0, 26, 1, 1), false, 0, false,
     "A tuxedo vest\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::TUX_PANTS(2, "Tuxedo Pants", sf::IntRect(4, 26, 1, 1), false, 0, false,
     "Tuxedo pants, for a tuxedo\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::DRESS_SHOES(3, "Dress Shoes", sf::IntRect(8, 26, 1, 1), false, 0, false,
     "Some nice shoes\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, false,
     "A nice hat to keep the\nsun out of your eyes",
-    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::AXE(5, "Axe", sf::IntRect(18, 3, 1, 1), false, 0, false,
     "A large, formidible axe",
-    EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false
 );
 
 const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     "Careful! It's sharp",
-    EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false
 );
 
 const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 999, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
-    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
 
@@ -56,15 +49,14 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
     "A large handgun",
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(20, 6), true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455);
+        fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455, "revolver");
         return false;
     }, 8
 );
 
 const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 999, false,
     "A large pod\nAmmunition for the Pod Launcher",
-    EQUIPMENT_TYPE::AMMO, 20, 0, 0, sf::Vector2f(), false,
-    [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::AMMO, 20, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
 
@@ -79,17 +71,17 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
 
 const Item Item::WIFE_BEATER(11, "Wife Beater", sf::IntRect(12, 26, 1, 1), false, 0, false,
     "It's dirty",
-    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::JORTS(12, "Jorts", sf::IntRect(16, 26, 1, 1), false, 0, false,
     "Don't wear these",
-    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26, 1, 1), false, 0, false,
     "These help you go a little faster",
-    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, [](Entity* parent) {return false;}
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false
 );
 
 const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true, "Something something an apple a day",
@@ -124,7 +116,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     ITEMS.push_back(this);
 }
 
-void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData) {
+void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName) {
     if (parent->getMagazineAmmoType() == projData.itemId && parent->getMagazineContents() > 0) {
         sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
         sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
@@ -142,6 +134,8 @@ void Item::fireTargetedProjectile(const float velocity, Entity* parent, const Pr
         parent->getWorld()->addEntity(proj);
 
         parent->decrementMagazine();
+
+        if (soundName != "NONE") SoundManager::playSound(soundName);
     }
 }
 

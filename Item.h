@@ -32,13 +32,13 @@ public:
 
     static std::vector<const Item*> ITEMS;
 
-    static void fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData);
+    static void fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName = "NONE");
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun,
-        const std::function<bool(Entity*)> use, const int magazineSize = 0);
+        const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, const int magazineSize = 0);
 
     unsigned int getId() const;
     std::string getName() const;

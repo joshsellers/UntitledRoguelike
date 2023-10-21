@@ -106,8 +106,6 @@ void Game::initUI() {
     _magazineMeter->setCharacterSize(2);
     _HUDMenu->addElement(_magazineMeter);
     _ui->addMenu(_HUDMenu);
-    _HUDMenu->show();
-    _magazineMeter->hide();
 
     // Inventory menu
     std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
@@ -115,6 +113,29 @@ void Game::initUI() {
     ));
     _inventoryMenu->addElement(inventoryInterface);
     _ui->addMenu(_inventoryMenu);
+
+    // Start menu
+    std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 50, 9, 3, "new game", _font, this, "startgame"
+    ));
+    newGameButton->setSelectionId(0);
+    _startMenu->addElement(newGameButton);
+    
+    std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 57, 9, 3, "exit game", _font, this, "exit"
+    ));
+    exitGameButton->setSelectionId(1);
+    _startMenu->addElement(exitGameButton);
+
+    _startMenu->useGamepadConfiguration = true;
+    _startMenu->defineSelectionGrid(
+        {
+            {newGameButton->getSelectionId()},
+            {exitGameButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_startMenu);
+    _startMenu->show();
 }
 
 void Game::update() {
@@ -124,7 +145,7 @@ void Game::update() {
     float rightStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
 
     _ui->update();
-    if (!_isPaused) {
+    if (!_isPaused && _gameStarted) {
         _world.update();
 
         int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
@@ -146,10 +167,20 @@ void Game::update() {
 }
 
 void Game::draw(sf::RenderTexture& surface) {
-    _world.draw(surface);
+    if (_gameStarted) _world.draw(surface);
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {
+    if (!_gameStarted) {
+        sf::RectangleShape startMenuBg;
+        startMenuBg.setFillColor(sf::Color(0x444448FF));
+        //startMenuBg.setOutlineColor(sf::Color(0xFFFFFFFF));
+        //startMenuBg.setOutlineThickness(-10);
+        startMenuBg.setPosition(0, 0);
+        startMenuBg.setSize(sf::Vector2f(surface.getSize().x, surface.getSize().y));
+        surface.draw(startMenuBg);
+    }
+
     _ui->draw(surface);
 
     if (_showDebug) {
@@ -184,6 +215,12 @@ void Game::drawUI(sf::RenderTexture& surface) {
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
+    } else if (buttonCode == "startgame") {
+        _world.init(currentTimeMillis());
+        _startMenu->hide();
+        _HUDMenu->show();
+        _magazineMeter->hide();
+        _gameStarted = true;
     }
 }
 
@@ -262,7 +299,7 @@ void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
 }
 
 void Game::togglePauseMenu() {
-    if (!_commandMenu->isActive() && !_inventoryMenu->isActive()) {
+    if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive()) {
         if (_pauseMenu->isActive()) _pauseMenu->hide();
         else _pauseMenu->show();
         _isPaused = !_isPaused;
@@ -270,7 +307,7 @@ void Game::togglePauseMenu() {
 }
 
 void Game::toggleInventoryMenu() {
-    if (!_commandMenu->isActive()) {
+    if (_gameStarted && !_commandMenu->isActive()) {
         if (_inventoryMenu->isActive()) _inventoryMenu->hide();
         else _inventoryMenu->show();
 

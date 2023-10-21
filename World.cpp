@@ -18,17 +18,19 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
 
     _entities.push_back(_player);
 
-    _seed = currentTimeMillis();
+    if (!_font.loadFromFile("font.ttf")) {
+        std::cout << "Failed to load font!" << std::endl;
+    }
+}
+
+void World::init(unsigned int seed) {
+    _seed = seed;
     srand(_seed);
     gen.seed(_seed);
 
     int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
     int pY = _player->getPosition().y + PLAYER_HEIGHT;
     loadChunk(sf::Vector2f(pX - CHUNK_SIZE / 2, pY - CHUNK_SIZE / 2));
-
-    if (!_font.loadFromFile("font.ttf")) {
-        std::cout << "Failed to load font!" << std::endl;
-    }
 }
 
 void World::update() {

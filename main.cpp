@@ -2,8 +2,11 @@
 #include <iostream>
 #include "Util.h"
 #include "GameController.h"
+#include "SoundManager.h"
 
 int main() {
+    SoundManager::loadSounds();
+
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
     }
@@ -18,7 +21,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(FULLSCREEN);
+    //window.setVerticalSyncEnabled();
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 

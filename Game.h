@@ -10,7 +10,7 @@
 #include "GameController.h"
 #include "UIAttributeMeter.h"
 
-const std::string VERSION = "0.0304";
+const std::string VERSION = "0.0305";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -42,6 +42,8 @@ private:
 	bool _showDebug = false;
 	bool _isPaused = false;
 
+	bool _gameStarted = false;
+
 	sf::RenderWindow* _window;
 
 	sf::View* _camera;
@@ -51,6 +53,7 @@ private:
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _startMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 
