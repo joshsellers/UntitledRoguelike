@@ -64,7 +64,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     "Don't vape, kids",
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD);
+        fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD, "slip");
         return false;
     }, 1
 );

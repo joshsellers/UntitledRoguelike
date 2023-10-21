@@ -4,6 +4,19 @@
 #include "UIElement.h"
 #include "UIButtonListener.h"
 
+const sf::Uint32 BUTTON_COLOR[] = { 0xC7, 0x77, 0x1A };
+const sf::Uint32 BUTTON_COLOR_BORDER[] = { 0xA3, 0x62, 0x15 };
+const sf::Uint32 BUTTON_COLOR_BORDER_HOVER[] = {
+    BUTTON_COLOR[0],
+    BUTTON_COLOR[1],
+    BUTTON_COLOR[2]
+};
+const sf::Uint32 BUTTON_COLOR_CLICK[] = {
+    BUTTON_COLOR_BORDER[0],
+    BUTTON_COLOR_BORDER[1],
+    BUTTON_COLOR_BORDER[2]
+};
+
 class UIButton : public UIElement {
 public:
     UIButton(float x, float y, float width, float height, sf::String labelText,

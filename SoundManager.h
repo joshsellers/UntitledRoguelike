@@ -11,23 +11,30 @@ public:
         sounds[soundName].play();
     }
 
+    static void setVolume(std::string soundName, float volume) {
+        sounds[soundName].setVolume(volume);
+    }
+
     static void loadSounds() {
         for (int i = 0; i < soundNames.size(); i++) {
-            if (!buffer.loadFromFile("res/sounds/" + soundNames[i] + ".wav")) {
+            buffers[soundNames[i]] = sf::SoundBuffer();
+            if (!buffers[soundNames[i]].loadFromFile("res/sounds/" + soundNames[i] + ".wav")) {
                 std::cout << "Could not load " + soundNames[i] + ".wav" << std::endl;
             } else {
                 sf::Sound sound;
-                sound.setBuffer(buffer);
+                sound.setBuffer(buffers[soundNames[i]]);
                 sounds[soundNames[i]] = sound;
             }
         }
+
+        setVolume("revolver", 25.f);
     }
 private:
-    inline static sf::SoundBuffer buffer;
+    inline static std::map<std::string, sf::SoundBuffer> buffers;
     inline static std::map<std::string, sf::Sound> sounds;
 
     inline static std::vector<std::string> soundNames = {
-        "revolver"
+        "revolver", "slip"
     };
 };
 

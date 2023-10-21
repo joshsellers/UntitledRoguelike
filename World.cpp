@@ -30,7 +30,26 @@ void World::init(unsigned int seed) {
 
     int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
     int pY = _player->getPosition().y + PLAYER_HEIGHT;
-    loadChunk(sf::Vector2f(pX - CHUNK_SIZE / 2, pY - CHUNK_SIZE / 2));
+
+    int chX = 0;
+    int chY = 0;
+
+    for (int y = pY - CHUNK_SIZE / 2; y < pY + CHUNK_SIZE / 2; y++) {
+        for (int x = pX - CHUNK_SIZE / 2; x < pX + CHUNK_SIZE / 2; x++) {
+            if (y % CHUNK_SIZE == 0 && x % CHUNK_SIZE == 0) {
+                chX = x;
+                chY = y;
+            }
+        }
+    }
+
+    int dist = 2;
+    int count = 0;
+    for (int y = chY - (CHUNK_SIZE * dist); y < chY + (CHUNK_SIZE * dist); y += CHUNK_SIZE) {
+        for (int x = chX - (CHUNK_SIZE * dist); x < chX + (CHUNK_SIZE * dist); x += CHUNK_SIZE) {
+            loadChunk(sf::Vector2f(x, y));
+        }
+    }
 }
 
 void World::update() {

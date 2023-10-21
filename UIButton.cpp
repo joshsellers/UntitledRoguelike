@@ -2,19 +2,6 @@
 #include <thread>
 #include <iostream>
 
-const sf::Uint32 BUTTON_COLOR[] = { 0xC7, 0x77, 0x1A };
-const sf::Uint32 BUTTON_COLOR_BORDER[] = { 0xA3, 0x62, 0x15 };
-const sf::Uint32 BUTTON_COLOR_BORDER_HOVER[] = {
-    BUTTON_COLOR[0],
-    BUTTON_COLOR[1],
-    BUTTON_COLOR[2]
-};
-const sf::Uint32 BUTTON_COLOR_CLICK[] = {
-    BUTTON_COLOR_BORDER[0],
-    BUTTON_COLOR_BORDER[1],
-    BUTTON_COLOR_BORDER[2]
-};
-
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
     UIButtonListener* listener, std::string buttonCode)
     : UIElement(
@@ -132,7 +119,7 @@ void UIButton::mouseButtonPressed(const int mx, const int my, const int button) 
 void UIButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
     sf::FloatRect bounds = _sprite.getGlobalBounds();
-    if (bounds.contains(_mx, _my)) {
+    if (bounds.contains(mx, my)) {
         /*std::thread callbackThread(
             &UIButtonListener::buttonPressed, _listener, _buttonCode
         );

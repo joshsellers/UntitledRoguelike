@@ -1,6 +1,8 @@
 #include "Game.h"
 #include <iostream>
 #include "UICommandPrompt.h"
+#include "UITextField.h"
+#include <regex>
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -116,7 +118,7 @@ void Game::initUI() {
 
     // Start menu
     std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 50, 9, 3, "new game", _font, this, "startgame"
+        45, 50, 9, 3, "new game", _font, this, "newgame"
     ));
     newGameButton->setSelectionId(0);
     _startMenu->addElement(newGameButton);
@@ -136,6 +138,44 @@ void Game::initUI() {
     );
     _ui->addMenu(_startMenu);
     _startMenu->show();
+
+    // New game menu
+    _worldNameField = std::shared_ptr<UITextField>(new UITextField(
+        "world name:", 49.5, 37, _font
+    ));
+    _worldNameField->setDefaultText("My World");
+    _worldNameField->setSelectionId(0);
+    _newGameMenu->addElement(_worldNameField);
+
+    _seedField = std::shared_ptr<UITextField>(new UITextField(
+        "seed:", 49.5, 48, _font
+    ));
+    _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
+    _seedField->setSelectionId(1);
+    _newGameMenu->addElement(_seedField);
+
+    std::shared_ptr<UIButton> startGameButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 55, 9, 3, "start", _font, this, "startnewgame"
+    ));
+    startGameButton->setSelectionId(2);
+    _newGameMenu->addElement(startGameButton);
+
+    std::shared_ptr<UIButton> newGameBackButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 61, 9, 3, "back", _font, this, "back_newgame"
+    ));
+    newGameBackButton->setSelectionId(3);
+    _newGameMenu->addElement(newGameBackButton);
+    
+    _newGameMenu->useGamepadConfiguration = true;
+    _newGameMenu->defineSelectionGrid(
+        {
+            {_worldNameField->getSelectionId()},
+            {_seedField->getSelectionId()},
+            {startGameButton->getSelectionId()},
+            {newGameBackButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_newGameMenu);
 }
 
 void Game::update() {
@@ -202,7 +242,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _entityCountLabel.setString(std::to_string(entityCount) + " entit" + (entityCount > 1 ? "ies" : "y"));
         surface.draw(_entityCountLabel);
 
-        _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
+        if (_textSeed == "NONE") _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
+        else _seedLabel.setString("seed: " + std::to_string(_world.getSeed()) + " (" + _textSeed + ")");
         surface.draw(_seedLabel);
 
         _playerPosLabel.setString("x: " + std::to_string(_player->getPosition().x) + ", y: " + std::to_string(_player->getPosition().y));
@@ -215,12 +256,32 @@ void Game::drawUI(sf::RenderTexture& surface) {
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
-    } else if (buttonCode == "startgame") {
-        _world.init(currentTimeMillis());
+    } else if (buttonCode == "newgame") {
+        _newGameMenu->show();
         _startMenu->hide();
+    } else if (buttonCode == "startnewgame") {
+        std::string seedText = _seedField->getText();
+        unsigned int seed = 0;
+        try {
+            if (!std::regex_match(seedText, std::regex("^[0-9]+$"))) {
+                _textSeed = seedText;
+                for (int i = 0; i < seedText.length(); i++) {
+                    seed += (int)seedText.at(i) * i;
+                }
+            } else seed = std::stoi(seedText);
+        } catch (std::exception ex) {
+            std::cout << ex.what() << std::endl;
+            seed = currentTimeMillis();
+        }
+
+        _world.init(seed);
+        _newGameMenu->hide();
         _HUDMenu->show();
         _magazineMeter->hide();
         _gameStarted = true;
+    } else if (buttonCode == "back_newgame") {
+        _newGameMenu->hide();
+        _startMenu->show();
     }
 }
 

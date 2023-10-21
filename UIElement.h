@@ -38,7 +38,7 @@ public:
     void setSelectionId(int selectionId);
     int getSelectionId();
 
-    void setCharacterSize(float size);
+    virtual void setCharacterSize(float size);
 
     friend class UIMenu;
 

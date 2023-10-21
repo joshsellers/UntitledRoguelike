@@ -9,8 +9,9 @@
 #include "ParticleSystem.h"
 #include "GameController.h"
 #include "UIAttributeMeter.h"
+#include "UITextField.h"
 
-const std::string VERSION = "0.0305";
+const std::string VERSION = "0.0306";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -54,6 +55,10 @@ private:
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _startMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _newGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UITextField> _worldNameField;
+	std::shared_ptr<UITextField> _seedField;
 
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 
@@ -63,6 +68,7 @@ private:
 	sf::Text _activeChunksLabel;
 	sf::Text _entityCountLabel;
 	sf::Text _seedLabel;
+	std::string _textSeed = "NONE";
 	sf::Text _playerPosLabel;
 
 	sf::Clock _clock;
