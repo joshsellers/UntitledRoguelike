@@ -67,7 +67,7 @@ private:
     MOVING_DIRECTION _facingDir = (MOVING_DIRECTION)_movingDir;
 
     float _dodgeMultiplier(int dodgeTimer) const {
-        return (0.075 * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
+        return (0.075f * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
     }
 
     bool _isDodging = false;

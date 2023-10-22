@@ -235,7 +235,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(_fpsLabel);
 
         int chunkCount = _world.getActiveChunkCount();
-        _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount > 1 ? "s" : ""));
+        _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount != 1 ? "s" : ""));
         surface.draw(_activeChunksLabel);
         
         int entityCount = _world.getEntities().size();

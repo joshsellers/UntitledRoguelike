@@ -52,8 +52,8 @@ void Player::update() {
         _animSpeed = 3;
     } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
         _animSpeed = 4;
-        xa /= 2;
-        ya /= 2;
+        xa /= 2.f;
+        ya /= 2.f;
     }
 
     if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() 

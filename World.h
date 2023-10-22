@@ -60,6 +60,8 @@ public:
 
     void init(unsigned int seed);
 
+    void loadChunksAroundPlayer();
+
     void update();
 
     void draw(sf::RenderTexture& surface);
@@ -89,6 +91,8 @@ public:
     void propDestroyedAt(sf::Vector2f pos);
 
     void reseed(const unsigned int seed);
+
+    bool drawChunkOutline = false;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;

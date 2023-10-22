@@ -11,7 +11,7 @@
 #include "UIAttributeMeter.h"
 #include "UITextField.h"
 
-const std::string VERSION = "0.0306";
+const std::string VERSION = "0.0307";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:

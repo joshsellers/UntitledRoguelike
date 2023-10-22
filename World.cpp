@@ -28,31 +28,45 @@ void World::init(unsigned int seed) {
     srand(_seed);
     gen.seed(_seed);
 
-    int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
-    int pY = _player->getPosition().y + PLAYER_HEIGHT;
+    loadChunksAroundPlayer();
+}
 
-    int chX = 0;
-    int chY = 0;
+void World::loadChunksAroundPlayer() {
+    if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) {
+        std::cout << "loading chunks around player" << std::endl;
 
-    for (int y = pY - CHUNK_SIZE / 2; y < pY + CHUNK_SIZE / 2; y++) {
-        for (int x = pX - CHUNK_SIZE / 2; x < pX + CHUNK_SIZE / 2; x++) {
-            if (y % CHUNK_SIZE == 0 && x % CHUNK_SIZE == 0) {
-                chX = x;
-                chY = y;
+        int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
+        int pY = _player->getPosition().y + PLAYER_HEIGHT;
+
+        int chX = 0;
+        int chY = 0;
+
+        for (int y = pY - CHUNK_SIZE / 2; y < pY + CHUNK_SIZE / 2; y++) {
+            for (int x = pX - CHUNK_SIZE / 2; x < pX + CHUNK_SIZE / 2; x++) {
+                if (y % CHUNK_SIZE == 0 && x % CHUNK_SIZE == 0) {
+                    chX = x;
+                    chY = y;
+                }
             }
         }
-    }
 
-    int dist = 2;
-    int count = 0;
-    for (int y = chY - (CHUNK_SIZE * dist); y < chY + (CHUNK_SIZE * dist); y += CHUNK_SIZE) {
-        for (int x = chX - (CHUNK_SIZE * dist); x < chX + (CHUNK_SIZE * dist); x += CHUNK_SIZE) {
-            loadChunk(sf::Vector2f(x, y));
+        int dist = 1;
+        int count = 0;
+        for (int y = chY - (CHUNK_SIZE * dist); y < chY + (CHUNK_SIZE * dist); y += CHUNK_SIZE) {
+            for (int x = chX - (CHUNK_SIZE * dist); x < chX + (CHUNK_SIZE * dist); x += CHUNK_SIZE) {
+                loadChunk(sf::Vector2f(x, y));
+            }
         }
+    } else if (getActiveChunkCount() != 0) {
+        std::cout << "loadChunksAroundPlayer was called while there were active chunks" << std::endl;
+    } else if (_loadingChunks.size() != 0) {
+        std::cout << "loadChunksAroundPlayer was called while chunks were already loading" << std::endl;
     }
 }
 
 void World::update() {
+    if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
+
     spawnMobs();
 
     purgeEntityBuffer();
@@ -72,22 +86,27 @@ void World::update() {
 void World::draw(sf::RenderTexture& surface) {
     sortEntities();
 
-     for (Chunk& chunk : _chunks) {
+    for (Chunk& chunk : _chunks) {
         surface.draw(chunk.sprite);
-        /*sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
+    }
 
-        chunkoutline.setFillColor(sf::Color::Transparent);
-        chunkoutline.setOutlineColor(sf::Color(0xffffffff));
-        chunkoutline.setOutlineThickness(1);
-        chunkoutline.setPosition(chunk.pos);
-        surface.draw(chunkoutline);
+    if (drawChunkOutline) {
+        for (Chunk& chunk : _chunks) {
+            sf::RectangleShape chunkoutline(sf::Vector2f(CHUNK_SIZE - 1, CHUNK_SIZE - 1));
 
-        sf::Text idlabel;
-        idlabel.setFont(_font);
-        idlabel.setCharacterSize(10);
-        idlabel.setString(std::to_string(chunk.id));
-        idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-        surface.draw(idlabel);*/
+            chunkoutline.setFillColor(sf::Color::Transparent);
+            chunkoutline.setOutlineColor(sf::Color(0xffffffff));
+            chunkoutline.setOutlineThickness(2);
+            chunkoutline.setPosition(chunk.pos);
+            surface.draw(chunkoutline);
+
+            sf::Text idlabel;
+            idlabel.setFont(_font);
+            idlabel.setCharacterSize(10);
+            idlabel.setString(std::to_string(chunk.id));
+            idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
+            surface.draw(idlabel);
+        }
     }
 
     for (auto& entity : _entities) {

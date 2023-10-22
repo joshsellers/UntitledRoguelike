@@ -281,6 +281,22 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
             _world->getPlayer()->getInventory().removeItemAt(0, _world->getPlayer()->getInventory().getItemAmountAt(0));
         }
         return "Removed all items from player's inventory";
+    } else if (commandHeader == "tco") {
+        _world->drawChunkOutline = !_world->drawChunkOutline;
+        return "drawChunkOutline set to " + (_world->drawChunkOutline ? (std::string)"true" : "false");
+    } else if (commandHeader == "tp") {
+        if (parsedCommand.size() == 3) {
+            try {
+                float x = std::stof(parsedCommand[1]);
+                float y = std::stof(parsedCommand[2]);
+                sf::Vector2f currentPos = _world->getPlayer()->getPosition();
+                _world->getPlayer()->move(x - currentPos.x, y - currentPos.y);
+
+                return "Player teleported to " + std::to_string(x) + ", " + std::to_string(y);
+            } catch (std::exception ex) {
+                return ex.what();
+            }
+        } else return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }
