@@ -141,7 +141,7 @@ void World::spawnMobs() {
     constexpr int MAX_PACK_AMOUNT = 6;
     constexpr int PACK_SPREAD = 20;
 
-    if (getMobCount() < MAX_ACTIVE_MOBS && _mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS) {
+    if (_mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS && getMobCount() < MAX_ACTIVE_MOBS) {
         _mobSpawnClock.restart();
         boost::random::uniform_int_distribution<> skipChunk(0, MOB_SPAWN_CHANCE);
         for (auto& chunk : _chunks) {
@@ -654,7 +654,7 @@ std::shared_ptr<sf::Texture> World::getSpriteSheet() const {
     return _spriteSheet;
 }
 
-int World::getSeed() {
+unsigned int World::getSeed() {
     return _seed;
 }
 

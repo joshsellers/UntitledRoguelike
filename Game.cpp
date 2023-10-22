@@ -266,9 +266,9 @@ void Game::buttonPressed(std::string buttonCode) {
             if (!std::regex_match(seedText, std::regex("^[0-9]+$"))) {
                 _textSeed = seedText;
                 for (int i = 0; i < seedText.length(); i++) {
-                    seed += (int)seedText.at(i) * i;
+                    seed = ((seed << 5) + seed) + (int)seedText.at(i);
                 }
-            } else seed = std::stoi(seedText);
+            } else seed = std::stoul(seedText);
         } catch (std::exception ex) {
             std::cout << ex.what() << std::endl;
             seed = currentTimeMillis();

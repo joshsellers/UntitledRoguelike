@@ -4,6 +4,9 @@
 #include "UIElement.h"
 #include "World.h"
 
+constexpr bool LOCK_CMD_PROMPT = false;
+constexpr const char UNLOCK_HASH[11] = "3491115221";
+
 class UICommandPrompt : public UIElement {
 public:
     UICommandPrompt(World* world, sf::Font font);
@@ -26,6 +29,9 @@ private:
     sf::Uint32 _historyIndex = 0;
     std::vector<sf::String> _history;
     std::string processCommand(sf::String command);
+    
+    sf::Text _hiddenText;
+    bool _unlocked = !LOCK_CMD_PROMPT;
 };
 
 #endif

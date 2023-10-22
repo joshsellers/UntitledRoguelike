@@ -22,6 +22,10 @@ UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     _text.setFont(_font);
     _text.setCharacterSize(relativeFontSize);
     _text.setFillColor(sf::Color(0x00AA22FF));
+
+    _hiddenText.setFont(_font);
+    _hiddenText.setCharacterSize(_text.getCharacterSize());
+    _hiddenText.setFillColor(_text.getFillColor());
 }
 
 void UICommandPrompt::update() {
@@ -41,7 +45,17 @@ void UICommandPrompt::draw(sf::RenderTexture& surface) {
     _bg.setSize(sf::Vector2f(width + padding * 2, height + padding * 2));
 
     surface.draw(_bg);
-    surface.draw(_text);
+    if (_unlocked) surface.draw(_text);
+    else {
+        _hiddenText.setPosition(_text.getPosition());
+        _hiddenText.setString(_text.getString());
+        std::string temp = _hiddenText.getString();
+        for (int i = 0; i < temp.length(); i++) {
+            temp.at(i) = '*';
+        }
+        _hiddenText.setString(temp);
+        surface.draw(_hiddenText);
+    }
 }
 
 void UICommandPrompt::mouseButtonPressed(const int mx, const int my, const int button) {
@@ -93,7 +107,11 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
         }
         if (userInput != "") _history.push_back(userInput);
         _historyIndex = _history.size();
-        std::cout << processCommand(userInput) << std::endl;
+        if (_unlocked) std::cout << processCommand(userInput) << std::endl;
+        else if (processCommand("hash:" + userInput) == UNLOCK_HASH) {
+            _unlocked = true;
+            std::cout << "Command prompt has been unlocked" << std::endl;
+        } else std::cout << "Command prompt is locked" << std::endl;
         _text.setString("");
     }
 }
@@ -297,6 +315,18 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
                 return ex.what();
             }
         } else return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+    } else if (commandHeader == "hash") {
+        if (parsedCommand.size() == 2) {
+            std::string text = parsedCommand[1];
+            unsigned int hash = 0;
+            for (int i = 0; i < text.length(); i++) {
+                hash = ((hash << 5) + hash) + (unsigned int)text.at(i);
+            }
+            return std::to_string(hash);
+        } else return "Not enough parameters for command: " + (std::string)("\"") + commandHeader + "\"";
+    } else if (commandHeader == "lock") {
+        _unlocked = false;
+        return "Command prompt has been locked";
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }
