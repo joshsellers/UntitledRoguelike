@@ -11,6 +11,7 @@
 #include "Penguin.h"
 #include "Turtle.h"
 #include "PlantMan.h"
+#include "Globals.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -67,7 +68,7 @@ void World::loadChunksAroundPlayer() {
 void World::update() {
     if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
 
-    spawnMobs();
+    if (!disableMobSpawning) spawnMobs();
 
     purgeEntityBuffer();
 
@@ -137,8 +138,6 @@ void World::spawnMobs() {
     constexpr float MOB_SPAWN_RATE_SECONDS = 5.f;
     constexpr int MOB_SPAWN_CHANCE = 9;
     constexpr float MIN_DIST = 180.f;
-    constexpr int MIN_PACK_AMOUNT = 1;
-    constexpr int MAX_PACK_AMOUNT = 6;
     constexpr int PACK_SPREAD = 20;
 
     if (_mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS && getMobCount() < MAX_ACTIVE_MOBS) {
@@ -153,29 +152,18 @@ void World::spawnMobs() {
 
                 if (std::abs(x - _player->getPosition().x) > MIN_DIST || std::abs(y - _player->getPosition().y) > MIN_DIST) {
                     TERRAIN_TYPE terrainType = getTerrainDataAt(&chunk, sf::Vector2f(x, y));
-                    boost::random::uniform_int_distribution<> randPackAmount(MIN_PACK_AMOUNT, MAX_PACK_AMOUNT);
+                    if ((unsigned int)terrainType < (unsigned int)TERRAIN_TYPE::WATER) continue;
+
+                    unsigned int biomeIndex = (unsigned int)terrainType - (unsigned int)TERRAIN_TYPE::WATER;
+                    const BiomeMobSpawnData& biomeMobSpawnData = MOB_SPAWN_DATA[biomeIndex];
+                    if (biomeMobSpawnData.mobData.size() == 0) continue;
+
+                    const MobSpawnData& mobData = biomeMobSpawnData.mobData.at(getRandMobType(biomeMobSpawnData));
+                    boost::random::uniform_int_distribution<> individualSpawnChance(0, mobData.spawnChance);
+                    if (individualSpawnChance(_mobGen) != 0) continue;
+
+                    boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
                     int packAmount = randPackAmount(_mobGen);
-                    MOB_TYPE mobType{};
-                    switch (terrainType) {
-                        case TERRAIN_TYPE::EMPTY:
-                            return;
-                        case TERRAIN_TYPE::WATER:
-                            return; // for now...
-                        case TERRAIN_TYPE::TUNDRA:
-                            mobType = TUNDRA_MOBS[getRandMobType(TUNDRA_MOB_COUNT)];
-                            break;
-                        case TERRAIN_TYPE::GRASS_LOW: 
-                            mobType = GRASS_MOBS[getRandMobType(GRASS_MOB_COUNT)];
-                            break;
-                        case TERRAIN_TYPE::GRASS_HIGH:
-                            mobType = GRASS_MOBS[getRandMobType(GRASS_MOB_COUNT)];
-                            break;
-                        case TERRAIN_TYPE::SAVANNA:
-                            mobType = SAVANNA_MOBS[getRandMobType(SAVANNA_MOB_COUNT)];
-                            break;
-                        default:
-                            return;
-                    }
 
                     boost::random::uniform_int_distribution<> randXi(x - PACK_SPREAD, x + PACK_SPREAD);
                     boost::random::uniform_int_distribution<> randYi(y - PACK_SPREAD, y + PACK_SPREAD);
@@ -184,7 +172,7 @@ void World::spawnMobs() {
                         int yi = randYi(_mobGen);
                         std::shared_ptr<Entity> mob = nullptr;
                         
-                        switch (mobType) {
+                        switch (mobData.mobType) {
                             case MOB_TYPE::PENGUIN:
                                 mob = std::shared_ptr<Penguin>(new Penguin(sf::Vector2f(xi, yi)));
                                 break;
@@ -208,8 +196,8 @@ void World::spawnMobs() {
     }
 }
 
-int World::getRandMobType(int mobListSize) {
-    boost::random::uniform_int_distribution<> randMobType(0, mobListSize - 1);
+int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
+    boost::random::uniform_int_distribution<> randMobType(0, mobSpawnData.mobData.size()-1);
     return randMobType(_mobGen);
 }
 
@@ -409,7 +397,7 @@ void World::generateChunkEntities(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
+            if (terrainType == TERRAIN_TYPE::GRASS) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
                 boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
                 if (grassDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
@@ -456,6 +444,10 @@ void World::generateChunkEntities(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
+    long long startTime = 0;
+    long long endTime = 0;
+    if (BENCHMARK_TERRAIN_AND_BIOME_GEN) startTime = currentTimeMillis();
+
     sf::Vector2f pos = chunk.pos;
 
     // Generator properties
@@ -520,10 +512,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::SAND;
             } else if (val < dirtLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_LOW;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS_LOW;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS;
             } else if (val < dirtHighRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH;
-                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS_HIGH;
+                data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS;
             } else if (val < mountainLowRange) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_LOW;
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_LOW;
@@ -558,9 +550,15 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool desert = temperatureNoise > desertTemp && precipitationNoise < desertPrec;
             bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;
 
+            // rare biomes 
+            double rareBiomeSampleRate = biomeSampleRate / 3.;
+            double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
+            double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
+
+            bool flesh = rareBiomeTemp < 0.2 && rareBiomeTemp > 0.005 && rareBiomePrec < 0.7 && rareBiomePrec > 0.04;
+
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
-            if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::GRASS_HIGH) {
-                bool high = terrainType == TERRAIN_TYPE::GRASS_HIGH;
+            if (terrainType == TERRAIN_TYPE::GRASS) {
                 if (tundra) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::TUNDRA;
                     rgb = (sf::Uint32)TERRAIN_COLOR::TUNDRA;
@@ -570,6 +568,11 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 } else if (savanna) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::SAVANNA;
                     rgb = (sf::Uint32)TERRAIN_COLOR::SAVANNA;
+                }
+                
+                if (flesh) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::FLESH;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::FLESH;
                 }
             }
             terrainType = data[dX + dY * CHUNK_SIZE];
@@ -583,14 +586,14 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 g += randomInt(0, 10);
                 b += randomInt(0, 10);
 
-                if (terrainType == TERRAIN_TYPE::GRASS_LOW || terrainType == TERRAIN_TYPE::SAVANNA) {
+                if ((terrainType == TERRAIN_TYPE::GRASS && rgb == (sf::Uint32)TERRAIN_COLOR::DIRT_LOW) || terrainType == TERRAIN_TYPE::SAVANNA) {
                     int ar = (int)(0x55 * (val)) | r;
                     int ag = (int)(0x55 * (val)) | g;
                     int ab = (int)(0x55 * (val)) | b;
                     r = ar;
                     g = ag;
                     b = ab;
-                } else if (terrainType == TERRAIN_TYPE::GRASS_HIGH) {
+                } else if (terrainType == TERRAIN_TYPE::GRASS && rgb == (sf::Uint32)TERRAIN_COLOR::DIRT_HIGH) {
                     r *= (val + 0.2) * 2;
                     g *= (val + 0.2) * 2;
                     b *= (val + 0.2) * 2;
@@ -610,6 +613,12 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     }
 
     chunk.terrainData = data;
+
+    if (BENCHMARK_TERRAIN_AND_BIOME_GEN) {
+        endTime = currentTimeMillis();
+        std::cout << "Terrain for chunk at (" << chunk.pos.x << ", " << chunk.pos.y 
+            << ") generated in " << (endTime - startTime) << "ms" << std::endl;
+    }
 
     generateChunkEntities(chunk);
 

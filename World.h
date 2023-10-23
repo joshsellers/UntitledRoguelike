@@ -9,6 +9,7 @@
 #include "PerlinNoise.hpp"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include "MobSpawnData.h"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 270;
 // full size 270
@@ -28,31 +29,33 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
     TUNDRA = MOUNTAIN_HIGH,
     SAVANNA = 0x95A54F, //0xB5954F
-    DESERT = 0xFDE898
+    DESERT = 0xFDE898,
+
+    FLESH = 0xF3CFC6
 };
 
-enum class MOB_TYPE : int {
-    PENGUIN = 0,
-    TURTLE = 1,
-    PLANT_MAN = 2
+constexpr int MAX_ACTIVE_MOBS = 30;
+
+const BiomeMobSpawnData MOB_SPAWN_DATA[6] = {
+    BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
+        MobSpawnData(MOB_TYPE::TURTLE, 0, 1, 1),
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 5, 2, 8)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
+        MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 4, 10)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {})
 };
-
-constexpr int TUNDRA_MOB_COUNT = 1;
-constexpr MOB_TYPE TUNDRA_MOBS[TUNDRA_MOB_COUNT] = { MOB_TYPE::PENGUIN };
-
-constexpr int GRASS_MOB_COUNT = 8;
-// figure out how to do this better
-constexpr MOB_TYPE GRASS_MOBS[GRASS_MOB_COUNT] = { 
-    MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
-    MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, MOB_TYPE::TURTLE, 
-    MOB_TYPE::PLANT_MAN, MOB_TYPE::PLANT_MAN
-};
-
-constexpr int SAVANNA_MOB_COUNT = 1;
-constexpr MOB_TYPE SAVANNA_MOBS[SAVANNA_MOB_COUNT] = { MOB_TYPE::PLANT_MAN };
-
-
-constexpr int MAX_ACTIVE_MOBS = 15;
 
 class World {
 public:
@@ -93,6 +96,7 @@ public:
     void reseed(const unsigned int seed);
 
     bool drawChunkOutline = false;
+    bool disableMobSpawning = false;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
@@ -112,7 +116,7 @@ private:
     bool isPropDestroyedAt(sf::Vector2f pos) const;
 
     void spawnMobs();
-    int getRandMobType(int mobListSize);
+    int getRandMobType(const BiomeMobSpawnData& mobSpawnData);
     sf::Clock _mobSpawnClock;
     boost::random::mt19937 _mobGen = boost::random::mt19937();
 

@@ -10,4 +10,6 @@ extern int SCALE;
 extern int WIDTH;
 extern int HEIGHT;
 
+extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
+
 #endif

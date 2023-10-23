@@ -327,6 +327,12 @@ std::string UICommandPrompt::processCommand(sf::String commandInput) {
     } else if (commandHeader == "lock") {
         _unlocked = false;
         return "Command prompt has been locked";
+    } else if (commandHeader == "tcbm") {
+        BENCHMARK_TERRAIN_AND_BIOME_GEN = !BENCHMARK_TERRAIN_AND_BIOME_GEN;
+        return (BENCHMARK_TERRAIN_AND_BIOME_GEN ? "Activated" : "Deactivated") + (std::string)" terrain generation benchmark";
+    } else if (commandHeader == "tms") {
+        _world->disableMobSpawning = !_world->disableMobSpawning;
+        return (_world->disableMobSpawning ? "Disabled" : "Enabled") + (std::string)" mob spawns";
     } else {
         return "Command not recognized: " + (std::string)("\"") + commandHeader + "\"";
     }
