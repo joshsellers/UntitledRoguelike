@@ -10,8 +10,9 @@
 #include "GameController.h"
 #include "UIAttributeMeter.h"
 #include "UITextField.h"
+#include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0309";
+const std::string VERSION = "0.0310";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -59,6 +60,8 @@ private:
 
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;
+
+	std::shared_ptr<UICommandPrompt> _cmdPrompt;
 
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 

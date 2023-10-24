@@ -41,6 +41,8 @@ public:
     void controllerButtonReleased(CONTROLLER_BUTTON button);
     void controllerButtonPressed(CONTROLLER_BUTTON button);
 
+    friend class Game;
+
 private:
     bool& _gamePaused;
 

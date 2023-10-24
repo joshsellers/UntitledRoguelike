@@ -31,7 +31,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     SAVANNA = 0x95A54F, //0xB5954F
     DESERT = 0xFDE898,
 
-    FLESH = 0xF3CFC6
+    FLESH = 0xEEC39A
 };
 
 constexpr int MAX_ACTIVE_MOBS = 30;
@@ -97,6 +97,8 @@ public:
 
     bool drawChunkOutline = false;
     bool disableMobSpawning = false;
+
+    void resetChunks();
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;

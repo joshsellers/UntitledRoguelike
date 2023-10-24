@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <iostream>
-#include "UICommandPrompt.h"
 #include "UITextField.h"
 #include <regex>
 
@@ -58,27 +57,34 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
 void Game::initUI() {
     // Pause menu
-    std::shared_ptr<UIButton> exitButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 5, 9, 3, "quit game", _font, this, "exit"
+    std::shared_ptr<UIButton> mainMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 5, 9, 3, "main menu", _font, this, "mainmenu"
     ));
-    exitButton->setSelectionId(0);
+    mainMenuButton->setSelectionId(0);
+    _pauseMenu->addElement(mainMenuButton);
+
+    std::shared_ptr<UIButton> exitButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 11, 9, 3, "exit game", _font, this, "exit"
+    ));
+    exitButton->setSelectionId(1);
     _pauseMenu->addElement(exitButton);
 
     std::shared_ptr<UIButton> saveButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 11, 9, 3, "save game", _font, this, "save"
+        1, 17, 9, 3, "save game", _font, this, "save"
     ));
-    saveButton->setSelectionId(1);
+    saveButton->setSelectionId(2);
     _pauseMenu->addElement(saveButton);
 
     std::shared_ptr<UIButton> settingsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 17, 9, 3, "settings", _font, this, "settings"
+        1, 23, 9, 3, "settings", _font, this, "settings"
     ));
-    settingsButton->setSelectionId(2);
+    settingsButton->setSelectionId(3);
     _pauseMenu->addElement(settingsButton);
 
     _pauseMenu->useGamepadConfiguration = true;
     _pauseMenu->defineSelectionGrid(
         {
+            {mainMenuButton->getSelectionId()},
             {exitButton->getSelectionId()},
             {saveButton->getSelectionId()},
             {settingsButton->getSelectionId()}
@@ -87,8 +93,8 @@ void Game::initUI() {
     _ui->addMenu(_pauseMenu);
 
     // Command prompt menu
-    std::shared_ptr<UICommandPrompt> cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
-    _commandMenu->addElement(cmdPrompt);
+    _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
+    _commandMenu->addElement(_cmdPrompt);
     _ui->addMenu(_commandMenu);
 
     // HUD
@@ -281,6 +287,38 @@ void Game::buttonPressed(std::string buttonCode) {
         _gameStarted = true;
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
+        _startMenu->show();
+    } else if (buttonCode == "mainmenu") {
+        _gameStarted = false;
+        _isPaused = false;
+        _pauseMenu->hide();
+        _HUDMenu->hide();
+
+        _cmdPrompt->unlock();
+        _cmdPrompt->processCommand("killall");
+        _cmdPrompt->processCommand("clear inventory");
+        _cmdPrompt->processCommand("respawn");
+        _cmdPrompt->processCommand("setmaxhp:100");
+        _cmdPrompt->processCommand("addhp:100");
+        if (LOCK_CMD_PROMPT) _cmdPrompt->lock();
+
+        _player->_pos = sf::Vector2f(0, 0);
+        _player->_movingDir = DOWN;
+        _player->_facingDir = DOWN;
+        _player->_isDodging = false;
+        _player->_dodgeTimer = 0;
+        _player->_maxDodgeTime = 10;
+        _player->_dodgeSpeedMultiplier = 1.f;
+        _player->_dodgeKeyReleased = true;
+        _player->_magazineSize = 0;
+        _player->_magazineContents = 0;
+        _player->_baseSpeed = BASE_PLAYER_SPEED;
+
+        _world.resetChunks();
+
+        _worldNameField->setDefaultText("My World");
+        _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
+        _textSeed = "NONE";
         _startMenu->show();
     }
 }
