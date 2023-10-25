@@ -6,7 +6,8 @@
 enum class MOB_TYPE : int {
     PENGUIN = 0,
     TURTLE = 1,
-    PLANT_MAN = 2
+    PLANT_MAN = 2,
+    CACTOID = 3
 };
 
 struct MobSpawnData {

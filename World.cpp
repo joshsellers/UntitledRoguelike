@@ -12,6 +12,7 @@
 #include "Turtle.h"
 #include "PlantMan.h"
 #include "Globals.h"
+#include "Cactoid.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -181,6 +182,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::PLANT_MAN:
                                 mob = std::shared_ptr<PlantMan>(new PlantMan(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::CACTOID:
+                                mob = std::shared_ptr<Cactoid>(new Cactoid(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

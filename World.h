@@ -48,7 +48,9 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[6] = {
         MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
+        MobSpawnData(MOB_TYPE::CACTOID, 0, 1, 1)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 4, 10)

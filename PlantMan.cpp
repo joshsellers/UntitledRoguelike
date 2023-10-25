@@ -42,18 +42,14 @@ void PlantMan::update() {
     float xa = 0.f, ya = 0.f;
     if (goalPos.y < cLoc.y) {
         ya--;
-        //_movingDir = UP;
     } else if (goalPos.y > cLoc.y) {
         ya++;
-        //_movingDir = DOWN;
     }
 
     if (goalPos.x < cLoc.x) {
         xa--;
-        //_movingDir = LEFT;
     } else if (goalPos.x > cLoc.x) {
         xa++;
-        //_movingDir = RIGHT;
     }
 
     if (xa && ya) {

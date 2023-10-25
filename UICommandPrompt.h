@@ -6,6 +6,7 @@
 #include "Turtle.h"
 #include "Penguin.h"
 #include "PlantMan.h"
+#include "Cactoid.h"
 #include <regex>
 #include <boost/algorithm/string.hpp>
 
@@ -215,6 +216,8 @@ private:
                             entity = std::shared_ptr<Turtle>(new Turtle(pos));
                         } else if (entityName == "penguin") {
                             entity = std::shared_ptr<Penguin>(new Penguin(pos));
+                        } else if (entityName == "cactoid") {
+                            entity = std::shared_ptr<Cactoid>(new Cactoid(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
