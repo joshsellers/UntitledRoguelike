@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0311";
+const std::string VERSION = "0.0312";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:

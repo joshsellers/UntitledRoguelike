@@ -12,7 +12,8 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _velocityComponents.x = _velocity * std::cos(directionAngle) + shooterVelocity.x;
     _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
 
-    setMaxHitPoints(1);
+    setMaxHitPoints(1000);
+    heal(getMaxHitPoints());
 
     _hitBoxXOffset = _data.hitBox.left;
     _hitBoxYOffset = _data.hitBox.top;
