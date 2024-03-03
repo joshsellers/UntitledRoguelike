@@ -13,6 +13,7 @@
 #include "PlantMan.h"
 #include "Globals.h"
 #include "Cactoid.h"
+#include "MessageManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -20,8 +21,8 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
 
     _entities.push_back(_player);
 
-    if (!_font.loadFromFile("font.ttf")) {
-        std::cout << "Failed to load font!" << std::endl;
+    if (!_font.loadFromFile("res/font.ttf")) {
+        MessageManager::displayMessage("Failed to load font!", 10, WARN);
     }
 }
 
@@ -35,7 +36,7 @@ void World::init(unsigned int seed) {
 
 void World::loadChunksAroundPlayer() {
     if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) {
-        std::cout << "loading chunks around player" << std::endl;
+        MessageManager::displayMessage("loading chunks around player", 5, DEBUG);
 
         int pX = _player->getPosition().x + PLAYER_WIDTH / 2;
         int pY = _player->getPosition().y + PLAYER_HEIGHT;
@@ -60,9 +61,9 @@ void World::loadChunksAroundPlayer() {
             }
         }
     } else if (getActiveChunkCount() != 0) {
-        std::cout << "loadChunksAroundPlayer was called while there were active chunks" << std::endl;
+        MessageManager::displayMessage("loadChunksAroundPlayer was called while there were active chunks", 10, WARN);
     } else if (_loadingChunks.size() != 0) {
-        std::cout << "loadChunksAroundPlayer was called while chunks were already loading" << std::endl;
+        MessageManager::displayMessage("loadChunksAroundPlayer was called while chunks were already loading", 10, WARN);
     }
 }
 
@@ -336,7 +337,7 @@ void World::loadNewChunks(int pX, int pY) {
             loadChunk(sf::Vector2f(chX + CHUNK_SIZE, chY - CHUNK_SIZE));
         }
     } else if (_currentChunk == nullptr) {
-        std::cout << "currentChunk was nullptr" << std::endl;
+        MessageManager::displayMessage("currentChunk was nullptr", 2, WARN);
     }
 }
 
@@ -539,7 +540,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
-            float tundraTemp = 0.460 + 0.0075;
+            /*float tundraTemp = 0.460 + 0.0075;
             float tundraPrecLow = 0.240 - 0.0075;
             float tundraPrecHigh = 0.500 + 0.0075;
 
@@ -552,7 +553,20 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool tundra = temperatureNoise < tundraTemp && precipitationNoise >= tundraPrecLow && precipitationNoise < tundraPrecHigh;
             bool desert = temperatureNoise > desertTemp && precipitationNoise < desertPrec;
-            bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;
+            bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;*/
+
+            sf::Vector2f tundraTemp(0.0, 0.4);
+            sf::Vector2f tundraPrec(0.25, 0.9);
+            
+            sf::Vector2f desertTemp(0.5, 0.9);
+            sf::Vector2f desertPrec(0.0, 0.5);
+
+            sf::Vector2f savannaTemp(0.5, 0.7);
+            sf::Vector2f savannaPrec(0.5, 0.9);
+
+            bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
+            bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
+            bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
 
             // rare biomes 
             double rareBiomeSampleRate = biomeSampleRate / 3.;
@@ -621,8 +635,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     if (BENCHMARK_TERRAIN_AND_BIOME_GEN) {
         endTime = currentTimeMillis();
-        std::cout << "Terrain for chunk at (" << chunk.pos.x << ", " << chunk.pos.y 
-            << ") generated in " << (endTime - startTime) << "ms" << std::endl;
+        MessageManager::displayMessage("Terrain for chunk at (" + std::to_string(chunk.pos.x) + ", " + std::to_string(chunk.pos.y)
+            + ") generated in " + std::to_string(endTime - startTime) + "ms", 2, DEBUG);
     }
 
     generateChunkEntities(chunk);
@@ -739,5 +753,5 @@ void World::resetChunks() {
         _chunks.clear();
         _currentChunk = nullptr;
         _entityBuffer.clear();
-    } else std::cout << "Tried to reset chunks while chunks were loading";
+    } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, WARN);
 }

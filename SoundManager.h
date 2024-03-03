@@ -19,7 +19,7 @@ public:
         for (int i = 0; i < soundNames.size(); i++) {
             buffers[soundNames[i]] = sf::SoundBuffer();
             if (!buffers[soundNames[i]].loadFromFile("res/sounds/" + soundNames[i] + ".wav")) {
-                std::cout << "Could not load " + soundNames[i] + ".wav" << std::endl;
+                MessageManager::displayMessage("Could not load " + soundNames[i] + ".wav", 10, WARN);
             } else {
                 sf::Sound sound;
                 sound.setBuffer(buffers[soundNames[i]]);

@@ -1,17 +1,18 @@
-#include "game.h"
+#include "Game.h"
 #include <iostream>
 #include "Util.h"
 #include "GameController.h"
 #include "SoundManager.h"
 
-int main() {
+void main() {
+    MessageManager::start();
     SoundManager::loadSounds();
 
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
     }
 
-    float screenHeight = sf::VideoMode::getDesktopMode().height;
+    float screenHeight = sf::VideoMode::getDesktopMode().height; 
     float screenWidth = FULLSCREEN ? sf::VideoMode::getDesktopMode().width : screenHeight * ((float)WIDTH / (float)HEIGHT);
 
     unsigned int windowWidth = screenWidth * RELATIVE_WINDOW_SIZE;
@@ -26,6 +27,7 @@ int main() {
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 
     srand(currentTimeMillis());
+    
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     GameController::addListener(game);
 
@@ -57,8 +59,8 @@ int main() {
         }
     }
     if (controllerId != - 1) GameController::setControllerId(controllerId);
-    std::cout << "Controller is " << (controllerConnected ? "" : "not ") << "connected" << std::endl;
-    std::cout << "Controller id: " << controllerId << std::endl;
+    MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
+    MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
@@ -70,6 +72,38 @@ int main() {
                 game->keyPressed(event.key.code);
                 break;
             case sf::Event::KeyReleased:
+                if (event.key.code == sf::Keyboard::F11) {
+                    window.close();
+
+                    FULLSCREEN = true;
+                    RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
+                    if (FULLSCREEN) {
+                        HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
+                    }
+                    float screenHeight1 = sf::VideoMode::getDesktopMode().height;
+                    float screenWidth1 = FULLSCREEN ? sf::VideoMode::getDesktopMode().width : screenHeight1 * ((float)WIDTH / (float)HEIGHT);
+
+                    unsigned int windowWidth1 = screenWidth1 * RELATIVE_WINDOW_SIZE;
+                    unsigned int windowHeight1 = screenHeight1 * RELATIVE_WINDOW_SIZE;
+                    WINDOW_WIDTH = windowWidth1;
+                    WINDOW_HEIGHT = windowHeight1;
+
+                    window.create(sf::VideoMode(windowWidth1, windowHeight1), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
+                    window.setFramerateLimit(60);
+
+                    camera.setSize(sf::Vector2f(WIDTH, HEIGHT));
+
+                    mainSurface.create(WIDTH, HEIGHT);
+                    const sf::Texture& mainSurfaceTexture1 = mainSurface.getTexture();
+                    mainSurfaceSprite.setTexture(mainSurfaceTexture1);
+                    mainSurfaceSprite.setScale((float)windowWidth1 / (float)WIDTH, (float)windowHeight1 / (float)HEIGHT);
+                    uiSurface.create(windowWidth1, windowHeight1);
+                    const sf::Texture& uiSurfaceTexture1 = uiSurface.getTexture();
+                    uiSurfaceSprite.setTexture(uiSurfaceTexture1);
+                    //Might have to make a way to like reinitialize each UIElement
+                    break;
+                }
+
                 game->keyReleased(event.key.code);
                 break;
             case sf::Event::MouseButtonPressed:

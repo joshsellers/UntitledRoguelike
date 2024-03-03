@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0312";
+const std::string VERSION = "0.0313";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -57,6 +57,7 @@ private:
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _startMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _newGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _messageDispMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;

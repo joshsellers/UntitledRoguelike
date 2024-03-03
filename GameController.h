@@ -8,6 +8,7 @@
 #include <Xinput.h>
 #include <thread>
 #include "Util.h"
+#include "MessageManager.h"
 
 constexpr int MAX_CONTROLLER_VIBRATION = 65535;
 
@@ -78,10 +79,10 @@ public:
                 updateControllerAxisValue((CONTROLLER_AXIS)event.joystickMove.axis, event.joystickMove.position);
                 break;
             case sf::Event::JoystickConnected:
-                std::cout << "Controller connected: " << event.joystickConnect.joystickId << std::endl;
+                MessageManager::displayMessage("Controller connected: " + std::to_string(event.joystickConnect.joystickId), 5);
                 break;
             case sf::Event::JoystickDisconnected:
-                std::cout << "Controller disconnected: " << event.joystickConnect.joystickId << std::endl;
+                MessageManager::displayMessage("Controller disconnected: " + std::to_string(event.joystickConnect.joystickId), 5);
                 break;
             case sf::Event::JoystickButtonReleased:
                 listenerButtonReleaseCallback((CONTROLLER_BUTTON)event.joystickButton.button);

@@ -2,6 +2,7 @@
 #include "World.h"
 #include <iostream>
 #include "DroppedItem.h"
+#include "MessageManager.h"
 
 Inventory::Inventory(Entity* parent) : 
     _parent(parent) {
@@ -127,7 +128,7 @@ int Inventory::findItem(unsigned int itemId) const {
 
 void Inventory::useItem(size_t inventoryIndex) const {
     if (inventoryIndex < _inventory.size()) Item::ITEMS.at(_inventory.at(inventoryIndex).x)->use(_parent);
-    else std::cout << "Invalid inventory index: " << inventoryIndex << ". Inventory size is " << _inventory.size() << std::endl;
+    else MessageManager::displayMessage("Invalid inventory index: " + std::to_string(inventoryIndex) + ". Inventory size is " + std::to_string(_inventory.size()), 10, WARN);
 }
 
 unsigned int Inventory::getItemIdAt(unsigned int index) const {

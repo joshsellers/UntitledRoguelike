@@ -429,3 +429,4 @@ FodyWeavers.xsd
 *.vcxproj
 *.vcxproj.filters
 *.rle
+.env

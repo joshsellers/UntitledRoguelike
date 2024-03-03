@@ -2,14 +2,16 @@
 #include <iostream>
 #include "UITextField.h"
 #include <regex>
+#include "UIMessageDisplay.h"
+#include "MessageManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
     _camera = camera;
     _window = window;
 
-    if (!_font.loadFromFile("font.ttf")) {
-        std::cout << "Failed to load font!" << std::endl;
+    if (!_font.loadFromFile("res/font.ttf")) {
+        MessageManager::displayMessage("Failed to load font!", 10, WARN);
     }
     _versionLabel.setFont(_font);
     _versionLabel.setCharacterSize(24);
@@ -43,7 +45,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
-        std::cout << "failed to load sprite sheet" << std::endl;
+        MessageManager::displayMessage("Failed to load sprite sheet!", 10, WARN);
     }
 
     _player->loadSprite(_spriteSheet);
@@ -182,6 +184,14 @@ void Game::initUI() {
         }
     );
     _ui->addMenu(_newGameMenu);
+
+    // Message Display Menu
+    std::shared_ptr<UIMessageDisplay> messageDisp = std::shared_ptr<UIMessageDisplay>(new UIMessageDisplay(
+        _font
+    ));
+    _messageDispMenu->addElement(messageDisp);
+    _ui->addMenu(_messageDispMenu);
+    _messageDispMenu->show();
 }
 
 void Game::update() {
@@ -276,7 +286,7 @@ void Game::buttonPressed(std::string buttonCode) {
                 }
             } else seed = std::stoul(seedText);
         } catch (std::exception ex) {
-            std::cout << ex.what() << std::endl;
+            MessageManager::displayMessage(ex.what(), 10, ERR);
             seed = currentTimeMillis();
         }
 

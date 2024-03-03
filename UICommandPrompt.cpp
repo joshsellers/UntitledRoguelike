@@ -102,11 +102,12 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
         }
         if (userInput != "") _history.push_back(userInput);
         _historyIndex = _history.size();
-        if (_unlocked) std::cout << processCommand(userInput) << std::endl;
-        else if (processCommand("hash:" + userInput) == UNLOCK_HASH) {
+        if (_unlocked) {
+            MessageManager::displayMessage(processCommand(userInput), 5);
+        } else if (processCommand("hash:" + userInput) == UNLOCK_HASH) {
             unlock();
-            std::cout << "Command prompt has been unlocked" << std::endl;
-        } else std::cout << "Command prompt is locked" << std::endl;
+            MessageManager::displayMessage("Command prompt has been unlocked", 5);
+        } else MessageManager::displayMessage("Commmand prompt is locked", 5);
         _text.setString("");
     }
 }

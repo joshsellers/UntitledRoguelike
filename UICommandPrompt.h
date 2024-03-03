@@ -9,6 +9,7 @@
 #include "Cactoid.h"
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include "MessageManager.h"
 
 constexpr bool LOCK_CMD_PROMPT = false;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -243,7 +244,7 @@ private:
                     }
                 }
 
-                std::cout << processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints())) << std::endl;
+                MessageManager::displayMessage(processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints())), 5);
                 _world->getPlayer()->activate();
                 _world->addEntity(_world->getPlayer());
                 return "Player respawned at full health";
@@ -362,6 +363,33 @@ private:
                     output += command.first + " - " + command.second.description + "\n";
                 }
                 return output;
+            })
+        },
+
+        {
+            "msg",
+            Command("Display a message on the screen",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                int timeout = 5;
+                int messageType = NORMAL;
+                if (parsedCommand.size() >= 3) {
+                    try {
+                        timeout = stoi(parsedCommand[2]);
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                }
+
+                if (parsedCommand.size() == 4) {
+                    auto messageTypeStr = parsedCommand[3];
+                    if (messageTypeStr == "warn") messageType = WARN;
+                    else if (messageTypeStr == "err") messageType = ERR;
+                    else if (messageTypeStr == "debug") messageType = DEBUG;
+                    else if (messageTypeStr != "normal") return "\"" + messageTypeStr + "\" is not a valid message type";
+                }
+
+                MessageManager::displayMessage(parsedCommand[1], timeout, messageType);
+                return "";
             })
         }
     };
