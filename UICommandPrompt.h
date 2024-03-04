@@ -111,7 +111,7 @@ private:
 
         {
             "tgm",
-            Command("Toggle god mode", 
+            Command("Toggle god mode",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 _world->getPlayer()->freeMove = !_world->getPlayer()->freeMove;
                 if (_world->getPlayer()->freeMove) _world->getPlayer()->setBaseSpeed(8);
@@ -155,7 +155,7 @@ private:
                 }
             })
         },
-        
+
         {
             "killall",
             Command("Remove all entities except the player",
@@ -167,7 +167,7 @@ private:
                 return "Set all entities to inactive";
             })
         },
-        
+
         {
             "reseed",
             Command("Change the world seed",
@@ -188,7 +188,7 @@ private:
 
         {
             "summon",
-            Command("Spawn an entity", 
+            Command("Spawn an entity",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 if (parsedCommand.size() > 1) {
                     const std::string entityName = parsedCommand.at(1);
@@ -250,7 +250,7 @@ private:
                 return "Player respawned at full health";
             })
         },
-        
+
         {
             "vibrate",
             Command("Cause the gamepad to vibrate",
@@ -283,7 +283,7 @@ private:
                 return "Removed all items from player's inventory";
             })
         },
-        
+
         {
             "tco",
             Command("Toggle chunk outlines",
@@ -390,6 +390,14 @@ private:
 
                 MessageManager::displayMessage(parsedCommand[1], timeout, messageType);
                 return "";
+            })
+        },
+
+        {
+            "timestamp",
+            Command("Displays the current UNIX timestamp in milliseconds",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                return std::to_string(currentTimeMillis());
             })
         }
     };

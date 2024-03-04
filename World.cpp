@@ -138,7 +138,7 @@ void World::draw(sf::RenderTexture& surface) {
 
 void World::spawnMobs() {
     constexpr float MOB_SPAWN_RATE_SECONDS = 5.f;
-    constexpr int MOB_SPAWN_CHANCE = 9;
+    constexpr int MOB_SPAWN_CHANCE = 5;
     constexpr float MIN_DIST = 180.f;
     constexpr int PACK_SPREAD = 20;
 
@@ -556,26 +556,29 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;*/
 
             sf::Vector2f tundraTemp(0.0, 0.4);
-            sf::Vector2f tundraPrec(0.25, 0.9);
+            sf::Vector2f tundraPrec(0.1, 0.9);
             
-            sf::Vector2f desertTemp(0.5, 0.9);
+            sf::Vector2f desertTemp(0.5, 0.6);
             sf::Vector2f desertPrec(0.0, 0.5);
 
-            sf::Vector2f savannaTemp(0.5, 0.7);
-            sf::Vector2f savannaPrec(0.5, 0.9);
+            sf::Vector2f savannaTemp(0.5, 0.6);
+            sf::Vector2f savannaPrec(0.5, 0.7);
 
             bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
             bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
             bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
 
             // rare biomes 
-            double rareBiomeSampleRate = biomeSampleRate / 3.;
+            double rareBiomeSampleRate = biomeSampleRate / 2.;
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
             double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
 
             bool flesh = rareBiomeTemp < 0.3 && rareBiomeTemp > 0.0005 && rareBiomePrec < 0.7 && rareBiomePrec > 0.04;
 
+
+
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
+
             if (terrainType == TERRAIN_TYPE::GRASS) {
                 if (tundra) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::TUNDRA;

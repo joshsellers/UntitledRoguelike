@@ -31,12 +31,14 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     SAVANNA = 0x95A54F, //0xB5954F
     DESERT = 0xFDE898,
 
-    FLESH = 0xEEC39A
+    FLESH = 0xEEC39A,
+
+    FOREST = 0x77C73A
 };
 
 constexpr int MAX_ACTIVE_MOBS = 30;
 
-const BiomeMobSpawnData MOB_SPAWN_DATA[6] = {
+const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
@@ -56,7 +58,11 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[6] = {
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 4, 10)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {})
+    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
 };
 
 class World {

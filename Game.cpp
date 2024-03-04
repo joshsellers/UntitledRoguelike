@@ -43,6 +43,12 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _playerPosLabel.setString("x: 0, y: 0");
     _playerPosLabel.setPosition(0, 125);
 
+    _currentBiomeLabel.setFont(_font);
+    _currentBiomeLabel.setCharacterSize(24);
+    _currentBiomeLabel.setString("biome: ");
+    _currentBiomeLabel.setPosition(0, 150);
+
+
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
         MessageManager::displayMessage("Failed to load sprite sheet!", 10, WARN);
@@ -264,6 +270,10 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
         _playerPosLabel.setString("x: " + std::to_string(_player->getPosition().x) + ", y: " + std::to_string(_player->getPosition().y));
         surface.draw(_playerPosLabel);
+
+        TERRAIN_TYPE currentBiome = _world.getTerrainDataAt(_world.getCurrentChunk(), _player->getPosition());
+        _currentBiomeLabel.setString("current biome: " + std::to_string((int)currentBiome));
+        surface.draw(_currentBiomeLabel);
 
         _frameCounter++;
     }

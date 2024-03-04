@@ -18,6 +18,8 @@ Entity(pos, 3.5, 2, 2, false) {
 }
 
 void Cactoid::update() {
+    bool playerIsDead = _world->getPlayer()->getHitPoints() <= 0;
+
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->isProp() && entity->isActive() && !entity->isMob() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
             entity->damage(8);
@@ -30,9 +32,9 @@ void Cactoid::update() {
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 2);
 
     const float AGGRO_DIST = 90.f;
-    if (!_isAggro && std::sqrt(std::pow(playerPos.x - cLoc.x, 2) + std::pow(playerPos.y - cLoc.y, 2)) < AGGRO_DIST) {
+    if (!playerIsDead && !_isAggro && std::sqrt(std::pow(playerPos.x - cLoc.x, 2) + std::pow(playerPos.y - cLoc.y, 2)) < AGGRO_DIST) {
         _isAggro = true;
-    }
+    } else if (playerIsDead && _isAggro) _isAggro = false;
     
     if (_isAggro) {
         float xa = 0.f, ya = 0.f;
@@ -88,7 +90,7 @@ void Cactoid::draw(sf::RenderTexture& surface) {
     int xOffset = getMovingDir() == UP ? TILE_SIZE * 2 : 0;
     int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 2 : 0;
 
-    if (isMoving()) {
+    if (isMoving() && _isAggro) {
         _sprite.setTextureRect(sf::IntRect(
             28 * TILE_SIZE + xOffset, 13 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE : TILE_SIZE * 2
         ));

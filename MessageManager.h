@@ -47,7 +47,7 @@ struct Message {
     bool active = true;
 };
 
-constexpr unsigned int PURGE_INTERVAL_SECONDS = 1;
+constexpr unsigned int PURGE_INTERVAL_SECONDS = 60;
 
 class MessageManager {
 public:
