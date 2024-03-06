@@ -536,7 +536,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double xOffset = 20000.;
             double yOffset = 20000.;
             int biomeOctaves = 2;
-            double biomeSampleRate = 0.00001;
+            double biomeSampleRate = 0.00001;// 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
@@ -573,7 +573,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
             double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
 
-            bool flesh = rareBiomeTemp < 0.3 && rareBiomeTemp > 0.0005 && rareBiomePrec < 0.7 && rareBiomePrec > 0.04;
+            sf::Vector2f fleshTemp(0.0005, 0.3);
+            sf::Vector2f fleshPrec(0.04, 0.7);
+
+            bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
 
 
 
@@ -642,7 +645,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             + ") generated in " + std::to_string(endTime - startTime) + "ms", 2, DEBUG);
     }
 
-    generateChunkEntities(chunk);
+    if (!disablePropGeneration) generateChunkEntities(chunk);
 
     return image;
 }

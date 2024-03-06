@@ -4,6 +4,7 @@
 #include <regex>
 #include "UIMessageDisplay.h"
 #include "MessageManager.h"
+#include "../SteamworksHeaders/steam_api.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -281,6 +282,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
+        SteamAPI_Shutdown();
         _window->close();
     } else if (buttonCode == "newgame") {
         _newGameMenu->show();

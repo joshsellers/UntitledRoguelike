@@ -105,6 +105,7 @@ public:
 
     bool drawChunkOutline = false;
     bool disableMobSpawning = false;
+    bool disablePropGeneration = false;
 
     void resetChunks();
 

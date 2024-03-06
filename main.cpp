@@ -3,10 +3,19 @@
 #include "Util.h"
 #include "GameController.h"
 #include "SoundManager.h"
+#include "../SteamworksHeaders/steam_api.h"
 
-void main() {
+int main() {
     MessageManager::start();
     SoundManager::loadSounds();
+
+    // Steam
+    SteamAPI_Init();
+
+    if (SteamAPI_RestartAppIfNecessary(480)) {
+        MessageManager::displayMessage("Steam did not connect", 10, WARN);
+    }
+    //
 
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
@@ -66,6 +75,7 @@ void main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
+                SteamAPI_Shutdown();
                 window.close();
                 break;
             case sf::Event::KeyPressed:

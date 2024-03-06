@@ -399,6 +399,24 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 return std::to_string(currentTimeMillis());
             })
+        },
+
+        {
+            "loadchunksaroundplayer",
+            Command("Force loadChunksAroundPlayer()",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->loadChunksAroundPlayer();
+                return "Called loadChunksAroundPlayer()";
+            })
+        },
+
+        {
+            "tpg",
+            Command("Toggles prop generation",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->disablePropGeneration = !_world->disablePropGeneration;
+                return "disablePropGeneration set to " + (std::string)(_world->disablePropGeneration ? "true" : "false");
+            })
         }
     };
 };

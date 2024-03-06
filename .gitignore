@@ -430,3 +430,5 @@ FodyWeavers.xsd
 *.vcxproj.filters
 *.rle
 .env
+*.lib
+steam_appid.txt
