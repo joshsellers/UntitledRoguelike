@@ -10,6 +10,7 @@
 #include <regex>
 #include <boost/algorithm/string.hpp>
 #include "MessageManager.h"
+#include "MultiplayerManager.h"
 
 constexpr bool LOCK_CMD_PROMPT = false;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -40,8 +41,8 @@ public:
 
     void unlock();
     void lock();
-
 private:
+
     World* _world;
 
     sf::RectangleShape _bg;
@@ -416,6 +417,43 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 _world->disablePropGeneration = !_world->disablePropGeneration;
                 return "disablePropGeneration set to " + (std::string)(_world->disablePropGeneration ? "true" : "false");
+            })
+        },
+
+        {
+            "send",
+            Command("for testing multiplayer",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 3) {
+                    std::string message = parsedCommand[1];
+                    std::string userName = parsedCommand[2];
+                    SteamNetworkingIdentity sni;
+                    ISteamFriends* m_pFriends;
+
+                    bool bFoundFriend = false;
+                    m_pFriends = SteamFriends();
+
+                    memset(&sni, 0, sizeof(SteamNetworkingIdentity));
+                    sni.m_eType = k_ESteamNetworkingIdentityType_SteamID;
+                    //IMPORTANT BIT HERE
+                    int nFriendCount = m_pFriends->GetFriendCount(k_EFriendFlagAll);
+                    for (int nIndex = 0; nIndex < nFriendCount; ++nIndex) {
+                        CSteamID csFriendId = m_pFriends->GetFriendByIndex(nIndex, k_EFriendFlagAll);
+                        std::string sFriendName = m_pFriends->GetFriendPersonaName(csFriendId);
+                        if (sFriendName == userName) {
+                            sni.SetSteamID(csFriendId);
+                            bFoundFriend = true;
+                            break;
+                        }
+                    }
+
+                    if (bFoundFriend == false) return "Friend not found";
+
+                    Multiplayer::messenger.sendMessage(message, sni);
+                    return "Message sent";
+                } else {
+                    return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

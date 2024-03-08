@@ -21,6 +21,9 @@ UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     _hiddenText.setFont(_font);
     _hiddenText.setCharacterSize(_text.getCharacterSize());
     _hiddenText.setFillColor(_text.getFillColor());
+
+    //std::thread recieveMessagesThread(&MultiplayerMessager::recieveMessages, _multiplayerMessager);
+    //recieveMessagesThread.detach();
 }
 
 void UICommandPrompt::update() {
@@ -114,7 +117,7 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
 
 std::string UICommandPrompt::processCommand(sf::String commandInput) {
     std::string command = (std::string)commandInput;
-    boost::to_lower(command);
+    //boost::to_lower(command);
 
     size_t pos = 0;
     std::vector<std::string> parsedCommand;

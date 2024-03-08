@@ -202,6 +202,10 @@ void Game::initUI() {
 }
 
 void Game::update() {
+    SteamAPI_RunCallbacks();
+
+    Multiplayer::messenger.recieveMessages();
+
     float leftStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float leftStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
     float rightStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
@@ -282,6 +286,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
+        Multiplayer::messenger.halt();
         SteamAPI_Shutdown();
         _window->close();
     } else if (buttonCode == "newgame") {

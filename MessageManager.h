@@ -8,6 +8,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <SFML/Graphics.hpp>
 
 struct MessageType {
     MessageType(std::string name, sf::Uint32 color) {
