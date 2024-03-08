@@ -5,38 +5,42 @@
 #include "MessageManager.h"
 
 enum class PayloadType {
-
+    PLAYER_DATA,
+    WORLD_SEED
 };
 
 struct MultiplayerMessage {
+    MultiplayerMessage(PayloadType payloadType, std::string data) {
+        this->payloadType = payloadType;
+        this->data = data;
+    }
 
+    PayloadType payloadType;
+    std::string data;
 };
 
 class MultiplayerManager {
 public:
-    void sendMessage(std::string message, const SteamNetworkingIdentity& identityRemote) {
-        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, message.c_str(), message.length(), k_nSteamNetworkingSend_Reliable, 0);
+    void sendMessage(MultiplayerMessage message, const SteamNetworkingIdentity& identityRemote) {
+        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, &message, sizeof(message), k_nSteamNetworkingSend_Reliable, 0);
     }
 
-    void recieveMessages() const {
-        //while (!_halted) {
-        // I think we basically have to ensure that this thread is killed before we shut down 
-        // Probably better to just not do it in a thread and instead give it an update function called from Game.update
-        //sf::sleep(sf::milliseconds(5));
+    void recieveMessages() {
         if (!_halted) {
             SteamNetworkingMessage_t* ppOutMessages = {};
             int messageCount = SteamNetworkingMessages()->ReceiveMessagesOnChannel(0, &ppOutMessages, 1);
             if (messageCount > 0) {
-                std::string data = (const char*)(*ppOutMessages).GetData();
+                MultiplayerMessage message = *(MultiplayerMessage*)(*ppOutMessages).GetData();
+                PayloadType payloadType = message.payloadType;
+
                 auto userData = ppOutMessages->m_identityPeer;
                 auto steamId = userData.GetSteamID();
                 std::string userName = SteamFriends()->GetFriendPersonaName(steamId);
-                MessageManager::displayMessage("Message in from " + userName + ": " + data, 10, DEBUG);
+                MessageManager::displayMessage("Message in from " + userName + "(" + std::to_string((int)payloadType) + ") " + message.data, 5, DEBUG);
 
                 ppOutMessages->Release();
             }
         }
-        //}
     }
 
     void halt() {

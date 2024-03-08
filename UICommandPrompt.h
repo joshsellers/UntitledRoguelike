@@ -425,8 +425,8 @@ private:
             Command("for testing multiplayer",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 if (parsedCommand.size() == 3) {
-                    std::string message = parsedCommand[1];
-                    std::string userName = parsedCommand[2];
+                    std::string userName = parsedCommand[1];
+                    PayloadType payloadType = (PayloadType)stoi(parsedCommand[2]);
                     SteamNetworkingIdentity sni;
                     ISteamFriends* m_pFriends;
 
@@ -449,6 +449,7 @@ private:
 
                     if (bFoundFriend == false) return "Friend not found";
 
+                    MultiplayerMessage message(payloadType, "1234data");
                     Multiplayer::messenger.sendMessage(message, sni);
                     return "Message sent";
                 } else {

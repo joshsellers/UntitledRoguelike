@@ -202,9 +202,11 @@ void Game::initUI() {
 }
 
 void Game::update() {
-    SteamAPI_RunCallbacks();
+    if (SteamAPI_IsSteamRunning()) {
+        SteamAPI_RunCallbacks();
 
-    Multiplayer::messenger.recieveMessages();
+        Multiplayer::messenger.recieveMessages();
+    }
 
     float leftStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float leftStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);

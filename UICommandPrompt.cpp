@@ -21,9 +21,6 @@ UICommandPrompt::UICommandPrompt(World* world, sf::Font font) : _world(world),
     _hiddenText.setFont(_font);
     _hiddenText.setCharacterSize(_text.getCharacterSize());
     _hiddenText.setFillColor(_text.getFillColor());
-
-    //std::thread recieveMessagesThread(&MultiplayerMessager::recieveMessages, _multiplayerMessager);
-    //recieveMessagesThread.detach();
 }
 
 void UICommandPrompt::update() {
