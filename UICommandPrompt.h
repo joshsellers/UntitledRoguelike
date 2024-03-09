@@ -449,7 +449,7 @@ private:
 
                     if (bFoundFriend == false) return "Friend not found";
 
-                    MultiplayerMessage message(payloadType, "1234data");
+                    MultiplayerMessage message(payloadType, "1234datadtatatatatatattatata");
                     Multiplayer::messenger.sendMessage(message, sni);
                     return "Message sent";
                 } else {

@@ -39,6 +39,7 @@ int main() {
     
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     GameController::addListener(game);
+    Multiplayer::messenger.addListener(game);
 
     sf::Event event;
 
@@ -75,6 +76,7 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
+                Multiplayer::messenger.halt();
                 SteamAPI_Shutdown();
                 window.close();
                 break;

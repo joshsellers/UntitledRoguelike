@@ -1,28 +1,14 @@
 #ifndef _MULTIPLAYER_MANAGER_H
 #define _MULTIPLAYER_MANAGER_H
 
-#include "..//SteamworksHeaders/steam_api.h"
 #include "MessageManager.h"
-
-enum class PayloadType {
-    PLAYER_DATA,
-    WORLD_SEED
-};
-
-struct MultiplayerMessage {
-    MultiplayerMessage(PayloadType payloadType, std::string data) {
-        this->payloadType = payloadType;
-        this->data = data;
-    }
-
-    PayloadType payloadType;
-    std::string data;
-};
+#include "MultiplayerMessageListener.h"
 
 class MultiplayerManager {
 public:
     void sendMessage(MultiplayerMessage message, const SteamNetworkingIdentity& identityRemote) {
-        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, &message, sizeof(message), k_nSteamNetworkingSend_Reliable, 0);
+        std::string buffer = std::to_string((int)message.payloadType) + ":" + message.data;
+        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, buffer.c_str(), strlen(buffer.c_str()), k_nSteamNetworkingSend_Reliable, 0);
     }
 
     void recieveMessages() {
@@ -30,13 +16,19 @@ public:
             SteamNetworkingMessage_t* ppOutMessages = {};
             int messageCount = SteamNetworkingMessages()->ReceiveMessagesOnChannel(0, &ppOutMessages, 1);
             if (messageCount > 0) {
-                MultiplayerMessage message = *(MultiplayerMessage*)(*ppOutMessages).GetData();
-                PayloadType payloadType = message.payloadType;
+                std::string message = (const char*)(*ppOutMessages).GetData();
+                std::vector<std::string> parsedMessage = splitString(message, ":");
+                PayloadType payloadType = (PayloadType)stoi(parsedMessage[0]);
+                std::string data = parsedMessage[1];
 
                 auto userData = ppOutMessages->m_identityPeer;
                 auto steamId = userData.GetSteamID();
                 std::string userName = SteamFriends()->GetFriendPersonaName(steamId);
-                MessageManager::displayMessage("Message in from " + userName + "(" + std::to_string((int)payloadType) + ") " + message.data, 5, DEBUG);
+                //MessageManager::displayMessage("Message in from " + userName + "(" + std::to_string((int)payloadType) + ") " + data, 5, DEBUG);
+
+                for (auto& listener : _listeners) {
+                    listener->messageReceived(MultiplayerMessage(payloadType, data), userData);
+                }
 
                 ppOutMessages->Release();
             }
@@ -54,11 +46,17 @@ public:
     bool isHalted() {
         return _halted;
     }
+
+    void addListener(std::shared_ptr<MultiplayerMessageListener> listener) {
+        _listeners.push_back(listener);
+    }
 private:
     STEAM_CALLBACK(MultiplayerManager, onSessionRequest, SteamNetworkingMessagesSessionRequest_t);
     STEAM_CALLBACK(MultiplayerManager, onSessionFail, SteamNetworkingMessagesSessionFailed_t);
 
     bool _halted = false;
+
+    std::vector<std::shared_ptr<MultiplayerMessageListener>> _listeners;
 };
 
 inline void MultiplayerManager::onSessionRequest(SteamNetworkingMessagesSessionRequest_t* pCallback) {
@@ -73,6 +71,10 @@ inline void MultiplayerManager::onSessionFail(SteamNetworkingMessagesSessionFail
 class Multiplayer {
 public:
     inline static MultiplayerManager messenger;
+
+    static std::string getPeerSteamName(SteamNetworkingIdentity identityPeer) {
+        return SteamFriends()->GetFriendPersonaName(identityPeer.GetSteamID());
+    }
 private:
 };
 #endif

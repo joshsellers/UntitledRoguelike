@@ -12,9 +12,9 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0318";
+const std::string VERSION = "0.0319.3";
 
-class Game : public UIButtonListener, public GameControllerListener {
+class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
 	Game(sf::View* camera, sf::RenderWindow* window);
 
@@ -24,6 +24,8 @@ public:
 	void drawUI(sf::RenderTexture& surface);
 	
 	void buttonPressed(std::string buttonCode);
+
+	void messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer);
 
 	void keyPressed(sf::Keyboard::Key& key);
 	void keyReleased(sf::Keyboard::Key& key); 
@@ -45,6 +47,7 @@ private:
 	bool _isPaused = false;
 
 	bool _gameStarted = false;
+	bool _connectedAsClient = false;
 
 	sf::RenderWindow* _window;
 
@@ -57,10 +60,12 @@ private:
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _startMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _newGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _joinGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _messageDispMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;
+	std::shared_ptr<UITextField> _steamNameField;
 
 	std::shared_ptr<UICommandPrompt> _cmdPrompt;
 
@@ -82,6 +87,8 @@ private:
 	std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
 	std::shared_ptr<Player> _player;
 	World _world;
+
+	std::vector<SteamNetworkingIdentity> _connectedPeers;
 
 	void togglePauseMenu();
 	void toggleInventoryMenu();

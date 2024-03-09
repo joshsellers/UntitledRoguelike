@@ -33,3 +33,15 @@ std::string trimString(std::string str) {
     }
     return str;
 }
+
+std::vector<std::string> splitString(std::string str, std::string delimiter) {
+    size_t pos = 0;
+    std::vector<std::string> parsedString;
+    while ((pos = str.find(delimiter)) != std::string::npos) {
+        parsedString.push_back(str.substr(0, pos));
+        str.erase(0, pos + delimiter.length());
+    }
+    parsedString.push_back(str);
+
+    return parsedString;
+}

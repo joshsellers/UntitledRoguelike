@@ -5,6 +5,7 @@
 #include "UIMessageDisplay.h"
 #include "MessageManager.h"
 #include "../SteamworksHeaders/steam_api.h"
+#include "RemotePlayer.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -101,10 +102,12 @@ void Game::initUI() {
     );
     _ui->addMenu(_pauseMenu);
 
+
     // Command prompt menu
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
     _ui->addMenu(_commandMenu);
+
 
     // HUD
     std::shared_ptr<UIAttributeMeter> playerHpMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
@@ -124,6 +127,7 @@ void Game::initUI() {
     _HUDMenu->addElement(_magazineMeter);
     _ui->addMenu(_HUDMenu);
 
+
     // Inventory menu
     std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
         _player->getInventory(), _font, _spriteSheet
@@ -131,28 +135,37 @@ void Game::initUI() {
     _inventoryMenu->addElement(inventoryInterface);
     _ui->addMenu(_inventoryMenu);
 
+
     // Start menu
     std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 50, 9, 3, "new game", _font, this, "newgame"
+        45, 43, 9, 3, "new game", _font, this, "newgame"
     ));
     newGameButton->setSelectionId(0);
     _startMenu->addElement(newGameButton);
+
+    std::shared_ptr<UIButton> joinGameButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 50, 9, 3, "join game", _font, this, "joingame"
+    ));
+    joinGameButton->setSelectionId(1);
+    _startMenu->addElement(joinGameButton);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
         45, 57, 9, 3, "exit game", _font, this, "exit"
     ));
-    exitGameButton->setSelectionId(1);
+    exitGameButton->setSelectionId(2);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
     _startMenu->defineSelectionGrid(
         {
             {newGameButton->getSelectionId()},
+            {joinGameButton->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
     _ui->addMenu(_startMenu);
     _startMenu->show();
+
 
     // New game menu
     _worldNameField = std::shared_ptr<UITextField>(new UITextField(
@@ -192,6 +205,37 @@ void Game::initUI() {
     );
     _ui->addMenu(_newGameMenu);
 
+
+    // Join game menu
+    _steamNameField = std::shared_ptr<UITextField>(new UITextField(
+        "enter a friend's Steam name:", 49.5, 48, _font
+    ));
+    _steamNameField->setSelectionId(0);
+    _joinGameMenu->addElement(_steamNameField);
+
+    std::shared_ptr<UIButton> joinButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 55, 9, 3, "join", _font, this, "join"
+    ));
+    joinButton->setSelectionId(1);
+    _joinGameMenu->addElement(joinButton);
+
+    std::shared_ptr<UIButton> joinGameBackButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 61, 9, 3, "back", _font, this, "back_joingame"
+    ));
+    joinGameBackButton->setSelectionId(2);
+    _joinGameMenu->addElement(joinGameBackButton);
+    
+    _joinGameMenu->useGamepadConfiguration = true;
+    _joinGameMenu->defineSelectionGrid(
+        {
+            {_steamNameField->getSelectionId()},
+            {joinButton->getSelectionId()},
+            {joinGameBackButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_joinGameMenu);
+
+
     // Message Display Menu
     std::shared_ptr<UIMessageDisplay> messageDisp = std::shared_ptr<UIMessageDisplay>(new UIMessageDisplay(
         _font
@@ -206,6 +250,13 @@ void Game::update() {
         SteamAPI_RunCallbacks();
 
         Multiplayer::messenger.recieveMessages();
+
+        if (_connectedAsClient || (_connectedPeers.size() > 0 && _gameStarted)) {
+            for (auto& peer : _connectedPeers) {
+                std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
+                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
+            }
+        }
     }
 
     float leftStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -288,6 +339,10 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
+        for (auto& peer : _connectedPeers) {
+            SteamNetworkingMessages()->CloseSessionWithUser(peer);
+        }
+        _connectedPeers.clear();
         Multiplayer::messenger.halt();
         SteamAPI_Shutdown();
         _window->close();
@@ -318,6 +373,12 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->hide();
         _startMenu->show();
     } else if (buttonCode == "mainmenu") {
+        for (auto& peer : _connectedPeers) {
+            SteamNetworkingMessages()->CloseSessionWithUser(peer);
+        }
+        _connectedPeers.clear();
+
+        _connectedAsClient = false;
         _gameStarted = false;
         _isPaused = false;
         _pauseMenu->hide();
@@ -349,6 +410,86 @@ void Game::buttonPressed(std::string buttonCode) {
         _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
         _textSeed = "NONE";
         _startMenu->show();
+    } else if (buttonCode == "joingame") {
+        _startMenu->hide();
+        _joinGameMenu->show();
+    } else if (buttonCode == "join") {
+        std::string userName = _steamNameField->getText();
+
+        SteamNetworkingIdentity sni;
+        ISteamFriends* m_pFriends;
+
+        bool bFoundFriend = false;
+        m_pFriends = SteamFriends();
+
+        memset(&sni, 0, sizeof(SteamNetworkingIdentity));
+        sni.m_eType = k_ESteamNetworkingIdentityType_SteamID;
+  
+        int nFriendCount = m_pFriends->GetFriendCount(k_EFriendFlagAll);
+        for (int nIndex = 0; nIndex < nFriendCount; ++nIndex) {
+            CSteamID csFriendId = m_pFriends->GetFriendByIndex(nIndex, k_EFriendFlagAll);
+            std::string sFriendName = m_pFriends->GetFriendPersonaName(csFriendId);
+            if (sFriendName == userName) {
+                sni.SetSteamID(csFriendId);
+                bFoundFriend = true;
+                break;
+            }
+        }
+
+        if (!bFoundFriend) {
+            MessageManager::displayMessage("Could not find any Steam friends named \"" + userName + "\"", 5, NORMAL);
+        } else {
+            MultiplayerMessage message(PayloadType::JOIN_REQUEST, userName);
+            Multiplayer::messenger.sendMessage(message, sni);
+        }
+    } else if (buttonCode == "back_joingame") {
+        _joinGameMenu->hide();
+        _startMenu->show();
+    }
+}
+
+void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer) {
+    switch (message.payloadType) {
+        case PayloadType::JOIN_REQUEST:
+            if (_gameStarted) {
+                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::WORLD_SEED, std::to_string(_world.getSeed())), identityPeer);
+            } else {
+                std::string reason = "Game not started yet";
+                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::JOIN_REJECT, reason), identityPeer);
+            }
+            break;
+        case PayloadType::JOIN_REJECT:
+            MessageManager::displayMessage("Join request rejected. Reason: " + message.data, 5, NORMAL);
+            break;
+        case PayloadType::WORLD_SEED:
+        {
+            unsigned int seed = std::stoul(message.data);
+            _world.init(seed);
+            _joinGameMenu->hide();
+            _HUDMenu->show();
+            _magazineMeter->hide();
+            _gameStarted = true;
+            _connectedAsClient = true;
+
+            std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
+            Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), identityPeer);
+        }
+            break;
+        case PayloadType::PLAYER_DATA:
+            for (auto& connectedPeer : _connectedPeers) {
+                if (connectedPeer == identityPeer) return;
+            }
+            _connectedPeers.push_back(identityPeer);
+
+            std::vector<std::string> parsedData = splitString(message.data, ",");
+            float x = std::stof(parsedData[0]);
+            float y = std::stof(parsedData[1]);
+            std::shared_ptr<RemotePlayer> remotePlayer = std::shared_ptr<RemotePlayer>(new RemotePlayer(identityPeer, sf::Vector2f(x, y), _window, _isPaused));
+            Multiplayer::messenger.addListener(remotePlayer);
+            remotePlayer->loadSprite(_spriteSheet);
+            remotePlayer->setWorld(&_world);
+            _world.addEntity(remotePlayer);
+            break;
     }
 }
 
