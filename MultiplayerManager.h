@@ -50,6 +50,27 @@ public:
     void addListener(std::shared_ptr<MultiplayerMessageListener> listener) {
         _listeners.push_back(listener);
     }
+
+    void clearListeners() {
+        for (int i = 0; i < _listeners.size(); i++) {
+            auto& listener = _listeners[i];
+            if (!listener->_doNotRemove) {
+                _listeners.erase(_listeners.begin() + i);
+            }
+        }
+    }
+
+    std::vector<SteamNetworkingIdentity> getConnectedPeers() const {
+        return _connectedPeers;
+    }
+
+    void addConnectedPeer(SteamNetworkingIdentity connectedPeer) {
+        _connectedPeers.push_back(connectedPeer);
+    }
+
+    void clearPeers() {
+        _connectedPeers.clear();
+    }
 private:
     STEAM_CALLBACK(MultiplayerManager, onSessionRequest, SteamNetworkingMessagesSessionRequest_t);
     STEAM_CALLBACK(MultiplayerManager, onSessionFail, SteamNetworkingMessagesSessionFailed_t);
@@ -57,6 +78,8 @@ private:
     bool _halted = false;
 
     std::vector<std::shared_ptr<MultiplayerMessageListener>> _listeners;
+
+    std::vector<SteamNetworkingIdentity> _connectedPeers;
 };
 
 inline void MultiplayerManager::onSessionRequest(SteamNetworkingMessagesSessionRequest_t* pCallback) {

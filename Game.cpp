@@ -251,8 +251,8 @@ void Game::update() {
 
         Multiplayer::messenger.recieveMessages();
 
-        if (_connectedAsClient || (_connectedPeers.size() > 0 && _gameStarted)) {
-            for (auto& peer : _connectedPeers) {
+        if (_connectedAsClient || _multiplayerConnected) {
+            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
                 std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
                 Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
             }
@@ -339,10 +339,13 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
-        for (auto& peer : _connectedPeers) {
-            SteamNetworkingMessages()->CloseSessionWithUser(peer);
+        if (_connectedAsClient || _multiplayerConnected) {
+            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
+                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
+            }
+            sf::sleep(sf::seconds(1));
+            disconnectMultiplayer();
         }
-        _connectedPeers.clear();
         Multiplayer::messenger.halt();
         SteamAPI_Shutdown();
         _window->close();
@@ -372,13 +375,15 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
-    } else if (buttonCode == "mainmenu") {
-        for (auto& peer : _connectedPeers) {
-            SteamNetworkingMessages()->CloseSessionWithUser(peer);
+    } else if (buttonCode == "mainmenu" || buttonCode == "mainmenu_clientdisc") {
+        if (buttonCode != "mainmenu_clientdisc" && (_connectedAsClient || _multiplayerConnected)) {
+            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
+                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
+            }
+            sf::sleep(sf::seconds(1));
+            disconnectMultiplayer();
         }
-        _connectedPeers.clear();
 
-        _connectedAsClient = false;
         _gameStarted = false;
         _isPaused = false;
         _pauseMenu->hide();
@@ -453,6 +458,7 @@ void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity i
         case PayloadType::JOIN_REQUEST:
             if (_gameStarted) {
                 Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::WORLD_SEED, std::to_string(_world.getSeed())), identityPeer);
+                _multiplayerConnected = true;
             } else {
                 std::string reason = "Game not started yet";
                 Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::JOIN_REJECT, reason), identityPeer);
@@ -460,6 +466,13 @@ void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity i
             break;
         case PayloadType::JOIN_REJECT:
             MessageManager::displayMessage("Join request rejected. Reason: " + message.data, 5, NORMAL);
+            break;
+        case PayloadType::PEER_DISCONNECT:
+            MessageManager::displayMessage(Multiplayer::getPeerSteamName(identityPeer) + " has disconnected", 5, NORMAL);
+            if (_connectedAsClient) {
+                buttonPressed("mainmenu_clientdisc");
+            }
+            disconnectMultiplayer();
             break;
         case PayloadType::WORLD_SEED:
         {
@@ -470,16 +483,17 @@ void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity i
             _magazineMeter->hide();
             _gameStarted = true;
             _connectedAsClient = true;
+            _multiplayerConnected = true;
 
             std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
             Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), identityPeer);
         }
             break;
         case PayloadType::PLAYER_DATA:
-            for (auto& connectedPeer : _connectedPeers) {
+            for (auto& connectedPeer : Multiplayer::messenger.getConnectedPeers()) {
                 if (connectedPeer == identityPeer) return;
             }
-            _connectedPeers.push_back(identityPeer);
+            Multiplayer::messenger.addConnectedPeer(identityPeer);
 
             std::vector<std::string> parsedData = splitString(message.data, ",");
             float x = std::stof(parsedData[0]);
@@ -565,6 +579,16 @@ void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
             toggleInventoryMenu();
             break;
     }
+}
+
+void Game::disconnectMultiplayer() {
+    for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
+        SteamNetworkingMessages()->CloseSessionWithUser(peer);
+    }
+    Multiplayer::messenger.clearPeers();
+    Multiplayer::messenger.clearListeners();
+    _connectedAsClient = false;
+    _multiplayerConnected = false;
 }
 
 void Game::togglePauseMenu() {

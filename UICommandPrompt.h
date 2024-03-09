@@ -424,9 +424,8 @@ private:
             "send",
             Command("for testing multiplayer",
             [this](std::vector<std::string>& parsedCommand)->std::string {
-                if (parsedCommand.size() == 3) {
+                if (parsedCommand.size() == 2) {
                     std::string userName = parsedCommand[1];
-                    PayloadType payloadType = (PayloadType)stoi(parsedCommand[2]);
                     SteamNetworkingIdentity sni;
                     ISteamFriends* m_pFriends;
 
@@ -449,8 +448,8 @@ private:
 
                     if (bFoundFriend == false) return "Friend not found";
 
-                    MultiplayerMessage message(payloadType, "1234datadtatatatatatattatata");
-                    Multiplayer::messenger.sendMessage(message, sni);
+
+                    Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), sni);
                     return "Message sent";
                 } else {
                     return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";

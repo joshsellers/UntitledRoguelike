@@ -7,6 +7,7 @@
 enum class PayloadType {
     JOIN_REQUEST,
     JOIN_REJECT,
+    PEER_DISCONNECT,
     PLAYER_DATA,
     WORLD_SEED
 };
@@ -23,6 +24,7 @@ struct MultiplayerMessage {
 
 class MultiplayerMessageListener {
 public:
+    bool _doNotRemove = false;
     virtual void messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer) = 0;
 };
 

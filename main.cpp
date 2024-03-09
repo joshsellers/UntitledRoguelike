@@ -38,6 +38,7 @@ int main() {
     srand(currentTimeMillis());
     
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
+    game->_doNotRemove = true;
     GameController::addListener(game);
     Multiplayer::messenger.addListener(game);
 
@@ -76,6 +77,7 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
+                game->disconnectMultiplayer();
                 Multiplayer::messenger.halt();
                 SteamAPI_Shutdown();
                 window.close();

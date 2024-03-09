@@ -13,6 +13,8 @@ public:
     void messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer);
 private:
     SteamNetworkingIdentity _identityPeer;
+
+    long long _lastUpdateTime = currentTimeMillis();
 };
 
 #endif

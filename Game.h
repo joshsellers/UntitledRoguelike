@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0319.3";
+const std::string VERSION = "0.0320";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -40,6 +40,8 @@ public:
 
 	void textEntered(sf::Uint32 character);
 
+	void disconnectMultiplayer();
+
 private:
 	void initUI();
 
@@ -48,6 +50,7 @@ private:
 
 	bool _gameStarted = false;
 	bool _connectedAsClient = false;
+	bool _multiplayerConnected = false;
 
 	sf::RenderWindow* _window;
 
@@ -87,8 +90,6 @@ private:
 	std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
 	std::shared_ptr<Player> _player;
 	World _world;
-
-	std::vector<SteamNetworkingIdentity> _connectedPeers;
 
 	void togglePauseMenu();
 	void toggleInventoryMenu();
