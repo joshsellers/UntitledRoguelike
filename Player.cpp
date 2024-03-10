@@ -18,6 +18,8 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    _multiplayerSendInventoryUpdates = true;
 }
 
 void Player::update() {
@@ -87,10 +89,8 @@ void Player::update() {
 }
 
 void Player::draw(sf::RenderTexture& surface) {
-    TERRAIN_TYPE terrainType = _world->getTerrainDataAt(
-        _world->getCurrentChunk(), sf::Vector2f(((int)_pos.x + PLAYER_WIDTH / 2), ((int)_pos.y + PLAYER_HEIGHT))
-    );
-    _isSwimming = terrainType == TERRAIN_TYPE::WATER;
+    TERRAIN_TYPE terrainType = getCurrentTerrain();
+    _isSwimming =  terrainType == TERRAIN_TYPE::WATER;
 
     if (isSwimming()) {
         _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
@@ -358,6 +358,12 @@ void Player::drawTool(sf::RenderTexture& surface) {
             surface.draw(barrelDisplay);
         }
     } else _facingDir = (MOVING_DIRECTION)_movingDir;
+}
+
+TERRAIN_TYPE Player::getCurrentTerrain() {
+    return _world->getTerrainDataAt(
+        _world->getCurrentChunk(), sf::Vector2f(((int)_pos.x + PLAYER_WIDTH / 2), ((int)_pos.y + PLAYER_HEIGHT))
+    );
 }
 
 void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos) {

@@ -10,11 +10,13 @@ int main() {
     SoundManager::loadSounds();
 
     // Steam
-    SteamAPI_Init();
+    STEAMAPI_INITIATED = SteamAPI_Init();
 
     if (SteamAPI_RestartAppIfNecessary(480)) {
         MessageManager::displayMessage("Steam did not connect", 10, WARN);
     }
+
+    MessageManager::displayMessage("STEAMAPI_INITIATED: " + (std::string)(STEAMAPI_INITIATED ? "true" : "false"), 5, DEBUG);
     //
 
     if (FULLSCREEN) {
@@ -40,7 +42,7 @@ int main() {
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     game->_doNotRemove = true;
     GameController::addListener(game);
-    Multiplayer::messenger.addListener(game);
+    Multiplayer::manager.addListener(game);
 
     sf::Event event;
 
@@ -78,7 +80,7 @@ int main() {
             switch (event.type) {
             case sf::Event::Closed:
                 game->disconnectMultiplayer();
-                Multiplayer::messenger.halt();
+                Multiplayer::manager.halt();
                 SteamAPI_Shutdown();
                 window.close();
                 break;

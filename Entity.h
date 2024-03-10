@@ -98,6 +98,8 @@ public:
     void decrementMagazine();
     void emptyMagazine();
 
+    bool shouldSendMultiplayerInventoryUpdates() const;
+
 protected:
     std::string _entityType = "";
 
@@ -152,6 +154,8 @@ protected:
     unsigned int _magazineAmmoType;
     int _magazineSize = 0;
     int _magazineContents = 0;
+
+    bool _multiplayerSendInventoryUpdates = false;
 
 private:
     int _maxHitPoints = 0;

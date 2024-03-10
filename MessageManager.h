@@ -10,6 +10,8 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
+inline bool DISPLAY_DEBUG_MESSAGES = true;
+
 struct MessageType {
     MessageType(std::string name, sf::Uint32 color) {
         this->name = name;
@@ -75,7 +77,7 @@ public:
     static int getMessageCount() {
         int messageCount = 0;
         for (auto& message : getMessages()) {
-            if (message->active) messageCount++;
+            if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) messageCount++;
         }
 
         return messageCount;

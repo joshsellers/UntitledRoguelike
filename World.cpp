@@ -337,7 +337,7 @@ void World::loadNewChunks(int pX, int pY) {
             loadChunk(sf::Vector2f(chX + CHUNK_SIZE, chY - CHUNK_SIZE));
         }
     } else if (_currentChunk == nullptr) {
-        MessageManager::displayMessage("currentChunk was nullptr", 2, WARN);
+        MessageManager::displayMessage("currentChunk was nullptr", 2, DEBUG);
     }
 }
 

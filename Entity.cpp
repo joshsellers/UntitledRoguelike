@@ -494,3 +494,7 @@ void Entity::decrementMagazine() {
 void Entity::emptyMagazine() {
     _magazineContents = 0;
 }
+
+bool Entity::shouldSendMultiplayerInventoryUpdates() const {
+    return _multiplayerSendInventoryUpdates;
+}

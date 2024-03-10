@@ -15,6 +15,8 @@ private:
     SteamNetworkingIdentity _identityPeer;
 
     long long _lastUpdateTime = currentTimeMillis();
+
+    TERRAIN_TYPE getCurrentTerrain();
 };
 
 #endif

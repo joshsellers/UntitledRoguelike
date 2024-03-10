@@ -9,7 +9,8 @@ enum class PayloadType {
     JOIN_REJECT,
     PEER_DISCONNECT,
     PLAYER_DATA,
-    WORLD_SEED
+    WORLD_SEED,
+    INVENTORY_DATA
 };
 
 struct MultiplayerMessage {

@@ -10,7 +10,7 @@ void UIMessageDisplay::update() {
 void UIMessageDisplay::draw(sf::RenderTexture& surface) {
     int index = 0;
     for (auto& message : MessageManager::getMessages()) {
-        if (message->active) {
+        if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) {
             sf::Text messageText(message->text, _font);
             float fontSize = 1.f;
             int relativeFontSize = getRelativeWidth(fontSize);

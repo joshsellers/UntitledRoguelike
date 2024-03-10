@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0320";
+const std::string VERSION = "0.0324";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -50,7 +50,6 @@ private:
 
 	bool _gameStarted = false;
 	bool _connectedAsClient = false;
-	bool _multiplayerConnected = false;
 
 	sf::RenderWindow* _window;
 

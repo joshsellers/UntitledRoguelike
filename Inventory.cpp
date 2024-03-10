@@ -3,6 +3,8 @@
 #include <iostream>
 #include "DroppedItem.h"
 #include "MessageManager.h"
+#include "MultiplayerManager.h"
+#include "Globals.h"
 
 Inventory::Inventory(Entity* parent) : 
     _parent(parent) {
@@ -49,6 +51,8 @@ void Inventory::addItem(unsigned int itemId, unsigned int amount) {
             dropItem(itemId, excess);
             addItem(itemId, amount - excess);
         }
+
+        updateRemoteInventory("addItem." + std::to_string(itemId) + "," + std::to_string(amount));
     }
 }
 
@@ -78,6 +82,8 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
             }
             _inventory.erase(_inventory.begin() + index);
         }
+
+        updateRemoteInventory("removeItemAt." + std::to_string(index) + "," + std::to_string(amount));
     }
 }
 
@@ -110,6 +116,8 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
     droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());
 
     _parent->getWorld()->addEntity(droppedItem);
+
+    updateRemoteInventory("dropItem." + std::to_string(itemId) + "," + std::to_string(amount));
 }
 
 bool Inventory::hasItem(unsigned int itemId) const {
@@ -146,6 +154,8 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
             && getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED
             && Item::ITEMS[getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) emptyAmmoMagazine(equipType);
         _equippedItems[(int)equipType] = index;
+
+        updateRemoteInventory("equip." + std::to_string(index) + "," + std::to_string((int)equipType));
     }
 }
 
@@ -192,5 +202,20 @@ void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
         const Item* weapon = Item::ITEMS[getEquippedItemId(equipType)];
         addItem(weapon->getAmmoId(), _parent->getMagazineContents());
         _parent->emptyMagazine();
+
+        //don't think we need to do this bug if theres bugs with ammo stuff it probably has to do with this
+        //updateRemoteInventory("emptyAmmoMagazine." + std::to_string((int)equipType));
+    }
+}
+
+void Inventory::updateRemoteInventory(std::string data) {
+    if (_parent->shouldSendMultiplayerInventoryUpdates() && IS_MULTIPLAYER_CONNECTED) {
+        int times = 0;
+        for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+            Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::INVENTORY_DATA, data), peer);
+            times++;
+        }
+
+        MessageManager::displayMessage(data, 5, DEBUG);
     }
 }

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 #include "GameController.h"
+#include "Chunk.h"
 
 constexpr int PLAYER_WIDTH = 16;
 constexpr int PLAYER_HEIGHT = 32;
@@ -42,6 +43,7 @@ public:
     void controllerButtonPressed(CONTROLLER_BUTTON button);
 
     friend class Game;
+    friend class RemotePlayer;
 
 private:
     bool& _gamePaused;
@@ -63,6 +65,8 @@ private:
     void drawEquipables(sf::RenderTexture& surface);
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
     void drawTool(sf::RenderTexture& surface);
+
+    virtual TERRAIN_TYPE getCurrentTerrain();
 
     float _sprintMultiplier = 2;
 

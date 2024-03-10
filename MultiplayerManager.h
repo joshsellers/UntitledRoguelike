@@ -93,7 +93,7 @@ inline void MultiplayerManager::onSessionFail(SteamNetworkingMessagesSessionFail
 
 class Multiplayer {
 public:
-    inline static MultiplayerManager messenger;
+    inline static MultiplayerManager manager;
 
     static std::string getPeerSteamName(SteamNetworkingIdentity identityPeer) {
         return SteamFriends()->GetFriendPersonaName(identityPeer.GetSteamID());

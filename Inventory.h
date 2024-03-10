@@ -59,6 +59,8 @@ private:
     Entity* _parent;
 
     void emptyAmmoMagazine(EQUIPMENT_TYPE equipType);
+
+    void updateRemoteInventory(std::string data);
 };
 
 #endif

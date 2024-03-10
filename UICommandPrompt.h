@@ -449,11 +449,20 @@ private:
                     if (bFoundFriend == false) return "Friend not found";
 
 
-                    Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), sni);
+                    Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), sni);
                     return "Message sent";
                 } else {
                     return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
+            })
+        },
+
+        {
+            "toggledebug",
+            Command("Toggles output of debug messages",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISPLAY_DEBUG_MESSAGES = !DISPLAY_DEBUG_MESSAGES;
+                return "DISPLAY_DEBUG_MESSAGES set to " + (std::string)(DISPLAY_DEBUG_MESSAGES ? "true" : "false");
             })
         }
     };

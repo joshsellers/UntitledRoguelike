@@ -246,23 +246,21 @@ void Game::initUI() {
 }
 
 void Game::update() {
-    if (SteamAPI_IsSteamRunning()) {
+    if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
         SteamAPI_RunCallbacks();
 
-        Multiplayer::messenger.recieveMessages();
+        Multiplayer::manager.recieveMessages();
 
-        if (_connectedAsClient || _multiplayerConnected) {
-            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
-                std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
-                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
+        if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
+            for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+                std::string playerPos = std::to_string(
+                    _player->getPosition().x) + "," 
+                    + std::to_string(_player->getPosition().y) + "," 
+                    + std::to_string(_player->isDodging());
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
             }
         }
     }
-
-    float leftStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-    float leftStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    float rightStickXAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
-    float rightStickYAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
@@ -339,14 +337,14 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
-        if (_connectedAsClient || _multiplayerConnected) {
-            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
-                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
+        if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
+            for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
             }
             sf::sleep(sf::seconds(1));
             disconnectMultiplayer();
         }
-        Multiplayer::messenger.halt();
+        Multiplayer::manager.halt();
         SteamAPI_Shutdown();
         _window->close();
     } else if (buttonCode == "newgame") {
@@ -376,9 +374,9 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->hide();
         _startMenu->show();
     } else if (buttonCode == "mainmenu" || buttonCode == "mainmenu_clientdisc") {
-        if (buttonCode != "mainmenu_clientdisc" && (_connectedAsClient || _multiplayerConnected)) {
-            for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
-                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
+        if (buttonCode != "mainmenu_clientdisc" && (_connectedAsClient || IS_MULTIPLAYER_CONNECTED)) {
+            for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
             }
             sf::sleep(sf::seconds(1));
             disconnectMultiplayer();
@@ -419,33 +417,37 @@ void Game::buttonPressed(std::string buttonCode) {
         _startMenu->hide();
         _joinGameMenu->show();
     } else if (buttonCode == "join") {
-        std::string userName = _steamNameField->getText();
+        if (STEAMAPI_INITIATED) {
+            std::string userName = _steamNameField->getText();
 
-        SteamNetworkingIdentity sni;
-        ISteamFriends* m_pFriends;
+            SteamNetworkingIdentity sni;
+            ISteamFriends* m_pFriends;
 
-        bool bFoundFriend = false;
-        m_pFriends = SteamFriends();
+            bool bFoundFriend = false;
+            m_pFriends = SteamFriends();
 
-        memset(&sni, 0, sizeof(SteamNetworkingIdentity));
-        sni.m_eType = k_ESteamNetworkingIdentityType_SteamID;
-  
-        int nFriendCount = m_pFriends->GetFriendCount(k_EFriendFlagAll);
-        for (int nIndex = 0; nIndex < nFriendCount; ++nIndex) {
-            CSteamID csFriendId = m_pFriends->GetFriendByIndex(nIndex, k_EFriendFlagAll);
-            std::string sFriendName = m_pFriends->GetFriendPersonaName(csFriendId);
-            if (sFriendName == userName) {
-                sni.SetSteamID(csFriendId);
-                bFoundFriend = true;
-                break;
+            memset(&sni, 0, sizeof(SteamNetworkingIdentity));
+            sni.m_eType = k_ESteamNetworkingIdentityType_SteamID;
+
+            int nFriendCount = m_pFriends->GetFriendCount(k_EFriendFlagAll);
+            for (int nIndex = 0; nIndex < nFriendCount; ++nIndex) {
+                CSteamID csFriendId = m_pFriends->GetFriendByIndex(nIndex, k_EFriendFlagAll);
+                std::string sFriendName = m_pFriends->GetFriendPersonaName(csFriendId);
+                if (sFriendName == userName) {
+                    sni.SetSteamID(csFriendId);
+                    bFoundFriend = true;
+                    break;
+                }
             }
-        }
 
-        if (!bFoundFriend) {
-            MessageManager::displayMessage("Could not find any Steam friends named \"" + userName + "\"", 5, NORMAL);
+            if (!bFoundFriend) {
+                MessageManager::displayMessage("Could not find any Steam friends named \"" + userName + "\"", 5, NORMAL);
+            } else {
+                MultiplayerMessage message(PayloadType::JOIN_REQUEST, userName);
+                Multiplayer::manager.sendMessage(message, sni);
+            }
         } else {
-            MultiplayerMessage message(PayloadType::JOIN_REQUEST, userName);
-            Multiplayer::messenger.sendMessage(message, sni);
+            MessageManager::displayMessage("Steam is not connected", 5, NORMAL);
         }
     } else if (buttonCode == "back_joingame") {
         _joinGameMenu->hide();
@@ -457,11 +459,11 @@ void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity i
     switch (message.payloadType) {
         case PayloadType::JOIN_REQUEST:
             if (_gameStarted) {
-                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::WORLD_SEED, std::to_string(_world.getSeed())), identityPeer);
-                _multiplayerConnected = true;
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::WORLD_SEED, std::to_string(_world.getSeed())), identityPeer);
+                IS_MULTIPLAYER_CONNECTED = true;
             } else {
                 std::string reason = "Game not started yet";
-                Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::JOIN_REJECT, reason), identityPeer);
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::JOIN_REJECT, reason), identityPeer);
             }
             break;
         case PayloadType::JOIN_REJECT:
@@ -483,23 +485,23 @@ void Game::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity i
             _magazineMeter->hide();
             _gameStarted = true;
             _connectedAsClient = true;
-            _multiplayerConnected = true;
+            IS_MULTIPLAYER_CONNECTED = true;
 
             std::string playerPos = std::to_string(_player->getPosition().x) + "," + std::to_string(_player->getPosition().y);
-            Multiplayer::messenger.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), identityPeer);
+            Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), identityPeer);
         }
             break;
         case PayloadType::PLAYER_DATA:
-            for (auto& connectedPeer : Multiplayer::messenger.getConnectedPeers()) {
+            for (auto& connectedPeer : Multiplayer::manager.getConnectedPeers()) {
                 if (connectedPeer == identityPeer) return;
             }
-            Multiplayer::messenger.addConnectedPeer(identityPeer);
+            Multiplayer::manager.addConnectedPeer(identityPeer);
 
             std::vector<std::string> parsedData = splitString(message.data, ",");
             float x = std::stof(parsedData[0]);
             float y = std::stof(parsedData[1]);
             std::shared_ptr<RemotePlayer> remotePlayer = std::shared_ptr<RemotePlayer>(new RemotePlayer(identityPeer, sf::Vector2f(x, y), _window, _isPaused));
-            Multiplayer::messenger.addListener(remotePlayer);
+            Multiplayer::manager.addListener(remotePlayer);
             remotePlayer->loadSprite(_spriteSheet);
             remotePlayer->setWorld(&_world);
             _world.addEntity(remotePlayer);
@@ -582,13 +584,13 @@ void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
 }
 
 void Game::disconnectMultiplayer() {
-    for (auto& peer : Multiplayer::messenger.getConnectedPeers()) {
+    for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
         SteamNetworkingMessages()->CloseSessionWithUser(peer);
     }
-    Multiplayer::messenger.clearPeers();
-    Multiplayer::messenger.clearListeners();
+    Multiplayer::manager.clearPeers();
+    Multiplayer::manager.clearListeners();
     _connectedAsClient = false;
-    _multiplayerConnected = false;
+    IS_MULTIPLAYER_CONNECTED = false;
 }
 
 void Game::togglePauseMenu() {

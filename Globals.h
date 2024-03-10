@@ -12,4 +12,8 @@ extern int HEIGHT;
 
 extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 
+extern bool STEAMAPI_INITIATED;
+
+extern bool IS_MULTIPLAYER_CONNECTED;
+
 #endif
