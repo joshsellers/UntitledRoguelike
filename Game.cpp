@@ -208,7 +208,7 @@ void Game::initUI() {
 
     // Join game menu
     _steamNameField = std::shared_ptr<UITextField>(new UITextField(
-        "enter a friend's Steam name:", 49.5, 48, _font
+        "Enter a friend's Steam name:", 49.5, 48, _font
     ));
     _steamNameField->setSelectionId(0);
     _joinGameMenu->addElement(_steamNameField);
@@ -254,8 +254,8 @@ void Game::update() {
         if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
             for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
                 std::string playerPos = std::to_string(
-                    _player->getPosition().x) + "," 
-                    + std::to_string(_player->getPosition().y) + "," 
+                    _player->getPosition().x) + (std::string)"," 
+                    + std::to_string(_player->getPosition().y) + (std::string)"," 
                     + std::to_string(_player->isDodging());
                 Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
             }

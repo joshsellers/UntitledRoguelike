@@ -7,8 +7,10 @@
 class MultiplayerManager {
 public:
     void sendMessage(MultiplayerMessage message, const SteamNetworkingIdentity& identityRemote) {
-        std::string buffer = std::to_string((int)message.payloadType) + ":" + message.data;
-        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, buffer.c_str(), strlen(buffer.c_str()), k_nSteamNetworkingSend_Reliable, 0);
+        const int flag = k_nSteamNetworkingSend_Reliable;
+        std::string buffer = std::to_string((int)message.payloadType) + (std::string)":" + message.data;
+        EResult result = SteamNetworkingMessages()->SendMessageToUser(identityRemote, buffer.c_str(), buffer.length() + 1, flag, 0);
+        if (result != k_EResultOK) MessageManager::displayMessage("Multiplayer error @ sendMessage: " + std::to_string((int)result), 5, ERR);
     }
 
     void recieveMessages() {
@@ -24,7 +26,6 @@ public:
                 auto userData = ppOutMessages->m_identityPeer;
                 auto steamId = userData.GetSteamID();
                 std::string userName = SteamFriends()->GetFriendPersonaName(steamId);
-                //MessageManager::displayMessage("Message in from " + userName + "(" + std::to_string((int)payloadType) + ") " + data, 5, DEBUG);
 
                 for (auto& listener : _listeners) {
                     listener->messageReceived(MultiplayerMessage(payloadType, data), userData);

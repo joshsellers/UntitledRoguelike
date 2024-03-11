@@ -52,7 +52,7 @@ void Inventory::addItem(unsigned int itemId, unsigned int amount) {
             addItem(itemId, amount - excess);
         }
 
-        updateRemoteInventory("addItem." + std::to_string(itemId) + "," + std::to_string(amount));
+        updateRemoteInventory((std::string)"addItem." + std::to_string(itemId) + (std::string)"," + std::to_string(amount));
     }
 }
 
@@ -83,7 +83,7 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
             _inventory.erase(_inventory.begin() + index);
         }
 
-        updateRemoteInventory("removeItemAt." + std::to_string(index) + "," + std::to_string(amount));
+        updateRemoteInventory((std::string)"removeItemAt." + std::to_string(index) + (std::string)"," + std::to_string(amount));
     }
 }
 
@@ -117,7 +117,7 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
 
     _parent->getWorld()->addEntity(droppedItem);
 
-    updateRemoteInventory("dropItem." + std::to_string(itemId) + "," + std::to_string(amount));
+    updateRemoteInventory((std::string)"dropItem." + std::to_string(itemId) + (std::string)"," + std::to_string(amount));
 }
 
 bool Inventory::hasItem(unsigned int itemId) const {
@@ -155,7 +155,7 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
             && Item::ITEMS[getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) emptyAmmoMagazine(equipType);
         _equippedItems[(int)equipType] = index;
 
-        updateRemoteInventory("equip." + std::to_string(index) + "," + std::to_string((int)equipType));
+        updateRemoteInventory((std::string)"equip." + std::to_string(index) + (std::string)"," + std::to_string((int)equipType));
     }
 }
 
@@ -215,7 +215,5 @@ void Inventory::updateRemoteInventory(std::string data) {
             Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::INVENTORY_DATA, data), peer);
             times++;
         }
-
-        MessageManager::displayMessage(data, 5, DEBUG);
     }
 }

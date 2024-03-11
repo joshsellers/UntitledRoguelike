@@ -17,6 +17,7 @@ void RemotePlayer::update() {
 void RemotePlayer::messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer) {
     if (message.payloadType == PayloadType::PLAYER_DATA && identityPeer == _identityPeer) {
         std::vector<std::string> parsedData = splitString(message.data, ",");
+
         float x = std::stof(parsedData[0]);
         float y = std::stof(parsedData[1]);
         
@@ -43,7 +44,6 @@ void RemotePlayer::messageReceived(MultiplayerMessage message, SteamNetworkingId
 
         _lastUpdateTime = currentTimeMillis();
     } else if (message.payloadType == PayloadType::INVENTORY_DATA && identityPeer == _identityPeer) {
-        MessageManager::displayMessage("RECIEVED " + message.data, 30, DEBUG);
         std::vector<std::string> parsedData = splitString(message.data, ".");
         std::string functionName = parsedData[0];
 

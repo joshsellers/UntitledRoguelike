@@ -117,7 +117,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
 }
 
 void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName) {
-    if (parent->getMagazineAmmoType() == projData.itemId && parent->getMagazineContents() > 0) {
+    if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == projData.itemId && parent->getMagazineContents() > 0) {
         sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
         sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
 
