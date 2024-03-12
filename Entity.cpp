@@ -496,5 +496,5 @@ void Entity::emptyMagazine() {
 }
 
 bool Entity::shouldSendMultiplayerInventoryUpdates() const {
-    return _multiplayerSendInventoryUpdates;
+    return _multiplayerSendUpdates;
 }

@@ -15,5 +15,6 @@ extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 extern bool STEAMAPI_INITIATED;
 
 extern bool IS_MULTIPLAYER_CONNECTED;
+extern unsigned int MAX_PACKETS_OUT_PER_SECOND;
 
 #endif

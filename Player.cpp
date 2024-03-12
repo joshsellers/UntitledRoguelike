@@ -3,6 +3,7 @@
 #include "Item.h"
 #include "Globals.h"
 #include "World.h"
+#include "MultiplayerManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     Entity(pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
@@ -19,7 +20,7 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    _multiplayerSendInventoryUpdates = true;
+    _multiplayerSendUpdates = true;
 }
 
 void Player::update() {
@@ -253,6 +254,11 @@ void Player::drawTool(sf::RenderTexture& surface) {
             double y = (double)(mPos.y - center.y);
 
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+            if (IS_MULTIPLAYER_CONNECTED && _multiplayerSendUpdates) {
+                _multiplayerAimAngle = angle;
+            } else if (IS_MULTIPLAYER_CONNECTED) {
+                angle = _multiplayerAimAngle;
+            }
 
             if (GameController::isConnected()) { 
                 angle = (float)(((std::atan2(GameController::getRightStickYAxis(), GameController::getRightStickXAxis()))) * (180. / PI)) + 90.f;
@@ -349,6 +355,8 @@ void Player::drawTool(sf::RenderTexture& surface) {
                     barrelDisplay.setOutlineThickness(1.f);
                 }
             }
+
+            _isHoldingWeapon = true;
         }
         
         surface.draw(_toolSprite);
@@ -357,7 +365,11 @@ void Player::drawTool(sf::RenderTexture& surface) {
             surface.draw(meleeHitBoxDisplay);
             surface.draw(barrelDisplay);
         }
-    } else _facingDir = (MOVING_DIRECTION)_movingDir;
+    } else {
+        _facingDir = (MOVING_DIRECTION)_movingDir;
+
+        _isHoldingWeapon = false;
+    }
 }
 
 TERRAIN_TYPE Player::getCurrentTerrain() {
@@ -385,10 +397,17 @@ void Player::move(float xa, float ya) {
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
         _isMoving = true;
+        _isActuallyMoving = true;
     } else if (isSwimming()) {
         _numSteps++;
+        // I don't know why _isMoving is set to false here, but if I put it here it's gotta be important right?
+        // The above is the reason for _isActuallyMoving
         _isMoving = false;
-    } else _isMoving = false;
+        _isActuallyMoving = true;
+    } else {
+        _isMoving = false;
+        _isActuallyMoving = false;
+    }
 
     _pos.x += xa;
     _pos.y += ya;

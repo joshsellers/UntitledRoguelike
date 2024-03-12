@@ -9,6 +9,7 @@ enum class PayloadType {
     JOIN_REJECT,
     PEER_DISCONNECT,
     PLAYER_DATA,
+    PLAYER_AIM_ANGLE,
     WORLD_SEED,
     INVENTORY_DATA
 };

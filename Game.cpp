@@ -6,6 +6,8 @@
 #include "MessageManager.h"
 #include "../SteamworksHeaders/steam_api.h"
 #include "RemotePlayer.h"
+#include <filesystem>
+#include <fstream>
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -101,6 +103,29 @@ void Game::initUI() {
         }
     );
     _ui->addMenu(_pauseMenu);
+
+    
+    // Settings menu (from pause menu)
+    std::shared_ptr<UIButton> backSettingsMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 5, 9, 3, "back", _font, this, "back_pausesettings"
+    ));
+    backSettingsMenuButton->setSelectionId(0);
+    _pauseMenu_settings->addElement(backSettingsMenuButton);
+
+    std::shared_ptr<UIButton> togglefullscreenButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 11, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
+    ));
+    togglefullscreenButton->setSelectionId(1);
+    _pauseMenu_settings->addElement(togglefullscreenButton);
+
+    _pauseMenu_settings->useGamepadConfiguration = true;
+    _pauseMenu_settings->defineSelectionGrid(
+        {
+            {backSettingsMenuButton->getSelectionId()},
+            {togglefullscreenButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_pauseMenu_settings);
 
 
     // Command prompt menu
@@ -245,21 +270,39 @@ void Game::initUI() {
     _messageDispMenu->show();
 }
 
+void Game::sendMultiplayerUpdates() {
+    if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
+        // this packets out limiting stuff is garbage, figure out a better way to do this
+        if (currentTimeMillis() - _lastPacketsOutCountReset >= 1000) {
+            _packetsOutThisTick = 0;
+            _lastPacketsOutCountReset = currentTimeMillis();
+        }
+
+        if (_packetsOutThisTick >= MAX_PACKETS_OUT_PER_SECOND) return;
+
+        for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+            if (_player->_isActuallyMoving) {
+                std::string playerPos = std::to_string(
+                    _player->getPosition().x) + (std::string)","
+                    + std::to_string(_player->getPosition().y) + (std::string)","
+                    + std::to_string(_player->isDodging()) + (std::string)","
+                    + std::to_string(_player->_multiplayerAimAngle);
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
+            } else if (_player->_isHoldingWeapon) {
+                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_AIM_ANGLE, std::to_string(_player->_multiplayerAimAngle)), peer);
+            }
+        }
+
+        _packetsOutThisTick++;
+    }
+}
+
 void Game::update() {
     if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
         SteamAPI_RunCallbacks();
 
         Multiplayer::manager.recieveMessages();
-
-        if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
-            for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
-                std::string playerPos = std::to_string(
-                    _player->getPosition().x) + (std::string)"," 
-                    + std::to_string(_player->getPosition().y) + (std::string)"," 
-                    + std::to_string(_player->isDodging());
-                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
-            }
-        }
+        sendMultiplayerUpdates();
     }
 
     _ui->update();
@@ -452,6 +495,32 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_joingame") {
         _joinGameMenu->hide();
         _startMenu->show();
+    } else if (buttonCode == "settings") {
+        _pauseMenu->hide();
+        _pauseMenu_settings->show();
+    } else if (buttonCode == "back_pausesettings") {
+        _pauseMenu_settings->hide();
+        _pauseMenu->show();
+    } else if (buttonCode == "togglefullscreen") {
+        std::string fileName = "settings.config";
+        try {
+            if (!std::filesystem::remove(fileName))
+                MessageManager::displayMessage("Could not replace settings file", 5, ERR);
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
+        }
+
+        try {
+            std::ofstream out(fileName);
+            int fullscreenSetting = FULLSCREEN ? 0 : 1;
+            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
+            out.close();
+
+            MessageManager::displayMessage("The game will launch in " + (std::string)(fullscreenSetting == 1 ? "fullscreen" : "windowed") + " mode next time", 5);
+        } catch (std::exception ex) {
+            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
+        }
+
     }
 }
 

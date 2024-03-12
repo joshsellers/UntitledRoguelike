@@ -30,7 +30,7 @@ public:
     bool isDodging() const;
 
     void knockBack(float amt, MOVING_DIRECTION dir);
-    void damage(int damage);
+    virtual void damage(int damage);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -65,6 +65,12 @@ private:
     void drawEquipables(sf::RenderTexture& surface);
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
     void drawTool(sf::RenderTexture& surface);
+
+    float _multiplayerAimAngle;
+
+    // this might be the single worst thing i've ever done
+    bool _isActuallyMoving = false;
+    bool _isHoldingWeapon = false;
 
     virtual TERRAIN_TYPE getCurrentTerrain();
 

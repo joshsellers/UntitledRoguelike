@@ -155,7 +155,7 @@ protected:
     int _magazineSize = 0;
     int _magazineContents = 0;
 
-    bool _multiplayerSendInventoryUpdates = false;
+    bool _multiplayerSendUpdates = false;
 
 private:
     int _maxHitPoints = 0;

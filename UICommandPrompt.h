@@ -245,7 +245,7 @@ private:
                     }
                 }
 
-                MessageManager::displayMessage(processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints())), 5);
+                processCommand("addhp:" + std::to_string(_world->getPlayer()->getMaxHitPoints()));
                 _world->getPlayer()->activate();
                 _world->addEntity(_world->getPlayer());
                 return "Player respawned at full health";
@@ -463,6 +463,23 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 DISPLAY_DEBUG_MESSAGES = !DISPLAY_DEBUG_MESSAGES;
                 return "DISPLAY_DEBUG_MESSAGES set to " + (std::string)(DISPLAY_DEBUG_MESSAGES ? "true" : "false");
+            })
+        },
+
+        {
+            "smpops",
+            Command("Set max packets out per second",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    try {
+                        MAX_PACKETS_OUT_PER_SECOND = std::stoi(parsedCommand[1]);
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                    return "MAX_PACKETS_OUT_PER_SECOND set to " + std::to_string(MAX_PACKETS_OUT_PER_SECOND);
+                } else {
+                    return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

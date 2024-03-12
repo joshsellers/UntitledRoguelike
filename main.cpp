@@ -4,10 +4,37 @@
 #include "GameController.h"
 #include "SoundManager.h"
 #include "../SteamworksHeaders/steam_api.h"
+#include <fstream>
+
+void loadSettings() {
+    std::ifstream in("settings.config");
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find settings file", 5, WARN);
+        in.close();
+        return;
+    } else {
+        std::string line;
+        while (getline(in, line)) {
+            if (line.rfind("fullscreen", 0) == 0) {
+                try {
+                    std::vector<std::string> parsedLine = splitString(line, "=");
+                    FULLSCREEN = (bool)std::stoi(parsedLine[1]);
+                    RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
+                } catch (std::exception ex) {
+                    MessageManager::displayMessage(ex.what(), 5, ERR);
+                }
+            }
+        }
+    }
+
+    in.close();
+}
 
 int main() {
     MessageManager::start();
     SoundManager::loadSounds();
+
+    loadSettings();
 
     // Steam
     STEAMAPI_INITIATED = SteamAPI_Init();

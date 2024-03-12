@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0326";
+const std::string VERSION = "0.0328";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -49,7 +49,11 @@ private:
 	bool _isPaused = false;
 
 	bool _gameStarted = false;
+
+	void sendMultiplayerUpdates();
 	bool _connectedAsClient = false;
+	unsigned int _packetsOutThisTick = 0;
+	long long _lastPacketsOutCountReset = 0;
 
 	sf::RenderWindow* _window;
 
@@ -57,6 +61,7 @@ private:
 
 	std::shared_ptr<UIHandler> _ui = std::shared_ptr<UIHandler>(new UIHandler());
 	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _pauseMenu_settings = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
