@@ -137,7 +137,7 @@ void World::draw(sf::RenderTexture& surface) {
 }
 
 void World::spawnMobs() {
-    constexpr float MOB_SPAWN_RATE_SECONDS = 5.f;
+    constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
     constexpr int MOB_SPAWN_CHANCE = 5;
     constexpr float MIN_DIST = 180.f;
     constexpr int PACK_SPREAD = 20;

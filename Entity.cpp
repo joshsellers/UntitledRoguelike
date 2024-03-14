@@ -495,6 +495,10 @@ void Entity::emptyMagazine() {
     _magazineContents = 0;
 }
 
+bool Entity::isReloading() const {
+    return _isReloading;
+}
+
 bool Entity::shouldSendMultiplayerInventoryUpdates() const {
     return _multiplayerSendUpdates;
 }

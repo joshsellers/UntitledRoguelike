@@ -39,7 +39,7 @@ const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false
 );
 
-const Item Item::BULLET_455(7, ".455 Round", sf::IntRect(22, 3, 1, 1), true, 999, false,
+const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 999, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false
 );
@@ -95,12 +95,43 @@ const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true, "S
     }
 );
 
+const Item Item::RED_TEE_SHIRT(15, "Red T-Shirt", sf::IntRect(24, 26, 1, 1), false, 0, false, 
+    "Might be comfy",
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false
+);
+
+const Item Item::OVERALLS(16, "Overalls", sf::IntRect(28, 26, 1, 1), false, 0, false,
+    "For when you're overall the bullshit",
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false
+);
+
+const Item Item::BOOTS(17, "Boots", sf::IntRect(32, 26, 1, 1), false, 0, false,
+    "If I can't wear my cowboy boots, I ain't goin",
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false
+);
+
+const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 999, false,
+    "Heavier than a pistol round\nFor use with rifles",
+    EQUIPMENT_TYPE::AMMO, 6, 0, 0, sf::Vector2f(), false
+);
+const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true);
+
+const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
+    "Big scary shoots fast",
+    EQUIPMENT_TYPE::TOOL, 6, 0, 0, sf::Vector2f(20, 3), true,
+    [](Entity* parent) {
+        fireTargetedProjectile(DATA_RIFLE_ROUND.baseVelocity, parent, DATA_RIFLE_ROUND, "ar");
+        return false;
+    }, 30, true, 150, 2000
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
     const unsigned int stackLimit, const bool isConsumable,
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
-    const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const std::function<bool(Entity*)> use, const int magazineSize) :
+    const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const std::function<bool(Entity*)> use, const int magazineSize,
+    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
             textureRect.left << SPRITE_SHEET_SHIFT, 
@@ -111,7 +142,8 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isStackable(isStackable), _stackLimit(stackLimit), 
     _isConsumable(isConsumable), _use(use), _description(description), 
     _equipType(equipType), _damage(damage), _hitBoxSize(hitBoxSize), _hitBoxPos(hitBoxPos), _barrelPos(barrelPos),
-    _isGun(isGun), _magazineSize(magazineSize) {
+    _isGun(isGun), _magazineSize(magazineSize), _isAutomatic(isAutomatic), _fireRateMilliseconds(fireRateMilliseconds),
+    _reloadTimeMilliseconds(reloadTimeMilliseconds) {
 
     ITEMS.push_back(this);
 }
@@ -177,6 +209,18 @@ bool Item::isGun() const {
 
 const int Item::getMagazineSize() const {
     return _magazineSize;
+}
+
+bool Item::isAutomatic() const {
+    return _isAutomatic;
+}
+
+const unsigned int Item::getFireRateMilliseconds() const {
+    return _fireRateMilliseconds;
+}
+
+const unsigned int Item::getReloadTimeMilliseconds() const {
+    return _reloadTimeMilliseconds;
 }
 
 sf::IntRect Item::getTextureRect() const {

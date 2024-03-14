@@ -34,7 +34,7 @@ private:
     inline static std::map<std::string, sf::Sound> sounds;
 
     inline static std::vector<std::string> soundNames = {
-        "revolver", "slip"
+        "revolver", "slip", "ar"
     };
 };
 

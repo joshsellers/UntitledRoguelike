@@ -115,38 +115,6 @@ int main() {
                 game->keyPressed(event.key.code);
                 break;
             case sf::Event::KeyReleased:
-                if (event.key.code == sf::Keyboard::F11) {
-                    window.close();
-
-                    FULLSCREEN = true;
-                    RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
-                    if (FULLSCREEN) {
-                        HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
-                    }
-                    float screenHeight1 = sf::VideoMode::getDesktopMode().height;
-                    float screenWidth1 = FULLSCREEN ? sf::VideoMode::getDesktopMode().width : screenHeight1 * ((float)WIDTH / (float)HEIGHT);
-
-                    unsigned int windowWidth1 = screenWidth1 * RELATIVE_WINDOW_SIZE;
-                    unsigned int windowHeight1 = screenHeight1 * RELATIVE_WINDOW_SIZE;
-                    WINDOW_WIDTH = windowWidth1;
-                    WINDOW_HEIGHT = windowHeight1;
-
-                    window.create(sf::VideoMode(windowWidth1, windowHeight1), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
-                    window.setFramerateLimit(60);
-
-                    camera.setSize(sf::Vector2f(WIDTH, HEIGHT));
-
-                    mainSurface.create(WIDTH, HEIGHT);
-                    const sf::Texture& mainSurfaceTexture1 = mainSurface.getTexture();
-                    mainSurfaceSprite.setTexture(mainSurfaceTexture1);
-                    mainSurfaceSprite.setScale((float)windowWidth1 / (float)WIDTH, (float)windowHeight1 / (float)HEIGHT);
-                    uiSurface.create(windowWidth1, windowHeight1);
-                    const sf::Texture& uiSurfaceTexture1 = uiSurface.getTexture();
-                    uiSurfaceSprite.setTexture(uiSurfaceTexture1);
-                    //Might have to make a way to like reinitialize each UIElement
-                    break;
-                }
-
                 game->keyReleased(event.key.code);
                 break;
             case sf::Event::MouseButtonPressed:

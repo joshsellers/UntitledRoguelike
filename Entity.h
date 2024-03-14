@@ -97,6 +97,7 @@ public:
     int& getMagazineContents();
     void decrementMagazine();
     void emptyMagazine();
+    bool isReloading() const;
 
     bool shouldSendMultiplayerInventoryUpdates() const;
 
@@ -154,6 +155,8 @@ protected:
     unsigned int _magazineAmmoType;
     int _magazineSize = 0;
     int _magazineContents = 0;
+
+    bool _isReloading = false;
 
     bool _multiplayerSendUpdates = false;
 

@@ -29,6 +29,12 @@ public:
     static const Item JORTS;
     static const Item WHITE_TENNIS_SHOES;
     static const Item APPLE;
+    static const Item RED_TEE_SHIRT;
+    static const Item OVERALLS;
+    static const Item BOOTS;
+    static const Item RIFLE_ROUND;
+    static const ProjectileData DATA_RIFLE_ROUND;
+    static const Item ASSAULT_RIFLE;
 
     static std::vector<const Item*> ITEMS;
 
@@ -38,7 +44,9 @@ public:
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun,
-        const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, const int magazineSize = 0);
+        const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
+        const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
+        const unsigned int reloadTimeMilliseconds = 0);
 
     unsigned int getId() const;
     std::string getName() const;
@@ -52,6 +60,9 @@ public:
     sf::Vector2f getBarrelPos() const;
     bool isGun() const;
     const int getMagazineSize() const;
+    bool isAutomatic() const;
+    const unsigned int getFireRateMilliseconds() const;
+    const unsigned int getReloadTimeMilliseconds() const;
 
     sf::IntRect getTextureRect() const;
 
@@ -77,6 +88,9 @@ private:
     const sf::Vector2f _barrelPos;
     const bool _isGun;
     const int _magazineSize;
+    const bool _isAutomatic;
+    const unsigned int _fireRateMilliseconds;
+    const unsigned int _reloadTimeMilliseconds;
 
     const sf::IntRect _textureRect;
 

@@ -89,7 +89,14 @@ private:
     bool _dodgeKeyReleased = true;
 
     void fireWeapon();
-    void reloadWeapon();
+    void fireAutomaticWeapon();
+    bool reloadWeapon();
+    void startReloadingWeapon();
+    long long _lastAutoFireTimeMillis = 0;
+    long long _reloadStartTimeMillis = 0;
+    int _magContentsFilled = 0;
+
+    bool _inventoryMenuIsOpen = false;
 
     void meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos);
     sf::Vector2f _lastMousePos;

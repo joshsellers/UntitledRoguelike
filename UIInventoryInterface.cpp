@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Util.h"
 #include "GameController.h"
+#include "Entity.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, false, font), _originalY(_y) {
@@ -160,6 +161,7 @@ void UIInventoryInterface::dropStack(int index) {
 }
 
 void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    if (_source.getParent()->isReloading()) return;
     if (_gamepadSelectedItemIndex != -1 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize()) {
         switch (button) {
             case CONTROLLER_BUTTON::A:
@@ -214,6 +216,8 @@ void UIInventoryInterface::gamepadScrollUp() {
 void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {}
 
 void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const int button) {
+    if (_source.getParent()->isReloading()) return;
+
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * i))));
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);

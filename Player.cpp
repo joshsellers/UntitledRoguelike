@@ -24,6 +24,20 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 }
 
 void Player::update() {
+    if (_isReloading) {
+        const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+        if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
+            _isReloading = false;
+            _magazineContents = _magContentsFilled;
+        } else {
+            float maxAmmo = ((float)weapon->getMagazineSize()) - ((float)weapon->getMagazineSize() - (float)_magContentsFilled);
+            float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / weapon->getReloadTimeMilliseconds();
+            //MessageManager::displayMessage(std::to_string(maxAmmo) + " " + std::to_string((currentTimeMillis() - _reloadStartTimeMillis)), 5, DEBUG);
+            _magazineContents = maxAmmo * reloadProgress;
+        }
+    }
+    fireAutomaticWeapon();
+
     float xAxis = 0;
     float yAxis = 0;
     if (GameController::isConnected()) {
@@ -456,21 +470,21 @@ void Player::damage(int damage) {
 }
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {
-    if (button == sf::Mouse::Button::Left) {
+    if (button == sf::Mouse::Button::Left && !_isReloading) {
         fireWeapon();
     }
 }
 
 void Player::keyReleased(sf::Keyboard::Key& key) {
     if (key == sf::Keyboard::R) {
-        reloadWeapon();
+        startReloadingWeapon();
     }
 }
 
 void Player::controllerButtonReleased(CONTROLLER_BUTTON button) {
     switch (button) {
         case CONTROLLER_BUTTON::X:
-            reloadWeapon();
+            startReloadingWeapon();
             break;
         default:
             break;
@@ -480,7 +494,7 @@ void Player::controllerButtonReleased(CONTROLLER_BUTTON button) {
 void Player::controllerButtonPressed(CONTROLLER_BUTTON button) {
     switch (button) {
         case CONTROLLER_BUTTON::RIGHT_TRIGGER:
-            fireWeapon();
+            if (!_isReloading) fireWeapon();
             break;
         default:
             break;
@@ -490,14 +504,42 @@ void Player::controllerButtonPressed(CONTROLLER_BUTTON button) {
 void Player::fireWeapon() {
     if (!_gamePaused &&
         getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
-        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
+        !Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isAutomatic()
         && !isSwimming() && !isDodging()) {
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         Item::ITEMS[id]->use(this);
     }
 }
 
-void Player::reloadWeapon() {
+void Player::fireAutomaticWeapon() {
+    if (!_gamePaused && !_inventoryMenuIsOpen &&
+        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GameController::isButtonPressed(CONTROLLER_BUTTON::RIGHT_TRIGGER)) && !_isReloading &&
+        getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isAutomatic() &&
+        currentTimeMillis() - _lastAutoFireTimeMillis >= Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getFireRateMilliseconds()
+        && !isSwimming() && !isDodging()) {
+        _lastAutoFireTimeMillis = currentTimeMillis();
+        unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        Item::ITEMS[id]->use(this);
+    }
+}
+
+void Player::startReloadingWeapon() {
+    if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getReloadTimeMilliseconds() == 0) {
+        reloadWeapon();
+        return;
+    } else if (reloadWeapon()) {
+        _isReloading = true;
+        _reloadStartTimeMillis = currentTimeMillis();
+        _magContentsFilled = _magazineContents;
+    }
+}
+
+bool Player::reloadWeapon() {
     if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
         if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
@@ -516,9 +558,12 @@ void Player::reloadWeapon() {
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;
+
+                return true;
             }
         }
     }
+    return false;
 }
 
 void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

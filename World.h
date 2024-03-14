@@ -11,7 +11,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "MobSpawnData.h"
 
-constexpr int CHUNK_LOAD_THRESHOLD = 270;
+constexpr int CHUNK_LOAD_THRESHOLD = 400;
 // full size 270
 
 enum class TERRAIN_COLOR : sf::Uint32 {
@@ -36,7 +36,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     FOREST = 0x77C73A
 };
 
-constexpr int MAX_ACTIVE_MOBS = 30;
+constexpr int MAX_ACTIVE_MOBS = 100;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),

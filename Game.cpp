@@ -163,21 +163,27 @@ void Game::initUI() {
 
     // Start menu
     std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 43, 9, 3, "new game", _font, this, "newgame"
+        45, 39, 9, 3, "new game", _font, this, "newgame"
     ));
     newGameButton->setSelectionId(0);
     _startMenu->addElement(newGameButton);
 
     std::shared_ptr<UIButton> joinGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 50, 9, 3, "join game", _font, this, "joingame"
+        45, 46, 9, 3, "join game", _font, this, "joingame"
     ));
     joinGameButton->setSelectionId(1);
     _startMenu->addElement(joinGameButton);
+
+    std::shared_ptr<UIButton> settingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
+        45, 53, 9, 3, "settings", _font, this, "settings_mainmenu"
+    ));
+    settingsButton_mainMenu->setSelectionId(2);
+    _startMenu->addElement(settingsButton_mainMenu);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 57, 9, 3, "exit game", _font, this, "exit"
+        45, 60, 9, 3, "exit game", _font, this, "exit"
     ));
-    exitGameButton->setSelectionId(2);
+    exitGameButton->setSelectionId(3);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
@@ -185,11 +191,35 @@ void Game::initUI() {
         {
             {newGameButton->getSelectionId()},
             {joinGameButton->getSelectionId()},
+            {settingsButton_mainMenu->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
     _ui->addMenu(_startMenu);
     _startMenu->show();
+
+    
+    // Settings menu (from start menu)
+    std::shared_ptr<UIButton> backButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
+        45, 43, 9, 3, "back", _font, this, "back_startsettings"
+    ));
+    backButton_startSettings->setSelectionId(0);
+    _startMenu_settings->addElement(backButton_startSettings);
+
+    std::shared_ptr<UIButton> togglefullscreenButton_fromstart = std::shared_ptr<UIButton>(new UIButton(
+        36, 50, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
+    ));
+    togglefullscreenButton_fromstart->setSelectionId(1);
+    _startMenu_settings->addElement(togglefullscreenButton_fromstart);
+
+    _startMenu_settings->useGamepadConfiguration = true;
+    _startMenu_settings->defineSelectionGrid(
+        {
+            {backButton_startSettings->getSelectionId()},
+            {togglefullscreenButton_fromstart->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_startMenu_settings);
 
 
     // New game menu
@@ -521,6 +551,12 @@ void Game::buttonPressed(std::string buttonCode) {
             MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
         }
 
+    } else if (buttonCode == "settings_mainmenu") {
+        _startMenu->hide();
+        _startMenu_settings->show();
+    } else if (buttonCode == "back_startsettings") {
+        _startMenu_settings->hide();
+        _startMenu->show();
     }
 }
 
@@ -674,6 +710,8 @@ void Game::toggleInventoryMenu() {
     if (_gameStarted && !_commandMenu->isActive()) {
         if (_inventoryMenu->isActive()) _inventoryMenu->hide();
         else _inventoryMenu->show();
+
+        _player->_inventoryMenuIsOpen = _inventoryMenu->isActive();
 
         // this causes non-critical visual problems that i would like to not have happen
         //_isPaused = _inventoryMenu->isActive();
