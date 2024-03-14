@@ -42,6 +42,7 @@ public:
 
     bool isMob() const;
     bool isProp() const;
+    bool isEnemy() const;
     bool canPickUpItems() const;
 
     sf::Sprite getSprite() const;
@@ -128,6 +129,7 @@ protected:
 
     bool _isMob = false;
     const bool _isProp = false;
+    bool _isEnemy = false;
     bool _canPickUpItems = false;
 
     Inventory _inventory = Inventory(this);

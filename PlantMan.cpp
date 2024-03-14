@@ -18,10 +18,15 @@ PlantMan::PlantMan(sf::Vector2f pos) :
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    _canPickUpItems = true;
+    _canPickUpItems = false;
     _isMob = true;
+    _isEnemy = true;
 
     _entityType = "plantman";
+
+    srand(currentTimeNano());
+    unsigned int pennyAmount = randomInt(0, 50);
+    if (pennyAmount >= 44) getInventory().addItem(Item::PENNY.getId(), pennyAmount - 44);
 }
 
 void PlantMan::update() {

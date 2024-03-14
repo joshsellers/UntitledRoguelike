@@ -35,6 +35,7 @@ public:
     static const Item RIFLE_ROUND;
     static const ProjectileData DATA_RIFLE_ROUND;
     static const Item ASSAULT_RIFLE;
+    static const Item PENNY;
 
     static std::vector<const Item*> ITEMS;
 

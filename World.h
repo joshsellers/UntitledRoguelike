@@ -36,14 +36,17 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     FOREST = 0x77C73A
 };
 
-constexpr int MAX_ACTIVE_MOBS = 100;
+constexpr int MAX_ACTIVE_MOBS = 80;
+constexpr int MAX_ACTIVE_ENEMIES = 40;
+constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 3;
+constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 5;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
-        MobSpawnData(MOB_TYPE::TURTLE, 0, 1, 1),
-        MobSpawnData(MOB_TYPE::PLANT_MAN, 5, 2, 8)
+        MobSpawnData(MOB_TYPE::TURTLE, 2, 1, 1),
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 1, 2, 8)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -94,6 +97,8 @@ public:
     std::vector<std::shared_ptr<Entity>> getEntities() const;
 
     int getMobCount() const;
+    int getEnemyCount() const;
+    bool onEnemySpawnCooldown() const;
 
     std::shared_ptr<Player> getPlayer() const;
 
@@ -130,6 +135,8 @@ private:
     int getRandMobType(const BiomeMobSpawnData& mobSpawnData);
     sf::Clock _mobSpawnClock;
     boost::random::mt19937 _mobGen = boost::random::mt19937();
+    long long _lastEnemySpawnTime = 0;
+    long long _enemySpawnCooldownTimeMilliseconds;
 
     void purgeEntityBuffer();
     void updateEntities();

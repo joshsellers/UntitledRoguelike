@@ -3,11 +3,12 @@
 
 #include "Chunk.h"
 
+// put enemies after cactoid, non enemies before cactoid
 enum class MOB_TYPE : int {
     PENGUIN = 0,
     TURTLE = 1,
-    PLANT_MAN = 2,
-    CACTOID = 3
+    CACTOID = 2,
+    PLANT_MAN = 3,
 };
 
 struct MobSpawnData {

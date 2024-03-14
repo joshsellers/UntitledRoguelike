@@ -536,6 +536,7 @@ void Player::startReloadingWeapon() {
         _isReloading = true;
         _reloadStartTimeMillis = currentTimeMillis();
         _magContentsFilled = _magazineContents;
+        _magazineContents = 0;
     }
 }
 

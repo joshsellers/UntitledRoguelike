@@ -15,6 +15,11 @@ Entity(pos, 3.5, 2, 2, false) {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     _isMob = true;
+    _isEnemy = false; // because it's not immeditatly aggressive
+
+    srand(currentTimeNano());
+    unsigned int pennyAmount = randomInt(0, 50);
+    if (pennyAmount >= 44) getInventory().addItem(Item::PENNY.getId(), pennyAmount - 44);
 }
 
 void Cactoid::update() {

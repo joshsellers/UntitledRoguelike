@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-constexpr int CHUNK_SIZE = 550;
+constexpr int CHUNK_SIZE = 800;
 // full size 550
 
 enum class TERRAIN_TYPE : unsigned int {

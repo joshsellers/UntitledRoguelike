@@ -12,7 +12,7 @@
 #include "UITextField.h"
 #include "UICommandPrompt.h"
 
-const std::string VERSION = "0.0329";
+const std::string VERSION = "0.0330";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -84,6 +84,7 @@ private:
 	sf::Text _fpsLabel;
 	sf::Text _activeChunksLabel;
 	sf::Text _entityCountLabel;
+	sf::Text _onEnemySpawnCooldownLabel;
 	sf::Text _seedLabel;
 	std::string _textSeed = "NONE";
 	sf::Text _playerPosLabel;

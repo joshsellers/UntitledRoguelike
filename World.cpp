@@ -139,7 +139,7 @@ void World::draw(sf::RenderTexture& surface) {
 void World::spawnMobs() {
     constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
     constexpr int MOB_SPAWN_CHANCE = 5;
-    constexpr float MIN_DIST = 180.f;
+    constexpr float MIN_DIST = 200.f;
     constexpr int PACK_SPREAD = 20;
 
     if (_mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS && getMobCount() < MAX_ACTIVE_MOBS) {
@@ -163,6 +163,8 @@ void World::spawnMobs() {
                     const MobSpawnData& mobData = biomeMobSpawnData.mobData.at(getRandMobType(biomeMobSpawnData));
                     boost::random::uniform_int_distribution<> individualSpawnChance(0, mobData.spawnChance);
                     if (individualSpawnChance(_mobGen) != 0) continue;
+
+                    if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID && currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds) continue;
 
                     boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
                     int packAmount = randPackAmount(_mobGen);
@@ -194,6 +196,13 @@ void World::spawnMobs() {
                         mob->loadSprite(_spriteSheet);
                         mob->setWorld(this);
                         addEntity(mob);
+
+                        if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID
+                            && getEnemyCount() >= MAX_ACTIVE_ENEMIES) {
+                            _lastEnemySpawnTime = currentTimeMillis();
+                            _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
+                            break;
+                        }
                     }
                 }
             } else continue;
@@ -709,6 +718,17 @@ int World::getMobCount() const {
     for (auto& entity : getEntities())
         if (entity->isMob() && entity->isActive()) count++;
     return count;
+}
+
+int World::getEnemyCount() const {
+    int count = 0;
+    for (auto& entity : getEntities())
+        if (entity->isEnemy() && entity->isActive()) count++;
+    return count;
+}
+
+bool World::onEnemySpawnCooldown() const {
+    return currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds;
 }
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {

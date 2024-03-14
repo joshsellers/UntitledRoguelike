@@ -321,6 +321,10 @@ bool Entity::isProp() const {
     return _isProp;
 }
 
+bool Entity::isEnemy() const {
+    return _isEnemy;
+}
+
 bool Entity::canPickUpItems() const {
     return _canPickUpItems;
 }

@@ -56,7 +56,7 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
 
 const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 999, false,
     "A large pod\nAmmunition for the Pod Launcher",
-    EQUIPMENT_TYPE::AMMO, 20, 0, 0, sf::Vector2f(), false
+    EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
 
@@ -66,7 +66,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     [](Entity* parent) {
         fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD, "slip");
         return false;
-    }, 1
+    }, 1, false, 0, 350
 );
 
 const Item Item::WIFE_BEATER(11, "Wife Beater", sf::IntRect(12, 26, 1, 1), false, 0, false,
@@ -123,6 +123,11 @@ const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), fa
         fireTargetedProjectile(DATA_RIFLE_ROUND.baseVelocity, parent, DATA_RIFLE_ROUND, "ar");
         return false;
     }, 30, true, 150, 2000
+);
+
+const Item Item::PENNY(20, "Penny", sf::IntRect(3, 10, 1, 1), true, 1000000000, false,
+    "Use these to buy stuff", 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false
 );
 
 std::vector<const Item*> Item::ITEMS;
