@@ -44,6 +44,7 @@ public:
 
     friend class Game;
     friend class RemotePlayer;
+    friend class World;
 
 private:
     bool& _gamePaused;

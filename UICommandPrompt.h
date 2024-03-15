@@ -11,6 +11,9 @@
 #include <boost/algorithm/string.hpp>
 #include "MessageManager.h"
 #include "MultiplayerManager.h"
+#include "ShopInterior.h"
+#include "ShopExterior.h"
+#include "ShopCounter.h"
 
 constexpr bool LOCK_CMD_PROMPT = false;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -220,6 +223,10 @@ private:
                             entity = std::shared_ptr<Penguin>(new Penguin(pos));
                         } else if (entityName == "cactoid") {
                             entity = std::shared_ptr<Cactoid>(new Cactoid(pos));
+                        } else if (entityName == "shopext") {
+                            entity = std::shared_ptr<ShopExterior>(new ShopExterior(pos, _world->getSpriteSheet()));
+                        } else if (entityName == "shopcounter") {
+                            entity = std::shared_ptr<ShopCounter>(new ShopCounter(pos, _world->getSpriteSheet()));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

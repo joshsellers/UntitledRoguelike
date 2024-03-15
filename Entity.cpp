@@ -463,6 +463,14 @@ sf::FloatRect Entity::getHitBox() const {
     return _hitBox;
 }
 
+bool Entity::hasColliders() const {
+    return _hasColliders;
+}
+
+std::vector<sf::FloatRect> Entity::getColliders() const {
+    return _colliders;
+}
+
 sf::Vector2f Entity::getCalculatedBarrelPos() const {
     return _calculatedBarrelPos;
 }

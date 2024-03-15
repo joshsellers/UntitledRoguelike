@@ -99,6 +99,7 @@ public:
     int getMobCount() const;
     int getEnemyCount() const;
     bool onEnemySpawnCooldown() const;
+    void resetEnemySpawnCooldown();
 
     std::shared_ptr<Player> getPlayer() const;
 
@@ -113,6 +114,10 @@ public:
     bool disablePropGeneration = false;
 
     void resetChunks();
+
+    void enterShop(sf::Vector2f shopPos);
+    void exitShop();
+    bool playerIsInShop() const;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
@@ -160,6 +165,8 @@ private:
     void sortEntities();
 
     bool& _showDebug;
+
+    bool _isPlayerInShop = false;
 };
 
 #endif

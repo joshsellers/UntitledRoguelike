@@ -21,6 +21,8 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     _multiplayerSendUpdates = true;
+
+    _entityType = "player";
 }
 
 void Player::update() {
@@ -32,7 +34,7 @@ void Player::update() {
         } else {
             float maxAmmo = ((float)weapon->getMagazineSize()) - ((float)weapon->getMagazineSize() - (float)_magContentsFilled);
             float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / weapon->getReloadTimeMilliseconds();
-            //MessageManager::displayMessage(std::to_string(maxAmmo) + " " + std::to_string((currentTimeMillis() - _reloadStartTimeMillis)), 5, DEBUG);
+
             _magazineContents = maxAmmo * reloadProgress;
         }
     }
@@ -107,6 +109,11 @@ void Player::draw(sf::RenderTexture& surface) {
     TERRAIN_TYPE terrainType = getCurrentTerrain();
     _isSwimming =  terrainType == TERRAIN_TYPE::WATER;
 
+    if (getWorld()->playerIsInShop()) {
+        _isSwimming = false;
+        terrainType = TERRAIN_TYPE::EMPTY;
+    }
+
     if (isSwimming()) {
         _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
@@ -138,57 +145,6 @@ void Player::draw(sf::RenderTexture& surface) {
         if (!isDodging() || !isMoving()) drawEquipables(surface);
         drawTool(surface);
     }
-
-    //// i guess whatever 16 is multiplied by has to be odd
-    //int dist = 16 * 79;
-    //sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
-    //sf::Vector2i goal(_window->mapPixelToCoords(mPos, surface.getView()).x, _window->mapPixelToCoords(mPos, surface.getView()).y);
-    //sf::Vector2i cLoc(((int)getPosition().x) + PLAYER_WIDTH / 2, ((int)getPosition().y) + PLAYER_HEIGHT / 2);
-    //SearchArea searchArea = PathFinder::createSearchArea(sf::Vector2i(cLoc.x - dist / 2, cLoc.y - dist / 2), dist, this, *getWorld());
-    //std::unordered_map<sf::Vector2i, sf::Vector2i> map = PathFinder::breadthFirstSearch(searchArea, cLoc, goal);
-
-    //std::cout << searchArea.walls.size() << std::endl;
-    //for (auto& point : map) {
-    //    if (sf::IntRect(point.first.x, point.first.y, 16, 16).contains(goal)) {
-    //        goal = point.first;
-    //        break;
-    //    }
-    //    /*sf::RectangleShape a;
-    //    a.setPosition(point.first.x, point.first.y);
-    //    a.setSize(sf::Vector2f(10, 10));
-    //    a.setFillColor(sf::Color(0xFF0000FF));
-    //    surface.draw(a);
-
-    //    sf::RectangleShape b;
-    //    b.setPosition(point.second.x, point.second.y);
-    //    b.setSize(sf::Vector2f(5, 5));
-    //    b.setFillColor(sf::Color(0x00FF00FF));
-    //    surface.draw(b);
-
-    //    sf::RectangleShape c;
-    //    c.setPosition(goal.x, goal.y);
-    //    c.setSize(sf::Vector2f(5, 5));
-    //    c.setFillColor(sf::Color(0x0000FFFF));
-    //    surface.draw(c);*/
-    //}
-
-    //for (auto& wall : searchArea.walls) {
-    //    sf::RectangleShape a;
-    //    a.setPosition(wall.x, wall.y);
-    //    a.setSize(sf::Vector2f(16, 16));
-    //    a.setFillColor(sf::Color(0xFF000099));
-    //    surface.draw(a);
-    //}
-
-    //std::vector<sf::Vector2i> path = PathFinder::reconstruct_path(cLoc, goal, map);
-
-    //for (auto& point : path) {
-    //    sf::RectangleShape a;
-    //    a.setPosition(point.x, point.y);
-    //    a.setSize(sf::Vector2f(16, 16));
-    //    a.setFillColor(sf::Color(0xFF00FF99));
-    //    surface.draw(a);
-    //}
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {
@@ -410,6 +366,17 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
 void Player::move(float xa, float ya) {
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
+
+        if (getWorld()->playerIsInShop()) {
+            for (auto& entity : getWorld()->getEntities()) {
+                if (entity->hasColliders()) {
+                    for (auto& collider : entity->getColliders()) {
+                        if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) return;
+                    }
+                }
+            }
+        }
+
         _isMoving = true;
         _isActuallyMoving = true;
     } else if (isSwimming()) {

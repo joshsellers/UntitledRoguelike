@@ -14,6 +14,8 @@
 #include "Globals.h"
 #include "Cactoid.h"
 #include "MessageManager.h"
+#include "ShopInterior.h"
+#include "ShopCounter.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -68,29 +70,38 @@ void World::loadChunksAroundPlayer() {
 }
 
 void World::update() {
-    if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
+    if (!_isPlayerInShop) {
+        if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
 
-    if (!disableMobSpawning) spawnMobs();
+        if (!disableMobSpawning) spawnMobs();
 
-    purgeEntityBuffer();
+        purgeEntityBuffer();
 
-    updateEntities();
+        updateEntities();
 
-    int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
-    int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
+        int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
+        int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
 
-    eraseChunks(pX, pY);
+        eraseChunks(pX, pY);
 
-    findCurrentChunk(pX, pY);
+        findCurrentChunk(pX, pY);
 
-    loadNewChunks(pX, pY);
+        loadNewChunks(pX, pY);
+    } else {
+        _player->update();
+        for (auto& entity : getEntities()) {
+            if (entity->getEntityType() == "shopint" || entity->getEntityType() == "shopcounter") entity->update();
+        }
+    }
 }
 
 void World::draw(sf::RenderTexture& surface) {
     sortEntities();
 
-    for (Chunk& chunk : _chunks) {
-        surface.draw(chunk.sprite);
+    if (!_isPlayerInShop) {
+        for (Chunk& chunk : _chunks) {
+            surface.draw(chunk.sprite);
+        }
     }
 
     if (drawChunkOutline) {
@@ -113,7 +124,10 @@ void World::draw(sf::RenderTexture& surface) {
     }
 
     for (auto& entity : _entities) {
-        if (!entity->isDormant()) entity->draw(surface);
+        if (!entity->isDormant() && !_isPlayerInShop 
+            || (_isPlayerInShop && entity->getEntityType() == "shopint" 
+                || entity->getEntityType() == "player" 
+                || entity->getEntityType() == "shopcounter")) entity->draw(surface);
         
         if (showDebug() && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -124,6 +138,18 @@ void World::draw(sf::RenderTexture& surface) {
             hitBox.setOutlineColor(sf::Color(0xFF0000FF));
             hitBox.setOutlineThickness(1.f);
             surface.draw(hitBox);
+
+            if (entity->hasColliders()) {
+                for (auto& collider : entity->getColliders()) {
+                    sf::RectangleShape colliderBox;
+                    colliderBox.setPosition(collider.left, collider.top);
+                    colliderBox.setSize(sf::Vector2f(collider.width, collider.height));
+                    colliderBox.setFillColor(sf::Color::Transparent);
+                    colliderBox.setOutlineColor(sf::Color(0xFFFF00FF));
+                    colliderBox.setOutlineThickness(1.f);
+                    surface.draw(colliderBox);
+                }
+            }
 
             if (entity->isDormant()) {
                 sf::CircleShape dormantMarker;
@@ -545,7 +571,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double xOffset = 20000.;
             double yOffset = 20000.;
             int biomeOctaves = 2;
-            double biomeSampleRate = 0.00001;// 0.00001;
+            double biomeSampleRate = 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
@@ -731,6 +757,10 @@ bool World::onEnemySpawnCooldown() const {
     return currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds;
 }
 
+void World::resetEnemySpawnCooldown() {
+    _lastEnemySpawnTime = 0;
+}
+
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {
     return _entities;
 }
@@ -780,4 +810,26 @@ void World::resetChunks() {
         _currentChunk = nullptr;
         _entityBuffer.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, WARN);
+}
+
+void World::enterShop(sf::Vector2f shopPos) {
+    _isPlayerInShop = true;
+    std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(shopPos, getSpriteSheet()));
+    shopInterior->setWorld(this);
+    addEntity(shopInterior);
+
+    std::shared_ptr<ShopCounter> shopCounter = std::shared_ptr<ShopCounter>(new ShopCounter(sf::Vector2f(shopPos.x, shopPos.y + 80), getSpriteSheet()));
+    shopCounter->setWorld(this);
+    addEntity(shopCounter);
+
+    _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
+    _player->_pos.y = shopCounter->getPosition().y + 46;
+}
+
+void World::exitShop() {
+    _isPlayerInShop = false;
+}
+
+bool World::playerIsInShop() const {
+    return _isPlayerInShop;
 }

@@ -488,8 +488,10 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_magazineSize = 0;
         _player->_magazineContents = 0;
         _player->_baseSpeed = BASE_PLAYER_SPEED;
+        _player->_isReloading = false;
 
         _world.resetChunks();
+        _world.resetEnemySpawnCooldown();
 
         _worldNameField->setDefaultText("My World");
         _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));

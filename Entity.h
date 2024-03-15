@@ -86,6 +86,9 @@ public:
 
     sf::FloatRect getHitBox() const;
 
+    bool hasColliders() const;
+    std::vector<sf::FloatRect> getColliders() const;
+
     sf::Vector2f getCalculatedBarrelPos() const;
     sf::Vector2f getTargetPos() const;
 
@@ -153,6 +156,9 @@ protected:
     float _hitBoxYOffset = 0;
 
     int _hitPoints = 0;
+
+    bool _hasColliders = false;
+    std::vector<sf::FloatRect> _colliders;
 
     unsigned int _magazineAmmoType;
     int _magazineSize = 0;
