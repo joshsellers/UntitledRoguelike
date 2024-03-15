@@ -824,6 +824,8 @@ void World::enterShop(sf::Vector2f shopPos) {
 
     _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
     _player->_pos.y = shopCounter->getPosition().y + 46;
+
+    MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
 }
 
 void World::exitShop() {

@@ -12,8 +12,10 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _velocityComponents.x = _velocity * std::cos(directionAngle) + shooterVelocity.x;
     _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
 
-    setMaxHitPoints(1000000);
-    heal(getMaxHitPoints());
+    _lifeTime = data.lifeTime;
+
+    //setMaxHitPoints(1000000);
+    //heal(getMaxHitPoints());
 
     _hitBoxXOffset = _data.hitBox.left;
     _hitBoxYOffset = _data.hitBox.top;
@@ -22,7 +24,7 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
 }
 
 void Projectile::update() {
-    if (_currentTime > LIFETIME) {
+    if (_currentTime > _lifeTime) {
         _isActive = false;
         return;
     }
@@ -49,6 +51,21 @@ void Projectile::update() {
 }
 
 void Projectile::draw(sf::RenderTexture& surface) {
+    if (_data.isAnimated) {
+        const Item* item = Item::ITEMS[_itemId];
+        sf::IntRect projRect = item->getTextureRect();
+
+        int yOffset = ((((_animationTime) >> _data.animationSpeed) & (_data.animationFrames - 1))) * 16;
+        if (_data.animationSpeed == 0) {
+            srand(currentTimeMillis());
+            yOffset = randomInt(0, _data.animationFrames - 1);
+        }
+        _sprite.setTextureRect(sf::IntRect(projRect.left, projRect.top + yOffset, projRect.width, projRect.height));
+
+        _animationTime++;
+    }
+
+
     surface.draw(_sprite);
 }
 

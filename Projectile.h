@@ -23,9 +23,12 @@ private:
 
     const unsigned int _itemId;
 
+    float _lifeTime;
     float _currentTime = 0;
 
     const ProjectileData _data;
+
+    int _animationTime = 0;
 };
 
 #endif 

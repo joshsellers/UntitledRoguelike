@@ -36,6 +36,14 @@ public:
     static const ProjectileData DATA_RIFLE_ROUND;
     static const Item ASSAULT_RIFLE;
     static const Item PENNY;
+    static const Item LIGHT_LASER_CHARGE;
+    static const Item _PROJECTILE_LIGHT_LASER_CHARGE;
+    static const ProjectileData DATA_PROJECTILE_LIGHT_LASER_CHARGE;
+    static const Item LASER_PISTOL;
+    static const Item PROPANE;
+    static const Item _PROJECTILE_PROPANE;
+    static const ProjectileData DATA_PROJECTILE_PROPANE;
+    static const Item BLOW_TORCH;
 
     static std::vector<const Item*> ITEMS;
 

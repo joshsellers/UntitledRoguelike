@@ -39,7 +39,7 @@ const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false
 );
 
-const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 999, false,
+const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9999, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false
 );
@@ -51,10 +51,10 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
     [](Entity* parent) {
         fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455, "revolver");
         return false;
-    }, 8
+    }, 8, false, 0, 200
 );
 
-const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 999, false,
+const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 9999, false,
     "A large pod\nAmmunition for the Pod Launcher",
     EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false
 );
@@ -110,7 +110,7 @@ const Item Item::BOOTS(17, "Boots", sf::IntRect(32, 26, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false
 );
 
-const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 999, false,
+const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 9999, false,
     "Heavier than a pistol round\nFor use with rifles",
     EQUIPMENT_TYPE::AMMO, 6, 0, 0, sf::Vector2f(), false
 );
@@ -129,6 +129,46 @@ const Item Item::PENNY(20, "Penny", sf::IntRect(3, 10, 1, 1), true, 1000000000, 
     "Use these to buy stuff", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false
 );
+
+const Item Item::LIGHT_LASER_CHARGE(21, "Light Laser Charge", sf::IntRect(43, 3, 1, 1), true, 9999, false,
+    "Ammo for a laser pistol", 
+    EQUIPMENT_TYPE::AMMO, 12, 0, 0, sf::Vector2f(), false
+);
+
+const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 12, 0, 0, sf::Vector2f(), false
+);
+const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true);
+
+const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+    "Pew Pew",
+    EQUIPMENT_TYPE::TOOL, 12, 0, 0, sf::Vector2f(14, 4), true,
+    [](Entity* parent) {
+        fireTargetedProjectile(DATA_PROJECTILE_LIGHT_LASER_CHARGE.baseVelocity, parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
+        return false;
+    }, 12, false, 0, 200
+);
+
+const Item Item::PROPANE(24, "Propane", sf::IntRect(50, 3, 1, 1), true, 999999, false,
+    "\"Propane may be a clean burning fuel, but she can also be a dirty girl.\"",
+    EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false
+);
+
+const Item Item::_PROJECTILE_PROPANE(25, "_PROPANE_PROJECTILE", sf::IntRect(50, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 3, 0, 0, sf::Vector2f(), false
+);
+const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, 5, true, 3, 0);
+
+const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
+    "It's a blow torch, but it seems like something's broken...",
+    EQUIPMENT_TYPE::TOOL, 3, 0, 0, sf::Vector2f(12, 12), true,
+    [](Entity* parent) {
+        fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "NONE");
+        return false;
+    }, 750, true, 20, 2750
+);;
 
 std::vector<const Item*> Item::ITEMS;
 
@@ -154,7 +194,8 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
 }
 
 void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName) {
-    if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == projData.itemId && parent->getMagazineContents() > 0) {
+    const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
+    if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {
         sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
         sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
 
