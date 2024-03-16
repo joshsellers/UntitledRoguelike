@@ -14,6 +14,7 @@
 #include "ShopInterior.h"
 #include "ShopExterior.h"
 #include "ShopCounter.h"
+#include "Frog.h"
 
 constexpr bool LOCK_CMD_PROMPT = false;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -227,6 +228,8 @@ private:
                             entity = std::shared_ptr<ShopExterior>(new ShopExterior(pos, _world->getSpriteSheet()));
                         } else if (entityName == "shopcounter") {
                             entity = std::shared_ptr<ShopCounter>(new ShopCounter(pos, _world->getSpriteSheet()));
+                        } else if (entityName == "frog") {
+                            entity = std::shared_ptr<Frog>(new Frog(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

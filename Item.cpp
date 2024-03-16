@@ -151,7 +151,7 @@ const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), fals
 );
 
 const Item Item::PROPANE(24, "Propane", sf::IntRect(50, 3, 1, 1), true, 999999, false,
-    "\"Propane may be a clean burning fuel, but she can also be a dirty girl.\"",
+    "\"Propane may be a clean burning fuel,\nbut she can also be a dirty girl.\"",
     EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false
 );
 
@@ -162,10 +162,11 @@ const Item Item::_PROJECTILE_PROPANE(25, "_PROPANE_PROJECTILE", sf::IntRect(50, 
 const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, 5, true, 3, 0);
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
-    "It's a blow torch, but it seems like something's broken...",
+    "It's a blow torch, but it\nseems like something's broken...",
     EQUIPMENT_TYPE::TOOL, 3, 0, 0, sf::Vector2f(12, 12), true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "NONE");
+        if (SoundManager::getStatus("blowtorch") != sf::SoundSource::Playing) SoundManager::playSound("blowtorch");
         return false;
     }, 750, true, 20, 2750
 );;

@@ -15,6 +15,10 @@ public:
         sounds[soundName].setVolume(volume);
     }
 
+    static sf::SoundSource::Status getStatus(std::string soundName) {
+        return sounds[soundName].getStatus();
+    }
+
     static void loadSounds() {
         for (int i = 0; i < soundNames.size(); i++) {
             buffers[soundNames[i]] = sf::SoundBuffer();
@@ -34,7 +38,7 @@ private:
     inline static std::map<std::string, sf::Sound> sounds;
 
     inline static std::vector<std::string> soundNames = {
-        "revolver", "slip", "ar", "laser_pistol"
+        "revolver", "slip", "ar", "laser_pistol", "blowtorch"
     };
 };
 

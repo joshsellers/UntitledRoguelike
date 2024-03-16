@@ -16,6 +16,7 @@
 #include "MessageManager.h"
 #include "ShopInterior.h"
 #include "ShopCounter.h"
+#include "ShopExterior.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -90,7 +91,7 @@ void World::update() {
     } else {
         _player->update();
         for (auto& entity : getEntities()) {
-            if (entity->getEntityType() == "shopint" || entity->getEntityType() == "shopcounter") entity->update();
+            if (entity->getEntityType() == "shopint" || entity->getEntityType() == "shopcounter" || entity->getEntityType() == "shopext") entity->update();
         }
     }
 }
@@ -422,6 +423,7 @@ void World::generateChunkEntities(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
+    const int shopSpawnRate = 5000000;
     const int grassSpawnRate = 5000;
     const int smallTreeSpawnRate = 37500;
     const int cactusSpawnRate = 200000;
@@ -437,6 +439,17 @@ void World::generateChunkEntities(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY) {
+                boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
+                if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
+                    shop->setWorld(this);
+                    _entityBuffer.push_back(shop);
+
+                    MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                }
+            }
+
             if (terrainType == TERRAIN_TYPE::GRASS) {
                 boost::random::uniform_int_distribution<> grassDist(0, grassSpawnRate);
                 boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
