@@ -5,14 +5,15 @@
 #include "World.h"
 #include "UIHandler.h"
 #include "UIButton.h"
-#include "UIInventoryInterface.h"
 #include "ParticleSystem.h"
 #include "GameController.h"
 #include "UIAttributeMeter.h"
 #include "UITextField.h"
 #include "UICommandPrompt.h"
+#include "ShopKeep.h"
+#include "ShopManager.h"
 
-const std::string VERSION = "0.0333";
+const std::string VERSION = "0.0334";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -63,6 +64,7 @@ private:
 	std::shared_ptr<UIMenu> _pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _pauseMenu_settings = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inventoryMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _shopMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _commandMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _HUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _startMenu = std::shared_ptr<UIMenu>(new UIMenu());
@@ -95,6 +97,10 @@ private:
 	
 	std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
 	std::shared_ptr<Player> _player;
+
+	std::shared_ptr<ShopKeep> _shopKeep;
+	ShopManager _shopManager = ShopManager();
+
 	World _world;
 
 	void togglePauseMenu();

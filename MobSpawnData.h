@@ -5,10 +5,11 @@
 
 // put enemies after cactoid, non enemies before cactoid
 enum class MOB_TYPE : int {
-    PENGUIN = 0,
-    TURTLE = 1,
-    CACTOID = 2,
-    PLANT_MAN = 3,
+    PENGUIN,
+    TURTLE,
+    FROG,
+    CACTOID,
+    PLANT_MAN
 };
 
 struct MobSpawnData {

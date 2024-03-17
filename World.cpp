@@ -17,6 +17,8 @@
 #include "ShopInterior.h"
 #include "ShopCounter.h"
 #include "ShopExterior.h"
+#include "Frog.h"
+#include "ShopKeep.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -128,7 +130,8 @@ void World::draw(sf::RenderTexture& surface) {
         if (!entity->isDormant() && !_isPlayerInShop 
             || (_isPlayerInShop && entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
-                || entity->getEntityType() == "shopcounter")) entity->draw(surface);
+                || entity->getEntityType() == "shopcounter" 
+                || entity->getEntityType() == "shopkeep")) entity->draw(surface);
         
         if (showDebug() && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -215,6 +218,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::CACTOID:
                                 mob = std::shared_ptr<Cactoid>(new Cactoid(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FROG:
+                                mob = std::shared_ptr<Frog>(new Frog(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -835,6 +841,11 @@ void World::enterShop(sf::Vector2f shopPos) {
     shopCounter->setWorld(this);
     addEntity(shopCounter);
 
+    _shopKeep->setPosition(sf::Vector2f(shopPos.x + 32, shopPos.y + 80 - 12));
+    _shopKeep->initInventory();
+    _shopKeep->activate();
+    addEntity(_shopKeep);
+
     _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
     _player->_pos.y = shopCounter->getPosition().y + 46;
 
@@ -847,4 +858,9 @@ void World::exitShop() {
 
 bool World::playerIsInShop() const {
     return _isPlayerInShop;
+}
+
+void World::setShopKeep(std::shared_ptr<ShopKeep> shopKeep) {
+    _shopKeep = shopKeep;
+    _shopKeep->setWorld(this);
 }

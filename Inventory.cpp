@@ -6,7 +6,7 @@
 #include "MultiplayerManager.h"
 #include "Globals.h"
 
-Inventory::Inventory(Entity* parent) : 
+Inventory::Inventory(Entity* parent) :
     _parent(parent) {
 }
 

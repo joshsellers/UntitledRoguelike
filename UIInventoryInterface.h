@@ -3,15 +3,24 @@
 
 #include "UIElement.h"
 #include "Inventory.h"
+#include "UIButtonListener.h"
 
 constexpr int ITEM_SPACING = 7;
 constexpr float SCROLL_RATE = 2.f;
 
 constexpr long long DPAD_HOLD_TIME = 250LL;
 
-class UIInventoryInterface : public UIElement {
+enum class FILTER_TYPE {
+    NONE,
+    APPAREL,
+    WEAPONS,
+    AMMO
+};
+
+class UIInventoryInterface : public UIElement, public UIButtonListener {
 public:
     UIInventoryInterface(Inventory& source, sf::Font, std::shared_ptr<sf::Texture> spriteSheet);
+    UIInventoryInterface(float x, float y, Inventory& source, sf::Font, std::shared_ptr<sf::Texture> spriteSheet);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -26,7 +35,15 @@ public:
     void textEntered(const sf::Uint32 character);
 
     void hide();
-private:
+
+    void setFilter(FILTER_TYPE filter);
+    FILTER_TYPE getFilter();
+    virtual void buttonPressed(std::string buttonCode);
+
+    void setSource(Inventory& sourceInventory);
+    Inventory& getSource();
+
+protected:
     Inventory& _source;
 
     std::shared_ptr<sf::Texture> _spriteSheet;
@@ -39,6 +56,8 @@ private:
     sf::Text _tooltipText;
     sf::RectangleShape _tooltipBg;
 
+    virtual void drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex);
+
     const float _originalY;
 
     int _gamepadSelectedItemIndex = -1;
@@ -46,9 +65,12 @@ private:
 
     long long _lastDPadPressTime = 0LL;
 
-    void useItem(int index);
-    void dropItem(int index);
-    void dropStack(int index);
+    FILTER_TYPE _filter = FILTER_TYPE::NONE;
+    bool isItemCorrectType(EQUIPMENT_TYPE type);
+
+    virtual void useItem(int index);
+    virtual void dropItem(int index);
+    virtual void dropStack(int index);
 
     void gamepadScrollDown();
     void gamepadScrollUp();

@@ -66,6 +66,9 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
 
+    _shopKeep = std::shared_ptr<ShopKeep>(new ShopKeep(sf::Vector2f(0, 0), _spriteSheet));
+    _world.setShopKeep(_shopKeep);
+
     GameController::addListener(_player);
     GameController::addListener(_ui);
 
@@ -162,8 +165,90 @@ void Game::initUI() {
     std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
         _player->getInventory(), _font, _spriteSheet
     ));
+
+    std::shared_ptr<UIButton> filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 10, 5, 3, "all", _font, inventoryInterface.get(), "filter_none"
+    ));
+    _inventoryMenu->addElement(filterNoneButton);
+
+    std::shared_ptr<UIButton> filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 16, 6, 3, "apparel", _font, inventoryInterface.get(), "filter_apparel"
+    ));
+    _inventoryMenu->addElement(filterApparelButton);
+
+    std::shared_ptr<UIButton> filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 22, 7, 3, "weapons", _font, inventoryInterface.get(), "filter_weapons"
+    ));
+    _inventoryMenu->addElement(filterWeaponsButton);
+
+    std::shared_ptr<UIButton> filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 28, 5, 3, "ammo", _font, inventoryInterface.get(), "filter_ammo"
+    ));
+    _inventoryMenu->addElement(filterAmmoButton);
+
     _inventoryMenu->addElement(inventoryInterface);
     _ui->addMenu(_inventoryMenu);
+
+
+    // Shop menu
+    // Shopkeep's UI
+    std::shared_ptr<UIShopInterface>buyInterface = std::shared_ptr<UIShopInterface>(new UIShopInterface(
+        _shopManager, true, _shopKeep->getInventory(), _font, _spriteSheet
+    ));
+
+    std::shared_ptr<UIButton> shop_filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 30, 5, 3, "all", _font, buyInterface.get(), "filter_none"
+    ));
+    _shopMenu->addElement(shop_filterNoneButton);
+
+    std::shared_ptr<UIButton> shop_filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 36, 6, 3, "apparel", _font, buyInterface.get(), "filter_apparel"
+    ));
+    _shopMenu->addElement(shop_filterApparelButton);
+
+    std::shared_ptr<UIButton> shop_filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 42, 7, 3, "weapons", _font, buyInterface.get(), "filter_weapons"
+    ));
+    _shopMenu->addElement(shop_filterWeaponsButton);
+
+    std::shared_ptr<UIButton> shop_filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
+        26, 48, 5, 3, "ammo", _font, buyInterface.get(), "filter_ammo"
+    ));
+    _shopMenu->addElement(shop_filterAmmoButton);
+
+    _shopMenu->addElement(buyInterface);
+
+    // Player's UI
+    std::shared_ptr<UIShopInterface>sellInterface = std::shared_ptr<UIShopInterface>(new UIShopInterface(
+        _shopManager, false, _player->getInventory(), _font, _spriteSheet
+    ));
+
+    std::shared_ptr<UIButton> sellshop_filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
+        71 - 2.25, 30, 5, 3, "all", _font, sellInterface.get(), "filter_none"
+    ));
+    _shopMenu->addElement(sellshop_filterNoneButton);
+
+    std::shared_ptr<UIButton> sellshop_filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
+        70 - 2.25, 36, 6, 3, "apparel", _font, sellInterface.get(), "filter_apparel"
+    ));
+    _shopMenu->addElement(sellshop_filterApparelButton);
+
+    std::shared_ptr<UIButton> sellshop_filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
+        69 - 2.25, 42, 7, 3, "weapons", _font, sellInterface.get(), "filter_weapons"
+    ));
+    _shopMenu->addElement(sellshop_filterWeaponsButton);
+
+    std::shared_ptr<UIButton> sellshop_filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
+        71 - 2.25, 48, 5, 3, "ammo", _font, sellInterface.get(), "filter_ammo"
+    ));
+    _shopMenu->addElement(sellshop_filterAmmoButton);
+
+    _shopMenu->addElement(sellInterface);
+
+    _shopManager.setBuyInterface(buyInterface);
+    _shopManager.setSellInterface(sellInterface);
+
+    _ui->addMenu(_shopMenu);
 
 
     // Start menu
@@ -339,6 +424,8 @@ void Game::update() {
         Multiplayer::manager.recieveMessages();
         sendMultiplayerUpdates();
     }
+
+    if (!_world.playerIsInShop()) _shopMenu->hide();
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
@@ -662,6 +749,22 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     case sf::Keyboard::I:
         toggleInventoryMenu();
         break;
+    case sf::Keyboard::E:
+        if (_world.playerIsInShop() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
+            for (auto& entity : _world.getEntities()) {
+                if (entity->isActive() && entity->getEntityType() == "shopkeep") {
+                    if (_player->getHitBox().intersects(entity->getHitBox())) {
+                        _shopMenu->show();
+                        MessageManager::displayMessage(
+                            "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell a quarter of a stack", 
+                            10
+                        );
+                        break;
+                    }
+                }
+            }
+        } else if (_shopMenu->isActive()) _shopMenu->hide();
+        break;
     }
 
     _ui->keyReleased(key);
@@ -710,7 +813,7 @@ void Game::disconnectMultiplayer() {
 }
 
 void Game::togglePauseMenu() {
-    if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive()) {
+    if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) _pauseMenu->hide();
         else _pauseMenu->show();
         _isPaused = !_isPaused;
@@ -718,7 +821,7 @@ void Game::togglePauseMenu() {
 }
 
 void Game::toggleInventoryMenu() {
-    if (_gameStarted && !_commandMenu->isActive()) {
+    if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive()) {
         if (_inventoryMenu->isActive()) _inventoryMenu->hide();
         else _inventoryMenu->show();
 

@@ -45,3 +45,7 @@ std::vector<std::string> splitString(std::string str, std::string delimiter) {
 
     return parsedString;
 }
+
+bool stringStartsWith(std::string str, std::string start) {
+    return str.rfind(start, 0) == 0;
+}

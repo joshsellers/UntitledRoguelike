@@ -10,6 +10,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include "MobSpawnData.h"
+#include "ShopKeep.h"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 400;
 // full size 270
@@ -46,7 +47,8 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 2, 1, 1),
-        MobSpawnData(MOB_TYPE::PLANT_MAN, 1, 2, 8)
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 1, 2, 8),
+        MobSpawnData(MOB_TYPE::FROG, 5, 1, 3)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -119,6 +121,8 @@ public:
     void exitShop();
     bool playerIsInShop() const;
 
+    void setShopKeep(std::shared_ptr<ShopKeep> shopKeep);
+
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 
@@ -129,6 +133,7 @@ private:
     Chunk* _currentChunk = nullptr;
     
     std::shared_ptr<Player> _player;
+    std::shared_ptr<ShopKeep> _shopKeep;
 
     std::vector<std::shared_ptr<Entity>> _entities;
     std::vector<std::shared_ptr<Entity>> _entityBuffer;

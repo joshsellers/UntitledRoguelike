@@ -6,16 +6,20 @@
 #include "Entity.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
-    _source(source), _spriteSheet(spriteSheet), UIElement(5, 11, 3, 3, false, false, font), _originalY(_y) {
+    UIInventoryInterface(2, 11, source, font, spriteSheet) {}
+
+UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
+    _source(source), _spriteSheet(spriteSheet), UIElement(x, y, 3, 3, false, false, font), _originalY(_y) {
+
     _disableAutomaticTextAlignment = true;
-    
+
     float fontSize = 4;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
     _text.setFont(_font);
     _text.setCharacterSize(relativeFontSize);
     _text.setFillColor(sf::Color::White);
     _text.setString("INVENTORY");
-    sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x, _y)));
+    sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x + 3, _y)));
     _text.setPosition(basePos.x - _text.getGlobalBounds().width / 6, 0);
 
     fontSize = 1;
@@ -31,7 +35,7 @@ UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std
     _background.setFillColor(sf::Color(0x000044EE));
     _background.setOutlineColor(sf::Color(0x000066EE));
     _background.setOutlineThickness(getRelativeWidth(0.75f));
-    _background.setPosition(getRelativePos(0.5f, 0.9f));
+    _background.setPosition(getRelativePos(_x - 1.5f, 0.9f));
     _background.setSize(sf::Vector2f(getRelativeWidth(25.f), getRelativeHeight(98.3f)));
 
     _headerBg.setFillColor(sf::Color(0x000044FF));
@@ -59,9 +63,15 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_background);
 
     int mousedOverItemIndex = -1;
+    int filteredIndex = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * i))));
+
+        const EQUIPMENT_TYPE itemType = item->getEquipmentType();
+        if (!isItemCorrectType(itemType)) continue;
+        filteredIndex++;
+
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
 
         sf::Text label;
         float fontSize = 1.5;
@@ -88,7 +98,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         itemSprite.setScale(sf::Vector2f(_width / itemSprite.getGlobalBounds().width, _height / itemSprite.getGlobalBounds().height));
         itemSprite.setPosition(itemPos);
 
-        if (bg.getGlobalBounds().contains(_mousePos) || i == _gamepadSelectedItemIndex) {
+        if (bg.getGlobalBounds().contains(_mousePos) || filteredIndex == _gamepadSelectedItemIndex) {
             bg.setFillColor(sf::Color(0x0000FFFF));
         } else bg.setFillColor(sf::Color(0x000099FF));
 
@@ -117,7 +127,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
         if (_gamepadShowTooltip) {
-            sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+            sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
             pos.x = _background.getGlobalBounds().width;
             pos.y = itemPos.y;
         }
@@ -133,7 +143,28 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         surface.draw(_tooltipBg);
         surface.draw(_tooltipText);
+
+        drawAdditionalTooltip(surface, mousedOverItemIndex);
     }
+}
+
+void UIInventoryInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {}
+
+bool UIInventoryInterface::isItemCorrectType(EQUIPMENT_TYPE type) {
+    if (getFilter() != FILTER_TYPE::NONE) {
+        if (getFilter() == FILTER_TYPE::APPAREL
+            && (type == EQUIPMENT_TYPE::CLOTHING_HEAD
+                || type == EQUIPMENT_TYPE::CLOTHING_BODY
+                || type == EQUIPMENT_TYPE::CLOTHING_LEGS
+                || type == EQUIPMENT_TYPE::CLOTHING_FEET)) return true;
+        else if (getFilter() == FILTER_TYPE::WEAPONS
+            && (type == EQUIPMENT_TYPE::TOOL)) return true;
+        else if (getFilter() == FILTER_TYPE::AMMO
+            && (type == EQUIPMENT_TYPE::AMMO)) return true;
+        else return false;
+    }
+
+    return true;
 }
 
 void UIInventoryInterface::useItem(int index) {
@@ -162,19 +193,30 @@ void UIInventoryInterface::dropStack(int index) {
 
 void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
     if (_source.getParent()->isReloading()) return;
+
+    int unFilteredIndex = 0;
+    int filteredIndex = 0;
+    if (getFilter() != FILTER_TYPE::NONE) {
+        for (int i = 0; i < (int)_source.getCurrentSize(); i++) {
+            if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
+            filteredIndex++;
+            if (filteredIndex == _gamepadSelectedItemIndex) unFilteredIndex = i;
+        }
+    } else unFilteredIndex = _gamepadSelectedItemIndex;
+
     if (_gamepadSelectedItemIndex != -1 && _gamepadSelectedItemIndex < (int)_source.getCurrentSize()) {
         switch (button) {
             case CONTROLLER_BUTTON::A:
-                useItem(_gamepadSelectedItemIndex);
+                useItem(unFilteredIndex);
                 break;
             case CONTROLLER_BUTTON::LEFT_STICK:
                 _gamepadShowTooltip = !_gamepadShowTooltip;
                 break;
             case CONTROLLER_BUTTON::Y:
-                dropItem(_gamepadSelectedItemIndex);
+                dropItem(unFilteredIndex);
                 break;
             case CONTROLLER_BUTTON::RIGHT_STICK:
-                dropStack(_gamepadSelectedItemIndex);
+                dropStack(unFilteredIndex);
                 break;
         }
     }
@@ -218,8 +260,12 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
 void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const int button) {
     if (_source.getParent()->isReloading()) return;
 
+    int filteredIndex = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(2, _y + (ITEM_SPACING * i))));
+        if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
+        filteredIndex++;
+
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
 
         if (itemBounds.contains(mx, my)) {
@@ -247,6 +293,10 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
+    // Check if mouse is within the inventory UI (for shop UI, because there's two menus)
+    sf::FloatRect uiBounds(_background.getPosition().x, _background.getPosition().y, _background.getSize().x, _background.getSize().y);
+    if (!uiBounds.contains(mouseWheelScroll.x, mouseWheelScroll.y)) return;
+
     if (_source.getCurrentSize() != 0) _y += mouseWheelScroll.delta * SCROLL_RATE;
 }
 
@@ -257,5 +307,29 @@ void UIInventoryInterface::hide() {
     _gamepadSelectedItemIndex = -1;
     _gamepadShowTooltip = false;
     _y = _originalY;
+}
+
+void UIInventoryInterface::setFilter(FILTER_TYPE filter) {
+    _filter = filter;
+}
+
+FILTER_TYPE UIInventoryInterface::getFilter() {
+    return _filter;
+}
+
+void UIInventoryInterface::buttonPressed(std::string buttonCode) {
+    _y = _originalY;
+    if (buttonCode == "filter_none") setFilter(FILTER_TYPE::NONE);
+    else if (buttonCode == "filter_apparel") setFilter(FILTER_TYPE::APPAREL);
+    else if (buttonCode == "filter_weapons") setFilter(FILTER_TYPE::WEAPONS);
+    else if (buttonCode == "filter_ammo") setFilter(FILTER_TYPE::AMMO);
+}
+
+void UIInventoryInterface::setSource(Inventory& sourceInventory) {
+    _source = sourceInventory;
+}
+
+Inventory& UIInventoryInterface::getSource() {
+    return _source;
 }
 

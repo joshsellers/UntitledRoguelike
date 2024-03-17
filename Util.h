@@ -16,4 +16,6 @@ std::string trimString(std::string str);
 
 std::vector<std::string> splitString(std::string str, std::string delimiter);
 
+bool stringStartsWith(std::string str, std::string start);
+
 #endif

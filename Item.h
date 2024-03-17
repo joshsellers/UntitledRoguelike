@@ -7,6 +7,7 @@
 #include <functional>
 #include "EquipmentType.h"
 #include "ProjectileData.h"
+#include <memory>
 
 class Entity;
 
@@ -52,7 +53,7 @@ public:
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
-        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun,
+        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
         const unsigned int reloadTimeMilliseconds = 0);
@@ -81,6 +82,8 @@ public:
 
     bool isConsumable() const;
 
+    const int getValue() const;
+
     bool use(Entity* parent) const;
 
     EQUIPMENT_TYPE getEquipmentType() const;
@@ -107,6 +110,8 @@ private:
     const unsigned int _stackLimit;
 
     const bool _isConsumable;
+
+    const int _value;
 
     const std::function<bool(Entity*)> _use;
 

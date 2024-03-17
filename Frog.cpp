@@ -7,10 +7,10 @@ Frog::Frog(sf::Vector2f pos) : Entity(pos, 1, 16, 16, false) {
     setMaxHitPoints(15);
     heal(getMaxHitPoints());
 
-    _hitBoxXOffset = 0;
-    _hitBoxYOffset = 0;
-    _hitBox.width = TILE_SIZE;
-    _hitBox.height = TILE_SIZE;
+    _hitBoxXOffset = -TILE_SIZE / 2 + 3;
+    _hitBoxYOffset = 4;
+    _hitBox.width = 11;
+    _hitBox.height = 10;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
