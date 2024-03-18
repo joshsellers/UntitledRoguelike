@@ -15,8 +15,9 @@
 #include "ShopExterior.h"
 #include "ShopCounter.h"
 #include "Frog.h"
+#include "SlimeBall.h"
 
-constexpr bool LOCK_CMD_PROMPT = false;
+constexpr bool LOCK_CMD_PROMPT = true;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
 
 struct Command {

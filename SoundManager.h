@@ -4,6 +4,7 @@
 #include "SFML/Audio.hpp"
 #include <map>
 #include <iostream>
+#include "MessageManager.h"
 
 class SoundManager {
 public:

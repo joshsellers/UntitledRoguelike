@@ -4,7 +4,7 @@
 #include "Util.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
-    Entity(pos, 3, 1, 1, false) {
+    Entity(pos, 3, TILE_SIZE, TILE_SIZE * 3, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(40);
@@ -25,8 +25,9 @@ PlantMan::PlantMan(sf::Vector2f pos) :
     _entityType = "plantman";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(0, 50);
-    if (pennyAmount >= 44) getInventory().addItem(Item::PENNY.getId(), pennyAmount - 44);
+    const int hasPennyChance = 10;
+    unsigned int pennyAmount = randomInt(0, 510);
+    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
 }
 
 void PlantMan::update() {

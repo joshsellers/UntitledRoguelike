@@ -4,9 +4,10 @@
 #include <SFML/Graphics/Rect.hpp>
 
 struct ProjectileData {
-    ProjectileData(const unsigned int itemId, const float baseVelocity, const sf::IntRect hitBox, const bool rotateSprite, const float lifeTime = 60 * 5,
+    ProjectileData(const unsigned int itemId, const float baseVelocity, const sf::IntRect hitBox, const bool rotateSprite, const bool onlyHitEnemies = false,
+        const float lifeTime = 60 * 5,
         const bool isAnimated = false, const int animationFrames = 0, const int animationSpeed = 0) :
-        itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite), lifeTime(lifeTime),
+        itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite), onlyHitEnemies(onlyHitEnemies), lifeTime(lifeTime),
         isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed) {
     }
 
@@ -14,6 +15,7 @@ struct ProjectileData {
     const float baseVelocity;
     const sf::IntRect hitBox;
     const bool rotateSprite;
+    const bool onlyHitEnemies;
     const float lifeTime;
     const bool isAnimated;
     const int animationFrames;

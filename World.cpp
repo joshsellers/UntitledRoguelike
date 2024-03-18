@@ -169,10 +169,10 @@ void World::draw(sf::RenderTexture& surface) {
 void World::spawnMobs() {
     constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
     constexpr int MOB_SPAWN_CHANCE = 5;
-    constexpr float MIN_DIST = 200.f;
+    constexpr float MIN_DIST = 250.f;
     constexpr int PACK_SPREAD = 20;
 
-    if (_mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS && getMobCount() < MAX_ACTIVE_MOBS) {
+    if (_mobSpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS) {
         _mobSpawnClock.restart();
         boost::random::uniform_int_distribution<> skipChunk(0, MOB_SPAWN_CHANCE);
         for (auto& chunk : _chunks) {
@@ -195,6 +195,7 @@ void World::spawnMobs() {
                     if (individualSpawnChance(_mobGen) != 0) continue;
 
                     if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID && currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds) continue;
+                    else if ((int)mobData.mobType <= (int)MOB_TYPE::CACTOID && getMobCount() > MAX_ACTIVE_MOBS) continue;
 
                     boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
                     int packAmount = randPackAmount(_mobGen);
@@ -231,9 +232,10 @@ void World::spawnMobs() {
                         addEntity(mob);
 
                         if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID
-                            && getEnemyCount() >= MAX_ACTIVE_ENEMIES) {
+                            && getEnemyCount() >= _maxActiveEnemies) {
                             _lastEnemySpawnTime = currentTimeMillis();
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
+                            _maxActiveEnemies++;
                             break;
                         }
                     }
@@ -761,14 +763,14 @@ std::shared_ptr<Player> World::getPlayer() const {
 int World::getMobCount() const {
     int count = 0;
     for (auto& entity : getEntities())
-        if (entity->isMob() && entity->isActive()) count++;
+        if (entity->isMob() && (!entity->isEnemy() || entity->getEntityType() == "cactoid") && entity->isActive()) count++;
     return count;
 }
 
 int World::getEnemyCount() const {
     int count = 0;
     for (auto& entity : getEntities())
-        if (entity->isEnemy() && entity->isActive()) count++;
+        if (entity->isEnemy() && entity->getEntityType() != "cactoid" && entity->isActive()) count++;
     return count;
 }
 
@@ -778,6 +780,10 @@ bool World::onEnemySpawnCooldown() const {
 
 void World::resetEnemySpawnCooldown() {
     _lastEnemySpawnTime = 0;
+}
+
+int World::getMaxActiveEnemies() {
+    return _maxActiveEnemies;
 }
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {

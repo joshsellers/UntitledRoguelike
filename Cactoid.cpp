@@ -15,11 +15,13 @@ Entity(pos, 3.5, 2, 2, false) {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     _isMob = true;
-    _isEnemy = false; // because it's not immeditatly aggressive
+    _isEnemy = true; // had this as false because it's not immeditatly aggressive but then slimeball wouldn't shoot it
+    _entityType = "cactoid";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(0, 50);
-    if (pennyAmount >= 44) getInventory().addItem(Item::PENNY.getId(), pennyAmount - 44);
+    const int hasPennyChance = 10;
+    unsigned int pennyAmount = randomInt(0, 510);
+    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
 }
 
 void Cactoid::update() {

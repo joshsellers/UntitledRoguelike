@@ -34,7 +34,7 @@ void ShopKeep::initInventory() {
         int itemAmount = randomInt(1, 100);
         int itemId = randomInt(0, Item::ITEMS.size() - 1);
 
-        if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_")) continue;
+        if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_") || !Item::ITEMS[itemId]->isBuyable()) continue;
 
         if (!Item::ITEMS[itemId]->isStackable()) itemAmount = 1;
         else itemAmount = std::min((int)Item::ITEMS[itemId]->getStackLimit(), itemAmount);

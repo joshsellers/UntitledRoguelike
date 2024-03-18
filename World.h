@@ -38,7 +38,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 };
 
 constexpr int MAX_ACTIVE_MOBS = 80;
-constexpr int MAX_ACTIVE_ENEMIES = 40;
+constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 5;
 constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 3;
 constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 5;
 
@@ -102,6 +102,7 @@ public:
     int getEnemyCount() const;
     bool onEnemySpawnCooldown() const;
     void resetEnemySpawnCooldown();
+    int getMaxActiveEnemies();
 
     std::shared_ptr<Player> getPlayer() const;
 
@@ -147,6 +148,7 @@ private:
     boost::random::mt19937 _mobGen = boost::random::mt19937();
     long long _lastEnemySpawnTime = 0;
     long long _enemySpawnCooldownTimeMilliseconds;
+    int _maxActiveEnemies = INITIAL_MAX_ACTIVE_ENEMIES;
 
     void purgeEntityBuffer();
     void updateEntities();

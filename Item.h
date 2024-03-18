@@ -45,6 +45,9 @@ public:
     static const Item _PROJECTILE_PROPANE;
     static const ProjectileData DATA_PROJECTILE_PROPANE;
     static const Item BLOW_TORCH;
+    static const Item _PROJECTILE_SLIME_BALL;
+    static const ProjectileData DATA_PROJECTILE_SLIME_BALL;
+    static const Item SLIME_BALL;
 
     static std::vector<const Item*> ITEMS;
 
@@ -53,7 +56,7 @@ public:
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
         const std::string description, EQUIPMENT_TYPE equipType, const int damage,
-        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1,
+        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
         const unsigned int reloadTimeMilliseconds = 0);
@@ -83,6 +86,7 @@ public:
     bool isConsumable() const;
 
     const int getValue() const;
+    const bool isBuyable() const;
 
     bool use(Entity* parent) const;
 
@@ -112,6 +116,7 @@ private:
     const bool _isConsumable;
 
     const int _value;
+    const bool _isBuyable;
 
     const std::function<bool(Entity*)> _use;
 

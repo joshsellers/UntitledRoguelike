@@ -8,6 +8,7 @@
 #include "RemotePlayer.h"
 #include <filesystem>
 #include <fstream>
+#include "DroppedItem.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -486,7 +487,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(_entityCountLabel);
 
         bool spawnCooldown = _world.onEnemySpawnCooldown();
-        _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "enemy spawn cooldown active" : "enemy spawn cooldown expired"));
+        _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "enemy spawn cooldown active - " : "enemy spawn cooldown expired - ") 
+            + std::to_string(_world.getMaxActiveEnemies()));
         surface.draw(_onEnemySpawnCooldownLabel);
 
         if (_textSeed == "NONE") _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
@@ -538,6 +540,15 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->hide();
         _HUDMenu->show();
         _magazineMeter->hide();
+
+        std::shared_ptr<DroppedItem> droppedSlimeBall 
+            = std::shared_ptr<DroppedItem>(new DroppedItem(
+                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+              );
+        droppedSlimeBall->setWorld(&_world);
+        droppedSlimeBall->loadSprite(_world.getSpriteSheet());
+        _world.addEntity(droppedSlimeBall);
+
         _gameStarted = true;
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
@@ -764,6 +775,8 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
                 }
             }
         } else if (_shopMenu->isActive()) _shopMenu->hide();
+
+        _player->_inventoryMenuIsOpen = _shopMenu->isActive();
         break;
     }
 
@@ -777,7 +790,7 @@ void Game::mouseButtonPressed(const int mx, const int my, const int button) {
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
     _ui->mouseButtonReleased(mx, my, button);
-    if (!_inventoryMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
+    if (!_inventoryMenu->isActive() && !_shopMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {
