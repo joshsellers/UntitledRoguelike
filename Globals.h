@@ -17,4 +17,6 @@ extern bool STEAMAPI_INITIATED;
 extern bool IS_MULTIPLAYER_CONNECTED;
 extern unsigned int MAX_PACKETS_OUT_PER_SECOND;
 
+extern float PLAYER_SCORE;
+
 #endif

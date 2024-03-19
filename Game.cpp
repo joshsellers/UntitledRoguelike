@@ -4,7 +4,7 @@
 #include <regex>
 #include "UIMessageDisplay.h"
 #include "MessageManager.h"
-#include "../SteamworksHeaders/steam_api.h"
+//#include "../SteamworksHeaders/steam_api.h"
 #include "RemotePlayer.h"
 #include <filesystem>
 #include <fstream>
@@ -392,39 +392,39 @@ void Game::initUI() {
 }
 
 void Game::sendMultiplayerUpdates() {
-    if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
-        // this packets out limiting stuff is garbage, figure out a better way to do this
-        if (currentTimeMillis() - _lastPacketsOutCountReset >= 1000) {
-            _packetsOutThisTick = 0;
-            _lastPacketsOutCountReset = currentTimeMillis();
-        }
+    //if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
+    //    // this packets out limiting stuff is garbage, figure out a better way to do this
+    //    if (currentTimeMillis() - _lastPacketsOutCountReset >= 1000) {
+    //        _packetsOutThisTick = 0;
+    //        _lastPacketsOutCountReset = currentTimeMillis();
+    //    }
 
-        if (_packetsOutThisTick >= MAX_PACKETS_OUT_PER_SECOND) return;
+    //    if (_packetsOutThisTick >= MAX_PACKETS_OUT_PER_SECOND) return;
 
-        for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
-            if (_player->_isActuallyMoving) {
-                std::string playerPos = std::to_string(
-                    _player->getPosition().x) + (std::string)","
-                    + std::to_string(_player->getPosition().y) + (std::string)","
-                    + std::to_string(_player->isDodging()) + (std::string)","
-                    + std::to_string(_player->_multiplayerAimAngle);
-                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
-            } else if (_player->_isHoldingWeapon) {
-                Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_AIM_ANGLE, std::to_string(_player->_multiplayerAimAngle)), peer);
-            }
-        }
+    //    for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
+    //        if (_player->_isActuallyMoving) {
+    //            std::string playerPos = std::to_string(
+    //                _player->getPosition().x) + (std::string)","
+    //                + std::to_string(_player->getPosition().y) + (std::string)","
+    //                + std::to_string(_player->isDodging()) + (std::string)","
+    //                + std::to_string(_player->_multiplayerAimAngle);
+    //            Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_DATA, playerPos), peer);
+    //        } else if (_player->_isHoldingWeapon) {
+    //            Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PLAYER_AIM_ANGLE, std::to_string(_player->_multiplayerAimAngle)), peer);
+    //        }
+    //    }
 
-        _packetsOutThisTick++;
-    }
+    //    _packetsOutThisTick++;
+    //}
 }
 
 void Game::update() {
-    if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
+    /*if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
         SteamAPI_RunCallbacks();
 
         Multiplayer::manager.recieveMessages();
         sendMultiplayerUpdates();
-    }
+    }*/
 
     if (!_world.playerIsInShop()) _shopMenu->hide();
 
@@ -488,7 +488,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
         bool spawnCooldown = _world.onEnemySpawnCooldown();
         _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "enemy spawn cooldown active - " : "enemy spawn cooldown expired - ") 
-            + std::to_string(_world.getMaxActiveEnemies()));
+            + std::to_string(_world.getMaxActiveEnemies()) + " - " + std::to_string((int)PLAYER_SCORE) 
+            + " (" + std::to_string(_world.getTimeUntilNextEnemyWave() / 1000) + "s)");
         surface.draw(_onEnemySpawnCooldownLabel);
 
         if (_textSeed == "NONE") _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
@@ -508,7 +509,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
-        if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
+        /*if (_connectedAsClient || IS_MULTIPLAYER_CONNECTED) {
             for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
                 Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
             }
@@ -516,7 +517,7 @@ void Game::buttonPressed(std::string buttonCode) {
             disconnectMultiplayer();
         }
         Multiplayer::manager.halt();
-        SteamAPI_Shutdown();
+        SteamAPI_Shutdown();*/
         _window->close();
     } else if (buttonCode == "newgame") {
         _newGameMenu->show();
@@ -554,13 +555,13 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->hide();
         _startMenu->show();
     } else if (buttonCode == "mainmenu" || buttonCode == "mainmenu_clientdisc") {
-        if (buttonCode != "mainmenu_clientdisc" && (_connectedAsClient || IS_MULTIPLAYER_CONNECTED)) {
+        /*if (buttonCode != "mainmenu_clientdisc" && (_connectedAsClient || IS_MULTIPLAYER_CONNECTED)) {
             for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
                 Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), peer);
             }
             sf::sleep(sf::seconds(1));
             disconnectMultiplayer();
-        }
+        }*/
 
         _gameStarted = false;
         _isPaused = false;
@@ -574,6 +575,9 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("setmaxhp:100");
         _cmdPrompt->processCommand("addhp:100");
         if (LOCK_CMD_PROMPT) _cmdPrompt->lock();
+        
+        PLAYER_SCORE = 1.f;
+        _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
 
         _player->_pos = sf::Vector2f(0, 0);
         _player->_movingDir = DOWN;
@@ -600,7 +604,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _joinGameMenu->show();
     } else if (buttonCode == "join") {
         if (STEAMAPI_INITIATED) {
-            std::string userName = _steamNameField->getText();
+            /*std::string userName = _steamNameField->getText();
 
             SteamNetworkingIdentity sni;
             ISteamFriends* m_pFriends;
@@ -627,7 +631,7 @@ void Game::buttonPressed(std::string buttonCode) {
             } else {
                 MultiplayerMessage message(PayloadType::JOIN_REQUEST, userName);
                 Multiplayer::manager.sendMessage(message, sni);
-            }
+            }*/
         } else {
             MessageManager::displayMessage("Steam is not connected", 5, NORMAL);
         }
@@ -757,7 +761,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     case sf::Keyboard::Escape:
         togglePauseMenu();
         break;
-    case sf::Keyboard::I:
+    case sf::Keyboard::Tab:
         toggleInventoryMenu();
         break;
     case sf::Keyboard::E:
@@ -830,7 +834,8 @@ void Game::togglePauseMenu() {
         if (_pauseMenu->isActive()) _pauseMenu->hide();
         else _pauseMenu->show();
         _isPaused = !_isPaused;
-    }
+    } else if (_gameStarted && _inventoryMenu->isActive()) _inventoryMenu->hide();
+    else if (_gameStarted && _shopMenu->isActive()) _shopMenu->hide();
 }
 
 void Game::toggleInventoryMenu() {

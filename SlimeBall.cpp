@@ -12,7 +12,7 @@ void SlimeBall::subUpdate() {
         float closestDistance = fireRange;
         std::shared_ptr<Entity> closestEnemy = nullptr;
         for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isEnemy() && entity->isActive()) {
+            if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
                 float dist = std::sqrt(std::pow(_pos.x - entity->getPosition().x, 2) + std::pow(_pos.y - entity->getPosition().y, 2));
                 if (dist <= fireRange && dist < closestDistance) {
                     closestDistance = dist;
@@ -29,6 +29,8 @@ void SlimeBall::subUpdate() {
             _lastFireTime = currentTimeMillis();
         }
     }
+
+    if (!getParent()->isActive()) deactivate();
 }
 
 void SlimeBall::draw(sf::RenderTexture& surface) {

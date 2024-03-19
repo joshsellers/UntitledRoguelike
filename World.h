@@ -39,8 +39,8 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
 constexpr int MAX_ACTIVE_MOBS = 80;
 constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 5;
-constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 3;
-constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 5;
+constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
+constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 3;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
@@ -101,8 +101,11 @@ public:
     int getMobCount() const;
     int getEnemyCount() const;
     bool onEnemySpawnCooldown() const;
+    long long getEnemySpawnCooldownTimeMilliseconds() const;
+    long long getTimeUntilNextEnemyWave() const;
     void resetEnemySpawnCooldown();
     int getMaxActiveEnemies();
+    void setMaxActiveEnemies(int maxActiveEnemies);
 
     std::shared_ptr<Player> getPlayer() const;
 

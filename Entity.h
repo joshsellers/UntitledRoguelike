@@ -44,6 +44,9 @@ public:
     bool isProp() const;
     bool isEnemy() const;
     bool canPickUpItems() const;
+    
+    bool isInitiallyDocile() const;
+    bool isHostile() const;
 
     sf::Sprite getSprite() const;
 
@@ -134,6 +137,10 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _canPickUpItems = false;
+
+    // this is specifically for things like cactoids that aren't immediatly aggressive
+    bool _isInitiallyDocile = false;
+    bool _isHostile = false;
 
     Inventory _inventory = Inventory(this);
 

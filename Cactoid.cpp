@@ -17,6 +17,7 @@ Entity(pos, 3.5, 2, 2, false) {
     _isMob = true;
     _isEnemy = true; // had this as false because it's not immeditatly aggressive but then slimeball wouldn't shoot it
     _entityType = "cactoid";
+    _isInitiallyDocile = true;
 
     srand(currentTimeNano());
     const int hasPennyChance = 10;
@@ -76,6 +77,8 @@ void Cactoid::update() {
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    _isHostile = _isAggro;
 }
 
 void Cactoid::draw(sf::RenderTexture& surface) {

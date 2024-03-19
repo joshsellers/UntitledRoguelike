@@ -17,3 +17,5 @@ bool STEAMAPI_INITIATED = false;
 bool IS_MULTIPLAYER_CONNECTED = false;
 
 unsigned int MAX_PACKETS_OUT_PER_SECOND = 60;
+
+float PLAYER_SCORE = 1.f;

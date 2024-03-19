@@ -37,14 +37,14 @@ int main() {
     loadSettings();
 
     // Steam
-    STEAMAPI_INITIATED = SteamAPI_Init();
+    //STEAMAPI_INITIATED = SteamAPI_Init();
 
-    if (SteamAPI_RestartAppIfNecessary(480)) {
-        MessageManager::displayMessage("Steam did not connect", 10, WARN);
-    }
+    //if (SteamAPI_RestartAppIfNecessary(480)) {
+    //    MessageManager::displayMessage("Steam did not connect", 10, WARN);
+    //}
 
     MessageManager::displayMessage("STEAMAPI_INITIATED: " + (std::string)(STEAMAPI_INITIATED ? "true" : "false"), 5, DEBUG);
-    //
+    
 
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);

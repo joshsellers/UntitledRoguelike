@@ -329,6 +329,14 @@ bool Entity::canPickUpItems() const {
     return _canPickUpItems;
 }
 
+bool Entity::isInitiallyDocile() const {
+    return _isInitiallyDocile;
+}
+
+bool Entity::isHostile() const {
+    return _isHostile;
+}
+
 sf::Sprite Entity::getSprite() const {
     return _sprite;
 }
