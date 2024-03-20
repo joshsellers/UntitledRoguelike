@@ -39,8 +39,8 @@ enum class TERRAIN_COLOR : sf::Uint32 {
 
 constexpr int MAX_ACTIVE_MOBS = 80;
 constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 5;
-constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
-constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 3;
+constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 1;
+constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
@@ -104,8 +104,9 @@ public:
     long long getEnemySpawnCooldownTimeMilliseconds() const;
     long long getTimeUntilNextEnemyWave() const;
     void resetEnemySpawnCooldown();
-    int getMaxActiveEnemies();
+    int getMaxActiveEnemies() const;
     void setMaxActiveEnemies(int maxActiveEnemies);
+    void incrementEnemySpawnCooldownTimeWhilePaused();
 
     std::shared_ptr<Player> getPlayer() const;
 
@@ -149,7 +150,9 @@ private:
     int getRandMobType(const BiomeMobSpawnData& mobSpawnData);
     sf::Clock _mobSpawnClock;
     boost::random::mt19937 _mobGen = boost::random::mt19937();
-    long long _lastEnemySpawnTime = 0;
+    long long _cooldownStartTime = 0;
+    bool _maxEnemiesReached = false;
+    bool _cooldownActive = false;
     long long _enemySpawnCooldownTimeMilliseconds;
     int _maxActiveEnemies = INITIAL_MAX_ACTIVE_ENEMIES;
 

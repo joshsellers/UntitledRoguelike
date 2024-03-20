@@ -69,7 +69,6 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         const EQUIPMENT_TYPE itemType = item->getEquipmentType();
         if (!isItemCorrectType(itemType)) continue;
-        filteredIndex++;
 
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
 
@@ -106,6 +105,8 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         surface.draw(bg);
         surface.draw(itemSprite);
         surface.draw(label);
+
+        filteredIndex++;
 
         if (labelBg.getGlobalBounds().contains(_mousePos) && !bg.getGlobalBounds().contains(_mousePos))
             mousedOverItemIndex = i;
@@ -199,8 +200,9 @@ void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
     if (getFilter() != FILTER_TYPE::NONE) {
         for (int i = 0; i < (int)_source.getCurrentSize(); i++) {
             if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
-            filteredIndex++;
             if (filteredIndex == _gamepadSelectedItemIndex) unFilteredIndex = i;
+
+            filteredIndex++;
         }
     } else unFilteredIndex = _gamepadSelectedItemIndex;
 
@@ -263,10 +265,10 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
     int filteredIndex = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
-        filteredIndex++;
 
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
+        filteredIndex++;
 
         if (itemBounds.contains(mx, my)) {
             switch (button) {

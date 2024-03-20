@@ -10,7 +10,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-inline bool DISPLAY_DEBUG_MESSAGES = false;
+inline bool DISPLAY_DEBUG_MESSAGES = true;
 
 struct MessageType {
     MessageType(std::string name, sf::Uint32 color) {

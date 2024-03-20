@@ -17,7 +17,7 @@
 #include "Frog.h"
 #include "SlimeBall.h"
 
-constexpr bool LOCK_CMD_PROMPT = true;
+constexpr bool LOCK_CMD_PROMPT = false;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
 
 struct Command {

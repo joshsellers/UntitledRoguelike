@@ -16,8 +16,6 @@ protected:
 
 private:
     long long _lastFireTime = 0LL;
-
-    float _angle = 0;
 };
 
 #endif

@@ -90,6 +90,14 @@ void World::update() {
         findCurrentChunk(pX, pY);
 
         loadNewChunks(pX, pY);
+
+        if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
+            _cooldownActive = true;
+            _maxEnemiesReached = false;
+            _cooldownStartTime = currentTimeMillis();
+        } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
+            _cooldownActive = false;
+        }
     } else {
         _player->update();
         for (auto& entity : getEntities()) {
@@ -194,7 +202,7 @@ void World::spawnMobs() {
                     boost::random::uniform_int_distribution<> individualSpawnChance(0, mobData.spawnChance);
                     if (individualSpawnChance(_mobGen) != 0) continue;
 
-                    if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID && currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds) continue;
+                    if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID && (_cooldownActive || _maxEnemiesReached)) continue;
                     else if ((int)mobData.mobType <= (int)MOB_TYPE::CACTOID && getMobCount() > MAX_ACTIVE_MOBS) continue;
 
                     boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
@@ -233,9 +241,10 @@ void World::spawnMobs() {
 
                         if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID
                             && getEnemyCount() >= _maxActiveEnemies) {
-                            _lastEnemySpawnTime = currentTimeMillis();
+                            _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
+                            if (_maxActiveEnemies == 2) _maxActiveEnemies = 6;
                             PLAYER_SCORE += 1.f;
                             break;
                         }
@@ -776,7 +785,7 @@ int World::getEnemyCount() const {
 }
 
 bool World::onEnemySpawnCooldown() const {
-    return currentTimeMillis() - _lastEnemySpawnTime < _enemySpawnCooldownTimeMilliseconds;
+    return _cooldownActive;
 }
 
 long long World::getEnemySpawnCooldownTimeMilliseconds() const {
@@ -784,19 +793,23 @@ long long World::getEnemySpawnCooldownTimeMilliseconds() const {
 }
 
 long long World::getTimeUntilNextEnemyWave() const {
-    return getEnemySpawnCooldownTimeMilliseconds() - (currentTimeMillis() - _lastEnemySpawnTime);
+    return getEnemySpawnCooldownTimeMilliseconds() - (currentTimeMillis() - _cooldownStartTime);
 }
 
 void World::resetEnemySpawnCooldown() {
-    _lastEnemySpawnTime = 0;
+    _cooldownStartTime = 0;
 }
 
-int World::getMaxActiveEnemies() {
+int World::getMaxActiveEnemies() const {
     return _maxActiveEnemies;
 }
 
 void World::setMaxActiveEnemies(int maxActiveEnemies) {
     _maxActiveEnemies = maxActiveEnemies;
+}
+
+void World::incrementEnemySpawnCooldownTimeWhilePaused() {
+    if (onEnemySpawnCooldown()) _cooldownStartTime += 16LL;
 }
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {

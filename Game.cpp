@@ -446,6 +446,8 @@ void Game::update() {
         } else {
             _magazineMeter->hide();
         }
+    } else if (_isPaused && _gameStarted) {
+        _world.incrementEnemySpawnCooldownTimeWhilePaused();
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
@@ -765,22 +767,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         toggleInventoryMenu();
         break;
     case sf::Keyboard::E:
-        if (_world.playerIsInShop() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
-            for (auto& entity : _world.getEntities()) {
-                if (entity->isActive() && entity->getEntityType() == "shopkeep") {
-                    if (_player->getHitBox().intersects(entity->getHitBox())) {
-                        _shopMenu->show();
-                        MessageManager::displayMessage(
-                            "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell a quarter of a stack", 
-                            10
-                        );
-                        break;
-                    }
-                }
-            }
-        } else if (_shopMenu->isActive()) _shopMenu->hide();
-
-        _player->_inventoryMenuIsOpen = _shopMenu->isActive();
+        toggleShopMenu();
         break;
     }
 
@@ -816,6 +803,9 @@ void Game::controllerButtonReleased(CONTROLLER_BUTTON button) {
         case CONTROLLER_BUTTON::SELECT:
             toggleInventoryMenu();
             break;
+        case CONTROLLER_BUTTON::X:
+            toggleShopMenu();
+            break;
     }
 }
 
@@ -848,6 +838,25 @@ void Game::toggleInventoryMenu() {
         // this causes non-critical visual problems that i would like to not have happen
         //_isPaused = _inventoryMenu->isActive();
     }
+}
+
+void Game::toggleShopMenu() {
+    if (_world.playerIsInShop() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
+        for (auto& entity : _world.getEntities()) {
+            if (entity->isActive() && entity->getEntityType() == "shopkeep") {
+                if (_player->getHitBox().intersects(entity->getHitBox())) {
+                    _shopMenu->show();
+                    MessageManager::displayMessage(
+                        "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell a quarter of a stack",
+                        10
+                    );
+                    break;
+                }
+            }
+        }
+    } else if (_shopMenu->isActive()) _shopMenu->hide();
+
+    _player->_inventoryMenuIsOpen = _shopMenu->isActive();
 }
 
 void Game::textEntered(sf::Uint32 character) {
