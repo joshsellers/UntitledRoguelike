@@ -492,6 +492,15 @@ private:
                     return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "endenemycooldown",
+            Command("Ends enemy spawn cooldown",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->resetEnemySpawnCooldown();
+                return "Ended enemy spawn cooldown";
+            })
         }
     };
 };

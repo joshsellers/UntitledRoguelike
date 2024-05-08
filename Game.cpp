@@ -263,7 +263,7 @@ void Game::initUI() {
         45, 46, 9, 3, "join game", _font, this, "joingame"
     ));
     joinGameButton->setSelectionId(1);
-    _startMenu->addElement(joinGameButton);
+    //_startMenu->addElement(joinGameButton);
 
     std::shared_ptr<UIButton> settingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
         45, 53, 9, 3, "settings", _font, this, "settings_mainmenu"

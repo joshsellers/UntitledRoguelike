@@ -190,6 +190,18 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     }
 );
 
+const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
+    "Kinda mushy but it makes me feel good",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 65, true, 
+    [](Entity* parent) {
+        if (parent->getHitPoints() < parent->getMaxHitPoints()) {
+            parent->heal(10);
+            return true;
+        }
+        return false;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
