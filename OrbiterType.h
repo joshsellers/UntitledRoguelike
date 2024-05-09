@@ -14,6 +14,7 @@ enum class OrbiterAttackMethod {
 class OrbiterType {
 public:
     static const OrbiterType SLIME_BALL;
+    static const OrbiterType BOWLING_BALL;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

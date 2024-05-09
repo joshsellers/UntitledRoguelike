@@ -14,6 +14,17 @@ Entity(pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 1
     _speed = _orbiterType->getOrbitSpeed();
 
     _parent = parent;
+
+    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::CONTACT) {
+        _hitBox.width = _orbiterType->getTextureRect().width * TILE_SIZE;
+        _hitBox.height = _orbiterType->getTextureRect().height * TILE_SIZE;
+        _hitBox.left = pos.x - _hitBox.width / 2;;
+        _hitBox.top = pos.y - _hitBox.width / 2;;
+
+        setMaxHitPoints(999999);
+        heal(getMaxHitPoints());
+    }
+
 }
 
 void Orbiter::update() {
@@ -28,6 +39,11 @@ void Orbiter::update() {
 
     attack();
     _sprite.setPosition(getPosition());
+
+    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::CONTACT) {
+        _hitBox.left = getPosition().x - _hitBox.width / 2;;
+        _hitBox.top = getPosition().y - _hitBox.width / 2;;
+    }
 }
 
 void Orbiter::attack() {
@@ -69,6 +85,13 @@ void Orbiter::projectileAttack() {
 }
 
 void Orbiter::contactAttack() {
+    for (auto& entity : getWorld()->getEntities()) {
+        if (!entity->compare(this) && !entity->compare(getParent()) && entity->isDamageable() && entity->getHitBox().intersects(getHitBox())) {
+            entity->damage(_orbiterType->getContactDamage());
+            _lastFireTime = currentTimeMillis();
+            break;
+        }
+    }
 }
 
 void Orbiter::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName) {

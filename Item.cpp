@@ -202,6 +202,18 @@ const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
     }
 );
 
+const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), false, 0, true,
+    "Give it a toss and see where it lands",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2000, true, 
+    [](Entity* parent) {
+        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(parent->getPosition(), OrbiterType::BOWLING_BALL.getId(), parent));
+        bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
+        bowlingBall->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(bowlingBall);
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
