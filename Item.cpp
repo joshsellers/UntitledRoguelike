@@ -3,7 +3,7 @@
 #include "Projectile.h"
 #include <iostream>
 #include "SoundManager.h"
-#include "SlimeBall.h"
+#include "Orbiter.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -182,7 +182,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 0, false, 
     [](Entity* parent) {
-        std::shared_ptr<SlimeBall> slimeBall = std::shared_ptr<SlimeBall>(new SlimeBall(parent->getPosition(), parent));
+        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(parent->getPosition(), OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);

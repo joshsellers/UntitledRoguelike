@@ -6,9 +6,13 @@
 #include "Projectile.h"
 #include "World.h"
 
-Orbiter::Orbiter(sf::Vector2f pos, float distance, float speed, Entity* parent) : Entity(pos, speed, 16, 16, false) {
-    _distance = distance;
-    _speed = speed;
+
+Orbiter::Orbiter(sf::Vector2f pos, const unsigned int orbiterTypeId, Entity* parent) : _orbiterTypeId(orbiterTypeId), 
+Entity(pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
+    _orbiterType = OrbiterType::ORBITER_TYPES.at(_orbiterTypeId);
+    _distance = _orbiterType->getOrbitRadius();
+    _speed = _orbiterType->getOrbitSpeed();
+
     _parent = parent;
 }
 
@@ -22,8 +26,49 @@ void Orbiter::update() {
     if (getSpeed() > 0 && getAngle() > 360) _angle = 0;
     else if (getSpeed() < 0 && getAngle() < 0) _angle = 360;
 
-    subUpdate();
+    attack();
     _sprite.setPosition(getPosition());
+}
+
+void Orbiter::attack() {
+    if (currentTimeMillis() - _lastFireTime >= _orbiterType->getAttackFrequency()) {
+        switch (_orbiterType->getAttackMethod()) {
+            case OrbiterAttackMethod::CONTACT:
+                contactAttack();
+                break;
+            case OrbiterAttackMethod::PROJECTILE:
+                projectileAttack();
+                break;
+        }
+    }
+
+    if (!getParent()->isActive()) deactivate();
+}
+
+void Orbiter::projectileAttack() {
+    const float fireRange = 350.f;
+    float closestDistance = fireRange;
+    std::shared_ptr<Entity> closestEnemy = nullptr;
+    for (auto& entity : getWorld()->getEntities()) {
+        if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
+            float dist = std::sqrt(std::pow(_pos.x - entity->getPosition().x, 2) + std::pow(_pos.y - entity->getPosition().y, 2));
+            if (dist <= fireRange && dist < closestDistance) {
+                closestDistance = dist;
+                closestEnemy = entity;
+            }
+        }
+    }
+
+    if (closestEnemy != nullptr) {
+        fireTargetedProjectile(
+            sf::Vector2f(closestEnemy->getPosition().x, closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2),
+            _orbiterType->getProjectileData(), _orbiterType->getAttackSoundName()
+        );
+        _lastFireTime = currentTimeMillis();
+    }
+}
+
+void Orbiter::contactAttack() {
 }
 
 void Orbiter::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName) {
@@ -45,18 +90,34 @@ void Orbiter::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileDat
     if (soundName != "NONE") SoundManager::playSound(soundName);
 }
 
-float Orbiter::getAngle() {
+void Orbiter::draw(sf::RenderTexture& surface) {
+    surface.draw(_sprite);
+}
+
+const unsigned int Orbiter::getOrbiterTypeId() const {
+    return _orbiterTypeId;
+}
+
+float Orbiter::getAngle() const {
     return _angle;
 }
 
-float Orbiter::getDistance() {
+float Orbiter::getDistance() const {
     return _distance;
 }
 
-float Orbiter::getSpeed() {
+float Orbiter::getSpeed() const {
     return _speed;
 }
 
-Entity* Orbiter::getParent() {
+Entity* Orbiter::getParent() const {
     return _parent;
+}
+
+void Orbiter::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+    _sprite.setTexture(*spriteSheet);
+    sf::IntRect tRect = _orbiterType->getTextureRect();
+    _sprite.setTextureRect(sf::IntRect(tRect.left * TILE_SIZE, tRect.top * TILE_SIZE, tRect.width * TILE_SIZE, tRect.height * TILE_SIZE));
+    _sprite.setPosition(getPosition());
+    _sprite.setOrigin(_sprite.getTextureRect().width / 2, _sprite.getTextureRect().height / 2);
 }
