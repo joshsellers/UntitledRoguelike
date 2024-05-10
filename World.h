@@ -155,6 +155,8 @@ private:
     bool _cooldownActive = false;
     long long _enemySpawnCooldownTimeMilliseconds;
     int _maxActiveEnemies = INITIAL_MAX_ACTIVE_ENEMIES;
+    int _enemiesSpawnedThisRound = 0;
+    int _waveCounter = 0;
 
     void purgeEntityBuffer();
     void updateEntities();

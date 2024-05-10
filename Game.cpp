@@ -446,10 +446,29 @@ void Game::update() {
         } else {
             _magazineMeter->hide();
         }
+
+        displayEnemyWaveCountdownUpdates();
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
+}
+
+void Game::displayEnemyWaveCountdownUpdates() {
+    if (currentTimeMillis() - _lastCooldownUpdateTime > 1000) {
+        int secondsUntilNextWave = _world.getTimeUntilNextEnemyWave() / 1000;
+
+        std::string timeRemainingString = "NONE";
+        if (secondsUntilNextWave == 60) timeRemainingString = "1 minute";
+        else if (secondsUntilNextWave == 45) timeRemainingString = "45 seconds";
+        else if (secondsUntilNextWave == 30) timeRemainingString = "30 seconds";
+        else if (secondsUntilNextWave == 10) timeRemainingString = "10 seconds";
+
+        if (timeRemainingString != "NONE") {
+            MessageManager::displayMessage(timeRemainingString + " until next wave", 5);
+            _lastCooldownUpdateTime = currentTimeMillis();
+        }
+    }
 }
 
 void Game::draw(sf::RenderTexture& surface) {

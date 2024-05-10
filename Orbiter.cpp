@@ -25,6 +25,7 @@ Entity(pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 1
         heal(getMaxHitPoints());
     }
 
+    _entityType = "dontblockplayershots";
 }
 
 void Orbiter::update() {

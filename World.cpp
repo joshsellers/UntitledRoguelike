@@ -94,7 +94,10 @@ void World::update() {
         if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
             _cooldownActive = true;
             _maxEnemiesReached = false;
+            _enemiesSpawnedThisRound = 0;
             _cooldownStartTime = currentTimeMillis();
+
+            MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
         } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
             _cooldownActive = false;
         }
@@ -240,14 +243,15 @@ void World::spawnMobs() {
                         addEntity(mob);
 
                         if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID
-                            && getEnemyCount() >= _maxActiveEnemies) {
+                            && (getEnemyCount() >= _maxActiveEnemies || _enemiesSpawnedThisRound >= _maxActiveEnemies)) {
                             _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 6;
                             PLAYER_SCORE += 1.f;
+                            _waveCounter++;
                             break;
-                        }
+                        } else if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID) _enemiesSpawnedThisRound++;
                     }
                 }
             } else continue;

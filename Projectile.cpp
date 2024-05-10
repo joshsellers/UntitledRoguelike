@@ -31,7 +31,7 @@ void Projectile::update() {
 
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-            && (!_data.onlyHitEnemies || entity->isEnemy())) {
+            && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")) {
             if (entity->getHitBox().intersects(_hitBox)) {
                 entity->damage(Item::ITEMS[_itemId]->getDamage());
                 _isActive = false;

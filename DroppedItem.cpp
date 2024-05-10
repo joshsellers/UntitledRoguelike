@@ -1,5 +1,6 @@
 #include "DroppedItem.h"
 #include "World.h"
+#include "SoundManager.h"
 
 DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect) :
     _itemId(itemId), _amount(amount), _textureRect(textureRect), _minY(pos.y - _hoverDist), _originalY(pos.y),
@@ -15,6 +16,7 @@ void DroppedItem::update() {
             if (entity->canPickUpItems() && entity->isActive() && 
                 entity->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
                 entity->getInventory().addItem(_itemId, _amount);
+                if (_itemId == Item::PENNY.getId()) SoundManager::playSound("coinpickup");
                 _isActive = false;
             }
         }

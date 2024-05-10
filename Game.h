@@ -13,7 +13,7 @@
 #include "ShopKeep.h"
 #include "ShopManager.h"
 
-const std::string VERSION = "0.0341";
+const std::string VERSION = "0.0342";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -50,6 +50,9 @@ private:
 	bool _isPaused = false;
 
 	bool _gameStarted = false;
+	
+	long long _lastCooldownUpdateTime = 0;
+	void displayEnemyWaveCountdownUpdates();
 
 	void sendMultiplayerUpdates();
 	bool _connectedAsClient = false;
