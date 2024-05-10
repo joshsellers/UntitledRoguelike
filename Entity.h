@@ -82,7 +82,7 @@ public:
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
     int& getMaxHitPointsRef();
-    virtual void damage(int damage);
+    virtual void takeDamage(int damage);
     void heal(int hitPoints);
     int getHitPoints() const;
     int& getHitPointsRef();
@@ -174,6 +174,8 @@ protected:
     bool _isReloading = false;
 
     bool _multiplayerSendUpdates = false;
+
+    virtual void damage(int damage);
 
 private:
     int _maxHitPoints = 0;

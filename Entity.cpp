@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
+#include "DamageParticle.h"
 
 Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp) {
@@ -444,6 +445,14 @@ int Entity::getMaxHitPoints() const {
 
 int& Entity::getMaxHitPointsRef() {
     return _maxHitPoints;
+}
+
+void Entity::takeDamage(int damage) {
+    std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
+    damageParticle->setWorld(getWorld());
+    damageParticle->loadSprite(getWorld()->getSpriteSheet());
+    getWorld()->addEntity(damageParticle);
+    this->damage(damage);
 }
 
 void Entity::damage(int damage) {

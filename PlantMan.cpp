@@ -36,7 +36,7 @@ void PlantMan::update() {
 
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
-            entity->damage(5);
+            entity->takeDamage(5);
             entity->knockBack(20.f, getMovingDir());
             break;
         }

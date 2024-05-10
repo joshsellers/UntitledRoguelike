@@ -11,9 +11,10 @@ public:
 
     void draw(sf::RenderTexture& surface);
 
-    void damage(int damage);
-
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
+protected:
+    virtual void damage(int damage);
 private:
     bool _isAggro = false;
 

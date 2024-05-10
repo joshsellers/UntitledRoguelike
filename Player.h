@@ -30,7 +30,6 @@ public:
     bool isDodging() const;
 
     void knockBack(float amt, MOVING_DIRECTION dir);
-    virtual void damage(int damage);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -45,6 +44,8 @@ public:
     friend class Game;
     friend class RemotePlayer;
     friend class World;
+protected:
+    virtual void damage(int damage);
 
 private:
     bool& _gamePaused;

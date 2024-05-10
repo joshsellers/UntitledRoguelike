@@ -67,7 +67,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
 
-    _shopKeep = std::shared_ptr<ShopKeep>(new ShopKeep(sf::Vector2f(0, 0), _spriteSheet));
+    _shopKeep = std::shared_ptr<ShopKeep>(new ShopKeep(sf::Vector2f(0, 0), &_shopManager, _spriteSheet));
     _world.setShopKeep(_shopKeep);
 
     GameController::addListener(_player);
@@ -599,6 +599,11 @@ void Game::buttonPressed(std::string buttonCode) {
         
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
+        _world._enemiesSpawnedThisRound = 0;
+        _world._waveCounter = 0;
+
+        _world._isPlayerInShop = false;
+        _shopManager.clearLedger();
 
         _player->_pos = sf::Vector2f(0, 0);
         _player->_movingDir = DOWN;

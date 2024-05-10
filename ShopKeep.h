@@ -2,10 +2,11 @@
 #define _SHOP_KEEP_H
 
 #include "Entity.h"
+#include "ShopManager.h"
 
 class ShopKeep : public Entity {
 public:
-    ShopKeep(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet);
+    ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet);
 
     void initInventory();
 
@@ -23,6 +24,8 @@ private:
     sf::Sprite _clothingFeetSprite;
 
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
+
+    ShopManager* _shopManager;
 };
 
 #endif

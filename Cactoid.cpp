@@ -30,7 +30,7 @@ void Cactoid::update() {
 
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
-            entity->damage(8);
+            entity->takeDamage(8);
             entity->knockBack(15.f, getMovingDir());
             break;
         }

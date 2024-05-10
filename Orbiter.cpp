@@ -87,8 +87,9 @@ void Orbiter::projectileAttack() {
 
 void Orbiter::contactAttack() {
     for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->compare(this) && !entity->compare(getParent()) && entity->isDamageable() && entity->getHitBox().intersects(getHitBox())) {
-            entity->damage(_orbiterType->getContactDamage());
+        if (!entity->compare(this) && !entity->compare(getParent()) && entity->isDamageable() && entity->getEntityType() != "dontblockplayershots"
+            && entity->getHitBox().intersects(getHitBox())) {
+            entity->takeDamage(_orbiterType->getContactDamage());
             _lastFireTime = currentTimeMillis();
             break;
         }

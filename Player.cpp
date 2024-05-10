@@ -354,7 +354,7 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
         for (auto& entity : getWorld()->getEntities()) {
             if (!entity->compare(this) && entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
-                entity->damage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage());
+                entity->takeDamage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage());
             }
         }
     }

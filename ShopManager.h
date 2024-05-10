@@ -13,9 +13,15 @@ public:
     bool buy(int itemId, int amount);
     bool sell(int itemId, int amount);
 
+    void clearLedger();
+    std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> getShopLedger() const;
+
 private:
     std::shared_ptr<UIShopInterface> _buyInterface;
     std::shared_ptr<UIShopInterface> _sellInterface;
+
+    // seed: {transactionNumber: itemId: amount}
+    std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> _shopLedger;
 };
 
 #endif

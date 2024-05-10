@@ -9,6 +9,7 @@ void UIMessageDisplay::update() {
 
 void UIMessageDisplay::draw(sf::RenderTexture& surface) {
     int index = 0;
+    int lastHeight = getRelativeHeight(3.f);
     for (auto& message : MessageManager::getMessages()) {
         if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) {
             sf::Text messageText(message->text, _font);
@@ -21,7 +22,7 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
             float height = messageText.getGlobalBounds().height;
 
             float x = getRelativeWidth(50.f) - width / 2;
-            float y = getRelativeHeight(3.f) + (MessageManager::getMessageCount() - index) * getRelativeWidth(2.f);
+            float y = getRelativeHeight(1.5f) + lastHeight;
             messageText.setPosition(sf::Vector2f(x, y));
 
             sf::RectangleShape background;
@@ -32,6 +33,7 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
             float padding = getRelativeWidth(0.25f);
             background.setPosition(sf::Vector2f(x - padding, y - padding));
             background.setSize(sf::Vector2f(width + padding * 2, height + padding * 2));
+            lastHeight = y - padding + height + padding * 2;
 
             surface.draw(background);
             surface.draw(messageText);

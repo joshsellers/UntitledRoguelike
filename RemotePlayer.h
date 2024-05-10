@@ -11,8 +11,8 @@ public:
     void update();
 
     void messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer);
-
-    void damage(int damage);
+protected:
+    virtual void damage(int damage);
 private:
     SteamNetworkingIdentity _identityPeer;
 

@@ -1,5 +1,6 @@
 #include "ShopManager.h"
 #include "MessageManager.h"
+#include "Entity.h"
 
 void ShopManager::setBuyInterface(std::shared_ptr<UIShopInterface> buyInterface) {
     _buyInterface = buyInterface;
@@ -15,6 +16,16 @@ bool ShopManager::buy(int itemId, int amount) {
         && _sellInterface->getSource().getItemAmountAt(_sellInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _sellInterface->addItem(itemId, amount);
         _sellInterface->getSource().removeItem(Item::PENNY.getId(), price);
+
+        Entity* shopKeep = _buyInterface->getSource().getParent();
+        unsigned int currentSeed = shopKeep->getPosition().x + shopKeep->getPosition().y * (shopKeep->getPosition().x - shopKeep->getPosition().y);
+
+        unsigned int transactionNumber = 0;
+        if (_shopLedger.size() != 0 && _shopLedger[currentSeed].size() != 0) transactionNumber = _shopLedger[currentSeed].size();
+
+        _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, -amount);
+        _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), price);
+
         return true;
     } else {
         MessageManager::displayMessage("You do not have enough pennies to buy this item!", 5);
@@ -28,9 +39,27 @@ bool ShopManager::sell(int itemId, int amount) {
         && _buyInterface->getSource().getItemAmountAt(_buyInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _buyInterface->addItem(itemId, amount);
         _buyInterface->getSource().removeItem(Item::PENNY.getId(), price);
+
+        Entity* shopKeep = _buyInterface->getSource().getParent();
+        unsigned int currentSeed = shopKeep->getPosition().x + shopKeep->getPosition().y * (shopKeep->getPosition().x - shopKeep->getPosition().y);
+
+        unsigned int transactionNumber = 0;
+        if (_shopLedger.size() != 0 && _shopLedger[currentSeed].size() != 0) transactionNumber = _shopLedger[currentSeed].size();
+
+        _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, amount);
+        _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), -price);
+
         return true;
     } else {
         MessageManager::displayMessage("The Shopkeep does not have enough pennies to buy this item!", 5);
         return false;
     }
+}
+
+void ShopManager::clearLedger() {
+    _shopLedger.clear();
+}
+
+std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> ShopManager::getShopLedger() const {
+    return _shopLedger;
 }

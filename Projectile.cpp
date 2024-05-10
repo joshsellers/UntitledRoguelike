@@ -33,7 +33,7 @@ void Projectile::update() {
         if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
             && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")) {
             if (entity->getHitBox().intersects(_hitBox)) {
-                entity->damage(Item::ITEMS[_itemId]->getDamage());
+                entity->takeDamage(Item::ITEMS[_itemId]->getDamage());
                 _isActive = false;
                 return;
             }

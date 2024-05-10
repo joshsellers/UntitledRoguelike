@@ -1,8 +1,9 @@
 #include "ShopKeep.h"
 #include "World.h"
 
-ShopKeep::ShopKeep(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 96, 48, false) {
+ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
+    _shopManager = shopManager;
 
     _entityType = "shopkeep";
 
@@ -25,7 +26,9 @@ void ShopKeep::initInventory() {
         getInventory().removeItemAt(0, getInventory().getItemAmountAt(0));
     }
 
-    srand(_pos.x + _pos.y * (_pos.x - _pos.y));
+    unsigned int seed = _pos.x + _pos.y * (_pos.x - _pos.y);
+    srand(seed);
+
     int pennyCount = randomInt(5000, 10000);
     getInventory().addItem(Item::PENNY.getId(), pennyCount);
 
@@ -50,6 +53,15 @@ void ShopKeep::initInventory() {
             || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_FEET) {
             getInventory().equip(i, item->getEquipmentType());
         }
+    }
+
+    for (unsigned int i = 0; i < _shopManager->getShopLedger()[seed].size(); i++) {
+        auto& ledger = _shopManager->getShopLedger()[seed][i];
+        unsigned int itemId = ledger.first;
+        int amount = ledger.second;
+
+        if (amount > 0) getInventory().addItem(itemId, amount);
+        else getInventory().removeItem(itemId, -amount);
     }
 }
 
