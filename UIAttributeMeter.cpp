@@ -30,6 +30,8 @@ UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, f
 }
 
 void UIAttributeMeter::update() {
+    if (_attribute < 0) _attribute = 0;
+
     _bar.setSize(sf::Vector2f(_width * ((float)_attribute / (float)_attributeMax), _height));
 
     if (_useDefaultLabel) _text.setString(_attName + ": " + std::to_string(_attribute) + "/" + std::to_string(_attributeMax));

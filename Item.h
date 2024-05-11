@@ -53,6 +53,9 @@ public:
     static const Item WOOD;
     static const Item _PROJECTILE_SNOW_BALL;
     static const ProjectileData DATA_PROJECTILE_SNOW_BALL;
+    static const Item STEROIDS;
+    static const Item PROTEIN_SHAKE;
+    static const Item BOTTLE_OF_MILK;
 
     static std::vector<const Item*> ITEMS;
 

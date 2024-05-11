@@ -655,7 +655,6 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("respawn");
         _cmdPrompt->processCommand("setmaxhp:100");
         _cmdPrompt->processCommand("addhp:100");
-        if (LOCK_CMD_PROMPT) _cmdPrompt->lock();
         
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);

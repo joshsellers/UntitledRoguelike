@@ -224,6 +224,35 @@ const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(3
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false);
 const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, false);
 
+const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
+    "Increases max HP by 25",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20000, true,
+    [](Entity* parent) {
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
+        return true;
+    }
+);
+
+const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), true, 32, true,
+    "Increases max HP by 5 and makes you feel good",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 4750, true, 
+    [](Entity* parent) {
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
+        parent->heal(parent->getMaxHitPoints());
+        return true;
+    }
+);
+
+const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), true, 16, true,
+    "Increases max HP by 2 and makes you feel a little better",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1199, true,
+    [](Entity* parent) {
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 2);
+        parent->heal(8);
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,

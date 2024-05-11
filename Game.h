@@ -13,7 +13,7 @@
 #include "ShopKeep.h"
 #include "ShopManager.h"
 
-const std::string VERSION = "0.0348";
+const std::string VERSION = "0.0350";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
