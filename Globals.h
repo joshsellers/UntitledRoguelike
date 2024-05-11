@@ -19,4 +19,6 @@ extern unsigned int MAX_PACKETS_OUT_PER_SECOND;
 
 extern float PLAYER_SCORE;
 
+extern bool DEBUG_MODE;
+
 #endif

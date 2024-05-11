@@ -19,6 +19,7 @@ protected:
     virtual void dropStack(int index);
 
     virtual void drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex);
+    virtual void subDraw(sf::RenderTexture& surface);
 
 private:
     bool _buyMode;
@@ -26,6 +27,8 @@ private:
     ShopManager& _shopManager;
 
     void attemptTransaction(int index, int amount);
+
+    void darkenUnselectedMenu(sf::RenderTexture& surface);
 };
 
 #endif

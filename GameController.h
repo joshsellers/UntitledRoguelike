@@ -79,10 +79,10 @@ public:
                 updateControllerAxisValue((CONTROLLER_AXIS)event.joystickMove.axis, event.joystickMove.position);
                 break;
             case sf::Event::JoystickConnected:
-                MessageManager::displayMessage("Controller connected: " + std::to_string(event.joystickConnect.joystickId), 5);
+                MessageManager::displayMessage("Controller connected", 5);
                 break;
             case sf::Event::JoystickDisconnected:
-                MessageManager::displayMessage("Controller disconnected: " + std::to_string(event.joystickConnect.joystickId), 5);
+                MessageManager::displayMessage("Controller disconnected", 5);
                 break;
             case sf::Event::JoystickButtonReleased:
                 listenerButtonReleaseCallback((CONTROLLER_BUTTON)event.joystickButton.button);

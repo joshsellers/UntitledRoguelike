@@ -17,7 +17,7 @@
 #include "Frog.h"
 #include "SnowMan.h"
 
-constexpr bool LOCK_CMD_PROMPT = true;
+const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
 
 struct Command {
@@ -472,10 +472,11 @@ private:
 
         {
             "toggledebug",
-            Command("Toggle output of debug messages",
+            Command("Toggle debug mode",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 DISPLAY_DEBUG_MESSAGES = !DISPLAY_DEBUG_MESSAGES;
-                return "DISPLAY_DEBUG_MESSAGES set to " + (std::string)(DISPLAY_DEBUG_MESSAGES ? "true" : "false");
+                DEBUG_MODE = !DEBUG_MODE;
+                return "DEBUG_MODE set to " + (std::string)(DEBUG_MODE ? "true" : "false");
             })
         },
 

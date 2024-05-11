@@ -57,6 +57,7 @@ protected:
     sf::Text _tooltipText;
     sf::RectangleShape _tooltipBg;
 
+    virtual void subDraw(sf::RenderTexture& surface);
     virtual void drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex);
 
     const float _originalY;

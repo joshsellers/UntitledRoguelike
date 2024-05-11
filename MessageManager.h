@@ -9,8 +9,9 @@
 #include <iostream>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include "Globals.h"
 
-inline bool DISPLAY_DEBUG_MESSAGES = false;
+inline bool DISPLAY_DEBUG_MESSAGES = DEBUG_MODE;
 
 struct MessageType {
     MessageType(std::string name, sf::Uint32 color) {

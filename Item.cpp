@@ -30,7 +30,7 @@ const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, fa
     EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false, 90
 );
 
-const Item Item::AXE(5, "Axe", sf::IntRect(18, 3, 1, 1), false, 0, false,
+const Item Item::AXE(5, "Axe", sf::IntRect(18, 4, 1, 1), false, 0, false,
     "A large, formidible axe",
     EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 50
 );

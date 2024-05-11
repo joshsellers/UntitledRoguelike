@@ -83,7 +83,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         label.setPosition(itemPos.x - (_width / 8) + _width + (_width / 8) * 3, itemPos.y + _height / 6);
         label.setString(item->getName() + (
             item->isStackable() ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
-        ));
+            ));
 
         sf::RectangleShape labelBg(sf::Vector2f(_width + (_width / 8) * 3 + label.getGlobalBounds().width + (_width / 8), _height + (_height / 8) * 2));
         labelBg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));
@@ -149,7 +149,11 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         drawAdditionalTooltip(surface, mousedOverItemIndex);
     }
+
+    subDraw(surface);
 }
+
+void UIInventoryInterface::subDraw(sf::RenderTexture& surface) {}
 
 void UIInventoryInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {}
 
@@ -296,6 +300,8 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
     _gamepadSelectedItemIndex = -1;
     _gamepadShowTooltip = false;
     _mousePos = sf::Vector2f(mx, my);
+    
+    blockControllerInput = false;
 }
 
 void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {

@@ -839,10 +839,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         }
         break;
     case sf::Keyboard::Hyphen:
-        if (!_commandMenu->isActive()) _camera->zoom(2);
+        if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(2);
         break;
     case sf::Keyboard::Equal:
-        if (!_commandMenu->isActive()) _camera->zoom(0.5);
+        if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(0.5);
         break;
     case sf::Keyboard::Escape:
         togglePauseMenu();

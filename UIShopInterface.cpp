@@ -79,3 +79,17 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
     surface.draw(_tooltipBg);
     surface.draw(_tooltipText);
 }
+
+void UIShopInterface::subDraw(sf::RenderTexture& surface) {
+    if (blockControllerInput) {
+        darkenUnselectedMenu(surface);
+    }
+}
+
+void UIShopInterface::darkenUnselectedMenu(sf::RenderTexture& surface) {
+    sf::RectangleShape cover;
+    cover.setPosition(_background.getPosition().x, _background.getPosition().y);
+    cover.setSize(_background.getSize());
+    cover.setFillColor(sf::Color(0x000000AA));
+    surface.draw(cover);
+}
