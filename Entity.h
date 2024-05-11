@@ -142,6 +142,8 @@ protected:
     bool _isInitiallyDocile = false;
     bool _isHostile = false;
 
+    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE");
+
     Inventory _inventory = Inventory(this);
 
     World* _world = nullptr;

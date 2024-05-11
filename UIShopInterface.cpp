@@ -13,6 +13,7 @@ void UIShopInterface::buttonPressed(std::string buttonCode) {
     else if (buttonCode == "filter_apparel") setFilter(FILTER_TYPE::APPAREL);
     else if (buttonCode == "filter_weapons") setFilter(FILTER_TYPE::WEAPONS);
     else if (buttonCode == "filter_ammo") setFilter(FILTER_TYPE::AMMO);
+    else if (buttonCode == "filter_misc") setFilter(FILTER_TYPE::MISC);
 }
 
 void UIShopInterface::addItem(int itemId, int amount) {

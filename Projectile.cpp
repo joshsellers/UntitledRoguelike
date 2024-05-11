@@ -29,9 +29,15 @@ void Projectile::update() {
         return;
     }
 
+    if (!_parent->isActive()) {
+        deactivate();
+        return;
+    }
+
     for (auto& entity : getWorld()->getEntities()) {
         if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-            && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")) {
+            && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+            && entity->getEntityType() != _parent->getEntityType()) {
             if (entity->getHitBox().intersects(_hitBox)) {
                 entity->takeDamage(Item::ITEMS[_itemId]->getDamage());
                 _isActive = false;

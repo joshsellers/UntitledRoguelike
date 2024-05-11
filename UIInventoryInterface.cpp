@@ -51,10 +51,12 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
 
 void UIInventoryInterface::update() {
     if (GameController::isButtonPressed(CONTROLLER_BUTTON::DPAD_UP) 
-        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME) {
+        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME
+        && !blockControllerInput) {
         gamepadScrollUp();
     } else if (GameController::isButtonPressed(CONTROLLER_BUTTON::DPAD_DOWN)
-        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME) {
+        && currentTimeMillis() - _lastDPadPressTime > DPAD_HOLD_TIME
+        && !blockControllerInput) {
         gamepadScrollDown();
     }
 }
@@ -162,6 +164,8 @@ bool UIInventoryInterface::isItemCorrectType(EQUIPMENT_TYPE type) {
             && (type == EQUIPMENT_TYPE::TOOL)) return true;
         else if (getFilter() == FILTER_TYPE::AMMO
             && (type == EQUIPMENT_TYPE::AMMO)) return true;
+        else if (getFilter() == FILTER_TYPE::MISC
+            && (type == EQUIPMENT_TYPE::NOT_EQUIPABLE)) return true;
         else return false;
     }
 
@@ -325,6 +329,7 @@ void UIInventoryInterface::buttonPressed(std::string buttonCode) {
     else if (buttonCode == "filter_apparel") setFilter(FILTER_TYPE::APPAREL);
     else if (buttonCode == "filter_weapons") setFilter(FILTER_TYPE::WEAPONS);
     else if (buttonCode == "filter_ammo") setFilter(FILTER_TYPE::AMMO);
+    else if (buttonCode == "filter_misc") setFilter(FILTER_TYPE::MISC);
 }
 
 void UIInventoryInterface::setSource(Inventory& sourceInventory) {

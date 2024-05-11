@@ -180,7 +180,7 @@ const ProjectileData Item::DATA_PROJECTILE_SLIME_BALL(Item::_PROJECTILE_SLIME_BA
 
 const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0, true, 
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 0, false, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, true, 
     [](Entity* parent) {
         std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(parent->getPosition(), OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -204,7 +204,7 @@ const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
 
 const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), false, 0, true,
     "Give it a toss and see where it lands",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2000, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2500, true, 
     [](Entity* parent) {
         std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(parent->getPosition(), OrbiterType::BOWLING_BALL.getId(), parent));
         bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -213,6 +213,16 @@ const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), fals
         return true;
     }
 );
+
+const Item Item::WOOD(31, "Wood", sf::IntRect(6, 10, 1, 1), true, 99, false, 
+    "Sturdy\nSell it to the shop keep for some pennies",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0.f, 0, sf::Vector2f(), false, 35, false
+);
+
+const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(32, 21, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false);
+const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, false);
 
 std::vector<const Item*> Item::ITEMS;
 

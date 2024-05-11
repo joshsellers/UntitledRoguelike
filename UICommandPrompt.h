@@ -15,6 +15,7 @@
 #include "ShopExterior.h"
 #include "ShopCounter.h"
 #include "Frog.h"
+#include "SnowMan.h"
 
 constexpr bool LOCK_CMD_PROMPT = true;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -230,6 +231,8 @@ private:
                             entity = std::shared_ptr<ShopCounter>(new ShopCounter(pos, _world->getSpriteSheet()));
                         } else if (entityName == "frog") {
                             entity = std::shared_ptr<Frog>(new Frog(pos));
+                        } else if (entityName == "snowman") {
+                            entity = std::shared_ptr<SnowMan>(new SnowMan(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
@@ -406,7 +409,7 @@ private:
 
         {
             "timestamp",
-            Command("Displays the current UNIX timestamp in milliseconds",
+            Command("Display the current UNIX timestamp in milliseconds",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 return std::to_string(currentTimeMillis());
             })
@@ -423,7 +426,7 @@ private:
 
         {
             "tpg",
-            Command("Toggles prop generation",
+            Command("Toggle prop generation",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 _world->disablePropGeneration = !_world->disablePropGeneration;
                 return "disablePropGeneration set to " + (std::string)(_world->disablePropGeneration ? "true" : "false");
@@ -469,7 +472,7 @@ private:
 
         {
             "toggledebug",
-            Command("Toggles output of debug messages",
+            Command("Toggle output of debug messages",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 DISPLAY_DEBUG_MESSAGES = !DISPLAY_DEBUG_MESSAGES;
                 return "DISPLAY_DEBUG_MESSAGES set to " + (std::string)(DISPLAY_DEBUG_MESSAGES ? "true" : "false");
@@ -495,7 +498,7 @@ private:
 
         {
             "endenemycooldown",
-            Command("Ends enemy spawn cooldown",
+            Command("End enemy spawn cooldown",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 _world->resetEnemySpawnCooldown();
                 return "Ended enemy spawn cooldown";

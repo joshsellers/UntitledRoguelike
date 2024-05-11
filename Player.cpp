@@ -349,8 +349,14 @@ TERRAIN_TYPE Player::getCurrentTerrain() {
 }
 
 void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos) {
+    int threshold = 25;
     sf::Vector2f delta = currentMousePos - _lastMousePos;
-    const int threshold = 25;
+
+    if (GameController::isConnected()) {
+        delta = sf::Vector2f(GameController::getRightStickXAxis(), GameController::getRightStickYAxis()) - _lastMousePos;
+        threshold = 50;
+    }
+
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
         for (auto& entity : getWorld()->getEntities()) {
             if (!entity->compare(this) && entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
@@ -358,7 +364,11 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
             }
         }
     }
+
     _lastMousePos = currentMousePos;
+    if (GameController::isConnected()) {
+        _lastMousePos = sf::Vector2f(GameController::getRightStickXAxis(), GameController::getRightStickYAxis());
+    }
 
     _meleeAttackDelayCounter++;
 }

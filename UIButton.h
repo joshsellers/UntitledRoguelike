@@ -34,6 +34,8 @@ public:
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 
+    bool pressWhenSelected = false;
+
 private:
     bool _mouseDown = false;
     int _mx = 0, _my = 0;
@@ -45,6 +47,8 @@ private:
 
     UIButtonListener* _listener = nullptr;
     std::string _buttonCode = "";
+
+    bool _wasJustSelected = false;
 };
 
 #endif

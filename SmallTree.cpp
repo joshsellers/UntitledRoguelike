@@ -19,6 +19,9 @@ SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet)
     srand(currentTimeNano());
     unsigned int appleAmount = randomInt(0, 24);
     if (appleAmount >= 18) getInventory().addItem(Item::APPLE.getId(), appleAmount - 18);
+
+    unsigned int woodAmount = randomInt(1, 5);
+    getInventory().addItem(Item::WOOD.getId(), woodAmount);
 }
 
 void SmallTree::update() {}

@@ -97,16 +97,21 @@ void UIButton::update() {
     } else {
         _sprite.setTexture(*_texture);
     }
+
+    if (pressWhenSelected && _isSelected && !_wasJustSelected) {
+        _listener->buttonPressed(_buttonCode);
+    }
+    _wasJustSelected = _isSelected;
 }
 
 void UIButton::draw(sf::RenderTexture& surface) {}
 
 void UIButton::controllerButtonPressed(CONTROLLER_BUTTON button) {
-    if (_isSelected && button == CONTROLLER_BUTTON::A) _mouseDown = true;
+    if (_isSelected && button == CONTROLLER_BUTTON::A && !pressWhenSelected) _mouseDown = true;
 }
 
 void UIButton::controllerButtonReleased(CONTROLLER_BUTTON button) {
-    if (_isSelected && button == CONTROLLER_BUTTON::A) {
+    if (_isSelected && button == CONTROLLER_BUTTON::A && !pressWhenSelected) {
         _mouseDown = false;
         _listener->buttonPressed(_buttonCode);
     }

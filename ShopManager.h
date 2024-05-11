@@ -16,6 +16,7 @@ public:
     void clearLedger();
     std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> getShopLedger() const;
 
+    void controllerButtonReleased(CONTROLLER_BUTTON button);
 private:
     std::shared_ptr<UIShopInterface> _buyInterface;
     std::shared_ptr<UIShopInterface> _sellInterface;

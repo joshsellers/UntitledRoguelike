@@ -9,7 +9,8 @@ enum class MOB_TYPE : int {
     TURTLE,
     FROG,
     CACTOID,
-    PLANT_MAN
+    PLANT_MAN,
+    SNOW_MAN
 };
 
 struct MobSpawnData {

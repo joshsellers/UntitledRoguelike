@@ -14,7 +14,8 @@ enum class FILTER_TYPE {
     NONE,
     APPAREL,
     WEAPONS,
-    AMMO
+    AMMO,
+    MISC
 };
 
 class UIInventoryInterface : public UIElement, public UIButtonListener {

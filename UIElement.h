@@ -38,6 +38,8 @@ public:
     void setSelectionId(int selectionId);
     int getSelectionId();
 
+    bool blockControllerInput = false;
+
     virtual void setCharacterSize(float size);
 
     friend class UIMenu;

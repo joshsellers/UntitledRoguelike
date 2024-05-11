@@ -63,3 +63,16 @@ void ShopManager::clearLedger() {
 std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> ShopManager::getShopLedger() const {
     return _shopLedger;
 }
+
+void ShopManager::controllerButtonReleased(CONTROLLER_BUTTON button) {
+    switch (button) {
+        case CONTROLLER_BUTTON::LEFT_BUMPER:
+            _buyInterface->blockControllerInput = false;
+            _sellInterface->blockControllerInput = true;
+            break;
+        case CONTROLLER_BUTTON::RIGHT_BUMPER:
+            _buyInterface->blockControllerInput = true;
+            _sellInterface->blockControllerInput = false;
+            break;
+    }
+}

@@ -50,6 +50,9 @@ public:
     static const Item SLIME_BALL;
     static const Item BANANA;
     static const Item BOWLING_BALL;
+    static const Item WOOD;
+    static const Item _PROJECTILE_SNOW_BALL;
+    static const ProjectileData DATA_PROJECTILE_SNOW_BALL;
 
     static std::vector<const Item*> ITEMS;
 

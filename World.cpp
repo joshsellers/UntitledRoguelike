@@ -19,6 +19,7 @@
 #include "ShopExterior.h"
 #include "Frog.h"
 #include "ShopKeep.h"
+#include "SnowMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -233,6 +234,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::FROG:
                                 mob = std::shared_ptr<Frog>(new Frog(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::SNOW_MAN:
+                                mob = std::shared_ptr<SnowMan>(new SnowMan(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -461,7 +465,7 @@ void World::generateChunkEntities(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));

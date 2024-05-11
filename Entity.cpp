@@ -2,6 +2,8 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "World.h"
 #include "DamageParticle.h"
+#include "Projectile.h"
+#include "SoundManager.h"
 
 Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp) {
@@ -286,6 +288,25 @@ void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int
     }
 }
 
+void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName) {
+    const sf::Vector2f centerPoint(getPosition().x - _spriteWidth / 2, getPosition().y + _spriteHeight / 2);
+    sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
+
+    double x = (double)(targetPos.x - centerPoint.x);
+    double y = (double)(targetPos.y - centerPoint.y);
+
+    float angle = (float)((std::atan2(y, x)));
+
+    std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
+        spawnPos, this, angle, projData.baseVelocity, projData
+    ));
+    proj->loadSprite(getWorld()->getSpriteSheet());
+    proj->setWorld(getWorld());
+    getWorld()->addEntity(proj);
+
+    if (soundName != "NONE") SoundManager::playSound(soundName);
+}
+
 bool Entity::isMoving() const {
     return _isMoving;
 }
@@ -448,10 +469,12 @@ int& Entity::getMaxHitPointsRef() {
 }
 
 void Entity::takeDamage(int damage) {
-    std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
-    damageParticle->setWorld(getWorld());
-    damageParticle->loadSprite(getWorld()->getSpriteSheet());
-    getWorld()->addEntity(damageParticle);
+    if (getEntityType() != "player") {
+        std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
+        damageParticle->setWorld(getWorld());
+        damageParticle->loadSprite(getWorld()->getSpriteSheet());
+        getWorld()->addEntity(damageParticle);
+    }
     this->damage(damage);
 }
 

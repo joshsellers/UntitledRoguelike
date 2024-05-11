@@ -21,7 +21,7 @@ void UIMenu::addElement(std::shared_ptr<UIElement> element) {
 
 void UIMenu::controllerButtonReleased(CONTROLLER_BUTTON button) {
     for (auto& element : _elements) {
-        if (element->isActive()) element->controllerButtonReleased(button);
+        if (element->isActive() && !element->blockControllerInput) element->controllerButtonReleased(button);
     }
 }
 
@@ -61,7 +61,7 @@ void UIMenu::controllerButtonPressed(CONTROLLER_BUTTON button) {
     }
 
     for (auto& element : _elements) {
-        if (element->isActive()) element->controllerButtonPressed(button);
+        if (element->isActive() && !element->blockControllerInput) element->controllerButtonPressed(button);
     }
 }
 
