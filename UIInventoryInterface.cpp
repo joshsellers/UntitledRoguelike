@@ -119,7 +119,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
     if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize())) {
         const Item* item = Item::ITEMS[
-            _source.getItemIdAt(_gamepadShowTooltip ? _gamepadSelectedItemIndex : mousedOverItemIndex)
+            _source.getItemIdAt(_gamepadShowTooltip ? _gamepadUnfilteredSelectedItemIndex : mousedOverItemIndex)
         ];
 
         float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
@@ -208,7 +208,10 @@ void UIInventoryInterface::controllerButtonReleased(CONTROLLER_BUTTON button) {
     if (getFilter() != FILTER_TYPE::NONE) {
         for (int i = 0; i < (int)_source.getCurrentSize(); i++) {
             if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
-            if (filteredIndex == _gamepadSelectedItemIndex) unFilteredIndex = i;
+            if (filteredIndex == _gamepadSelectedItemIndex) {
+                unFilteredIndex = i;
+                break;
+            }
 
             filteredIndex++;
         }
@@ -252,6 +255,8 @@ void UIInventoryInterface::gamepadScrollDown() {
         if (_gamepadSelectedItemIndex >= 12 && (int)_source.getCurrentSize() > 13) {
             _y -= ITEM_SPACING;
         }
+
+        unfilterGamepadIndex();
     }
 }
 
@@ -262,7 +267,24 @@ void UIInventoryInterface::gamepadScrollUp() {
         if (_gamepadSelectedItemIndex >= 11 && (int)_source.getCurrentSize() > 13) {
             _y += ITEM_SPACING;
         }
+
+        unfilterGamepadIndex();
     }
+}
+
+void UIInventoryInterface::unfilterGamepadIndex() {
+    int filteredIndex = 0;
+    if (getFilter() != FILTER_TYPE::NONE) {
+        for (int i = 0; i < (int)_source.getCurrentSize(); i++) {
+            if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
+            if (filteredIndex == _gamepadSelectedItemIndex) {
+                _gamepadUnfilteredSelectedItemIndex = i;
+                break;
+            }
+
+            filteredIndex++;
+        }
+    } else _gamepadUnfilteredSelectedItemIndex = _gamepadSelectedItemIndex;
 }
 
 void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {}

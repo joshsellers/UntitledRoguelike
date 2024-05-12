@@ -35,7 +35,8 @@ void PlantMan::update() {
     feetPos.y += TILE_SIZE * 3;
 
     for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
+        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) 
+            && entity->getHitBox().intersects(getHitBox()) && entity->getEntityType() == "player") {
             entity->takeDamage(5);
             entity->knockBack(20.f, getMovingDir());
             break;

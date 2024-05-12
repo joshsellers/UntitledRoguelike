@@ -18,8 +18,6 @@ protected:
 private:
     sf::Sprite _wavesSprite;
 
-    boost::random::mt19937 _gen = boost::random::mt19937();
-
     long long _lastFireTime = 0;
 };
 

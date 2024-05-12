@@ -3,8 +3,6 @@
 #include "World.h"
 
 SnowMan::SnowMan(sf::Vector2f pos) : Entity(pos, 2, TILE_SIZE, TILE_SIZE * 2, false) {
-    _gen.seed(currentTimeNano());
-
     setMaxHitPoints(45);
     heal(getMaxHitPoints());
 

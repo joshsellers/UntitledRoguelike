@@ -47,7 +47,7 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
 
 void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {
     const Item* item = Item::ITEMS[
-        _source.getItemIdAt(_gamepadShowTooltip ? _gamepadSelectedItemIndex : mousedOverItemIndex)
+        _source.getItemIdAt(_gamepadShowTooltip ? _gamepadUnfilteredSelectedItemIndex : mousedOverItemIndex)
     ];
 
     float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);

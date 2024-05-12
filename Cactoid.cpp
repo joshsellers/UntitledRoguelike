@@ -29,7 +29,8 @@ void Cactoid::update() {
     bool playerIsDead = _world->getPlayer()->getHitPoints() <= 0;
 
     for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) && entity->getHitBox().intersects(getHitBox())) {
+        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) 
+            && entity->getHitBox().intersects(getHitBox()) && entity->getEntityType() == "player") {
             entity->takeDamage(8);
             entity->knockBack(15.f, getMovingDir());
             break;
