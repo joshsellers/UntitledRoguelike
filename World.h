@@ -149,6 +149,10 @@ private:
     std::vector<sf::Vector2f> _destroyedProps;
     bool isPropDestroyedAt(sf::Vector2f pos) const;
 
+    std::vector<sf::Vector2f> _seenShops;
+    bool shopHasBeenSeenAt(sf::Vector2f pos) const;
+    void shopSeenAt(sf::Vector2f pos);
+
     void spawnMobs();
     int getRandMobType(const BiomeMobSpawnData& mobSpawnData);
     sf::Clock _mobSpawnClock;

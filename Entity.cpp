@@ -469,7 +469,7 @@ int& Entity::getMaxHitPointsRef() {
 }
 
 void Entity::takeDamage(int damage) {
-    if (getEntityType() != "player") {
+    if (getEntityType() != "player" && getEntityType() != "shotext" && getEntityType() != "shopint") {
         std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
         damageParticle->setWorld(getWorld());
         damageParticle->loadSprite(getWorld()->getSpriteSheet());

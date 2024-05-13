@@ -472,7 +472,10 @@ void World::generateChunkEntities(Chunk& chunk) {
                     shop->setWorld(this);
                     _entityBuffer.push_back(shop);
 
-                    MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                    if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
+                        MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                        shopSeenAt(sf::Vector2f(x, y));
+                    }
                 }
             }
 
@@ -855,6 +858,16 @@ bool World::isPropDestroyedAt(sf::Vector2f pos) const {
     for (auto& prop : _destroyedProps)
         if (prop.x == pos.x && prop.y == pos.y) return true;
     return false;
+}
+
+bool World::shopHasBeenSeenAt(sf::Vector2f pos) const {
+    for (auto& shop : _seenShops)
+        if (shop.x == pos.x && shop.y == pos.y) return true;
+    return false;
+}
+
+void World::shopSeenAt(sf::Vector2f pos) {
+    _seenShops.push_back(pos);
 }
 
 void World::reseed(const unsigned int seed) {
