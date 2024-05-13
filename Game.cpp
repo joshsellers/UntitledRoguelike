@@ -70,6 +70,9 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _shopKeep = std::shared_ptr<ShopKeep>(new ShopKeep(sf::Vector2f(0, 0), &_shopManager, _spriteSheet));
     _world.setShopKeep(_shopKeep);
 
+    _shopArrow.setWorld(&_world);
+    _shopArrow.loadSprite(_spriteSheet);
+
     GameController::addListener(_player);
     GameController::addListener(_ui);
 
@@ -508,6 +511,7 @@ void Game::update() {
         }
 
         displayEnemyWaveCountdownUpdates();
+        _shopArrow.update();
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
     }
@@ -532,7 +536,10 @@ void Game::displayEnemyWaveCountdownUpdates() {
 }
 
 void Game::draw(sf::RenderTexture& surface) {
-    if (_gameStarted) _world.draw(surface);
+    if (_gameStarted) {
+        _world.draw(surface);
+        _shopArrow.draw(surface);
+    }
 }
 
 void Game::drawUI(sf::RenderTexture& surface) {

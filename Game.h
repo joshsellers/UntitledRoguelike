@@ -12,8 +12,9 @@
 #include "UICommandPrompt.h"
 #include "ShopKeep.h"
 #include "ShopManager.h"
+#include "ShopArrow.h"
 
-const std::string VERSION = "0.0351";
+const std::string VERSION = "0.0352";
 
 class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
 public:
@@ -103,6 +104,8 @@ private:
 
 	std::shared_ptr<ShopKeep> _shopKeep;
 	ShopManager _shopManager = ShopManager();
+
+	ShopArrow _shopArrow;
 
 	World _world;
 
