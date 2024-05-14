@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "MessageManager.h"
 
-DamageParticle::DamageParticle(sf::Vector2f pos, unsigned int damageAmount) : Entity(pos, 0, 0, 0, false), _amount(damageAmount) {
+DamageParticle::DamageParticle(sf::Vector2f pos, unsigned int damageAmount) : Entity(NO_SAVE, pos, 0, 0, 0, false), _amount(damageAmount) {
     _entityType = "damageparticle";
     _spawnTimeMillis = currentTimeMillis();
 }

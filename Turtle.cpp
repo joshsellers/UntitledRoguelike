@@ -5,7 +5,7 @@
 #include "Util.h"
 
 Turtle::Turtle(sf::Vector2f pos) :
-    Entity(pos, 0.25, 1, 1, false) {
+    Entity(TURTLE, pos, 0.25, 1, 1, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(15);

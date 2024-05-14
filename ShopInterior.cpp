@@ -1,7 +1,7 @@
 #include "ShopInterior.h"
 #include "World.h"
 
-ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT, false) {
+ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT, false) {
     loadSprite(spriteSheet);
     int posY = _pos.y;
     _pos.y -= 176 * 2;

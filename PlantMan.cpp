@@ -4,7 +4,7 @@
 #include "Util.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
-    Entity(pos, 3, TILE_SIZE, TILE_SIZE * 3, false) {
+    Entity(PLANTMAN, pos, 3, TILE_SIZE, TILE_SIZE * 3, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(40);

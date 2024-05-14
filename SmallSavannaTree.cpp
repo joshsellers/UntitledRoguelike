@@ -1,7 +1,7 @@
 #include "SmallSavannaTree.h"
 #include "World.h"
 
-SmallSavannaTree::SmallSavannaTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 3, 4, true) {
+SmallSavannaTree::SmallSavannaTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 3, 4, true) {
     loadSprite(spriteSheet);
 
     setMaxHitPoints(35);

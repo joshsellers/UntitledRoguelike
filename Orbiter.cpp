@@ -8,7 +8,7 @@
 
 
 Orbiter::Orbiter(sf::Vector2f pos, const unsigned int orbiterTypeId, Entity* parent) : _orbiterTypeId(orbiterTypeId), 
-Entity(pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
+Entity(ORBITER, pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
     _orbiterType = OrbiterType::ORBITER_TYPES.at(_orbiterTypeId);
     _distance = _orbiterType->getOrbitRadius();
     _speed = _orbiterType->getOrbitSpeed();
@@ -137,6 +137,10 @@ float Orbiter::getSpeed() const {
 
 Entity* Orbiter::getParent() const {
     return _parent;
+}
+
+std::string Orbiter::getSaveData() const {
+    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUUID();
 }
 
 void Orbiter::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

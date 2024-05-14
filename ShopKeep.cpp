@@ -1,7 +1,7 @@
 #include "ShopKeep.h"
 #include "World.h"
 
-ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 96, 48, false) {
+ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
     _shopManager = shopManager;
 

@@ -4,7 +4,7 @@
 constexpr float LIFETIME = 60 * 5;
 
 Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data) :
-    Entity(pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
+    Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
     _itemId(data.itemId) {
 
     sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);

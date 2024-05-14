@@ -22,6 +22,8 @@ public:
     float getSpeed() const;
 
     Entity* getParent() const;
+
+    virtual std::string getSaveData() const;
 protected:
     void attack();
     void projectileAttack();

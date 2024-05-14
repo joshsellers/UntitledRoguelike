@@ -5,13 +5,15 @@
 #include "Projectile.h"
 #include "SoundManager.h"
 
-Entity::Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
-    _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp) {
+Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
+    _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp), _saveId(saveId) {
 
     _pos = _isProp ? sf::Vector2f(pos.x - (_spriteWidth * TILE_SIZE) / 2, pos.y - (_spriteHeight * TILE_SIZE)) : pos;
     _baseSpeed = baseSpeed;
 
     _wanderTargetPos = _pos;
+
+    _uuid = generateUUID();
 }
 
 void Entity::move(float xa, float ya) {
@@ -469,7 +471,7 @@ int& Entity::getMaxHitPointsRef() {
 }
 
 void Entity::takeDamage(int damage) {
-    if (getEntityType() != "player" && getEntityType() != "shotext" && getEntityType() != "shopint") {
+    if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint") {
         std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
         damageParticle->setWorld(getWorld());
         damageParticle->loadSprite(getWorld()->getSpriteSheet());
@@ -553,4 +555,20 @@ bool Entity::isReloading() const {
 
 bool Entity::shouldSendMultiplayerInventoryUpdates() const {
     return _multiplayerSendUpdates;
+}
+
+ENTITY_SAVE_ID Entity::getSaveId() const {
+    return _saveId;
+}
+
+std::string Entity::getSaveData() const {
+    return std::to_string((int)_saveId);
+}
+
+std::string Entity::getUUID() const {
+    return _uuid;
+}
+
+void Entity::setUUID(std::string uuid) {
+    _uuid = uuid;
 }

@@ -12,6 +12,8 @@ public:
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
+    virtual std::string getSaveData() const;
+
 private:
     const unsigned int _itemId;
     const unsigned int _amount;

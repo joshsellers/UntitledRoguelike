@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Inventory.h"
 #include <boost/random/mersenne_twister.hpp>
+#include "EntityTypeId.h"
 
 constexpr int SPRITE_SHEET_SHIFT = 4;
 constexpr int TILE_SIZE = 16;
@@ -20,7 +21,7 @@ enum MOVING_DIRECTION {
 
 class Entity {
 public:
-    Entity(sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp);
+    Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp);
 
     virtual void update() = 0;
 
@@ -108,6 +109,14 @@ public:
 
     bool shouldSendMultiplayerInventoryUpdates() const;
 
+    ENTITY_SAVE_ID getSaveId() const;
+    virtual std::string getSaveData() const;
+
+    std::string getUUID() const;
+    void setUUID(std::string uuid);
+
+    friend class SaveManager;
+
 protected:
     std::string _entityType = "";
 
@@ -180,6 +189,9 @@ protected:
     virtual void damage(int damage);
 
 private:
+    const ENTITY_SAVE_ID _saveId;
+    std::string _uuid;
+
     int _maxHitPoints = 0;
 
     const sf::Vector2f separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist);

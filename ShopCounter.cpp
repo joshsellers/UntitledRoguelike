@@ -1,7 +1,7 @@
 #include "ShopCounter.h"
 #include "World.h"
 
-ShopCounter::ShopCounter(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 96, 48, false) {
+ShopCounter::ShopCounter(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
 
     _entityType = "shopcounter";

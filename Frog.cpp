@@ -1,7 +1,7 @@
 #include "Frog.h"
 #include "Util.h"
 
-Frog::Frog(sf::Vector2f pos) : Entity(pos, 1, 16, 16, false) {
+Frog::Frog(sf::Vector2f pos) : Entity(FROG, pos, 1, 16, 16, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(15);

@@ -44,6 +44,7 @@ public:
     friend class Game;
     friend class RemotePlayer;
     friend class World;
+    friend class SaveManager;
 protected:
     virtual void damage(int damage);
 

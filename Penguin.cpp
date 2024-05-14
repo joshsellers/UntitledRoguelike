@@ -4,7 +4,7 @@
 #include "Util.h"
 
 Penguin::Penguin(sf::Vector2f pos) :
-Entity(pos, 0.5, 1, 1, false) {
+Entity(PENGUIN, pos, 0.5, 1, 1, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(20);

@@ -13,6 +13,10 @@ public:
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
+    virtual std::string getSaveData() const;
+
+    friend class SaveManager;
+
 protected:
     virtual void damage(int damage);
 private:

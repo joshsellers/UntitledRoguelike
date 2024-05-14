@@ -1,7 +1,7 @@
 #include "Cactus.h"
 #include "Util.h"
 
-Cactus::Cactus(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(pos, 0, 2, 2, true) {
+Cactus::Cactus(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 2, 2, true) {
     loadSprite(spriteSheet);
     
     _displayBottom = true;

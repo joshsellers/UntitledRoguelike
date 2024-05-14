@@ -433,3 +433,4 @@ FodyWeavers.xsd
 *.lib
 steam_appid.txt
 settings.config
+save/

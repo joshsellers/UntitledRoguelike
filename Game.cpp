@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <fstream>
 #include "DroppedItem.h"
+#include "SaveManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -75,6 +76,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     GameController::addListener(_player);
     GameController::addListener(_ui);
+
+    SaveManager::init(&_world, &_shopManager);
 
     initUI();
 }
@@ -322,11 +325,11 @@ void Game::initUI() {
     newGameButton->setSelectionId(0);
     _startMenu->addElement(newGameButton);
 
-    std::shared_ptr<UIButton> joinGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 46, 9, 3, "join game", _font, this, "joingame"
+    std::shared_ptr<UIButton> loadGameButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 46, 9, 3, "load game", _font, this, "loadgame"
     ));
-    joinGameButton->setSelectionId(1);
-    //_startMenu->addElement(joinGameButton);
+    loadGameButton->setSelectionId(1);
+    _startMenu->addElement(loadGameButton);
 
     std::shared_ptr<UIButton> settingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
         45, 53, 9, 3, "settings", _font, this, "settings_mainmenu"
@@ -344,7 +347,7 @@ void Game::initUI() {
     _startMenu->defineSelectionGrid(
         {
             {newGameButton->getSelectionId()},
-            {joinGameButton->getSelectionId()},
+            {loadGameButton->getSelectionId()},
             {settingsButton_mainMenu->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
@@ -662,11 +665,14 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("respawn");
         _cmdPrompt->processCommand("setmaxhp:100");
         _cmdPrompt->processCommand("addhp:100");
+        if (!DEBUG_MODE) _cmdPrompt->lock();
         
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;
         _world._waveCounter = 0;
+        _world._destroyedProps.clear();
+        _world._seenShops.clear();
 
         _world._isPlayerInShop = false;
         _shopManager.clearLedger();
@@ -762,6 +768,18 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_startsettings") {
         _startMenu_settings->hide();
         _startMenu->show();
+    } else if (buttonCode == "save") {
+        if (!_world.playerIsInShop()) {
+            SaveManager::saveGame();
+        } else MessageManager::displayMessage("You can't save the game while you're in the shop :(", 5);
+    } else if (buttonCode == "loadgame") {
+        if (SaveManager::loadGame()) {
+            _startMenu->hide();
+            _HUDMenu->show();
+            _magazineMeter->hide();
+
+            _gameStarted = true;
+        }
     }
 }
 

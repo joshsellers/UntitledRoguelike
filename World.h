@@ -130,6 +130,7 @@ public:
     void setShopKeep(std::shared_ptr<ShopKeep> shopKeep);
 
     friend class Game;
+    friend class SaveManager;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;

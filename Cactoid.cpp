@@ -2,7 +2,7 @@
 #include "World.h"
 
 Cactoid::Cactoid(sf::Vector2f pos) :
-Entity(pos, 3.5, 2, 2, false) {
+Entity(CACTOID, pos, 3.5, 2, 2, false) {
     setMaxHitPoints(35);
     heal(getMaxHitPoints());
 
@@ -136,4 +136,8 @@ void Cactoid::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
+}
+
+std::string Cactoid::getSaveData() const {
+    return (_isAggro ? "1" : "0");
 }
