@@ -7,7 +7,7 @@
 class SaveManager {
 public:
     static void saveGame() {
-        std::string fileName = "save/save";
+        std::string fileName = "save/save.save";
         try {
             if (!std::filesystem::remove(fileName))
                 MessageManager::displayMessage("Could not replace save file", 5, ERR);
@@ -36,7 +36,7 @@ public:
     static bool loadGame() {
         bool loadedSuccessfully = true;
 
-        std::ifstream in("save/save");
+        std::ifstream in("save/save.save");
         if (!in.good()) {
             MessageManager::displayMessage("Could not find save file", 5, WARN);
             loadedSuccessfully = false;
