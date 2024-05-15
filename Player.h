@@ -31,6 +31,8 @@ public:
 
     void knockBack(float amt, MOVING_DIRECTION dir);
 
+    bool isInBoat();
+
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     bool freeMove = false;
@@ -52,6 +54,7 @@ private:
     bool& _gamePaused;
 
     sf::Sprite _wavesSprite;
+    sf::Sprite _boatSprite;
 
     sf::Sprite _clothingHeadSprite;
     sf::Sprite _clothingBodySprite;

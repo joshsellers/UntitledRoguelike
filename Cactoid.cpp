@@ -28,13 +28,9 @@ Entity(CACTOID, pos, 3.5, 2, 2, false) {
 void Cactoid::update() {
     bool playerIsDead = _world->getPlayer()->getHitPoints() <= 0;
 
-    for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) 
-            && entity->getHitBox().intersects(getHitBox()) && entity->getEntityType() == "player") {
-            entity->takeDamage(8);
-            entity->knockBack(15.f, getMovingDir());
-            break;
-        }
+    if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
+        getWorld()->getPlayer()->takeDamage(8);
+        getWorld()->getPlayer()->knockBack(15.f, getMovingDir());
     }
 
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);

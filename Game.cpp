@@ -515,6 +515,11 @@ void Game::update() {
 
         displayEnemyWaveCountdownUpdates();
         _shopArrow.update();
+
+        if (!_player->isActive()) {
+            MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+            buttonPressed("mainmenu");
+        }
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
     }
@@ -654,6 +659,8 @@ void Game::buttonPressed(std::string buttonCode) {
             disconnectMultiplayer();
         }*/
 
+        if (_inventoryMenu->isActive()) toggleInventoryMenu();
+        if (_shopMenu->isActive()) toggleShopMenu();
         _gameStarted = false;
         _isPaused = false;
         _pauseMenu->hide();
@@ -671,6 +678,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;
         _world._waveCounter = 0;
+        _world._currentWaveNumber = 1;
+        _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();
 
@@ -771,6 +780,9 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "save") {
         if (!_world.playerIsInShop()) {
             SaveManager::saveGame();
+            if (_player->isInBoat()) MessageManager::displayMessage(
+                "Heads up:\nYou might not be in your boat when you load this save.\nI am not going to fix this bug.\nSorry\n\nIt'll still be in your inventory though so you can\njust get back in it."
+                , 10);
         } else MessageManager::displayMessage("You can't save the game while you're in the shop :(", 5);
     } else if (buttonCode == "loadgame") {
         if (SaveManager::loadGame()) {

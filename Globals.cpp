@@ -20,4 +20,4 @@ unsigned int MAX_PACKETS_OUT_PER_SECOND = 60;
 
 float PLAYER_SCORE = 1.f;
 
-bool DEBUG_MODE = true;
+bool DEBUG_MODE = false;

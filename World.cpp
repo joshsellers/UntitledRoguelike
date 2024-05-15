@@ -99,6 +99,7 @@ void World::update() {
             _cooldownStartTime = currentTimeMillis();
 
             MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+            _currentWaveNumber++;
         } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
             _cooldownActive = false;
         }

@@ -34,13 +34,9 @@ void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 3;
 
-    for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->isProp() && entity->isActive() && !entity->isMob() && entity->isDamageable() && !entity->compare(this) 
-            && entity->getHitBox().intersects(getHitBox()) && entity->getEntityType() == "player") {
-            entity->takeDamage(5);
-            entity->knockBack(20.f, getMovingDir());
-            break;
-        }
+    if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
+        getWorld()->getPlayer()->takeDamage(5);
+        getWorld()->getPlayer()->knockBack(20.f, getMovingDir());
     }
 
     sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);

@@ -86,3 +86,16 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 }
+
+std::string Projectile::getSaveData() const {
+    return _parent->getUID() + ":" + std::to_string(_directionAngle) + ":" + std::to_string(_velocity)
+        + ":" + std::to_string(_data.itemId)
+        + ":" + std::to_string(_data.baseVelocity)
+        + ":" + std::to_string(_data.hitBox.left) + "," + std::to_string(_data.hitBox.left) + "," + std::to_string(_data.hitBox.width) + "," + std::to_string(_data.hitBox.height)
+        + ":" + (_data.rotateSprite ? "1" : "0")
+        + ":" + (_data.onlyHitEnemies ? "1" : "0")
+        + ":" + std::to_string(_data.lifeTime)
+        + ":" + (_data.isAnimated ? "1" : "0")
+        + ":" + std::to_string(_data.animationFrames)
+        + ":" + std::to_string(_data.animationSpeed);
+}

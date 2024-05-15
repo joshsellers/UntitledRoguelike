@@ -165,6 +165,7 @@ private:
     int _maxActiveEnemies = INITIAL_MAX_ACTIVE_ENEMIES;
     int _enemiesSpawnedThisRound = 0;
     int _waveCounter = 0;
+    int _currentWaveNumber = 1;
 
     void purgeEntityBuffer();
     void updateEntities();

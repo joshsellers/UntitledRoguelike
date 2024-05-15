@@ -112,8 +112,8 @@ public:
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
 
-    std::string getUUID() const;
-    void setUUID(std::string uuid);
+    std::string getUID() const;
+    void setUID(std::string uuid);
 
     friend class SaveManager;
 
@@ -190,7 +190,7 @@ protected:
 
 private:
     const ENTITY_SAVE_ID _saveId;
-    std::string _uuid;
+    std::string _uid;
 
     int _maxHitPoints = 0;
 

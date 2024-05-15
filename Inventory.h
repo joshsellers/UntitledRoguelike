@@ -8,7 +8,7 @@ constexpr unsigned int DEFAULT_MAX_SIZE = 64;
 
 constexpr int NO_ITEM = -1;
 constexpr int NOTHING_EQUIPPED = -1;
-constexpr int EQUIPMENT_SLOT_COUNT = 10;
+constexpr int EQUIPMENT_SLOT_COUNT = 11;
 
 class World;
 class Entity;
@@ -53,7 +53,7 @@ private:
         NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED, 
         NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED,
         NOTHING_EQUIPPED, NOTHING_EQUIPPED, NOTHING_EQUIPPED,
-        NOTHING_EQUIPPED
+        NOTHING_EQUIPPED, NOTHING_EQUIPPED
     };
 
     Entity* _parent;

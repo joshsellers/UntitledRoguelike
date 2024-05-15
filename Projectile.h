@@ -12,6 +12,8 @@ public:
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
+    virtual std::string getSaveData() const;
+
 private:
     Entity* _parent;
 

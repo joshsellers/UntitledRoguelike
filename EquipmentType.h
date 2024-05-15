@@ -13,6 +13,7 @@ enum class EQUIPMENT_TYPE {
     ARMOR_FEET    = 7,
     AMMO          = 8,
     TOOL          = 9,
+    BOAT          = 10
 };
 
 #endif

@@ -153,9 +153,9 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
             && Item::ITEMS[getItemIdAt(index)]->getEquipmentType() == EQUIPMENT_TYPE::TOOL
             && getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED
             && Item::ITEMS[getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) emptyAmmoMagazine(equipType);
-        _equippedItems[(int)equipType] = index;
 
-        updateRemoteInventory((std::string)"equip." + std::to_string(index) + (std::string)"," + std::to_string((int)equipType));
+        if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) return;
+        _equippedItems[(int)equipType] = index;
     }
 }
 
@@ -202,9 +202,6 @@ void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
         const Item* weapon = Item::ITEMS[getEquippedItemId(equipType)];
         addItem(weapon->getAmmoId(), _parent->getMagazineContents());
         _parent->emptyMagazine();
-
-        //don't think we need to do this bug if theres bugs with ammo stuff it probably has to do with this
-        //updateRemoteInventory("emptyAmmoMagazine." + std::to_string((int)equipType));
     }
 }
 

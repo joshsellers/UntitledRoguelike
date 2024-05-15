@@ -26,6 +26,8 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 }
 
 void Player::update() {
+    if (isInBoat() && !isSwimming()) getInventory().deEquip(EQUIPMENT_TYPE::BOAT);
+
     if (_isReloading) {
         const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
         if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
@@ -63,7 +65,7 @@ void Player::update() {
     }
 
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || GameController::isButtonPressed(CONTROLLER_BUTTON::LEFT_BUMPER)) 
-        && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove)) {
+        && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) || isInBoat()) {
         xa *= _sprintMultiplier;
         ya *= _sprintMultiplier;
         _animSpeed = 2;
@@ -75,7 +77,7 @@ void Player::update() {
         ya /= 2.f;
     }
 
-    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() 
+    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
         && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || GameController::isButtonPressed(CONTROLLER_BUTTON::A)) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
@@ -93,8 +95,9 @@ void Player::update() {
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
 
     _sprite.setPosition(getPosition()); 
+    if (isInBoat()) _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
 
-    if (isSwimming()) {
+    if (isSwimming() && !isInBoat()) {
         _hitBoxYOffset = TILE_SIZE;
         _hitBox.height = TILE_SIZE;
     } else {
@@ -114,7 +117,7 @@ void Player::draw(sf::RenderTexture& surface) {
         terrainType = TERRAIN_TYPE::EMPTY;
     }
 
-    if (isSwimming()) {
+    if (isSwimming() && !isInBoat()) {
         _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
         int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
@@ -122,15 +125,17 @@ void Player::draw(sf::RenderTexture& surface) {
         _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
         _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2 + 8));
         surface.draw(_wavesSprite);
+    } else if (isInBoat()) {
+        _numSteps = 0;
     }
 
     int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
-    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+    int yOffset = isMoving() || (isSwimming() && !isInBoat()) ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
     _sprite.setTextureRect(sf::IntRect(
         isDodging() && isMoving() ? xOffset : 16 * _facingDir, 
         isDodging() && isMoving() ? 128 : 0 + yOffset, 
         16, 
-        terrainType == TERRAIN_TYPE::WATER ? 16 : 32)
+        terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
     );
 
     if (_facingDir == UP || _facingDir == LEFT) {
@@ -145,13 +150,23 @@ void Player::draw(sf::RenderTexture& surface) {
         if (!isDodging() || !isMoving()) drawEquipables(surface);
         drawTool(surface);
     }
+
+    if (isInBoat()) {
+        _boatSprite.setTextureRect(sf::IntRect(
+            (TILE_SIZE * 3) * _facingDir,
+            544,
+            TILE_SIZE * 3, TILE_SIZE * 3
+        ));
+
+        surface.draw(_boatSprite);
+    }
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {
     drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
     drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_HEAD, surface);
 
-    if (!isSwimming()) {
+    if (!isSwimming() || isInBoat()) {
         drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
         drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
         drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
@@ -196,7 +211,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
 }
 
 void Player::drawTool(sf::RenderTexture& surface) {
-    if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && !isSwimming() && (!isDodging() || !isMoving())) {
+    if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED && !isSwimming() && !isInBoat() && (!isDodging() || !isMoving())) {
         sf::RectangleShape meleeHitBoxDisplay;
         sf::RectangleShape barrelDisplay;
         if (!_gamePaused) {
@@ -414,6 +429,10 @@ bool Player::isDodging() const {
     return _isDodging;
 }
 
+bool Player::isInBoat() {
+    return getInventory().getEquippedItemId(EQUIPMENT_TYPE::BOAT) != NOTHING_EQUIPPED;
+}
+
 void Player::knockBack(float amt, MOVING_DIRECTION dir) {
     if (!freeMove) {
         switch (dir) {
@@ -552,6 +571,10 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+
+    _boatSprite.setTexture(*spriteSheet);
+    _boatSprite.setTextureRect(sf::IntRect(0, 544, 3 * TILE_SIZE, 3 * TILE_SIZE));
+    _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
 
     _clothingHeadSprite.setTexture(*spriteSheet); 
     _clothingBodySprite.setTexture(*spriteSheet);

@@ -140,7 +140,7 @@ Entity* Orbiter::getParent() const {
 }
 
 std::string Orbiter::getSaveData() const {
-    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUUID();
+    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUID();
 }
 
 void Orbiter::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

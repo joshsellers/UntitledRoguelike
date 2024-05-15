@@ -3,6 +3,7 @@
 
 #include "World.h"
 #include "Orbiter.h"
+#include "Projectile.h"
 
 class SaveManager {
 public:
@@ -18,6 +19,7 @@ public:
         try {
             std::ofstream out(fileName);
             
+            out << "GAMEVERSION:" << VERSION << std::endl;
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
             saveWorldData(out);
@@ -54,6 +56,16 @@ public:
                     loadedSuccessfully = false;
                 }
             }
+
+            if (loadedSuccessfully) {
+                try {
+                    if (_deferredOrbiters.size() != 0) loadDeferredOribaters();
+                    if (_deferredProjectiles.size() != 0) loadDeferredProjectiles();
+                } catch (std::exception ex) {
+                    MessageManager::displayMessage("Error loading deferred entities: " + (std::string)ex.what(), 5, ERR);
+                    loadedSuccessfully = false;
+                }
+            }
         }
 
         in.close();
@@ -78,6 +90,7 @@ private:
         out << ":" << std::to_string(_world->_maxActiveEnemies);
         out << ":" << std::to_string(_world->_enemiesSpawnedThisRound);
         out << ":" << std::to_string(_world->_waveCounter);
+        out << ":" << std::to_string(_world->_currentWaveNumber);
         out << std::endl;
 
         if (_world->_destroyedProps.size() != 0) {
@@ -112,7 +125,7 @@ private:
 
     static void savePlayerData(std::ofstream& out) {
         auto& player = _world->getPlayer();
-        out << "PLAYER:" << player->getUUID();
+        out << "PLAYER:" << player->getUID();
         out << ":" << std::to_string(player->getPosition().x) << "," << std::to_string(player->getPosition().y);
         out << ":" << std::to_string(player->getHitPoints());
         out << ":" << std::to_string(player->getMaxHitPoints());
@@ -135,11 +148,12 @@ private:
 
     static void saveEntityData(std::ofstream& out) {
         for (auto& entity : _world->getEntities()) {
-            if (entity->isActive() && entity->getSaveId() != NO_SAVE && entity->getSaveId() != PLAYER && entity->getSaveId() != PROJECTILE) {
+            if (entity->isActive() && entity->getSaveId() != NO_SAVE && entity->getSaveId() != PLAYER) {
                 out << "ENTITY:"
                     << std::to_string((int)entity->getSaveId())
-                    << ":" << entity->getUUID()
-                    << ":" << std::to_string(entity->getPosition().x) << "," << std::to_string(entity->getPosition().y) 
+                    << ":" << entity->getUID()
+                    << ":" << std::to_string(entity->getPosition().x) << "," << std::to_string(entity->getPosition().y)
+                    << ":" << std::to_string(entity->getHitPoints())
                     << ":" << entity->getSaveData();
                 out << std::endl;
             }
@@ -147,6 +161,98 @@ private:
     }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
+    static void loadDeferredOribaters() {
+        for (auto& deferredData : _deferredOrbiters) {
+            std::string uid = deferredData[1];
+            std::vector<std::string> posData = splitString(deferredData[2], ",");
+            sf::Vector2f pos(std::stof(posData[0]), std::stof(posData[1]));
+            int hitPoints = std::stoi(deferredData[3]);
+
+            std::shared_ptr<Entity> entity = nullptr;
+
+            unsigned int orbiterTypeId = std::stoul(deferredData[4]);
+            std::string parentUID = deferredData[5];
+            Entity* parent = nullptr;
+            bool foundParent = false;
+            for (auto& entity : _world->getEntities()) {
+                if (entity->getUID() == parentUID) {
+                    parent = entity.get();
+                    foundParent = true;
+                    break;
+                }
+            }
+
+            if (foundParent) {
+                entity = std::shared_ptr<Orbiter>(new Orbiter(pos, orbiterTypeId, parent));
+                entity->setUID(uid);
+                entity->_hitPoints = hitPoints;
+                entity->loadSprite(_world->getSpriteSheet());
+                entity->setWorld(_world);
+                _world->addEntity(entity);
+            } else {
+                MessageManager::displayMessage("Parent not found for deferred orbiter " + uid, 5, ERR);
+            }
+        }
+
+        _deferredOrbiters.clear();
+    }
+
+    inline static std::vector<std::vector<std::string>> _deferredProjectiles;
+    static void loadDeferredProjectiles() {
+        for (auto& deferredData : _deferredProjectiles) {
+            std::string uid = deferredData[1];
+            std::vector<std::string> posData = splitString(deferredData[2], ",");
+            sf::Vector2f pos(std::stof(posData[0]), std::stof(posData[1]));
+            int hitPoints = std::stoi(deferredData[3]);
+
+            std::shared_ptr<Entity> entity = nullptr;
+
+            std::string parentUID = deferredData[4];
+            float angle = std::stof(deferredData[5]);
+            float velocity = std::stof(deferredData[6]);
+
+            unsigned int itemId = std::stoul(deferredData[7]);
+            float baseVelocity = std::stof(deferredData[8]);
+
+            std::vector<std::string> hitBoxData = splitString(deferredData[9], ",");
+            sf::IntRect hitBox(std::stoi(hitBoxData[0]), std::stoi(hitBoxData[1]), std::stoi(hitBoxData[2]), std::stoi(hitBoxData[3]));
+
+            bool rotateSprite = deferredData[10] == "1";
+            bool onlyHitEnemies = deferredData[11] == "1";
+            float lifeTime = std::stof(deferredData[12]);
+            bool isAnimated = deferredData[13] == "1";
+            int animationFrames = std::stoi(deferredData[14]);
+            int animationSpeed = std::stoi(deferredData[15]);
+
+            ProjectileData projData = {
+                itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed
+            };
+
+            Entity* parent = nullptr;
+            bool foundParent = false;
+            for (auto& entity : _world->getEntities()) {
+                if (entity->getUID() == parentUID) {
+                    parent = entity.get();
+                    foundParent = true;
+                    break;
+                }
+            }
+
+            if (foundParent) {
+                entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData));
+                entity->setUID(uid);
+                entity->_hitPoints = hitPoints;
+                entity->loadSprite(_world->getSpriteSheet());
+                entity->setWorld(_world);
+                _world->addEntity(entity);
+            } else {
+                MessageManager::displayMessage("Parent not found for deferred projectile " + uid, 5, ERR);
+            }
+        }
+
+        _deferredProjectiles.clear();
+    }
+
     inline static long long saveFileTimeStamp = 0;
     static void load(std::string header, std::vector<std::string> data) {
         if (header == "TS") {
@@ -160,6 +266,7 @@ private:
             _world->_maxActiveEnemies = std::stoi(data[5]);
             _world->_enemiesSpawnedThisRound = std::stoi(data[6]);
             _world->_waveCounter = std::stoi(data[7]);
+            _world->_currentWaveNumber = std::stoi(data[8]);
 
             _world->init(seed);
         } else if (header == "SCORE") {
@@ -188,7 +295,7 @@ private:
             }
         } else if (header == "PLAYER") {
             auto& player = _world->getPlayer();
-            player->setUUID(data[0]);
+            player->setUID(data[0]);
             player->_pos.x = std::stof(splitString(data[1], ",")[0]);
             player->_pos.y = std::stof(splitString(data[1], ",")[1]);
             player->_hitPoints = std::stoi(data[2]);
@@ -209,9 +316,10 @@ private:
             }
         } else if (header == "ENTITY") {
             ENTITY_SAVE_ID saveId = (ENTITY_SAVE_ID)std::stoi(data[0]);
-            std::string uuid = data[1];
+            std::string uid = data[1];
             std::vector<std::string> posData = splitString(data[2], ",");
             sf::Vector2f pos(std::stof(posData[0]), std::stof(posData[1]));
+            int hitPoints = std::stoi(data[3]);
 
             std::shared_ptr<Entity> entity = nullptr;
             bool entityLoadedSuccessfully = true;
@@ -219,12 +327,12 @@ private:
             switch (saveId) {
                 case ORBITER:
                 {
-                    unsigned int orbiterTypeId = std::stoul(data[3]);
-                    std::string parentUUID = data[4];
+                    unsigned int orbiterTypeId = std::stoul(data[4]);
+                    std::string parentUID = data[5];
                     Entity* parent = nullptr;
                     bool foundParent = false;
                     for (auto& entity : _world->getEntities()) {
-                        if (entity->getUUID() == parentUUID) {
+                        if (entity->getUID() == parentUID) {
                             parent = entity.get();
                             foundParent = true;
                             break;
@@ -241,7 +349,7 @@ private:
                 }
                 case CACTOID:
                 {
-                    bool isAggro = data[3] == "1";
+                    bool isAggro = data[4] == "1";
                     std::shared_ptr<Cactoid> cactoid = std::shared_ptr<Cactoid>(new Cactoid(pos));
                     cactoid->_isAggro = isAggro;
                     entity = cactoid;
@@ -249,9 +357,51 @@ private:
                 }
                 case DROPPED_ITEM:
                 {
-                    unsigned int itemId = std::stoul(data[3]);
-                    unsigned int amount = std::stoul(data[4]);
+                    unsigned int itemId = std::stoul(data[4]);
+                    unsigned int amount = std::stoul(data[5]);
                     entity = std::shared_ptr<DroppedItem>(new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect()));
+                    break;
+                }
+                case PROJECTILE:
+                {
+                    std::string parentUID = data[4];
+                    float angle = std::stof(data[5]);
+                    float velocity = std::stof(data[6]);
+
+                    unsigned int itemId = std::stoul(data[7]);
+                    float baseVelocity = std::stof(data[8]);
+
+                    std::vector<std::string> hitBoxData = splitString(data[9], ",");
+                    sf::IntRect hitBox(std::stoi(hitBoxData[0]), std::stoi(hitBoxData[1]), std::stoi(hitBoxData[2]), std::stoi(hitBoxData[3]));
+
+                    bool rotateSprite = data[10] == "1";
+                    bool onlyHitEnemies = data[11] == "1";
+                    float lifeTime = std::stof(data[12]);
+                    bool isAnimated = data[13] == "1";
+                    int animationFrames = std::stoi(data[14]);
+                    int animationSpeed = std::stoi(data[15]);
+
+                    ProjectileData projData = {
+                        itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed
+                    };
+
+                    Entity* parent = nullptr;
+                    bool foundParent = false;
+                    for (auto& entity : _world->getEntities()) {
+                        if (entity->getUID() == parentUID) {
+                            parent = entity.get();
+                            foundParent = true;
+                            break;
+                        }
+                    }
+
+                    if (foundParent) {
+                        entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData));
+                    } else {
+                        entityLoadedSuccessfully = false;
+                        _deferredProjectiles.push_back(data);
+                    }
+
                     break;
                 }
                 case PLANTMAN:
@@ -272,7 +422,8 @@ private:
             }
 
             if (entityLoadedSuccessfully) {
-                entity->setUUID(uuid);
+                entity->setUID(uid);
+                entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
                 entity->setWorld(_world);
                 _world->addEntity(entity);

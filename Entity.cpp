@@ -13,7 +13,7 @@ Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const i
 
     _wanderTargetPos = _pos;
 
-    _uuid = generateUUID();
+    _uid = generateUID();
 }
 
 void Entity::move(float xa, float ya) {
@@ -562,13 +562,13 @@ ENTITY_SAVE_ID Entity::getSaveId() const {
 }
 
 std::string Entity::getSaveData() const {
-    return std::to_string((int)_saveId);
+    return "";
 }
 
-std::string Entity::getUUID() const {
-    return _uuid;
+std::string Entity::getUID() const {
+    return _uid;
 }
 
-void Entity::setUUID(std::string uuid) {
-    _uuid = uuid;
+void Entity::setUID(std::string uuid) {
+    _uid = uuid;
 }
