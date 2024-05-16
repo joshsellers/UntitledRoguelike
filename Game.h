@@ -14,9 +14,9 @@
 #include "ShopManager.h"
 #include "ShopArrow.h"
 
-const std::string VERSION = "0.0400";
+const std::string VERSION = "0.0401";
 
-class Game : public UIButtonListener, public GameControllerListener, public MultiplayerMessageListener {
+class Game : public UIButtonListener, public GameControllerListener {
 public:
 	Game(sf::View* camera, sf::RenderWindow* window);
 
@@ -26,8 +26,6 @@ public:
 	void drawUI(sf::RenderTexture& surface);
 	
 	void buttonPressed(std::string buttonCode);
-
-	void messageReceived(MultiplayerMessage message, SteamNetworkingIdentity identityPeer);
 
 	void keyPressed(sf::Keyboard::Key& key);
 	void keyReleased(sf::Keyboard::Key& key); 
@@ -42,8 +40,6 @@ public:
 
 	void textEntered(sf::Uint32 character);
 
-	void disconnectMultiplayer();
-
 private:
 	void initUI();
 
@@ -54,11 +50,6 @@ private:
 	
 	long long _lastCooldownUpdateTime = 0;
 	void displayEnemyWaveCountdownUpdates();
-
-	void sendMultiplayerUpdates();
-	bool _connectedAsClient = false;
-	unsigned int _packetsOutThisTick = 0;
-	long long _lastPacketsOutCountReset = 0;
 
 	sf::RenderWindow* _window;
 

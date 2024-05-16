@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "GameController.h"
 #include "SoundManager.h"
-#include "../SteamworksHeaders/steam_api.h"
 #include <fstream>
 
 void loadSettings() {
@@ -36,16 +35,6 @@ int main() {
 
     loadSettings();
 
-    // Steam
-    //STEAMAPI_INITIATED = SteamAPI_Init();
-
-    //if (SteamAPI_RestartAppIfNecessary(480)) {
-    //    MessageManager::displayMessage("Steam did not connect", 10, WARN);
-    //}
-
-    MessageManager::displayMessage("STEAMAPI_INITIATED: " + (std::string)(STEAMAPI_INITIATED ? "true" : "false"), 5, DEBUG);
-    
-
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);
     }
@@ -67,9 +56,7 @@ int main() {
     srand(currentTimeMillis());
     
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
-    game->_doNotRemove = true;
     GameController::addListener(game);
-    Multiplayer::manager.addListener(game);
 
     sf::Event event;
 
@@ -106,9 +93,6 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
-                game->disconnectMultiplayer();
-                Multiplayer::manager.halt();
-                SteamAPI_Shutdown();
                 window.close();
                 break;
             case sf::Event::KeyPressed:

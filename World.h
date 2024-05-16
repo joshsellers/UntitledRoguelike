@@ -46,8 +46,8 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
-        MobSpawnData(MOB_TYPE::TURTLE, 2, 1, 1),
-        MobSpawnData(MOB_TYPE::PLANT_MAN, 1, 2, 8),
+        MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 2, 8),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3)
     }),
 
@@ -57,7 +57,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
-        MobSpawnData(MOB_TYPE::CACTOID, 0, 1, 1)
+        MobSpawnData(MOB_TYPE::CACTOID, 1, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {

@@ -72,8 +72,6 @@ private:
     void drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface);
     void drawTool(sf::RenderTexture& surface);
 
-    float _multiplayerAimAngle;
-
     // this might be the single worst thing i've ever done
     bool _isActuallyMoving = false;
     bool _isHoldingWeapon = false;
@@ -83,6 +81,8 @@ private:
     float _sprintMultiplier = 2;
 
     MOVING_DIRECTION _facingDir = (MOVING_DIRECTION)_movingDir;
+
+    long long _lastTimeBoatBobbedUp = 0;
 
     float _dodgeMultiplier(int dodgeTimer) const {
         return (0.075f * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);

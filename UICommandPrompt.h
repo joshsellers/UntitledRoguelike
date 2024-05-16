@@ -10,7 +10,6 @@
 #include <regex>
 #include <boost/algorithm/string.hpp>
 #include "MessageManager.h"
-#include "MultiplayerManager.h"
 #include "ShopInterior.h"
 #include "ShopExterior.h"
 #include "ShopCounter.h"
@@ -434,66 +433,12 @@ private:
         },
 
         {
-            "send",
-            Command("for testing multiplayer",
-            [this](std::vector<std::string>& parsedCommand)->std::string {
-                if (parsedCommand.size() == 2) {
-                    std::string userName = parsedCommand[1];
-                    SteamNetworkingIdentity sni;
-                    ISteamFriends* m_pFriends;
-
-                    bool bFoundFriend = false;
-                    m_pFriends = SteamFriends();
-
-                    memset(&sni, 0, sizeof(SteamNetworkingIdentity));
-                    sni.m_eType = k_ESteamNetworkingIdentityType_SteamID;
-                    //IMPORTANT BIT HERE
-                    int nFriendCount = m_pFriends->GetFriendCount(k_EFriendFlagAll);
-                    for (int nIndex = 0; nIndex < nFriendCount; ++nIndex) {
-                        CSteamID csFriendId = m_pFriends->GetFriendByIndex(nIndex, k_EFriendFlagAll);
-                        std::string sFriendName = m_pFriends->GetFriendPersonaName(csFriendId);
-                        if (sFriendName == userName) {
-                            sni.SetSteamID(csFriendId);
-                            bFoundFriend = true;
-                            break;
-                        }
-                    }
-
-                    if (bFoundFriend == false) return "Friend not found";
-
-
-                    Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::PEER_DISCONNECT, "DISCONNECT"), sni);
-                    return "Message sent";
-                } else {
-                    return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
-                }
-            })
-        },
-
-        {
             "toggledebug",
             Command("Toggle debug mode",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 DISPLAY_DEBUG_MESSAGES = !DISPLAY_DEBUG_MESSAGES;
                 DEBUG_MODE = !DEBUG_MODE;
                 return "DEBUG_MODE set to " + (std::string)(DEBUG_MODE ? "true" : "false");
-            })
-        },
-
-        {
-            "smpops",
-            Command("Set max packets out per second",
-            [this](std::vector<std::string>& parsedCommand)->std::string {
-                if (parsedCommand.size() == 2) {
-                    try {
-                        MAX_PACKETS_OUT_PER_SECOND = std::stoi(parsedCommand[1]);
-                    } catch (std::exception ex) {
-                        return ex.what();
-                    }
-                    return "MAX_PACKETS_OUT_PER_SECOND set to " + std::to_string(MAX_PACKETS_OUT_PER_SECOND);
-                } else {
-                    return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
-                }
             })
         },
 

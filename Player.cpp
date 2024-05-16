@@ -3,7 +3,6 @@
 #include "Item.h"
 #include "Globals.h"
 #include "World.h"
-#include "MultiplayerManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     Entity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
@@ -19,8 +18,6 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
-
-    _multiplayerSendUpdates = true;
 
     _entityType = "player";
 }
@@ -127,6 +124,11 @@ void Player::draw(sf::RenderTexture& surface) {
         surface.draw(_wavesSprite);
     } else if (isInBoat()) {
         _numSteps = 0;
+        const long long boatAnimationTime = 500LL;
+        if (currentTimeMillis() - _lastTimeBoatBobbedUp < boatAnimationTime && !_gamePaused) {
+            _sprite.move(0, 1);
+            _boatSprite.move(0, 1);
+        } else if (!_gamePaused && currentTimeMillis() - _lastTimeBoatBobbedUp >= boatAnimationTime * 2) _lastTimeBoatBobbedUp = currentTimeMillis();
     }
 
     int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
@@ -239,11 +241,6 @@ void Player::drawTool(sf::RenderTexture& surface) {
             double y = (double)(mPos.y - center.y);
 
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
-            if (IS_MULTIPLAYER_CONNECTED && _multiplayerSendUpdates) {
-                _multiplayerAimAngle = angle;
-            } else if (IS_MULTIPLAYER_CONNECTED) {
-                angle = _multiplayerAimAngle;
-            }
 
             if (GameController::isConnected()) { 
                 angle = (float)(((std::atan2(GameController::getRightStickYAxis(), GameController::getRightStickXAxis()))) * (180. / PI)) + 90.f;

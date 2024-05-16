@@ -107,8 +107,6 @@ public:
     void emptyMagazine();
     bool isReloading() const;
 
-    bool shouldSendMultiplayerInventoryUpdates() const;
-
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
 
@@ -183,8 +181,6 @@ protected:
     int _magazineContents = 0;
 
     bool _isReloading = false;
-
-    bool _multiplayerSendUpdates = false;
 
     virtual void damage(int damage);
 

@@ -3,7 +3,6 @@
 #include <iostream>
 #include "DroppedItem.h"
 #include "MessageManager.h"
-#include "MultiplayerManager.h"
 #include "Globals.h"
 
 Inventory::Inventory(Entity* parent) :
@@ -51,8 +50,6 @@ void Inventory::addItem(unsigned int itemId, unsigned int amount) {
             dropItem(itemId, excess);
             addItem(itemId, amount - excess);
         }
-
-        updateRemoteInventory((std::string)"addItem." + std::to_string(itemId) + (std::string)"," + std::to_string(amount));
     }
 }
 
@@ -82,8 +79,6 @@ void Inventory::removeItemAt(unsigned int index, unsigned int amount) {
             }
             _inventory.erase(_inventory.begin() + index);
         }
-
-        updateRemoteInventory((std::string)"removeItemAt." + std::to_string(index) + (std::string)"," + std::to_string(amount));
     }
 }
 
@@ -116,8 +111,6 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
     droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());
 
     _parent->getWorld()->addEntity(droppedItem);
-
-    updateRemoteInventory((std::string)"dropItem." + std::to_string(itemId) + (std::string)"," + std::to_string(amount));
 }
 
 bool Inventory::hasItem(unsigned int itemId) const {
@@ -202,15 +195,5 @@ void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
         const Item* weapon = Item::ITEMS[getEquippedItemId(equipType)];
         addItem(weapon->getAmmoId(), _parent->getMagazineContents());
         _parent->emptyMagazine();
-    }
-}
-
-void Inventory::updateRemoteInventory(std::string data) {
-    if (_parent->shouldSendMultiplayerInventoryUpdates() && IS_MULTIPLAYER_CONNECTED) {
-        int times = 0;
-        for (auto& peer : Multiplayer::manager.getConnectedPeers()) {
-            Multiplayer::manager.sendMessage(MultiplayerMessage(PayloadType::INVENTORY_DATA, data), peer);
-            times++;
-        }
     }
 }

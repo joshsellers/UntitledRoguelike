@@ -553,16 +553,12 @@ bool Entity::isReloading() const {
     return _isReloading;
 }
 
-bool Entity::shouldSendMultiplayerInventoryUpdates() const {
-    return _multiplayerSendUpdates;
-}
-
 ENTITY_SAVE_ID Entity::getSaveId() const {
     return _saveId;
 }
 
 std::string Entity::getSaveData() const {
-    return "";
+    return "NONE";
 }
 
 std::string Entity::getUID() const {
