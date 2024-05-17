@@ -706,7 +706,7 @@ void Game::buttonPressed(std::string buttonCode) {
             _magazineMeter->hide();
 
             _gameStarted = true;
-        }
+        } else buttonPressed("mainmenu");
     }
 }
 

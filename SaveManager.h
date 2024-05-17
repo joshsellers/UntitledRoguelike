@@ -320,15 +320,27 @@ private:
             player->_magazineSize = std::stoi(data[6]);
         } else if (header == "PINVENTORY") {
             auto& player = _world->getPlayer();
+
+            std::vector<unsigned int> equippedItemIds;
             for (int i = 0; i < data.size(); i++) {
                 std::vector<std::string> parsedData = splitString(data[i], ",");
                 unsigned int itemId = std::stoi(parsedData[0]);
                 unsigned int amount = std::stoi(parsedData[1]);
                 bool isEquipped = parsedData[2] == "1";
+                if (isEquipped) equippedItemIds.push_back(itemId);
 
                 player->getInventory().addItem(itemId, amount);
-                if (isEquipped) player->getInventory().equip(i, Item::ITEMS[itemId]->getEquipmentType());
+                //if (isEquipped) player->getInventory().equip(i, Item::ITEMS[itemId]->getEquipmentType());
             }
+
+            for (int i = 0; i < player->getInventory().getCurrentSize(); i++) {
+                for (unsigned int equippedItemId : equippedItemIds) {
+                    if (player->getInventory().getItemIdAt(i) == equippedItemId) {
+                        player->getInventory().equip(i, Item::ITEMS[equippedItemId]->getEquipmentType());
+                    }
+                }
+            }
+
         } else if (header == "ENTITY") {
             ENTITY_SAVE_ID saveId = (ENTITY_SAVE_ID)std::stoi(data[0]);
             std::string uid = data[1];
