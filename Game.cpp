@@ -482,6 +482,7 @@ void Game::update() {
 
         if (!_player->isActive()) {
             MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+            SaveManager::deleteSaveFile();
             buttonPressed("mainmenu");
         }
     } else if (_isPaused && _gameStarted) {

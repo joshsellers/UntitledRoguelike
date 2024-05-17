@@ -7,8 +7,18 @@
 
 class SaveManager {
 public:
+    static void deleteSaveFile() {
+        std::string fileName = _saveFilePath;
+        try {
+            if (!std::filesystem::remove(fileName))
+                MessageManager::displayMessage("[deleteSaveFile] Could not replace save file", 5, DEBUG);
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not replace save file: " + (std::string)err.what(), 5, ERR);
+        }
+    }
+
     static void saveGame() {
-        std::string fileName = "save/save.save";
+        std::string fileName = _saveFilePath;
         try {
             if (!std::filesystem::remove(fileName))
                 MessageManager::displayMessage("Could not replace save file", 5, ERR);
@@ -38,7 +48,7 @@ public:
     static bool loadGame() {
         bool loadedSuccessfully = true;
 
-        std::ifstream in("save/save.save");
+        std::ifstream in(_saveFilePath);
         if (!in.good()) {
             MessageManager::displayMessage("Could not find save file", 5, WARN);
             loadedSuccessfully = false;
@@ -78,6 +88,8 @@ public:
         _shopManager = shopManager;
     }
 private:
+    inline const static std::string _saveFilePath = "save/save.save";
+
     inline static World* _world = nullptr;
     inline static ShopManager* _shopManager = nullptr;
 
