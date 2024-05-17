@@ -449,6 +449,20 @@ private:
                 _world->resetEnemySpawnCooldown();
                 return "Ended enemy spawn cooldown";
             })
+        },
+
+        {
+            "setscore",
+            Command("Set the player's score",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                try {
+                    if (parsedCommand.size() < 2) return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                    PLAYER_SCORE = std::stof(parsedCommand[1]);
+                    return "Score set to " + parsedCommand[1];
+                } catch (std::exception ex) {
+                    return ex.what();
+                }
+            })
         }
     };
 };

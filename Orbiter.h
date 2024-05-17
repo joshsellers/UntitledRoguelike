@@ -7,7 +7,7 @@
 
 class Orbiter : public Entity {
 public:
-    Orbiter(sf::Vector2f pos, const unsigned int orbiterTypeId, Entity* parent);
+    Orbiter(float angle, const unsigned int orbiterTypeId, Entity* parent);
 
     virtual void update();
 

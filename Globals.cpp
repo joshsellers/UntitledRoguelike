@@ -14,4 +14,4 @@ bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 
 float PLAYER_SCORE = 1.f;
 
-bool DEBUG_MODE = false;
+bool DEBUG_MODE = true;

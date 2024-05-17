@@ -7,8 +7,8 @@
 #include "World.h"
 
 
-Orbiter::Orbiter(sf::Vector2f pos, const unsigned int orbiterTypeId, Entity* parent) : _orbiterTypeId(orbiterTypeId), 
-Entity(ORBITER, pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
+Orbiter::Orbiter(float angle, const unsigned int orbiterTypeId, Entity* parent) : _orbiterTypeId(orbiterTypeId), _angle(angle), 
+Entity(ORBITER, parent->getPosition(), OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
     _orbiterType = OrbiterType::ORBITER_TYPES.at(_orbiterTypeId);
     _distance = _orbiterType->getOrbitRadius();
     _speed = _orbiterType->getOrbitSpeed();
@@ -18,8 +18,8 @@ Entity(ORBITER, pos, OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed
     if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::CONTACT) {
         _hitBox.width = _orbiterType->getTextureRect().width * TILE_SIZE;
         _hitBox.height = _orbiterType->getTextureRect().height * TILE_SIZE;
-        _hitBox.left = pos.x - _hitBox.width / 2;;
-        _hitBox.top = pos.y - _hitBox.width / 2;;
+        _hitBox.left = _pos.x - _hitBox.width / 2;
+        _hitBox.top = _pos.y - _hitBox.width / 2;
 
         setMaxHitPoints(999999);
         heal(getMaxHitPoints());
@@ -140,7 +140,7 @@ Entity* Orbiter::getParent() const {
 }
 
 std::string Orbiter::getSaveData() const {
-    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUID();
+    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUID() + ":" + std::to_string(_angle);
 }
 
 void Orbiter::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

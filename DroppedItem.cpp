@@ -12,13 +12,20 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
 void DroppedItem::update() {
     if (isActive()) {
-        for (auto& entity : getWorld()->getEntities()) {
+        /*for (auto& entity : getWorld()->getEntities()) {
             if (entity->canPickUpItems() && entity->isActive() && 
                 entity->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
                 entity->getInventory().addItem(_itemId, _amount);
                 if (_itemId == Item::PENNY.getId()) SoundManager::playSound("coinpickup");
                 _isActive = false;
             }
+        }*/
+        // The above is very much not performant when there are many dropped items
+
+        if (_world->getPlayer()->getHitBox().intersects(getSprite().getGlobalBounds())) {
+            _world->getPlayer()->getInventory().addItem(_itemId, _amount);
+            if (_itemId == Item::PENNY.getId()) SoundManager::playSound("coinpickup");
+            _isActive = false;
         }
     }
 

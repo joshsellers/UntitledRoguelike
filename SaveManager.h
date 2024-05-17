@@ -172,6 +172,7 @@ private:
 
             unsigned int orbiterTypeId = std::stoul(deferredData[4]);
             std::string parentUID = deferredData[5];
+            float angle = std::stof(deferredData[6]);
             Entity* parent = nullptr;
             bool foundParent = false;
             for (auto& entity : _world->getEntities()) {
@@ -183,7 +184,7 @@ private:
             }
 
             if (foundParent) {
-                entity = std::shared_ptr<Orbiter>(new Orbiter(pos, orbiterTypeId, parent));
+                entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
                 entity->setUID(uid);
                 entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
@@ -255,7 +256,9 @@ private:
 
     inline static long long saveFileTimeStamp = 0;
     static void load(std::string header, std::vector<std::string> data) {
-        if (header == "TS") {
+        if (header == "GAMEVERSION") {
+            if (data[0] != VERSION) MessageManager::displayMessage("Outdated save file: v" + data[0] + "\nClient v" + VERSION, 5, WARN);
+        } else if (header == "TS") {
             saveFileTimeStamp = std::stoll(data[0]);
         } else if (header == "WORLD") {
             unsigned int seed = std::stoul(data[0]);
@@ -329,6 +332,7 @@ private:
                 {
                     unsigned int orbiterTypeId = std::stoul(data[4]);
                     std::string parentUID = data[5];
+                    float angle = std::stof(data[6]);
                     Entity* parent = nullptr;
                     bool foundParent = false;
                     for (auto& entity : _world->getEntities()) {
@@ -340,7 +344,7 @@ private:
                     }
 
                     if (foundParent) {
-                        entity = std::shared_ptr<Orbiter>(new Orbiter(pos, orbiterTypeId, parent));
+                        entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
                     } else {
                         entityLoadedSuccessfully = false;
                         _deferredOrbiters.push_back(data);

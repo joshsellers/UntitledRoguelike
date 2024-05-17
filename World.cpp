@@ -279,9 +279,6 @@ void World::purgeEntityBuffer() {
 }
 
 void World::updateEntities() {
-    // rewrite this so that entities that are not in any 
-    // chunks are marked as do not render
-
     for (int i = 0; i < _entities.size(); i++) {
         auto& entity = _entities.at(i);
         if (!entity->isActive()) _entities.erase(_entities.begin() + i);
