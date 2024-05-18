@@ -230,7 +230,7 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20000, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
-        parent->increaseStaminaRefreshRate(100);
+        parent->setMaxStamina(parent->getMaxStamina() + 100);
         parent->increaseDamageMultiplier(0.25f);
         return true;
     }
