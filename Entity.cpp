@@ -501,6 +501,31 @@ int& Entity::getHitPointsRef() {
     return _hitPoints;
 }
 
+int Entity::getStamina() const {
+    return 0;
+}
+
+int Entity::getMaxStamina() const {
+    return 0;
+}
+
+void Entity::setMaxStamina(int amount) {
+}
+
+void Entity::restoreStamina(int amount) {
+}
+
+float Entity::getDamageMultiplier() const {
+    return _damageMultiplier;
+}
+
+void Entity::increaseDamageMultiplier(float amount) {
+    _damageMultiplier += amount;
+}
+
+void Entity::increaseStaminaRefreshRate(int amount) {
+}
+
 sf::FloatRect Entity::getHitBox() const {
     return _hitBox;
 }

@@ -13,6 +13,11 @@ constexpr bool GODMODE = false;
 constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 1;
 constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
+constexpr int INITIAL_MAX_STAMINA = 1000;
+constexpr int SPRINT_STAMINA_COST = 0;
+constexpr int DODGE_STAMINA_COST = 250;
+constexpr int INITIAL_STAMINA_REFRESH_RATE = 5;
+
 constexpr long double PI = 3.14159265358979L;
 
 class Player : public Entity, public GameControllerListener {
@@ -32,6 +37,19 @@ public:
     void knockBack(float amt, MOVING_DIRECTION dir);
 
     bool isInBoat();
+
+    virtual int getStamina() const;
+    virtual int getMaxStamina() const;
+    int getStaminaRefreshRate() const;
+    int& getStaminaRef();
+    int& getMaxStaminaRef();
+    
+    virtual void setMaxStamina(int amount);
+    virtual void restoreStamina(int amount);
+    virtual void increaseStaminaRefreshRate(int amount);
+
+    bool isUsingStamina();
+    bool hasSufficientStamina(int cost);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -107,6 +125,11 @@ private:
     void meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos);
     sf::Vector2f _lastMousePos;
     unsigned int _meleeAttackDelayCounter = 0;
+
+    int _stamina = 0;
+    int _maxStamina = INITIAL_MAX_STAMINA;
+    int _staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
+    bool _isUsingStamina = false;
 
     sf::RenderWindow* _window;
 };

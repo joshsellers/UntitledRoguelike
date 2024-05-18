@@ -161,7 +161,7 @@ const Item Item::_PROJECTILE_PROPANE(25, "_PROPANE_PROJECTILE", sf::IntRect(50, 
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 3, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, false, 5, true, 3, 0);
+const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, false, 83, true, 3, 0);
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
     "It's a blow torch, but it\nseems like something's broken...",
@@ -196,6 +196,7 @@ const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
             parent->heal(10);
+            parent->restoreStamina(100);
             return true;
         }
         return false;
@@ -225,10 +226,12 @@ const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(3
 const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, false);
 
 const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
-    "Increases max HP by 25",
+    "Increases max HP by 25\nIncreases max stamina by 100\nIncreases damage multiplier by .25",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20000, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
+        parent->increaseStaminaRefreshRate(100);
+        parent->increaseDamageMultiplier(0.25f);
         return true;
     }
 );
@@ -256,6 +259,27 @@ const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), 
 const Item Item::WOOD_BOAT(36, "Boat", sf::IntRect(12, 31, 1, 1), false, 0, false, 
     "Helps you survive in the sea\nEquip it while in the water",
     EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 45000
+);
+
+const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10, true,
+    "Makes you feel rested",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 15000, true,
+    [](Entity* parent) {
+        if (parent->getStamina() < parent->getMaxStamina()) {
+            parent->restoreStamina(parent->getMaxStamina());
+            return true;
+        }
+        return false;
+    }
+);
+
+const Item Item::LOCUS_LIFT(38, "Locus Lift", sf::IntRect(7, 11, 1, 1), true, 10, true,
+    "Makes you a little bit stronger",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 499, true,
+    [](Entity* parent) {
+        parent->increaseDamageMultiplier(0.02f);
+        return true;
+    }
 );
 
 std::vector<const Item*> Item::ITEMS;

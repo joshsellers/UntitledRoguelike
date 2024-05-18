@@ -69,7 +69,7 @@ public:
 
             if (loadedSuccessfully) {
                 try {
-                    if (_deferredOrbiters.size() != 0) loadDeferredOribaters();
+                    if (_deferredOrbiters.size() != 0) loadDeferredOrbiters();
                     if (_deferredProjectiles.size() != 0) loadDeferredProjectiles();
                 } catch (std::exception ex) {
                     MessageManager::displayMessage("Error loading deferred entities: " + (std::string)ex.what(), 5, ERR);
@@ -144,6 +144,10 @@ private:
         out << ":" << std::to_string(player->getMagazineAmmoType());
         out << ":" << std::to_string(player->getMagazineContents());
         out << ":" << std::to_string(player->getMagazineSize());
+        out << ":" << std::to_string(player->getStamina());
+        out << ":" << std::to_string(player->getMaxStamina());
+        out << ":" << std::to_string(player->getStaminaRefreshRate());
+        out << ":" << std::to_string(player->getDamageMultiplier());
         out << std::endl;
         
         if (player->getInventory().getCurrentSize() != 0) {
@@ -173,7 +177,7 @@ private:
     }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
-    static void loadDeferredOribaters() {
+    static void loadDeferredOrbiters() {
         for (auto& deferredData : _deferredOrbiters) {
             std::string uid = deferredData[1];
             std::vector<std::string> posData = splitString(deferredData[2], ",");
@@ -232,7 +236,7 @@ private:
 
             bool rotateSprite = deferredData[10] == "1";
             bool onlyHitEnemies = deferredData[11] == "1";
-            float lifeTime = std::stof(deferredData[12]);
+            long long lifeTime = std::stoll(deferredData[12]);
             bool isAnimated = deferredData[13] == "1";
             int animationFrames = std::stoi(deferredData[14]);
             int animationSpeed = std::stoi(deferredData[15]);
@@ -318,6 +322,10 @@ private:
             player->_magazineAmmoType = std::stoi(data[4]);
             player->_magazineContents = std::stoi(data[5]);
             player->_magazineSize = std::stoi(data[6]);
+            player->_stamina = std::stoi(data[7]);
+            player->_maxStamina = std::stoi(data[8]);
+            player->_staminaRefreshRate = std::stoi(data[9]);
+            player->_damageMultiplier = std::stof(data[10]);
         } else if (header == "PINVENTORY") {
             auto& player = _world->getPlayer();
 
@@ -404,7 +412,7 @@ private:
 
                     bool rotateSprite = data[10] == "1";
                     bool onlyHitEnemies = data[11] == "1";
-                    float lifeTime = std::stof(data[12]);
+                    long long lifeTime = std::stoll(data[12]);
                     bool isAnimated = data[13] == "1";
                     int animationFrames = std::stoi(data[14]);
                     int animationSpeed = std::stoi(data[15]);

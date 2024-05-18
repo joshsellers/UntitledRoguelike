@@ -163,6 +163,14 @@ void Game::initUI() {
     _magazineMeter->useDefaultLabel(false);
     _magazineMeter->setCharacterSize(2);
     _HUDMenu->addElement(_magazineMeter);
+
+    _staminaMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "STAMINA", 50.25f, 88, 18, 1.3f, _player->getStaminaRef(), _player->getMaxStaminaRef(), _font
+    ));
+    _staminaMeter->setColor(0x00CC00FF);
+    _staminaMeter->setBackgroundColor(0x00AA00FF);
+    _HUDMenu->addElement(_staminaMeter);
+
     _ui->addMenu(_HUDMenu);
 
 
@@ -479,6 +487,9 @@ void Game::update() {
 
         displayEnemyWaveCountdownUpdates();
         _shopArrow.update();
+
+        if (_player->getStamina() < _player->getMaxStamina()) _staminaMeter->show();
+        else _staminaMeter->hide();
 
         if (!_player->isActive()) {
             MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);

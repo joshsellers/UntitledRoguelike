@@ -10,6 +10,7 @@ Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) :
 
     setMaxHitPoints(100);
     heal(getMaxHitPoints());
+    _stamina = _maxStamina;
 
     _hitBoxXOffset = 0;
     _hitBoxYOffset = 0;
@@ -61,11 +62,16 @@ void Player::update() {
         _movingDir = RIGHT;
     }
 
-    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || GameController::isButtonPressed(CONTROLLER_BUTTON::LEFT_BUMPER)) 
+    bool isSprinting = false;
+    if (hasSufficientStamina(SPRINT_STAMINA_COST) 
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || GameController::isButtonPressed(CONTROLLER_BUTTON::LEFT_BUMPER)) 
         && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) || isInBoat()) {
         xa *= _sprintMultiplier;
         ya *= _sprintMultiplier;
         _animSpeed = 2;
+
+        isSprinting = true;
+        _stamina = std::max(_stamina - SPRINT_STAMINA_COST, 0);
     } else if (!isSwimming() && isMoving()) {
         _animSpeed = 3;
     } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
@@ -74,10 +80,12 @@ void Player::update() {
         ya /= 2.f;
     }
 
-    if ((!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
+    if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
         && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || GameController::isButtonPressed(CONTROLLER_BUTTON::A)) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
+
+        if (isMoving()) _stamina = std::max(_stamina - DODGE_STAMINA_COST, 0);
     } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
         _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer) * _sprintMultiplier;
         _dodgeTimer++;
@@ -103,6 +111,11 @@ void Player::update() {
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    _isUsingStamina = (isSprinting && SPRINT_STAMINA_COST > 0) || isDodging();
+    if (!isUsingStamina()) {
+        _stamina = std::min(_stamina + getStaminaRefreshRate(), getMaxStamina());
+    }
 }
 
 void Player::draw(sf::RenderTexture& surface) {
@@ -372,7 +385,7 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
         for (auto& entity : getWorld()->getEntities()) {
             if (!entity->compare(this) && entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
-                entity->takeDamage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage());
+                entity->takeDamage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * getDamageMultiplier());
             }
         }
     }
@@ -428,6 +441,46 @@ bool Player::isDodging() const {
 
 bool Player::isInBoat() {
     return getInventory().getEquippedItemId(EQUIPMENT_TYPE::BOAT) != NOTHING_EQUIPPED;
+}
+
+int Player::getStamina() const {
+    return _stamina;
+}
+
+int Player::getMaxStamina() const {
+    return _maxStamina;
+}
+
+int Player::getStaminaRefreshRate() const {
+    return _staminaRefreshRate;
+}
+
+int& Player::getStaminaRef() {
+    return _stamina;
+}
+
+int& Player::getMaxStaminaRef() {
+    return _maxStamina;
+}
+
+void Player::setMaxStamina(int amount) {
+    _maxStamina = amount;
+}
+
+void Player::restoreStamina(int amount) {
+    _stamina = std::min(_stamina + amount, getMaxStamina());
+}
+
+void Player::increaseStaminaRefreshRate(int amount) {
+    _staminaRefreshRate += amount;
+}
+
+bool Player::isUsingStamina() {
+    return _isUsingStamina;
+}
+
+bool Player::hasSufficientStamina(int cost) {
+    return getStamina() - cost >= 0;
 }
 
 void Player::knockBack(float amt, MOVING_DIRECTION dir) {

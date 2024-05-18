@@ -88,6 +88,15 @@ public:
     int getHitPoints() const;
     int& getHitPointsRef();
 
+    virtual int getStamina() const;
+    virtual int getMaxStamina() const;
+    virtual void setMaxStamina(int amount);
+    virtual void restoreStamina(int amount);
+    virtual void increaseStaminaRefreshRate(int amount);
+
+    float getDamageMultiplier() const;
+    void increaseDamageMultiplier(float amount);
+
     sf::FloatRect getHitBox() const;
 
     bool hasColliders() const;
@@ -172,6 +181,8 @@ protected:
     float _hitBoxYOffset = 0;
 
     int _hitPoints = 0;
+
+    float _damageMultiplier = 1.f;
 
     bool _hasColliders = false;
     std::vector<sf::FloatRect> _colliders;

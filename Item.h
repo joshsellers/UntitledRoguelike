@@ -57,6 +57,8 @@ public:
     static const Item PROTEIN_SHAKE;
     static const Item BOTTLE_OF_MILK;
     static const Item WOOD_BOAT;
+    static const Item LIQUID_NAP;
+    static const Item LOCUS_LIFT;
 
     static std::vector<const Item*> ITEMS;
 

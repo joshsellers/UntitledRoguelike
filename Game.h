@@ -14,7 +14,7 @@
 #include "ShopManager.h"
 #include "ShopArrow.h"
 
-const std::string VERSION = "0.0404";
+const std::string VERSION = "0.0410";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -75,6 +75,7 @@ private:
 	std::shared_ptr<UICommandPrompt> _cmdPrompt;
 
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
+	std::shared_ptr<UIAttributeMeter> _staminaMeter;
 
 	sf::Font _font;
 	sf::Text _versionLabel;

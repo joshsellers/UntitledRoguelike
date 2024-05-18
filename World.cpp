@@ -310,7 +310,7 @@ void World::updateEntities() {
         }
 
         if (notInChunkCount == _chunks.size() && entity->isProp()) _entities.erase(_entities.begin() + j);
-        else if (notInChunkCount == _chunks.size() && entity->isMob() && !entity->isDormant()) {
+        else if (notInChunkCount == _chunks.size() && entity->isMob() && !entity->isDormant() && (!entity->isEnemy() || entity->isInitiallyDocile())) {
             if (entity->getTimeOutOfChunk() >= entity->getMaxTimeOutOfChunk()) {
                 entity->setDormant(true);
                 continue;

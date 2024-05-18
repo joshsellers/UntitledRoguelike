@@ -1,7 +1,7 @@
 #include "Projectile.h"
 #include "World.h"
 
-constexpr float LIFETIME = 60 * 5;
+constexpr long long LIFETIME = 5000LL;
 
 Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data) :
     Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
@@ -13,6 +13,7 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
 
     _lifeTime = data.lifeTime;
+    _spawnTime = currentTimeMillis();
 
     //setMaxHitPoints(1000000);
     //heal(getMaxHitPoints());
@@ -24,7 +25,7 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
 }
 
 void Projectile::update() {
-    if (_currentTime > _lifeTime) {
+    if (currentTimeMillis() - _spawnTime >= _lifeTime) {
         _isActive = false;
         return;
     }
@@ -39,7 +40,7 @@ void Projectile::update() {
             && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
             && entity->getEntityType() != _parent->getEntityType()) {
             if (entity->getHitBox().intersects(_hitBox)) {
-                entity->takeDamage(Item::ITEMS[_itemId]->getDamage());
+                entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
                 _isActive = false;
                 return;
             }
