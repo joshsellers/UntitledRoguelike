@@ -36,6 +36,12 @@ void ShopKeep::initInventory() {
     for (int i = 0; i < itemCount; i++) {
         int itemAmount = randomInt(1, 100);
         int itemId = randomInt(0, Item::ITEMS.size() - 1);
+        if (itemId == Item::BULLET_455.getId() || itemId == Item::RIFLE_ROUND.getId()
+            || itemId == Item::LIGHT_LASER_CHARGE.getId() || itemId == Item::PROPANE.getId()
+            || itemId == Item::POD.getId()) {
+            itemAmount += 100;
+            itemAmount *= 5;
+        }
 
         if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_") || !Item::ITEMS[itemId]->isBuyable()) continue;
 
