@@ -85,7 +85,7 @@ const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly
     sf::Vector2f steer(0, 0);
     int count = 0;
     for (auto& entity : _world->getEntities()) {
-        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;
@@ -142,7 +142,7 @@ const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
     int count = 0;
 
     for (auto& entity : _world->getEntities()) {
-        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;
@@ -189,7 +189,7 @@ const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly
     int count = 0;
 
     for (auto& entity : _world->getEntities()) {
-        if (entity->isMob() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;

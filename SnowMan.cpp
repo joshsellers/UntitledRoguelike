@@ -54,7 +54,7 @@ void SnowMan::update() {
         ya *= 0.785398;
     }
 
-    hoardMove(xa, ya, true);
+    hoardMove(xa, ya, false);
 
     _sprite.setPosition(getPosition());
 

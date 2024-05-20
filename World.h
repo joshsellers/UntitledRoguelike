@@ -53,7 +53,8 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
         MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15),
-        MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6)
+        MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6),
+        MobSpawnData(MOB_TYPE::YETI, 1, 4, 8)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {

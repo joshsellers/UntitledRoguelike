@@ -4,6 +4,7 @@
 #include "World.h"
 #include "Orbiter.h"
 #include "Projectile.h"
+#include "Yeti.h"
 
 class SaveManager {
 public:
@@ -454,6 +455,9 @@ private:
                     break;
                 case PENGUIN:
                     entity = std::shared_ptr<Penguin>(new Penguin(pos));
+                    break;
+                case YETI:
+                    entity = std::shared_ptr<Yeti>(new Yeti(pos));
                     break;
             }
 

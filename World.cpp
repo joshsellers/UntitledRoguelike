@@ -20,6 +20,7 @@
 #include "Frog.h"
 #include "ShopKeep.h"
 #include "SnowMan.h"
+#include "Yeti.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -238,6 +239,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::SNOW_MAN:
                                 mob = std::shared_ptr<SnowMan>(new SnowMan(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::YETI:
+                                mob = std::shared_ptr<Yeti>(new Yeti(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

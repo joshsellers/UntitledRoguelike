@@ -12,7 +12,8 @@ enum ENTITY_SAVE_ID {
     FROG,
     TURTLE,
     PENGUIN,
-    PLAYER
+    PLAYER,
+    YETI
 };
 
 #endif

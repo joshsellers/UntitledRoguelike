@@ -15,6 +15,7 @@
 #include "ShopCounter.h"
 #include "Frog.h"
 #include "SnowMan.h"
+#include "Yeti.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -232,6 +233,8 @@ private:
                             entity = std::shared_ptr<Frog>(new Frog(pos));
                         } else if (entityName == "snowman") {
                             entity = std::shared_ptr<SnowMan>(new SnowMan(pos));
+                        } else if (entityName == "yeti") {
+                            entity = std::shared_ptr<Yeti>(new Yeti(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
