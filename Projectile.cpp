@@ -35,14 +35,28 @@ void Projectile::update() {
         return;
     }
 
-    for (auto& entity : getWorld()->getEntities()) {
-        if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-            && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
-            && entity->getEntityType() != _parent->getEntityType()) {
-            if (entity->getHitBox().intersects(_hitBox)) {
-                entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
-                _isActive = false;
-                return;
+    if (_parent->getEntityType() != "player") {
+        for (auto& entity : getWorld()->getEntities()) {
+            if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
+                && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+                && entity->getEntityType() != _parent->getEntityType()) {
+                if (entity->getHitBox().intersects(_hitBox)) {
+                    entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+                    _isActive = false;
+                    return;
+                }
+            }
+        }
+    } else {
+        for (auto& entity : getWorld()->getEnemies()) {
+            if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
+                && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+                && entity->getEntityType() != _parent->getEntityType()) {
+                if (entity->getHitBox().intersects(_hitBox)) {
+                    entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+                    _isActive = false;
+                    return;
+                }
             }
         }
     }

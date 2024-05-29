@@ -66,7 +66,7 @@ void Orbiter::projectileAttack() {
     const float fireRange = 350.f;
     float closestDistance = fireRange;
     std::shared_ptr<Entity> closestEnemy = nullptr;
-    for (auto& entity : getWorld()->getEntities()) {
+    for (auto& entity : getWorld()->getEnemies()) {
         if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
             float dist = std::sqrt(std::pow(_pos.x - entity->getPosition().x, 2) + std::pow(_pos.y - entity->getPosition().y, 2));
             if (dist <= fireRange && dist < closestDistance) {
@@ -86,7 +86,7 @@ void Orbiter::projectileAttack() {
 }
 
 void Orbiter::contactAttack() {
-    for (auto& entity : getWorld()->getEntities()) {
+    for (auto& entity : getWorld()->getEnemies()) {
         if (!entity->compare(this) && !entity->compare(getParent()) && entity->isDamageable() && entity->getEntityType() != "dontblockplayershots"
             && entity->getHitBox().intersects(getHitBox())) {
             entity->takeDamage(_orbiterType->getContactDamage());

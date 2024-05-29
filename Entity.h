@@ -46,6 +46,9 @@ public:
     bool isEnemy() const;
     bool canPickUpItems() const;
     
+    bool usesDormancyRules() const;
+    void shouldUseDormancyRules(bool usesDormancyRules);
+    
     bool isInitiallyDocile() const;
     bool isHostile() const;
 
@@ -153,6 +156,7 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _canPickUpItems = false;
+    bool _usesDormanceRules = false;
 
     // this is specifically for things like cactoids that aren't immediatly aggressive
     bool _isInitiallyDocile = false;

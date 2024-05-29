@@ -13,7 +13,10 @@
 #include "ShopKeep.h"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 400;
-// full size 270
+// original size 270
+// full size 400
+
+constexpr long long INACTIVE_ENEMY_REMOVAL_INTERVAL = 5000LL;
 
 enum class TERRAIN_COLOR : sf::Uint32 {
     WATER_DEEP = 0x3370CC,
@@ -99,6 +102,7 @@ public:
 
     void addEntity(std::shared_ptr<Entity> entity);
     std::vector<std::shared_ptr<Entity>> getEntities() const;
+    std::vector<std::shared_ptr<Entity>> getEnemies() const;
 
     int getMobCount() const;
     int getEnemyCount() const;
@@ -148,6 +152,8 @@ private:
     std::vector<std::shared_ptr<Entity>> _entities;
     std::vector<std::shared_ptr<Entity>> _entityBuffer;
 
+    std::vector<std::shared_ptr<Entity>> _enemies;
+
     std::vector<sf::Vector2f> _destroyedProps;
     bool isPropDestroyedAt(sf::Vector2f pos) const;
 
@@ -173,6 +179,9 @@ private:
     void eraseChunks(int pX, int pY);
     void findCurrentChunk(int pX, int pY);
     void loadNewChunks(int pX, int pY);
+
+    void removeInactiveEnemies();
+    long long _lastEnemyRemovalTime = 0;
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);

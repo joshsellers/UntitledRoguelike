@@ -353,6 +353,14 @@ bool Entity::canPickUpItems() const {
     return _canPickUpItems;
 }
 
+bool Entity::usesDormancyRules() const {
+    return _usesDormanceRules;
+}
+
+void Entity::shouldUseDormancyRules(bool usesDormancyRules) {
+    _usesDormanceRules = usesDormancyRules;
+}
+
 bool Entity::isInitiallyDocile() const {
     return _isInitiallyDocile;
 }

@@ -83,6 +83,7 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
+        removeInactiveEnemies();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
         int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
@@ -291,7 +292,7 @@ void World::updateEntities() {
     for (int j = 0; j < _entities.size(); j++) {
         auto& entity = _entities.at(j);
 
-        if (!entity->isProp() && entity->isActive() && !entity->isMob()) {
+        if (!entity->isProp() && entity->isActive() && !entity->usesDormancyRules()) {
             entity->update();
             continue;
         } else if (!entity->isActive()) {
@@ -314,7 +315,7 @@ void World::updateEntities() {
         }
 
         if (notInChunkCount == _chunks.size() && entity->isProp()) _entities.erase(_entities.begin() + j);
-        else if (notInChunkCount == _chunks.size() && entity->isMob() && !entity->isDormant() && (!entity->isEnemy() || entity->isInitiallyDocile())) {
+        else if (notInChunkCount == _chunks.size() && entity->usesDormancyRules() && !entity->isDormant() && (!entity->isEnemy() || entity->isInitiallyDocile())) {
             if (entity->getTimeOutOfChunk() >= entity->getMaxTimeOutOfChunk()) {
                 entity->setDormant(true);
                 continue;
@@ -322,14 +323,23 @@ void World::updateEntities() {
 
             entity->incrementOutOfChunkTimer();
             entity->update();
-        } else if (notInChunkCount < _chunks.size() && entity->isMob() && entity->isDormant()) {
+        } else if (notInChunkCount < _chunks.size() && entity->usesDormancyRules() && entity->isDormant()) {
             entity->setDormant(false);
             entity->resetDormancyTimer();
-        } else if (notInChunkCount < _chunks.size() && entity->isMob()) {
+        } else if (notInChunkCount < _chunks.size() && entity->usesDormancyRules()) {
             entity->resetOutOfChunkTimer();
             entity->update();
         }
         else if (!entity->isDormant()) entity->update();
+    }
+}
+
+void World::removeInactiveEnemies() {
+    if (currentTimeMillis() - _lastEnemyRemovalTime >= INACTIVE_ENEMY_REMOVAL_INTERVAL && !_enemies.empty()) {
+        for (int i = 0; i < _enemies.size(); i++) {
+            auto& enemy = _enemies.at(i);
+            if (!enemy->isActive()) _enemies.erase(_enemies.begin() + i);
+        }
     }
 }
 
@@ -648,7 +658,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
 
             // rare biomes 
-            double rareBiomeSampleRate = biomeSampleRate / 2.;
+            double rareBiomeSampleRate = biomeSampleRate / 1.5;
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
             double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
 
@@ -773,6 +783,10 @@ unsigned int World::getSeed() {
 
 void World::addEntity(std::shared_ptr<Entity> entity) {
     _entities.push_back(entity);
+
+    if (entity->isEnemy()) _enemies.push_back(entity);
+
+    if (entity->isMob()) entity->shouldUseDormancyRules(true);
 }
 
 bool World::showDebug() const {
@@ -792,7 +806,7 @@ int World::getMobCount() const {
 
 int World::getEnemyCount() const {
     int count = 0;
-    for (auto& entity : getEntities())
+    for (auto& entity : getEnemies())
         if (entity->isEnemy() && entity->getEntityType() != "cactoid" && entity->isActive()) count++;
     return count;
 }
@@ -827,6 +841,10 @@ void World::incrementEnemySpawnCooldownTimeWhilePaused() {
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {
     return _entities;
+}
+
+std::vector<std::shared_ptr<Entity>> World::getEnemies() const {
+    return _enemies;
 }
 
 void World::sortEntities() {
