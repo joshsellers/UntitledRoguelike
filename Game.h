@@ -14,7 +14,7 @@
 #include "ShopManager.h"
 #include "ShopArrow.h"
 
-const std::string VERSION = "0.0422";
+const std::string VERSION = "0.0423";
 
 class Game : public UIButtonListener, public GameControllerListener {
 public:
@@ -82,6 +82,7 @@ private:
 	sf::Text _fpsLabel;
 	sf::Text _activeChunksLabel;
 	sf::Text _entityCountLabel;
+	sf::Text _enemyCountLabel;
 	sf::Text _onEnemySpawnCooldownLabel;
 	sf::Text _seedLabel;
 	std::string _textSeed = "NONE";

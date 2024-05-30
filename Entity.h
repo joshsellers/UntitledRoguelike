@@ -48,6 +48,8 @@ public:
     
     bool usesDormancyRules() const;
     void shouldUseDormancyRules(bool usesDormancyRules);
+    void setDormancyTimeout(int dormancyTimeout);
+    void setMaxTimeOutOfChunk(int maxTimeOutOfChunk);
     
     bool isInitiallyDocile() const;
     bool isHostile() const;
@@ -156,7 +158,7 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _canPickUpItems = false;
-    bool _usesDormanceRules = false;
+    bool _usesDormanceyRules = false;
 
     // this is specifically for things like cactoids that aren't immediatly aggressive
     bool _isInitiallyDocile = false;

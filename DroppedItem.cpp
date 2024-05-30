@@ -9,9 +9,11 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
     _pos.y = _originalY - originOffset;
     _down = _pos.y >= _minY || _pos.y > _originalY;
 
-    _usesDormanceRules = true;
+    _usesDormanceyRules = true;
     _maxTimeOutOfChunk = 60;
-    _dormancyTimeout = 60 * 5;
+    _dormancyTimeout = 60 * 5 * 60;
+
+    _entityType = "droppeditem";
 }
 
 void DroppedItem::update() {

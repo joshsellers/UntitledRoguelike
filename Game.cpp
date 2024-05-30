@@ -37,25 +37,30 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _entityCountLabel.setString("0 entities");
     _entityCountLabel.setPosition(0, 75);
 
+    _enemyCountLabel.setFont(_font);
+    _enemyCountLabel.setCharacterSize(24);
+    _enemyCountLabel.setString("0 enemies");
+    _enemyCountLabel.setPosition(0, 100);
+
     _onEnemySpawnCooldownLabel.setFont(_font);
     _onEnemySpawnCooldownLabel.setCharacterSize(24);
     _onEnemySpawnCooldownLabel.setString("enemy spawn cooldown expired");
-    _onEnemySpawnCooldownLabel.setPosition(0, 100);
+    _onEnemySpawnCooldownLabel.setPosition(0, 125);
 
     _seedLabel.setFont(_font);
     _seedLabel.setCharacterSize(24);
     _seedLabel.setString("seed: " + std::to_string(_world.getSeed()));
-    _seedLabel.setPosition(0, 125);
+    _seedLabel.setPosition(0, 150);
 
     _playerPosLabel.setFont(_font);
     _playerPosLabel.setCharacterSize(24);
     _playerPosLabel.setString("x: 0, y: 0");
-    _playerPosLabel.setPosition(0, 150);
+    _playerPosLabel.setPosition(0, 175);
 
     _currentBiomeLabel.setFont(_font);
     _currentBiomeLabel.setCharacterSize(24);
     _currentBiomeLabel.setString("biome: ");
-    _currentBiomeLabel.setPosition(0, 175);
+    _currentBiomeLabel.setPosition(0, 200);
 
 
     _spriteSheet->create(128, 208);
@@ -557,6 +562,10 @@ void Game::drawUI(sf::RenderTexture& surface) {
         int entityCount = _world.getEntities().size();
         _entityCountLabel.setString(std::to_string(entityCount) + " entit" + (entityCount > 1 ? "ies" : "y"));
         surface.draw(_entityCountLabel);
+
+        int enemyCount = _world.getEnemies().size();
+        _enemyCountLabel.setString(std::to_string(enemyCount) + " enem" + (enemyCount != 1 ? "ies" : "y"));
+        surface.draw(_enemyCountLabel);
 
         bool spawnCooldown = _world.onEnemySpawnCooldown();
         _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "enemy spawn cooldown active - " : "enemy spawn cooldown expired - ") 

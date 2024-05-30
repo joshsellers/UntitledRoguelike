@@ -466,6 +466,22 @@ private:
                     return ex.what();
                 }
             })
+        },
+
+        {
+            "removedroppeditems",
+            Command("Remove all dropped items",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                int count = 0;
+                for (const auto& entity : _world->getEntities()) {
+                    if (entity->getEntityType() == "droppeditem") {
+                        entity->deactivate();
+                        count++;
+                    }
+                }
+
+                return "Deactivated " + std::to_string(count) + " entities";
+            })
         }
     };
 };

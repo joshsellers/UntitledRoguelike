@@ -354,11 +354,19 @@ bool Entity::canPickUpItems() const {
 }
 
 bool Entity::usesDormancyRules() const {
-    return _usesDormanceRules;
+    return _usesDormanceyRules;
 }
 
 void Entity::shouldUseDormancyRules(bool usesDormancyRules) {
-    _usesDormanceRules = usesDormancyRules;
+    _usesDormanceyRules = usesDormancyRules;
+}
+
+void Entity::setDormancyTimeout(int dormancyTimeout) {
+    _dormancyTimeout = dormancyTimeout;
+}
+
+void Entity::setMaxTimeOutOfChunk(int maxTimeOutOfChunk) {
+    _maxTimeOutOfChunk = maxTimeOutOfChunk;
 }
 
 bool Entity::isInitiallyDocile() const {

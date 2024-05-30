@@ -141,7 +141,7 @@ void World::draw(sf::RenderTexture& surface) {
         }
     }
 
-    for (auto& entity : _entities) {
+    for (const auto& entity : _entities) {
         if (!entity->isDormant() && !_isPlayerInShop 
             || (_isPlayerInShop && entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
@@ -284,14 +284,13 @@ void World::purgeEntityBuffer() {
 }
 
 void World::updateEntities() {
-    for (int i = 0; i < _entities.size(); i++) {
+    /*for (int i = 0; i < _entities.size(); i++) {
         auto& entity = _entities.at(i);
         if (!entity->isActive()) _entities.erase(_entities.begin() + i);
-    }
+    }*/
+    _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [](std::shared_ptr<Entity> entity) {return !entity->isActive(); }), _entities.end());
 
-    for (int j = 0; j < _entities.size(); j++) {
-        auto& entity = _entities.at(j);
-
+    for (const auto& entity : _entities) {
         if (!entity->isProp() && entity->isActive() && !entity->usesDormancyRules()) {
             entity->update();
             continue;
@@ -308,13 +307,13 @@ void World::updateEntities() {
         }
 
         int notInChunkCount = 0;
-        for (auto& chunk : _chunks) {
+        for (const auto& chunk : _chunks) {
             if (!chunkContains(chunk, entity->getPosition())) {
                 notInChunkCount++;
             }
         }
 
-        if (notInChunkCount == _chunks.size() && entity->isProp()) _entities.erase(_entities.begin() + j);
+        if (notInChunkCount == _chunks.size() && entity->isProp()) entity->deactivate();
         else if (notInChunkCount == _chunks.size() && entity->usesDormancyRules() && !entity->isDormant() && (!entity->isEnemy() || entity->isInitiallyDocile())) {
             if (entity->getTimeOutOfChunk() >= entity->getMaxTimeOutOfChunk()) {
                 entity->setDormant(true);
@@ -449,7 +448,7 @@ void World::buildChunk(sf::Vector2f pos) {
     }
 }
 
-bool World::chunkContains(Chunk& chunk, sf::Vector2f pos) {
+bool World::chunkContains(const Chunk& chunk, sf::Vector2f pos) const {
     int pX = (int)pos.x;
     int pY = (int)pos.y;
     int chX = (int)chunk.pos.x;
@@ -848,7 +847,7 @@ std::vector<std::shared_ptr<Entity>> World::getEnemies() const {
 }
 
 void World::sortEntities() {
-    int n = _entities.size();
+    /*int n = _entities.size();
 
     for (int i = 0; i < n - 1; i++) {
         int min = i;
@@ -867,7 +866,12 @@ void World::sortEntities() {
             min--;
         }
         _entities[i] = key;
-    }
+    }*/
+
+    std::sort(_entities.begin(), _entities.end(), 
+        [](std::shared_ptr<Entity> e0, std::shared_ptr<Entity> e1) {
+            return e0->getPosition().y + e0->getSprite().getGlobalBounds().height < e1->getPosition().y + e1->getSprite().getGlobalBounds().height;
+        });
 }
 
 void World::propDestroyedAt(sf::Vector2f pos) {

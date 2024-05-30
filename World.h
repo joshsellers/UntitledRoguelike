@@ -185,7 +185,7 @@ private:
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);
-    bool chunkContains(Chunk& chunk, sf::Vector2f pos);
+    bool chunkContains(const Chunk& chunk, sf::Vector2f pos) const;
 
     sf::Image generateChunkTerrain(Chunk& chunk);
     void generateChunkEntities(Chunk& chunk);
