@@ -5,7 +5,7 @@
 
 class Projectile : public Entity {
 public:
-    Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data);
+    Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -13,6 +13,8 @@ public:
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     virtual std::string getSaveData() const;
+
+    bool onlyDamagePlayer = false;
 
 private:
     Entity* _parent;

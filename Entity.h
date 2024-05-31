@@ -158,13 +158,13 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _canPickUpItems = false;
-    bool _usesDormanceyRules = false;
+    bool _usesDormancyRules = false;
 
     // this is specifically for things like cactoids that aren't immediatly aggressive
     bool _isInitiallyDocile = false;
     bool _isHostile = false;
 
-    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE");
+    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false);
 
     Inventory _inventory = Inventory(this);
 

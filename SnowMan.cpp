@@ -69,7 +69,7 @@ void SnowMan::update() {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     if (currentTimeMillis() - _lastFireTime >= SNOWMAN_FIRE_RATE) {
-        fireTargetedProjectile(playerPos, Item::DATA_PROJECTILE_SNOW_BALL);
+        fireTargetedProjectile(playerPos, Item::DATA_PROJECTILE_SNOW_BALL, "NONE", true);
         _lastFireTime = currentTimeMillis();
     }
 }

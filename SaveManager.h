@@ -241,6 +241,7 @@ private:
             bool isAnimated = deferredData[13] == "1";
             int animationFrames = std::stoi(deferredData[14]);
             int animationSpeed = std::stoi(deferredData[15]);
+            bool onlyDamagePlayer = deferredData[16] == "1";
 
             ProjectileData projData = {
                 itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed
@@ -257,7 +258,7 @@ private:
             }
 
             if (foundParent) {
-                entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData));
+                entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData, onlyDamagePlayer));
                 entity->setUID(uid);
                 entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
@@ -417,6 +418,7 @@ private:
                     bool isAnimated = data[13] == "1";
                     int animationFrames = std::stoi(data[14]);
                     int animationSpeed = std::stoi(data[15]);
+                    bool onlyDamagePlayer = data[16] == "1";
 
                     ProjectileData projData = {
                         itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed
@@ -433,7 +435,7 @@ private:
                     }
 
                     if (foundParent) {
-                        entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData));
+                        entity = std::shared_ptr<Projectile>(new Projectile(pos, parent, angle, velocity, projData, onlyDamagePlayer));
                     } else {
                         entityLoadedSuccessfully = false;
                         _deferredProjectiles.push_back(data);

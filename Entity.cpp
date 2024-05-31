@@ -290,7 +290,7 @@ void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int
     }
 }
 
-void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName) {
+void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer) {
     const sf::Vector2f centerPoint(getPosition().x - _spriteWidth / 2, getPosition().y + _spriteHeight / 2);
     sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
 
@@ -302,6 +302,7 @@ void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData
     std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
         spawnPos, this, angle, projData.baseVelocity, projData
     ));
+    proj->onlyDamagePlayer = onlyDamagePlayer;
     proj->loadSprite(getWorld()->getSpriteSheet());
     proj->setWorld(getWorld());
     getWorld()->addEntity(proj);
@@ -354,11 +355,11 @@ bool Entity::canPickUpItems() const {
 }
 
 bool Entity::usesDormancyRules() const {
-    return _usesDormanceyRules;
+    return _usesDormancyRules;
 }
 
 void Entity::shouldUseDormancyRules(bool usesDormancyRules) {
-    _usesDormanceyRules = usesDormancyRules;
+    _usesDormancyRules = usesDormancyRules;
 }
 
 void Entity::setDormancyTimeout(int dormancyTimeout) {

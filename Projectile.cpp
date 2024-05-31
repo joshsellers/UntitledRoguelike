@@ -3,9 +3,9 @@
 
 constexpr long long LIFETIME = 5000LL;
 
-Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data) :
+Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer) :
     Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
-    _itemId(data.itemId) {
+    _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer) {
 
     sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
 
@@ -35,7 +35,13 @@ void Projectile::update() {
         return;
     }
 
-    if (_parent->getEntityType() != "player") {
+    if (onlyDamagePlayer) {
+        if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
+            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+            _isActive = false;
+            return;
+        }
+    } else if (_parent->getEntityType() != "player") {
         for (auto& entity : getWorld()->getEntities()) {
             if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                 && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
@@ -112,5 +118,6 @@ std::string Projectile::getSaveData() const {
         + ":" + std::to_string(_data.lifeTime)
         + ":" + (_data.isAnimated ? "1" : "0")
         + ":" + std::to_string(_data.animationFrames)
-        + ":" + std::to_string(_data.animationSpeed);
+        + ":" + std::to_string(_data.animationSpeed)
+        + ":" + (onlyDamagePlayer ? "1" : "0");
 }
