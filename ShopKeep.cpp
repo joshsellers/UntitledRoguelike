@@ -89,7 +89,9 @@ void ShopKeep::draw(sf::RenderTexture& surface) {
 
 void ShopKeep::setPosition(sf::Vector2f pos) {
     _pos = pos;
-    _sprite.setPosition(getPosition());
+    _sprite.setPosition(getPosition()); 
+    _hitBox.left = getPosition().x + _hitBoxXOffset;
+    _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
 void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface) {

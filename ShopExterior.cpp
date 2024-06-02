@@ -46,10 +46,9 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 void ShopExterior::update() {
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
-        for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-                getWorld()->enterShop(sf::Vector2f(_pos.x + 16, _pos.y - 48));
-            }
+        auto& entity = getWorld()->getPlayer();
+        if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
+            getWorld()->enterShop(sf::Vector2f(_pos.x + 16, _pos.y - 48));
         }
     } else _hasColliders = false;
 }

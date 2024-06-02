@@ -59,11 +59,10 @@ ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 }
 
 void ShopInterior::update() {
-    for (auto& entity : getWorld()->getEntities()) {
-        if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-            getWorld()->exitShop();
-            deactivate();
-        }
+    auto& entity = getWorld()->getPlayer();
+    if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
+        getWorld()->exitShop();
+        deactivate();
     }
 }
 
