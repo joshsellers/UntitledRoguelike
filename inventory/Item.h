@@ -59,6 +59,7 @@ public:
     static const Item WOOD_BOAT;
     static const Item LIQUID_NAP;
     static const Item LOCUS_LIFT;
+    static const Item BONE;
 
     static std::vector<const Item*> ITEMS;
 

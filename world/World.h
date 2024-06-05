@@ -51,7 +51,8 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 2, 8),
-        MobSpawnData(MOB_TYPE::FROG, 5, 1, 3)
+        MobSpawnData(MOB_TYPE::FROG, 5, 1, 3),
+        MobSpawnData(MOB_TYPE::DOG, 10, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -103,6 +104,7 @@ public:
     void addEntity(std::shared_ptr<Entity> entity);
     std::vector<std::shared_ptr<Entity>> getEntities() const;
     std::vector<std::shared_ptr<Entity>> getEnemies() const;
+    std::vector<std::shared_ptr<Entity>> getCollectorMobs() const;
 
     int getMobCount() const;
     int getEnemyCount() const;
@@ -153,6 +155,7 @@ private:
     std::vector<std::shared_ptr<Entity>> _entityBuffer;
 
     std::vector<std::shared_ptr<Entity>> _enemies;
+    std::vector<std::shared_ptr<Entity>> _collectorMobs;
 
     std::vector<sf::Vector2f> _destroyedProps;
     bool isPropDestroyedAt(sf::Vector2f pos) const;
@@ -180,8 +183,8 @@ private:
     void findCurrentChunk(int pX, int pY);
     void loadNewChunks(int pX, int pY);
 
-    void removeInactiveEnemies();
-    long long _lastEnemyRemovalTime = 0;
+    void removeInactiveEntitiesFromSubgroups();
+    long long _lastEntityRemovalTime = 0;
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);

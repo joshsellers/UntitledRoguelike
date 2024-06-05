@@ -610,3 +610,5 @@ std::string Entity::getUID() const {
 void Entity::setUID(std::string uuid) {
     _uid = uuid;
 }
+
+void Entity::lowContextSubclassFunction(std::string args) {}

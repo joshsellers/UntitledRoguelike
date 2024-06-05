@@ -282,6 +282,26 @@ const Item Item::LOCUS_LIFT(38, "Locus Lift", sf::IntRect(7, 11, 1, 1), true, 10
     }
 );
 
+const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
+    "Give it to a dog and it'll be your friend",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10, false,
+    [](Entity* parent) {
+        for (auto& entity : parent->getWorld()->getEntities()) {
+            if (entity->isActive() && entity->getEntityType() == "dog") {
+                sf::Vector2f playerPos((int)parent->getPosition().x + PLAYER_WIDTH / 2, (int)parent->getPosition().y + PLAYER_WIDTH * 2);
+                sf::Vector2f cLoc(((int)entity->getPosition().x), ((int)entity->getPosition().y) + TILE_SIZE);
+
+                float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
+                if (dist < 100) {
+                    entity->lowContextSubclassFunction("addOwner:" + parent->getUID());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 

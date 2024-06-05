@@ -80,7 +80,7 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
-        removeInactiveEnemies();
+        removeInactiveEntitiesFromSubgroups();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
         int pY = ((int)_player->getPosition().y + PLAYER_HEIGHT);
@@ -330,11 +330,16 @@ void World::updateEntities() {
     }
 }
 
-void World::removeInactiveEnemies() {
-    if (currentTimeMillis() - _lastEnemyRemovalTime >= INACTIVE_ENEMY_REMOVAL_INTERVAL && !_enemies.empty()) {
+void World::removeInactiveEntitiesFromSubgroups() {
+    if (currentTimeMillis() - _lastEntityRemovalTime >= INACTIVE_ENEMY_REMOVAL_INTERVAL && !_enemies.empty()) {
         for (int i = 0; i < _enemies.size(); i++) {
             auto& enemy = _enemies.at(i);
             if (!enemy->isActive()) _enemies.erase(_enemies.begin() + i);
+        }
+
+        for (int i = 0; i < _collectorMobs.size(); i++) {
+            auto& entity = _collectorMobs.at(i);
+            if (!entity->isActive()) _collectorMobs.erase(_collectorMobs.begin() + i);
         }
     }
 }
@@ -783,6 +788,8 @@ void World::addEntity(std::shared_ptr<Entity> entity) {
     if (entity->isEnemy()) _enemies.push_back(entity);
 
     if (entity->isMob()) entity->shouldUseDormancyRules(true);
+
+    if (entity->canPickUpItems()) _collectorMobs.push_back(entity);
 }
 
 bool World::showDebug() const {
@@ -841,6 +848,10 @@ std::vector<std::shared_ptr<Entity>> World::getEntities() const {
 
 std::vector<std::shared_ptr<Entity>> World::getEnemies() const {
     return _enemies;
+}
+
+std::vector<std::shared_ptr<Entity>> World::getCollectorMobs() const {
+    return _collectorMobs;
 }
 
 void World::sortEntities() {

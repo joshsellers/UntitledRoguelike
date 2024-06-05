@@ -443,6 +443,35 @@ private:
 
                     break;
                 }
+                case DOG: 
+                {
+                    bool hasOwner = data[4] == "1";
+                    std::string parentUID = data[5];
+
+                    Entity* parent = nullptr;
+                    bool foundParent = false;
+                    if (hasOwner) {
+                        for (auto& entity : _world->getEntities()) {
+                            if (entity->getUID() == parentUID) {
+                                parent = entity.get();
+                                foundParent = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (foundParent || !hasOwner) {
+                        entity = std::shared_ptr<Dog>(new Dog(pos));
+                        if (hasOwner) {
+                            entity->setWorld(_world);
+                            entity->lowContextSubclassFunction("addOwner:" + parentUID);
+                        }
+                    } else {
+                        entityLoadedSuccessfully = false;
+                        MessageManager::displayMessage("Did not find parent for Dog " + uid + "\nParent UID: " + parentUID, 5, WARN);
+                    }
+                    break;
+                }
                 case PLANTMAN:
                     entity = std::shared_ptr<PlantMan>(new PlantMan(pos));
                     break;

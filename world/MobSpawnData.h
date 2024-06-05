@@ -8,6 +8,7 @@ enum class MOB_TYPE : int {
     PENGUIN,
     TURTLE,
     FROG,
+    DOG,
     CACTOID,
     PLANT_MAN,
     SNOW_MAN,
