@@ -464,7 +464,7 @@ private:
                         entity = std::shared_ptr<Dog>(new Dog(pos));
                         if (hasOwner) {
                             entity->setWorld(_world);
-                            entity->lowContextSubclassFunction("addOwner:" + parentUID);
+                            entity->invokeFunction("addOwner", parentUID);
                         }
                     } else {
                         entityLoadedSuccessfully = false;

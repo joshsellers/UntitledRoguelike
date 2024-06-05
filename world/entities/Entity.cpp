@@ -611,4 +611,4 @@ void Entity::setUID(std::string uuid) {
     _uid = uuid;
 }
 
-void Entity::lowContextSubclassFunction(std::string args) {}
+void Entity::invokeFunction(std::string functionName, std::string args) {}

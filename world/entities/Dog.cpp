@@ -123,11 +123,10 @@ std::string Dog::getSaveData() const {
         (std::string)":" + (_hasOwner ? _parent->getUID() : "NONE");
 }
 
-void Dog::lowContextSubclassFunction(std::string args) {
-    auto& parsedArgs = splitString(args, ":");
-    if (parsedArgs[0] == "addOwner") {
+void Dog::invokeFunction(std::string functionName, std::string args) {
+    if (functionName == "addOwner") {
         for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isActive() && entity->getUID() == parsedArgs[1]) {
+            if (entity->isActive() && entity->getUID() == args) {
                 setParent(entity.get());
                 return;
             }

@@ -293,7 +293,7 @@ const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
 
                 float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
                 if (dist < 100) {
-                    entity->lowContextSubclassFunction("addOwner:" + parent->getUID());
+                    entity->invokeFunction("addOwner", parent->getUID());
                     return true;
                 }
             }

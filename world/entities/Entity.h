@@ -127,7 +127,7 @@ public:
     std::string getUID() const;
     void setUID(std::string uuid);
 
-    virtual void lowContextSubclassFunction(std::string args);
+    virtual void invokeFunction(std::string functionName, std::string args);
 
     friend class SaveManager;
 

@@ -18,7 +18,7 @@ public:
 
     virtual std::string getSaveData() const; 
     
-    virtual void lowContextSubclassFunction(std::string args);
+    virtual void invokeFunction(std::string functionName, std::string args);
 
     friend class SaveManager;
 protected:
