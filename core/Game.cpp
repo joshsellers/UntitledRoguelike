@@ -61,6 +61,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _currentBiomeLabel.setString("biome: ");
     _currentBiomeLabel.setPosition(0, 200);
 
+    _coinMagnetCountLabel.setFont(_font);
+    _coinMagnetCountLabel.setCharacterSize(24);
+    _coinMagnetCountLabel.setString("magnets: ");
+    _coinMagnetCountLabel.setPosition(0, 225);
+
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
@@ -583,6 +588,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _currentBiomeLabel.setString("current biome: " + std::to_string((int)currentBiome));
         surface.draw(_currentBiomeLabel);
 
+        _coinMagnetCountLabel.setString("magnets: " + std::to_string(_player->getCoinMagnetCount()));
+        surface.draw(_coinMagnetCountLabel);
+
         _frameCounter++;
     }
 }
@@ -665,6 +673,10 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_magazineContents = 0;
         _player->_baseSpeed = BASE_PLAYER_SPEED;
         _player->_isReloading = false;
+        _player->_damageMultiplier = 1.f;
+        _player->_maxStamina = INITIAL_MAX_STAMINA;
+        _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
+        _player->_coinMagnetCount = 0;
 
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();

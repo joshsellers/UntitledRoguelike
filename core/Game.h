@@ -14,7 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.0431";
+const std::string VERSION = "0.0440";
 
 class Game : public UIButtonListener, public GamePadListener {
 public:
@@ -88,6 +88,7 @@ private:
 	std::string _textSeed = "NONE";
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
+	sf::Text _coinMagnetCountLabel;
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;

@@ -481,6 +481,14 @@ bool Player::hasSufficientStamina(int cost) {
     return getStamina() - cost >= 0;
 }
 
+unsigned int Player::getCoinMagnetCount() const {
+    return _coinMagnetCount;
+}
+
+void Player::addCoinMagnet() {
+    _coinMagnetCount++;
+}
+
 void Player::knockBack(float amt, MOVING_DIRECTION dir) {
     if (!freeMove) {
         switch (dir) {

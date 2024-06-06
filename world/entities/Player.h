@@ -51,6 +51,9 @@ public:
     bool isUsingStamina();
     bool hasSufficientStamina(int cost);
 
+    unsigned int getCoinMagnetCount() const;
+    void addCoinMagnet();
+
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     bool freeMove = false;
@@ -130,6 +133,8 @@ private:
     int _maxStamina = INITIAL_MAX_STAMINA;
     int _staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
     bool _isUsingStamina = false;
+
+    unsigned int _coinMagnetCount = 0;
 
     sf::RenderWindow* _window;
 };

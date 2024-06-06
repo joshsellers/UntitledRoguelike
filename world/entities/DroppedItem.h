@@ -24,6 +24,8 @@ private:
     const float _originalY;
     bool _down = true;
     int _animCounter = 0;
+
+    void moveTowardPlayer();
 };
 
 #endif
