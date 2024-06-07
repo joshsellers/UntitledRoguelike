@@ -14,7 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.0441";
+const std::string VERSION = "0.0450";
 
 class Game : public UIButtonListener, public GamePadListener {
 public:
@@ -67,6 +67,7 @@ private:
 	std::shared_ptr<UIMenu> _newGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _joinGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _messageDispMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _loadGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;

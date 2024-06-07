@@ -85,11 +85,15 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     GamePad::addListener(_ui);
 
     SaveManager::init(&_world, &_shopManager);
-
+    SaveManager::getAvailableSaveFiles();
     initUI();
 }
 
 void Game::initUI() {
+    // Load game menu
+    _ui->addMenu(_loadGameMenu);
+
+
     // Pause menu
     std::shared_ptr<UIButton> mainMenuButton = std::shared_ptr<UIButton>(new UIButton(
         1, 5, 9, 3, "main menu", _font, this, "mainmenu"
@@ -602,6 +606,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->show();
         _startMenu->hide();
     } else if (buttonCode == "startnewgame") {
+        SaveManager::setCurrentSaveFileName(_worldNameField->getText() + ".save");
+
         std::string seedText = _seedField->getText();
         unsigned int seed = 0;
         try {
@@ -731,13 +737,80 @@ void Game::buttonPressed(std::string buttonCode) {
                 , 10);
         } else MessageManager::displayMessage("You can't save the game while you're in the shop :(", 5);
     } else if (buttonCode == "loadgame") {
-        if (SaveManager::loadGame()) {
+        if (SaveManager::getAvailableSaveFiles().empty()) MessageManager::displayMessage("There are no saved games", 5);
+        else {
             _startMenu->hide();
+
+            std::shared_ptr<UIButton> backButton = std::shared_ptr<UIButton>(new UIButton(
+                5.f, 5.f, 5.f, 3.f, "back", _font, this, "back_loadgame"
+            ));
+            backButton->setSelectionId(0);
+            _loadGameMenu->addElement(backButton);
+
+            float x = 0.f, y = 0.f;
+            const float xOffset = 12.f, yOffset = 12.f;
+            const float buttonWidth = 10.f, buttonHeight = 3.f;
+            const float menuWidth = 6.f;
+            const float menuHeight = 8.f;
+            const float spacingX = 1.5f, spacingY = 3.5f;
+            for (auto& saveFile : SaveManager::getAvailableSaveFiles()) {
+                std::shared_ptr<UIButton> saveFileButton = std::shared_ptr<UIButton>(new UIButton(
+                    xOffset + x * (buttonWidth + spacingX), yOffset + y * (buttonHeight + spacingY), buttonWidth, buttonHeight, 
+                    splitString(saveFile, ".")[0], _font, this, "load:" + saveFile
+                ));
+
+                saveFileButton->setSelectionId(x + (y+1) * menuWidth);
+                _loadGameMenu->addElement(saveFileButton);
+
+                x++;
+                if (x >= menuWidth) {
+                    y++;
+                    x = 0.f;
+                }
+            }
+
+            if (x == 0.f) y--;
+            const float menuGridRows = y+2;
+            
+            _loadGameMenu->useGamepadConfiguration = true;
+            std::vector<std::vector<int>> grid;
+            grid.push_back({ backButton->getSelectionId() });
+            int xa = 0;
+            for (int ya = 1; ya < menuGridRows; ya++) {
+                grid.push_back({});
+                xa = 0;
+                for (auto& button : _loadGameMenu->getElements()) {
+                    if (button->getSelectionId() == xa + ya * menuWidth) {
+                        grid[ya].push_back(button->getSelectionId());
+                        xa++;
+                        if (xa == menuWidth) break;
+                    }
+                }
+            }
+            _loadGameMenu->defineSelectionGrid(grid);
+            _loadGameMenu->show();
+        }
+    } else if (buttonCode == "back_loadgame") {
+        _loadGameMenu->hide();
+        _loadGameMenu->clearElements();
+
+        _startMenu->show();
+    } else if (stringStartsWith(buttonCode, "load:")) {
+        if (SaveManager::loadGame(splitString(buttonCode, ":")[1])) {
+            SaveManager::setCurrentSaveFileName(splitString(buttonCode, ":")[1]);
+
+            _loadGameMenu->hide();
+            _loadGameMenu->clearElements();
+
             _HUDMenu->show();
             _magazineMeter->hide();
 
             _gameStarted = true;
-        } else buttonPressed("mainmenu");
+        } else {
+            _loadGameMenu->hide();
+            _loadGameMenu->clearElements();
+            buttonPressed("mainmenu");
+        }
     }
 }
 

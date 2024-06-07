@@ -19,6 +19,14 @@ void UIMenu::addElement(std::shared_ptr<UIElement> element) {
     _elements.push_back(element);
 }
 
+std::vector<std::shared_ptr<UIElement>> UIMenu::getElements() const {
+    return _elements;
+}
+
+void UIMenu::clearElements() {
+    _elements.clear();
+}
+
 void UIMenu::controllerButtonReleased(GAMEPAD_BUTTON button) {
     for (auto& element : _elements) {
         if (element->isActive() && !element->blockControllerInput) element->controllerButtonReleased(button);

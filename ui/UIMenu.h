@@ -13,6 +13,8 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void addElement(std::shared_ptr<UIElement> element);
+    std::vector<std::shared_ptr<UIElement>> getElements() const;
+    void clearElements();
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
     void controllerButtonPressed(GAMEPAD_BUTTON button);

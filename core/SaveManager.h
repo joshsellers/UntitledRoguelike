@@ -5,24 +5,32 @@
 #include "../world/entities/orbiters/Orbiter.h"
 #include "../world/entities/projectiles/Projectile.h"
 #include "../world/entities/DroppedItem.h"
+#include <filesystem>
 
 class SaveManager {
 public:
     static void deleteSaveFile() {
-        std::string fileName = _saveFilePath;
+        if (_currentSaveFileName == "NONE") return;
+
+        std::string fileName = _saveDir + "/" + _currentSaveFileName;
         try {
             if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("[deleteSaveFile] Could not replace save file", 5, DEBUG);
+                MessageManager::displayMessage("[deleteSaveFile] Could not delete save file", 5, DEBUG);
         } catch (const std::filesystem::filesystem_error& err) {
-            MessageManager::displayMessage("Could not replace save file: " + (std::string)err.what(), 5, ERR);
+            MessageManager::displayMessage("Could not delete save file: " + (std::string)err.what(), 5, ERR);
         }
     }
 
     static void saveGame() {
-        std::string fileName = _saveFilePath;
+        if (_currentSaveFileName == "NONE") {
+            MessageManager::displayMessage("Saving game while _currentSaveFileName is \"NONE\"", 5, WARN);
+            _currentSaveFileName += ".save";
+        }
+
+        std::string fileName = _saveDir + "/" + _currentSaveFileName;
         try {
             if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("Could not replace save file", 5, ERR);
+                MessageManager::displayMessage("Could not replace save file", 5, DEBUG);
         } catch (const std::filesystem::filesystem_error& err) {
             MessageManager::displayMessage("Could not replace save file: " + (std::string)err.what(), 5, ERR);
         }
@@ -46,10 +54,10 @@ public:
         }
     }
 
-    static bool loadGame() {
+    static bool loadGame(std::string saveFileName) {
         bool loadedSuccessfully = true;
 
-        std::ifstream in(_saveFilePath);
+        std::ifstream in(_saveDir + "/" + saveFileName);
         if (!in.good()) {
             MessageManager::displayMessage("Could not find save file", 5, WARN);
             loadedSuccessfully = false;
@@ -84,12 +92,32 @@ public:
         return loadedSuccessfully;
     }
 
+    static std::vector<std::string> getAvailableSaveFiles() {
+        std::vector<std::string> saveFiles;
+        for (const auto& entry : std::filesystem::directory_iterator(_saveDir)) {
+            if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+            saveFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+        }
+
+        return saveFiles;
+    }
+
     static void init(World* world, ShopManager* shopManager) {
         _world = world;
         _shopManager = shopManager;
     }
+
+    static void setCurrentSaveFileName(std::string saveFileName) {
+        _currentSaveFileName = saveFileName;
+    }
+
+    static std::string getCurrentSaveFileName() {
+        return _currentSaveFileName;
+    }
+
 private:
-    inline const static std::string _saveFilePath = "save/save.save";
+    inline const static std::string _saveDir = "save";
+    inline static std::string _currentSaveFileName = "NONE";
 
     inline static World* _world = nullptr;
     inline static ShopManager* _shopManager = nullptr;

@@ -5,7 +5,8 @@
 #include <memory>
 
 constexpr int CHUNK_SIZE = 800;
-// full size 550
+// original size 550
+// full size 800
 
 enum class TERRAIN_TYPE : unsigned int {
     EMPTY         = 0,

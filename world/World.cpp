@@ -623,10 +623,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
-            double xOffset = 20000.;
+            double xOffset = 20000.; //20000.
             double yOffset = 20000.;
             int biomeOctaves = 2;
-            double biomeSampleRate = 0.00001;
+            double biomeSampleRate = 0.00001;// 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
