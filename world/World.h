@@ -191,7 +191,7 @@ private:
     bool chunkContains(const Chunk& chunk, sf::Vector2f pos) const;
 
     sf::Image generateChunkTerrain(Chunk& chunk);
-    void generateChunkEntities(Chunk& chunk);
+    void generateChunkScatters(Chunk& chunk);
 
     sf::Font _font; // TEMP
 

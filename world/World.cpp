@@ -458,7 +458,7 @@ bool World::chunkContains(const Chunk& chunk, sf::Vector2f pos) const {
     return pX >= chX && pY >= chY && pX < chX + CHUNK_SIZE && pY < chY + CHUNK_SIZE;
 }
 
-void World::generateChunkEntities(Chunk& chunk) {
+void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
@@ -478,7 +478,8 @@ void World::generateChunkEntities(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND
+                && terrainType != TERRAIN_TYPE::FLESH) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
@@ -539,6 +540,9 @@ void World::generateChunkEntities(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
+    constexpr float TERRAIN_SCALE = 0;
+    const float SCALE_COEFFICIENT = std::pow(10, TERRAIN_SCALE);
+
     long long startTime = 0;
     long long endTime = 0;
     if (BENCHMARK_TERRAIN_AND_BIOME_GEN) startTime = currentTimeMillis();
@@ -549,7 +553,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     int octaves = 4;
     double warpSize = 4;
     double warpStrength = 0.8;
-    double sampleRate = 0.0001; // 0.0001
+    double sampleRate = 0.0001 * SCALE_COEFFICIENT; // 0.0001
 
     // Terrain levels
     double seaLevel = -0.2;
@@ -623,10 +627,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
-            double xOffset = 20000.; //20000.
-            double yOffset = 20000.;
+            double xOffset = 20000. / SCALE_COEFFICIENT; //20000.
+            double yOffset = 20000. / SCALE_COEFFICIENT;
             int biomeOctaves = 2;
-            double biomeSampleRate = 0.00001;// 0.00001;
+            double biomeSampleRate = 0.00001 * SCALE_COEFFICIENT; // 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
 
@@ -659,7 +663,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
 
             // rare biomes 
-            double rareBiomeSampleRate = biomeSampleRate / 1.5;
+            double rareBiomeSampleRate = biomeSampleRate / 2;
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
             double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
 
@@ -735,7 +739,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             + ") generated in " + std::to_string(endTime - startTime) + "ms", 2, DEBUG);
     }
 
-    if (!disablePropGeneration) generateChunkEntities(chunk);
+    if (!disablePropGeneration) generateChunkScatters(chunk);
 
     return image;
 }

@@ -20,7 +20,7 @@ void ShopArrow::update() {
         }
     }
 
-    if (foundShop) {
+    if (foundShop && closestShop != nullptr) {
         sf::Vector2f shopPos = closestShop->getPosition();
         shopPos.x += 6 * TILE_SIZE;
         shopPos.y += 4 * TILE_SIZE;
