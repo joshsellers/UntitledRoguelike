@@ -107,6 +107,10 @@ Entity* Dog::getParent() const {
     return _parent;
 }
 
+bool Dog::hasParent() const {
+    return _hasOwner;
+}
+
 void Dog::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(sf::IntRect(32 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
@@ -121,17 +125,6 @@ void Dog::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 std::string Dog::getSaveData() const {
     return (_hasOwner ? "1" : "0") + 
         (std::string)":" + (_hasOwner ? _parent->getUID() : "NONE");
-}
-
-void Dog::invokeFunction(std::string functionName, std::string args) {
-    if (functionName == "addOwner") {
-        for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isActive() && entity->getUID() == args) {
-                setParent(entity.get());
-                return;
-            }
-        }
-    }
 }
 
 void Dog::damage(int damage) {

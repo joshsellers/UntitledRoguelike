@@ -611,4 +611,3 @@ void Entity::setUID(std::string uuid) {
     _uid = uuid;
 }
 
-void Entity::invokeFunction(std::string functionName, std::string args) {}

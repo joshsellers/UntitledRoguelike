@@ -14,7 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.0440";
+const std::string VERSION = "0.0441";
 
 class Game : public UIButtonListener, public GamePadListener {
 public:

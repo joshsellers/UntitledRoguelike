@@ -13,12 +13,11 @@ public:
 
     void setParent(Entity* parent);
     Entity* getParent() const;
+    bool hasParent() const;
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     virtual std::string getSaveData() const; 
-    
-    virtual void invokeFunction(std::string functionName, std::string args);
 
     friend class SaveManager;
 protected:

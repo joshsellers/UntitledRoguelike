@@ -4,6 +4,7 @@
 #include "../world/entities/orbiters/Orbiter.h"
 #include "../world/entities/projectiles/Projectile.h"
 #include "../core/SoundManager.h"
+#include "../world/entities/Dog.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -288,12 +289,15 @@ const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
     [](Entity* parent) {
         for (auto& entity : parent->getWorld()->getEntities()) {
             if (entity->isActive() && entity->getEntityType() == "dog") {
+                Dog* dog = dynamic_cast<Dog*>(entity.get());
+                if (dog->hasParent()) continue;
+
                 sf::Vector2f playerPos((int)parent->getPosition().x + PLAYER_WIDTH / 2, (int)parent->getPosition().y + PLAYER_WIDTH * 2);
-                sf::Vector2f cLoc(((int)entity->getPosition().x), ((int)entity->getPosition().y) + TILE_SIZE);
+                sf::Vector2f cLoc(((int)dog->getPosition().x), ((int)dog->getPosition().y) + TILE_SIZE);
 
                 float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
                 if (dist < 100) {
-                    entity->invokeFunction("addOwner", parent->getUID());
+                    dog->setParent(parent);
                     return true;
                 }
             }
