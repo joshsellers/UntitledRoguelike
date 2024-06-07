@@ -85,7 +85,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     GamePad::addListener(_ui);
 
     SaveManager::init(&_world, &_shopManager);
-    SaveManager::getAvailableSaveFiles();
+
     initUI();
 }
 
