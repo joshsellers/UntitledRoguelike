@@ -16,6 +16,7 @@
 #include "../world/Entities/SnowMan.h"
 #include "../world/Entities/Yeti.h"
 #include "../world/entities/Dog.h"
+#include "../world/entities/Skeleton.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "3491115221";
@@ -237,6 +238,8 @@ private:
                             entity = std::shared_ptr<Yeti>(new Yeti(pos));
                         } else if (entityName == "dog") {
                             entity = std::shared_ptr<Dog>(new Dog(pos));
+                        } else if (entityName == "skeleton") {
+                            entity = std::shared_ptr<Skeleton>(new Skeleton(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

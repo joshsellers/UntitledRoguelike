@@ -924,7 +924,7 @@ void Game::toggleShopMenu() {
                 if (_player->getHitBox().intersects(entity->getHitBox())) {
                     _shopMenu->show();
                     MessageManager::displayMessage(
-                        "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell a quarter of a stack",
+                        "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25",
                         10
                     );
                     break;

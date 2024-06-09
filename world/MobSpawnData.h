@@ -12,7 +12,8 @@ enum class MOB_TYPE : int {
     CACTOID,
     PLANT_MAN,
     SNOW_MAN,
-    YETI
+    YETI,
+    SKELETON
 };
 
 struct MobSpawnData {

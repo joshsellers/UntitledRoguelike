@@ -18,6 +18,7 @@
 #include "entities/ShopInterior.h"
 #include "entities/ShopCounter.h"
 #include "../core/Util.h"
+#include "entities/Skeleton.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -75,7 +76,10 @@ void World::update() {
     if (!_isPlayerInShop) {
         if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
 
-        if (!disableMobSpawning) spawnMobs();
+        if (!disableMobSpawning) {
+            spawnMobs();
+            spawnEnemies();
+        }
 
         purgeEntityBuffer();
 
@@ -206,8 +210,7 @@ void World::spawnMobs() {
                     boost::random::uniform_int_distribution<> individualSpawnChance(0, mobData.spawnChance);
                     if (individualSpawnChance(_mobGen) != 0) continue;
 
-                    if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID && (_cooldownActive || _maxEnemiesReached)) continue;
-                    else if ((int)mobData.mobType <= (int)MOB_TYPE::CACTOID && getMobCount() > MAX_ACTIVE_MOBS) continue;
+                    if (getMobCount() > MAX_ACTIVE_MOBS) continue;
 
                     boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
                     int packAmount = randPackAmount(_mobGen);
@@ -226,20 +229,78 @@ void World::spawnMobs() {
                             case MOB_TYPE::TURTLE:
                                 mob = std::shared_ptr<Turtle>(new Turtle(sf::Vector2f(xi, yi)));
                                 break;
-                            case MOB_TYPE::PLANT_MAN:
-                                mob = std::shared_ptr<PlantMan>(new PlantMan(sf::Vector2f(xi, yi)));
-                                break;
                             case MOB_TYPE::CACTOID:
                                 mob = std::shared_ptr<Cactoid>(new Cactoid(sf::Vector2f(xi, yi)));
                                 break;
                             case MOB_TYPE::FROG:
                                 mob = std::shared_ptr<Frog>(new Frog(sf::Vector2f(xi, yi)));
                                 break;
+                            default:
+                                return;
+                        }
+
+                        mob->loadSprite(_spriteSheet);
+                        mob->setWorld(this);
+                        addEntity(mob);
+                    }
+                }
+            } else continue;
+        }
+    }
+}
+
+void World::spawnEnemies() {
+    constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
+    constexpr int MOB_SPAWN_CHANCE = 5;
+    constexpr float MIN_DIST = 250.f;
+    constexpr int PACK_SPREAD = 20;
+
+    if (_enemySpawnClock.getElapsedTime().asSeconds() >= MOB_SPAWN_RATE_SECONDS) {
+        _enemySpawnClock.restart();
+        boost::random::uniform_int_distribution<> skipChunk(0, MOB_SPAWN_CHANCE);
+        for (auto& chunk : _chunks) {
+            if (skipChunk(_enemyGen) == 0) {
+                boost::random::uniform_int_distribution<> randX(chunk.pos.x, chunk.pos.x + CHUNK_SIZE);
+                boost::random::uniform_int_distribution<> randY(chunk.pos.y, chunk.pos.y + CHUNK_SIZE);
+                float x = randX(_enemyGen);
+                float y = randY(_enemyGen);
+
+                if (std::abs(x - _player->getPosition().x) > MIN_DIST || std::abs(y - _player->getPosition().y) > MIN_DIST) {
+                    TERRAIN_TYPE terrainType = getTerrainDataAt(&chunk, sf::Vector2f(x, y));
+                    if ((unsigned int)terrainType < (unsigned int)TERRAIN_TYPE::WATER) continue;
+
+                    unsigned int biomeIndex = (unsigned int)terrainType - (unsigned int)TERRAIN_TYPE::WATER;
+                    const BiomeMobSpawnData& biomeMobSpawnData = ENEMY_SPAWN_DATA[biomeIndex];
+                    if (biomeMobSpawnData.mobData.size() == 0) continue;
+
+                    const MobSpawnData& mobData = biomeMobSpawnData.mobData.at(getRandMobType(biomeMobSpawnData));
+                    boost::random::uniform_int_distribution<> individualSpawnChance(0, mobData.spawnChance);
+                    if (individualSpawnChance(_enemyGen) != 0) continue;
+
+                    if (_cooldownActive || _maxEnemiesReached) continue;
+
+                    boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
+                    int packAmount = randPackAmount(_enemyGen);
+
+                    boost::random::uniform_int_distribution<> randXi(x - PACK_SPREAD, x + PACK_SPREAD);
+                    boost::random::uniform_int_distribution<> randYi(y - PACK_SPREAD, y + PACK_SPREAD);
+                    for (int i = 0; i < packAmount; i++) {
+                        int xi = randXi(_enemyGen);
+                        int yi = randYi(_enemyGen);
+                        std::shared_ptr<Entity> mob = nullptr;
+
+                        switch (mobData.mobType) {
+                            case MOB_TYPE::PLANT_MAN:
+                                mob = std::shared_ptr<PlantMan>(new PlantMan(sf::Vector2f(xi, yi)));
+                                break;
                             case MOB_TYPE::SNOW_MAN:
                                 mob = std::shared_ptr<SnowMan>(new SnowMan(sf::Vector2f(xi, yi)));
                                 break;
                             case MOB_TYPE::YETI:
                                 mob = std::shared_ptr<Yeti>(new Yeti(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::SKELETON:
+                                mob = std::shared_ptr<Skeleton>(new Skeleton(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -249,8 +310,7 @@ void World::spawnMobs() {
                         mob->setWorld(this);
                         addEntity(mob);
 
-                        if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID
-                            && (getEnemyCount() >= _maxActiveEnemies || _enemiesSpawnedThisRound >= _maxActiveEnemies)) {
+                        if ((getEnemyCount() >= _maxActiveEnemies || _enemiesSpawnedThisRound >= _maxActiveEnemies)) {
                             _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
@@ -258,7 +318,7 @@ void World::spawnMobs() {
                             PLAYER_SCORE += 1.f;
                             _waveCounter++;
                             break;
-                        } else if ((int)mobData.mobType > (int)MOB_TYPE::CACTOID) _enemiesSpawnedThisRound++;
+                        } else _enemiesSpawnedThisRound++;
                     }
                 }
             } else continue;
@@ -288,6 +348,11 @@ void World::updateEntities() {
     _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [](std::shared_ptr<Entity> entity) {return !entity->isActive(); }), _entities.end());
 
     for (const auto& entity : _entities) {
+        if (entity == nullptr) {
+            MessageManager::displayMessage("An entity was nullptr", 0, DEBUG);
+            continue;
+        }
+
         if (!entity->isProp() && entity->isActive() && !entity->usesDormancyRules()) {
             entity->update();
             continue;

@@ -50,19 +50,41 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
-        MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 2, 8),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3),
         MobSpawnData(MOB_TYPE::DOG, 10, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
-        MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15),
+        MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
+        MobSpawnData(MOB_TYPE::CACTOID, 1, 1, 1)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
+};
+
+const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
+    BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 2, 8)
+    }),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
         MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6),
         MobSpawnData(MOB_TYPE::YETI, 1, 4, 8)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
-        MobSpawnData(MOB_TYPE::CACTOID, 1, 1, 1)
+        MobSpawnData(MOB_TYPE::SKELETON, 0, 5, 12)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
@@ -165,9 +187,12 @@ private:
     void shopSeenAt(sf::Vector2f pos);
 
     void spawnMobs();
+    void spawnEnemies();
     int getRandMobType(const BiomeMobSpawnData& mobSpawnData);
     sf::Clock _mobSpawnClock;
     boost::random::mt19937 _mobGen = boost::random::mt19937();
+    sf::Clock _enemySpawnClock;
+    boost::random::mt19937 _enemyGen = boost::random::mt19937();
     long long _cooldownStartTime = 0;
     bool _maxEnemiesReached = false;
     bool _cooldownActive = false;

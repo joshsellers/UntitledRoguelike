@@ -30,7 +30,7 @@ void UIShopInterface::dropItem(int index) {
 }
 
 void UIShopInterface::dropStack(int index) {
-    attemptTransaction(index, _source.getItemAmountAt(index) > 1 ? _source.getItemAmountAt(index) / 4 : 1);
+    attemptTransaction(index, _source.getItemAmountAt(index) >= 25 ? 25 : 1);
 }
 
 void UIShopInterface::attemptTransaction(int index, int amount) {

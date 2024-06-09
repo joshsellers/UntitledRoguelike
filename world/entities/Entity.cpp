@@ -84,7 +84,7 @@ void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, flo
 const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist) {
     sf::Vector2f steer(0, 0);
     int count = 0;
-    for (auto& entity : _world->getEntities()) {
+    for (auto& entity : _world->getEnemies()) {
         if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
@@ -141,7 +141,7 @@ const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
     sf::Vector2f sum(0, 0);
     int count = 0;
 
-    for (auto& entity : _world->getEntities()) {
+    for (auto& entity : _world->getEnemies()) {
         if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
@@ -188,7 +188,7 @@ const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly
     sf::Vector2f sum(0, 0);
     int count = 0;
 
-    for (auto& entity : _world->getEntities()) {
+    for (auto& entity : _world->getEnemies()) {
         if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;

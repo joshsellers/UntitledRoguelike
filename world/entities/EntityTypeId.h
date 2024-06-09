@@ -14,7 +14,8 @@ enum ENTITY_SAVE_ID {
     PENGUIN,
     PLAYER,
     YETI,
-    DOG
+    DOG,
+    SKELETON
 };
 
 #endif
