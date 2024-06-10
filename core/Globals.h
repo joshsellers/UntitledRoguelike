@@ -1,6 +1,8 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
+//#define DBGBLD
+
 extern unsigned int WINDOW_WIDTH, WINDOW_HEIGHT;
 extern float RELATIVE_WINDOW_SIZE;
 

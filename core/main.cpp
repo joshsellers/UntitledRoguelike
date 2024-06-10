@@ -5,6 +5,10 @@
 #include "SoundManager.h"
 #include <fstream>
 
+#ifndef DBGBLD
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 void loadSettings() {
     std::ifstream in("settings.config");
     if (!in.good()) {
@@ -29,6 +33,8 @@ void loadSettings() {
     in.close();
 }
 
+
+
 int main() {
     MessageManager::start();
     SoundManager::loadSounds();
@@ -50,6 +56,12 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
     //window.setVerticalSyncEnabled();
+
+    // Set icon
+    sf::Image icon;
+    if (!icon.loadFromFile("res/icon0.png")) MessageManager::displayMessage("Could not load icon", 5, WARN);
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    //
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 

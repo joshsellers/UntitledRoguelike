@@ -14,4 +14,10 @@ bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 
 float PLAYER_SCORE = 1.f;
 
+#ifdef DBGBLD
 bool DEBUG_MODE = true;
+#endif
+
+#ifndef DBGBLD
+bool DEBUG_MODE = false;
+#endif
