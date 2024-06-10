@@ -19,6 +19,7 @@
 #include "entities/ShopCounter.h"
 #include "../core/Util.h"
 #include "entities/Skeleton.h"
+#include "entities/Dog.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -78,7 +79,7 @@ void World::update() {
 
         if (!disableMobSpawning) {
             spawnMobs();
-            spawnEnemies();
+            if (!disableEnemySpawning) spawnEnemies();
         }
 
         purgeEntityBuffer();
@@ -235,6 +236,9 @@ void World::spawnMobs() {
                             case MOB_TYPE::FROG:
                                 mob = std::shared_ptr<Frog>(new Frog(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::DOG:
+                                mob = std::shared_ptr<Dog>(new Dog(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }
@@ -315,7 +319,7 @@ void World::spawnEnemies() {
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 6;
-                            PLAYER_SCORE += 1.f;
+                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_player->getMaxHitPoints() / 100.f));
                             _waveCounter++;
                             break;
                         } else _enemiesSpawnedThisRound++;

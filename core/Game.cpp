@@ -156,7 +156,7 @@ void Game::initUI() {
 
     // HUD
     std::shared_ptr<UIAttributeMeter> playerHpMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "HP", 50, 93, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
+        "HP", 50, 92, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
     ));
     playerHpMeter->setColor(0xCC0000FF);
     playerHpMeter->setBackgroundColor(0xAA0000FF);
@@ -168,15 +168,27 @@ void Game::initUI() {
     _magazineMeter->setBackgroundColor(0x55555599);
     _magazineMeter->setColor(0x99999999);
     _magazineMeter->useDefaultLabel(false);
+    _magazineMeter->fitWidthToText(true);
     _magazineMeter->setCharacterSize(2);
     _HUDMenu->addElement(_magazineMeter);
 
     _staminaMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "STAMINA", 50.25f, 88, 18, 1.3f, _player->getStaminaRef(), _player->getMaxStaminaRef(), _font
+        "STAMINA", 50.25f, 87, 18, 1.3f, _player->getStaminaRef(), _player->getMaxStaminaRef(), _font
     ));
     _staminaMeter->setColor(0x00CC00FF);
     _staminaMeter->setBackgroundColor(0x00AA00FF);
     _HUDMenu->addElement(_staminaMeter);
+
+    int placeholder = 0;
+    _waveCounterMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "", 50.f, 97.f, 14.f, 0.75f, placeholder, placeholder, _font
+    ));
+    _waveCounterMeter->setBackgroundColor(0x55555599);
+    _waveCounterMeter->setColor(0x99999999);
+    _waveCounterMeter->useDefaultLabel(false);
+    _waveCounterMeter->useAttributes(false);
+    _waveCounterMeter->fitWidthToText(true);
+    _HUDMenu->addElement(_waveCounterMeter);
 
     _ui->addMenu(_HUDMenu);
 
@@ -496,6 +508,27 @@ void Game::update() {
             }
         } else {
             _magazineMeter->hide();
+        }
+
+        if (_showWaveMeter) {
+            long long cooldownTimeAtStart = _world.getEnemySpawnCooldownTimeMilliseconds() / 1000;
+            long long cooldownTimeRemaining = _world.getTimeUntilNextEnemyWave() / 1000;
+
+            int timeRemainingMinutes = cooldownTimeRemaining / 60;
+            int timeRemainingSeconds = cooldownTimeRemaining % 60;
+
+            std::string timerString = "";
+            if (_world.onEnemySpawnCooldown()) {
+                timerString = " in " + std::to_string(timeRemainingMinutes) + ":"
+                    + (timeRemainingSeconds < 10 ? "0" : "") + std::to_string(timeRemainingSeconds);
+
+                _waveCounterMeter->setPercentFull(((float)cooldownTimeRemaining / (float)cooldownTimeAtStart));
+            } else {
+                _waveCounterMeter->setPercentFull(0.f);
+            }
+
+            _waveCounterMeter->setText("WAVE " + std::to_string(_world._currentWaveNumber) 
+                + timerString);
         }
 
         displayEnemyWaveCountdownUpdates();

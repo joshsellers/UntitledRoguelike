@@ -21,13 +21,22 @@ public:
     void setText(const sf::String text);
 
     void useDefaultLabel(bool useDefaultLabel);
+    void useAttributes(bool useAttributes);
+    void fitWidthToText(bool fitWidthToText);
 
     void setColor(sf::Uint32 color);
     void setBackgroundColor(sf::Uint32 color);
 
+    void setPercentFull(float percentage);
+    
+    void setWidth(float width);
+    void setHeight(float height);
+
 private:
     int& _attribute;
     int& _attributeMax;
+
+    float _percentFull = 1.f;
     
     const sf::String _attName;
 
@@ -38,8 +47,10 @@ private:
     sf::RectangleShape _background;
 
     bool _showText = true;
-
     bool _useDefaultLabel = true;
+    bool _useAttributes = true;
+
+    bool _fitWidthToText = false;
 };
 
 #endif

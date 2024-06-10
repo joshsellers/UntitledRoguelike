@@ -32,7 +32,20 @@ UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, f
 void UIAttributeMeter::update() {
     if (_attribute < 0) _attribute = 0;
 
-    _bar.setSize(sf::Vector2f(_width * ((float)_attribute / (float)_attributeMax), _height));
+    if (_fitWidthToText) {
+        float textWidth = _text.getGlobalBounds().width;
+        float padding = getRelativeWidth(0.5f);
+        _width = textWidth + padding;
+
+        _bar.setPosition(_sprite.getPosition().x - _width / 2, _sprite.getPosition().y);
+        _background.setPosition(_bar.getPosition().x - padding, _bar.getPosition().y - padding);
+        _background.setSize(sf::Vector2f(_width + padding * 2, _height + padding * 2));
+    }
+
+    float widthMultiplier = ((float)_attribute / (float)_attributeMax);
+    if (!_useAttributes) widthMultiplier = _percentFull;
+
+    _bar.setSize(sf::Vector2f(_width * widthMultiplier, _height));
 
     if (_useDefaultLabel) _text.setString(_attName + ": " + std::to_string(_attribute) + "/" + std::to_string(_attributeMax));
     _text.setPosition(
@@ -78,6 +91,14 @@ void UIAttributeMeter::useDefaultLabel(bool useDefaultLabel) {
     _useDefaultLabel = useDefaultLabel;
 }
 
+void UIAttributeMeter::useAttributes(bool useAttributes) {
+    _useAttributes = useAttributes;
+}
+
+void UIAttributeMeter::fitWidthToText(bool fitWidthToText) {
+    _fitWidthToText = fitWidthToText;
+}
+
 void UIAttributeMeter::setColor(sf::Uint32 color) {
     _barColor = color;
     _bar.setFillColor(sf::Color(_barColor));
@@ -86,4 +107,21 @@ void UIAttributeMeter::setColor(sf::Uint32 color) {
 void UIAttributeMeter::setBackgroundColor(sf::Uint32 color) {
     _bgColor = color;
     _background.setFillColor(sf::Color(_bgColor));
+}
+
+void UIAttributeMeter::setPercentFull(float percentage) {
+    _percentFull = percentage;
+}
+
+void UIAttributeMeter::setWidth(float width) {
+    float padding = getRelativeWidth(0.5f);
+    _width = WINDOW_WIDTH * (width / 100);
+    _background.setSize(sf::Vector2f(_width + padding * 2, _height + padding * 2));
+}
+
+void UIAttributeMeter::setHeight(float height) {
+    float padding = getRelativeWidth(0.5f);
+    _height = WINDOW_WIDTH * (height / 100); 
+    _background.setSize(sf::Vector2f(_width + padding * 2, _height + padding * 2));
+    _bar.setSize(sf::Vector2f(_width * ((float)_attribute / (float)_attributeMax), _height));
 }

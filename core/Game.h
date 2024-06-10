@@ -14,7 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.0461";
+const std::string VERSION = "0.0470";
 
 class Game : public UIButtonListener, public GamePadListener {
 public:
@@ -50,6 +50,7 @@ private:
 	
 	long long _lastCooldownUpdateTime = 0;
 	void displayEnemyWaveCountdownUpdates();
+	bool _showWaveMeter = true;
 
 	sf::RenderWindow* _window;
 
@@ -77,6 +78,7 @@ private:
 
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 	std::shared_ptr<UIAttributeMeter> _staminaMeter;
+	std::shared_ptr<UIAttributeMeter> _waveCounterMeter;
 
 	sf::Font _font;
 	sf::Text _versionLabel;

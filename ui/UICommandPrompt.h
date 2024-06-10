@@ -376,6 +376,15 @@ private:
         },
 
         {
+            "tes",
+            Command("Toggle enemy spawns",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->disableEnemySpawning = !_world->disableEnemySpawning;
+                return (_world->disableEnemySpawning ? "Disabled" : "Enabled") + (std::string)" enemy spawns";
+            })
+        },
+
+        {
             "help",
             Command("List all commands with descriptions",
             [this](std::vector<std::string>& parsedCommand)->std::string {
