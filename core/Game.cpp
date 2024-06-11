@@ -7,6 +7,7 @@
 #include "SaveManager.h"
 #include "../ui/UIMessageDisplay.h"
 #include "../world/entities/DroppedItem.h"
+#include "../ui/UILabel.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -350,6 +351,16 @@ void Game::initUI() {
 
 
     // Start menu
+    std::shared_ptr<UILabel> titleLabel = std::shared_ptr<UILabel>(new UILabel(
+        "UntitledRogueLike", 50.f, 10.f, 6.f, _font
+    ));
+    _startMenu->addElement(titleLabel);
+
+    std::shared_ptr<UILabel> versionLabel = std::shared_ptr<UILabel>(new UILabel(
+        "v" + VERSION, 27.f, 22.f, 1.f, _font
+    ));
+    _startMenu->addElement(versionLabel);
+
     std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
         45, 39, 9, 3, "new game", _font, this, "newgame"
     ));

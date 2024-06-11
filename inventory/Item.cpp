@@ -58,13 +58,13 @@ const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BUL
 
 const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 9999, false,
     "A large pod\nAmmunition for the Pod Launcher",
-    EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false, 200
+    EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false, 200, false
 );
 const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
-    EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true, 200000, true,
+    EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true, 200000, false,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD, "slip");
         return false;
@@ -274,7 +274,7 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
     }
 );
 
-const Item Item::LOCUS_LIFT(38, "Locus Lift", sf::IntRect(7, 11, 1, 1), true, 10, true,
+const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Makes you a little bit stronger",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 499, true,
     [](Entity* parent) {

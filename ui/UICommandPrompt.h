@@ -19,7 +19,7 @@
 #include "../world/entities/Skeleton.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
-constexpr const char UNLOCK_HASH[11] = "3491115221";
+constexpr const char UNLOCK_HASH[11] = "2636727673";
 
 struct Command {
     Command(const std::string description, const std::function<std::string(std::vector<std::string>&)> command)
@@ -334,7 +334,7 @@ private:
         },
 
         {
-            "hash",
+            "hash-djb2",
             Command("Create a djb2 hash of a string",
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 if (parsedCommand.size() == 2) {
@@ -344,6 +344,24 @@ private:
                         hash = ((hash << 5) + hash) + (unsigned int)text.at(i);
                     }
                     return std::to_string(hash);
+                } else return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
+            })
+        },
+
+        {
+            "hash",
+            Command("Create a FNV-1a hash of a string",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    std::string text = parsedCommand[1];
+                    unsigned int hash = 0x811c9dc5u;
+                    for (int i = 0; i < text.length(); i++) {
+                        hash = (hash ^ (unsigned int)text.at(i)) * 0x1000193u;
+                    }
+                    hash = (hash ^ (hash >> 16)) * 0x7feb352du;
+                    hash = (hash ^ (hash >> 15)) * 0x846ca68bu;
+
+                    return std::to_string(hash ^ (hash >> 16));
                 } else return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
             })
         },

@@ -740,6 +740,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             sf::Vector2f fleshPrec(0.04, 0.7);
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
+            flesh = false; // !! delete this line when flesh biome is ready
 
 
 
