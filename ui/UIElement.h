@@ -62,7 +62,6 @@ protected:
     bool _isSelected = false;
     int _selectionId;
 
-private:
     bool _drawSprite = true;
     bool _drawText = true;
 };

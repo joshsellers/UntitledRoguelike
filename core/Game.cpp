@@ -378,11 +378,17 @@ void Game::initUI() {
     ));
     settingsButton_mainMenu->setSelectionId(2);
     _startMenu->addElement(settingsButton_mainMenu);
+
+    std::shared_ptr<UIButton> controlsButton = std::shared_ptr<UIButton>(new UIButton(
+        45, 60, 9, 3, "controls", _font, this, "controls"
+    ));
+    controlsButton->setSelectionId(3);
+    _startMenu->addElement(controlsButton);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 60, 9, 3, "exit game", _font, this, "exit"
+        45, 67, 9, 3, "exit game", _font, this, "exit"
     ));
-    exitGameButton->setSelectionId(3);
+    exitGameButton->setSelectionId(4);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
@@ -391,6 +397,7 @@ void Game::initUI() {
             {newGameButton->getSelectionId()},
             {loadGameButton->getSelectionId()},
             {settingsButton_mainMenu->getSelectionId()},
+            {controlsButton->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
@@ -490,13 +497,60 @@ void Game::initUI() {
     _ui->addMenu(_joinGameMenu);
 
 
-    // Message Display Menu
+    // Message Display menu
     std::shared_ptr<UIMessageDisplay> messageDisp = std::shared_ptr<UIMessageDisplay>(new UIMessageDisplay(
         _font
     ));
     _messageDispMenu->addElement(messageDisp);
     _ui->addMenu(_messageDispMenu);
     _messageDispMenu->show();
+
+
+    // Controls menu
+    std::shared_ptr<UIButton> backControlsMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        5.f, 5.f, 9.f, 3.f, "back", _font, this, "back_controls"
+    ));
+    backControlsMenuButton->setSelectionId(0);
+    _controlsMenu->addElement(backControlsMenuButton);
+
+    std::shared_ptr<UILabel> controlsLabel = std::shared_ptr<UILabel>(new UILabel(
+        "", 5.f, 11.f, 1.f, _font
+    ));
+    _controlsMenu->addElement(controlsLabel);
+    controlsLabel->setText((std::string)
+        "keyboard/mouse\n" +
+        "_______________________________\n"
+        "movement: WASD\n" +
+        "aim: mouse\n" +
+        "sprint: shift\n" +
+        "dodge: spacebar\n" +
+        "shoot: left click\n" +
+        "reload: R\n" +
+        "pause: escape\n" +
+        "open/close inventory: tab\n" +
+        "talk to shopkeep: E\n\n" +
+        "INVENTORY:\n" +
+        "equip/use item: left click\n" +
+        "drop one item: right click\n" +
+        "drop stack: middle click\n\n" +
+        "SHOP:\n" +
+        "buy/sell one item: left click\n" +
+        "buy/sell stack: right click\n" +
+        "buy/sell 25: middle click"
+    );
+
+    std::shared_ptr<UILabel> controlsImage = std::shared_ptr<UILabel>(new UILabel(
+        "IMAGE:res/controls.png", 34.f, 0.f, 1.f, _font, 50.f, 50.f
+    ));
+    _controlsMenu->addElement(controlsImage);
+
+    _controlsMenu->useGamepadConfiguration = true;
+    _controlsMenu->defineSelectionGrid(
+        {
+            {backControlsMenuButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_controlsMenu);
 }
 
 void Game::update() {
@@ -855,6 +909,12 @@ void Game::buttonPressed(std::string buttonCode) {
             _loadGameMenu->clearElements();
             buttonPressed("mainmenu");
         }
+    } else if (buttonCode == "controls") {
+        _startMenu->hide();
+        _controlsMenu->show();
+    } else if (buttonCode == "back_controls") {
+        _controlsMenu->hide();
+        _startMenu->show();
     }
 }
 

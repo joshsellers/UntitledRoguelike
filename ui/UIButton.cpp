@@ -8,7 +8,7 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
         x, y, width, height, true, true, font
     ) {
 
-    int padding = 10;
+    int padding = getRelativeWidth(0.5f);
     int w = (int)_width;
     int h = (int)_height;
     sf::Uint8* mainPixels = new sf::Uint8[w * h * 4];

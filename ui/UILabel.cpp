@@ -1,6 +1,9 @@
 #include "UILabel.h"
+#include "../core/Util.h"
+#include "../core/MessageManager.h"
 
-UILabel::UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font) : UIElement(x, y, 10, 10, false, true, font) {
+UILabel::UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth, float imageHeight) 
+    : UIElement(x, y, 10, 10, false, true, font) {
     _text.setFont(_font);
     _text.setString(label);
     _text.setCharacterSize(getRelativeWidth(characterSize));
@@ -8,9 +11,22 @@ UILabel::UILabel(const sf::String label, float x, float y, float characterSize, 
     _x = getRelativePos(x, 0).x;
     _y = getRelativePos(0, y).y;
 
-    _width = _text.getGlobalBounds().width;
-    
-    _text.setPosition(_x - _width / 2.f, _y);
+    if (stringStartsWith(_text.getString(), "IMAGE")) {
+        if (!_spriteSheet->loadFromFile(splitString(_text.getString(), ":")[1])) {
+            MessageManager::displayMessage(_text.getString() + " could not be loaded", 5, WARN);
+        } else {
+            _sprite.setTexture(*_spriteSheet);
+            sf::Vector2f imageScale(getRelativeWidth(imageWidth) / _sprite.getGlobalBounds().width, getRelativeWidth(imageHeight) / _sprite.getGlobalBounds().height);
+            _sprite.setScale(imageScale);
+            _sprite.setPosition(_x, _y);
+            _drawSprite = true;
+            _drawText = false;
+        }
+    } else {
+        _width = _text.getGlobalBounds().width;
+
+        _text.setPosition(_x - _width / 2.f, _y);
+    }
 
     _disableAutomaticTextAlignment = true;
 }

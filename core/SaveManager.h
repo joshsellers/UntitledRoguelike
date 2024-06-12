@@ -105,6 +105,10 @@ public:
     static void init(World* world, ShopManager* shopManager) {
         _world = world;
         _shopManager = shopManager;
+
+        if (!std::filesystem::is_directory("save/")) {
+            std::filesystem::create_directory("save");
+        }
     }
 
     static void setCurrentSaveFileName(std::string saveFileName) {
@@ -350,7 +354,7 @@ private:
             player->_pos.y = std::stof(splitString(data[1], ",")[1]);
             player->_hitPoints = std::stoi(data[2]);
             player->_maxHitPoints = std::stoi(data[3]);
-            player->_magazineAmmoType = std::stoi(data[4]);
+            player->_magazineAmmoType = std::stoul(data[4]);
             player->_magazineContents = std::stoi(data[5]);
             player->_magazineSize = std::stoi(data[6]);
             player->_stamina = std::stoi(data[7]);

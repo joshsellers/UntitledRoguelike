@@ -107,3 +107,13 @@ void Yeti::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
 }
+
+void Yeti::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+        }
+    }
+}

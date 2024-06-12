@@ -4,7 +4,7 @@
 
 class UILabel : public UIElement {
 public:
-    UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font);
+    UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth = 10.f, float imageHeight = 10.f);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -21,6 +21,9 @@ public:
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void keyReleased(sf::Keyboard::Key& key);
     void textEntered(const sf::Uint32 character);
+
+private:
+    std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
 };
 
 #endif
