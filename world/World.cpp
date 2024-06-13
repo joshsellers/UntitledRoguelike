@@ -82,6 +82,7 @@ void World::update() {
             if (!disableEnemySpawning) spawnEnemies();
         }
 
+        purgeScatterBuffer();
         purgeEntityBuffer();
 
         updateEntities();
@@ -335,8 +336,17 @@ int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
     return randMobType(_mobGen);
 }
 
+void World::purgeScatterBuffer() {
+    if (_scatterBuffer.size() != 0 && _loadingChunks.size() == 0) {
+        for (auto& entity : _scatterBuffer) {
+            _entities.push_back(entity);
+        }
+        _scatterBuffer.clear();
+    }
+}
+
 void World::purgeEntityBuffer() {
-    if (_entityBuffer.size() != 0 && _loadingChunks.size() == 0) {
+    if (_entityBuffer.size() != 0) {
         for (auto& entity : _entityBuffer) {
             _entities.push_back(entity);
         }
@@ -553,7 +563,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
                     shop->setWorld(this);
-                    _entityBuffer.push_back(shop);
+                    _scatterBuffer.push_back(shop);
 
                     if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                         MessageManager::displayMessage("There's a shop around here somewhere!", 5);
@@ -567,20 +577,20 @@ void World::generateChunkScatters(Chunk& chunk) {
                 boost::random::uniform_int_distribution<> treeDist(0, smallTreeSpawnRate);
                 if (grassDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<TallGrass> grass = std::shared_ptr<TallGrass>(new TallGrass(sf::Vector2f(x, y), _spriteSheet));
-                    _entityBuffer.push_back(grass);
+                    _scatterBuffer.push_back(grass);
                 }
 
                 if (treeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
-                    _entityBuffer.push_back(tree);
+                    _scatterBuffer.push_back(tree);
                 }
             } else if (terrainType == TERRAIN_TYPE::DESERT) {
                 boost::random::uniform_int_distribution<> cactusDist(0, cactusSpawnRate);
                 if (cactusDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<Cactus> cactus = std::shared_ptr<Cactus>(new Cactus(sf::Vector2f(x, y), _spriteSheet));
                     cactus->setWorld(this);
-                    _entityBuffer.push_back(cactus);
+                    _scatterBuffer.push_back(cactus);
                 }
             } else if (terrainType == TERRAIN_TYPE::SAVANNA) {
                 boost::random::uniform_int_distribution<> smallTreeDist(0, smallSavannaTreeSpawnRate);
@@ -588,20 +598,20 @@ void World::generateChunkScatters(Chunk& chunk) {
                 if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallSavannaTree> tree = std::shared_ptr<SmallSavannaTree>(new SmallSavannaTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
-                    _entityBuffer.push_back(tree);
+                    _scatterBuffer.push_back(tree);
                 }
 
                 if (largeTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<LargeSavannaTree> tree = std::shared_ptr<LargeSavannaTree>(new LargeSavannaTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
-                    _entityBuffer.push_back(tree);
+                    _scatterBuffer.push_back(tree);
                 }
             } else if (terrainType == TERRAIN_TYPE::TUNDRA) {
                 boost::random::uniform_int_distribution<> smallTreeDist(0, smallTundraTreeSpawnRate);
                 if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
-                    _entityBuffer.push_back(tree);
+                    _scatterBuffer.push_back(tree);
                 }
             }
         }
@@ -856,8 +866,9 @@ unsigned int World::getSeed() {
     return _seed;
 }
 
-void World::addEntity(std::shared_ptr<Entity> entity) {
-    _entities.push_back(entity);
+void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
+    if (defer) _entityBuffer.push_back(entity);
+    else _entities.push_back(entity);
 
     if (entity->isEnemy()) _enemies.push_back(entity);
 
@@ -986,7 +997,7 @@ void World::resetChunks() {
     if (_loadingChunks.size() == 0) {
         _chunks.clear();
         _currentChunk = nullptr;
-        _entityBuffer.clear();
+        _scatterBuffer.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, WARN);
 }
 

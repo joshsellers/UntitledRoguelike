@@ -53,7 +53,7 @@ int main() {
     WINDOW_WIDTH = windowWidth;
     WINDOW_HEIGHT = windowHeight;
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "", FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), GAME_NAME, FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
     //window.setVerticalSyncEnabled();
 

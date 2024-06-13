@@ -184,8 +184,8 @@ void Game::initUI() {
     _waveCounterMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
         "", 50.f, 97.f, 14.f, 0.75f, placeholder, placeholder, _font
     ));
-    _waveCounterMeter->setBackgroundColor(0x55555599);
-    _waveCounterMeter->setColor(0x99999999);
+    _waveCounterMeter->setBackgroundColor(0x555555BB);
+    _waveCounterMeter->setColor(0x999999BB);
     _waveCounterMeter->useDefaultLabel(false);
     _waveCounterMeter->useAttributes(false);
     _waveCounterMeter->fitWidthToText(true);
@@ -352,12 +352,12 @@ void Game::initUI() {
 
     // Start menu
     std::shared_ptr<UILabel> titleLabel = std::shared_ptr<UILabel>(new UILabel(
-        "UntitledRogueLike", 50.f, 10.f, 6.f, _font
+        GAME_NAME, 49.5f, 10.f, 6.f, _font
     ));
     _startMenu->addElement(titleLabel);
 
     std::shared_ptr<UILabel> versionLabel = std::shared_ptr<UILabel>(new UILabel(
-        "v" + VERSION, 27.f, 22.f, 1.f, _font
+        "v" + VERSION, 44.f, 21.f, 1.f, _font
     ));
     _startMenu->addElement(versionLabel);
 

@@ -3,16 +3,16 @@
 #include "../World.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
-    Entity(PLANTMAN, pos, 3, TILE_SIZE, TILE_SIZE * 3, false) {
+    Entity(PLANTMAN, pos, 3, TILE_SIZE * 2, TILE_SIZE * 2, false) {
     _gen.seed(currentTimeNano());
 
     setMaxHitPoints(40);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -TILE_SIZE / 2;
-    _hitBoxYOffset = 0;
+    _hitBoxYOffset = 8;
     _hitBox.width = TILE_SIZE;
-    _hitBox.height = TILE_SIZE * 3;
+    _hitBox.height = TILE_SIZE * 2 - 8;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -31,7 +31,7 @@ PlantMan::PlantMan(sf::Vector2f pos) :
 
 void PlantMan::update() {
     sf::Vector2f feetPos = getPosition();
-    feetPos.y += TILE_SIZE * 3;
+    feetPos.y += TILE_SIZE * 2;
 
     if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
         getWorld()->getPlayer()->takeDamage(5);
@@ -39,7 +39,7 @@ void PlantMan::update() {
     }
 
     sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
-    sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + 48);
+    sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 2);
 
     float xa = 0.f, ya = 0.f;
     if (goalPos.y < cLoc.y) {
@@ -65,10 +65,10 @@ void PlantMan::update() {
 
     if (isSwimming()) {
         _hitBoxYOffset = TILE_SIZE;
-        _hitBox.height = TILE_SIZE * 3 / 2;
+        _hitBox.height = TILE_SIZE;
     } else {
-        _hitBoxYOffset = 0;
-        _hitBox.height = TILE_SIZE * 3;
+        _hitBoxYOffset = 8;
+        _hitBox.height = TILE_SIZE * 2 - 8;
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -76,7 +76,7 @@ void PlantMan::update() {
 
 void PlantMan::draw(sf::RenderTexture& surface) {
     sf::Vector2f feetPos = getPosition();
-    feetPos.y += TILE_SIZE * 3;
+    feetPos.y += TILE_SIZE * 2;
     TERRAIN_TYPE terrainType = _world->getTerrainDataAt(
         feetPos
     );
@@ -85,18 +85,18 @@ void PlantMan::draw(sf::RenderTexture& surface) {
     if (isSwimming()) {
         _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
-        int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
+        int xOffset = ((_numSteps >> _animSpeed) & 1) * TILE_SIZE;
 
-        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE * 3) / 2 + 9));
+        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, TILE_SIZE, TILE_SIZE));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE) + 9));
         surface.draw(_wavesSprite);
     }
 
-    int xOffset = getMovingDir() * TILE_SIZE;
-    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 3 : 0;
+    int xOffset = getMovingDir() * TILE_SIZE * 2;
+    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 2 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        24 * TILE_SIZE + xOffset, 13 * TILE_SIZE + yOffset, TILE_SIZE, isSwimming() ? TILE_SIZE * 3 / 2 : TILE_SIZE * 3
+        36 * TILE_SIZE + xOffset, 21 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE : TILE_SIZE * 2
     ));
 
     surface.draw(_sprite);
@@ -114,11 +114,11 @@ void PlantMan::damage(int damage) {
 
 void PlantMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(24 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE * 3));
+    _sprite.setTextureRect(sf::IntRect(36 * TILE_SIZE, 21 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
     _sprite.setPosition(getPosition());
-    _sprite.setOrigin(TILE_SIZE / 2, 0);
+    _sprite.setOrigin(TILE_SIZE, 0);
 
     _wavesSprite.setTexture(*spriteSheet);
-    _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
-    _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + 48 / 2));
+    _wavesSprite.setTextureRect(sf::IntRect(0, 160, TILE_SIZE, TILE_SIZE));
+    _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
 }

@@ -71,7 +71,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     }, 1, false, 0, 3500
 );
 
-const Item Item::WIFE_BEATER(11, "Wife Beater", sf::IntRect(12, 26, 1, 1), false, 0, false,
+const Item Item::WIFE_BEATER(11, "Tank Top", sf::IntRect(12, 26, 1, 1), false, 0, false,
     "It's dirty",
     EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 80
 );

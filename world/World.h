@@ -123,7 +123,7 @@ public:
 
     unsigned int getSeed();
 
-    void addEntity(std::shared_ptr<Entity> entity);
+    void addEntity(std::shared_ptr<Entity> entity, bool defer = true);
     std::vector<std::shared_ptr<Entity>> getEntities() const;
     std::vector<std::shared_ptr<Entity>> getEnemies() const;
     std::vector<std::shared_ptr<Entity>> getCollectorMobs() const;
@@ -175,6 +175,7 @@ private:
     std::shared_ptr<ShopKeep> _shopKeep;
 
     std::vector<std::shared_ptr<Entity>> _entities;
+    std::vector<std::shared_ptr<Entity>> _scatterBuffer;
     std::vector<std::shared_ptr<Entity>> _entityBuffer;
 
     std::vector<std::shared_ptr<Entity>> _enemies;
@@ -204,6 +205,7 @@ private:
     int _currentWaveNumber = 1;
 
     void purgeEntityBuffer();
+    void purgeScatterBuffer();
     void updateEntities();
     void eraseChunks(int pX, int pY);
     void findCurrentChunk(int pX, int pY);
