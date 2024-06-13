@@ -61,6 +61,7 @@ public:
     static const Item LOCUS_LIFT;
     static const Item BONE;
     static const Item COIN_MAGNET;
+    static const Item SCYTHE;
 
     static std::vector<const Item*> ITEMS;
 

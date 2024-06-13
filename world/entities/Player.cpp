@@ -400,15 +400,13 @@ void Player::move(float xa, float ya) {
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
 
-        //if (getWorld()->playerIsInShop()) {
-            for (auto& entity : getWorld()->getEntities()) {
-                if (entity->isActive() && entity->hasColliders()) {
-                    for (auto& collider : entity->getColliders()) {
-                        if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) return;
-                    }
+        for (auto& entity : getWorld()->getEntities()) {
+            if (entity->isActive() && entity->hasColliders()) {
+                for (auto& collider : entity->getColliders()) {
+                    if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) return;
                 }
             }
-        //}
+        }
 
         _isMoving = true;
         _isActuallyMoving = true;

@@ -109,6 +109,7 @@ void World::update() {
             _cooldownActive = false;
         }
     } else {
+        purgeEntityBuffer();
         _player->update();
         for (auto& entity : getEntities()) {
             if (entity->getEntityType() == "shopint" || entity->getEntityType() == "shopcounter" || entity->getEntityType() == "shopext") entity->update();

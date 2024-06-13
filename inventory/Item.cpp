@@ -154,7 +154,7 @@ const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), fals
 );
 
 const Item Item::PROPANE(24, "Propane", sf::IntRect(50, 3, 1, 1), true, 999999, false,
-    "\"Propane may be a clean burning fuel,\nbut she can also be a dirty girl.\"",
+    "Clean burnin'\n\nFuel for blow torch",
     EQUIPMENT_TYPE::AMMO, 3, 0, 0, sf::Vector2f(), false, 2
 );
 
@@ -317,6 +317,11 @@ const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 999, 
         }
         return false;
     }
+);
+
+const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
+    "Swing for slicing",
+    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 9999
 );
 
 std::vector<const Item*> Item::ITEMS;
