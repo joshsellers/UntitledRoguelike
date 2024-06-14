@@ -358,7 +358,7 @@ void Game::initUI() {
     _startMenu->addElement(titleLabel);
 
     std::shared_ptr<UILabel> versionLabel = std::shared_ptr<UILabel>(new UILabel(
-        "v" + VERSION, 44.f, 21.f, 1.f, _font
+        "v" + VERSION, 43.5f, 21.f, 1.f, _font
     ));
     _startMenu->addElement(versionLabel);
 

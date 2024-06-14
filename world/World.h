@@ -47,7 +47,7 @@ constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {
-        MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
+        //MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
