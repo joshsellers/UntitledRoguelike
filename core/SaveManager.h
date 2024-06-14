@@ -528,6 +528,9 @@ private:
                 case SKELETON:
                     entity = std::shared_ptr<Skeleton>(new Skeleton(pos));
                     break;
+                case SHARK:
+                    entity = std::shared_ptr<Shark>(new Shark(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

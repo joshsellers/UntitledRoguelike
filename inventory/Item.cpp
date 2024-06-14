@@ -5,6 +5,7 @@
 #include "../world/entities/projectiles/Projectile.h"
 #include "../core/SoundManager.h"
 #include "../world/entities/Dog.h"
+#include "../core/Tutorial.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -187,6 +188,8 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);
+
+        if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::EQUIP_SLIMEBALL);
         return true;
     }
 );

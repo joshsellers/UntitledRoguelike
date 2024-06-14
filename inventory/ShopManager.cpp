@@ -1,6 +1,7 @@
 #include "ShopManager.h"
 #include "../world/entities/Entity.h"
 #include "../core/MessageManager.h"
+#include "../core/Tutorial.h"
 
 void ShopManager::setBuyInterface(std::shared_ptr<UIShopInterface> buyInterface) {
     _buyInterface = buyInterface;
@@ -26,6 +27,8 @@ bool ShopManager::buy(int itemId, int amount) {
         _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, -amount);
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), price);
 
+        if (!Tutorial::isCompleted() && itemId == Item::AXE.getId()) Tutorial::completeStep(TUTORIAL_STEP::BUY_AXE);
+
         return true;
     } else {
         MessageManager::displayMessage("You do not have enough pennies to buy this item!", 5);
@@ -48,6 +51,8 @@ bool ShopManager::sell(int itemId, int amount) {
 
         _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, amount);
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), -price);
+        
+        if (!Tutorial::isCompleted() && itemId == Item::WOOD.getId()) Tutorial::completeStep(TUTORIAL_STEP::SELL_WOOD);
 
         return true;
     } else {

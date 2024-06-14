@@ -1,12 +1,12 @@
-#ifndef _PENGUIN_H
-#define _PENGUIN_H
+#ifndef _SHARK_H
+#define _SHARK_H
 
 #include "Entity.h"
 #include <boost/random/mersenne_twister.hpp>
 
-class Penguin : public Entity {
+class Shark : public Entity {
 public:
-    Penguin(sf::Vector2f pos);
+    Shark(sf::Vector2f pos);
 
     void update();
 
@@ -21,3 +21,4 @@ private:
 };
 
 #endif
+

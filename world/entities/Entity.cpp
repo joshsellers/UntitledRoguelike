@@ -290,6 +290,60 @@ void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int
     }
 }
 
+void Entity::swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance) {
+    if (_world != nullptr) {
+        float xa = 0, ya = 0;
+
+        boost::random::uniform_int_distribution<> shouldMove(0, movementChance);
+        if (_wanderTargetPos == feetPos && shouldMove(generator) == 0 ||
+            _world->getTerrainDataAt(_wanderTargetPos) != TERRAIN_TYPE::WATER) {
+            const int maxDist = _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER ? 200 : 100;
+            boost::random::uniform_int_distribution<> xDist(-maxDist, maxDist);
+            boost::random::uniform_int_distribution<> yDist(-maxDist, maxDist);
+            _wanderTargetPos.x = feetPos.x + xDist(generator);
+            _wanderTargetPos.y = feetPos.y + yDist(generator);
+        } else if (feetPos.x < _wanderTargetPos.x) {
+            if (_world->getTerrainDataAt(feetPos.x + getBaseSpeed(), feetPos.y) != TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                xa += getBaseSpeed();
+                _movingDir = RIGHT;
+            }
+        } else if (feetPos.x > _wanderTargetPos.x) {
+            if (_world->getTerrainDataAt(feetPos.x - getBaseSpeed(), feetPos.y) != TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                xa -= getBaseSpeed();
+                _movingDir = LEFT;
+            }
+        } else if (feetPos.y < _wanderTargetPos.y) {
+            if (_world->getTerrainDataAt(feetPos.x, feetPos.y + getBaseSpeed()) != TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                ya += getBaseSpeed();
+                _movingDir = DOWN;
+            }
+        } else if (feetPos.y > _wanderTargetPos.y) {
+            if (_world->getTerrainDataAt(feetPos.x, feetPos.y - getBaseSpeed()) != TERRAIN_TYPE::WATER &&
+                _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER) {
+                _wanderTargetPos = feetPos;
+            } else {
+                if (_world->getTerrainDataAt(feetPos) != TERRAIN_TYPE::WATER) _wanderTargetPos == feetPos;
+                ya -= getBaseSpeed();
+                _movingDir = UP;
+            }
+        }
+
+        move(xa, ya);
+    }
+}
+
 void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer) {
     const sf::Vector2f centerPoint(getPosition().x - _spriteWidth / 2, getPosition().y + _spriteHeight / 2);
     sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);

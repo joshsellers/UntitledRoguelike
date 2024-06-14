@@ -46,12 +46,14 @@ constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 1;
 constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
 const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
-    BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::WATER, {
+        MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3),
-        MobSpawnData(MOB_TYPE::DOG, 15, 1, 1)
+        MobSpawnData(MOB_TYPE::DOG, 18, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {

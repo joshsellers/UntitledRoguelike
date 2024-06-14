@@ -20,6 +20,8 @@
 #include "../core/Util.h"
 #include "entities/Skeleton.h"
 #include "entities/Dog.h"
+#include "../core/Tutorial.h"
+#include "entities/Shark.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -104,6 +106,7 @@ void World::update() {
             _cooldownStartTime = currentTimeMillis();
 
             MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+            if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
             _currentWaveNumber++;
         } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
             _cooldownActive = false;
@@ -240,6 +243,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::DOG:
                                 mob = std::shared_ptr<Dog>(new Dog(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::SHARK:
+                                mob = std::shared_ptr<Shark>(new Shark(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

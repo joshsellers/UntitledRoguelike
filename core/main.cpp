@@ -4,6 +4,7 @@
 #include "gamepad/GamePad.h"
 #include "SoundManager.h"
 #include <fstream>
+#include "Tutorial.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -23,6 +24,14 @@ void loadSettings() {
                     std::vector<std::string> parsedLine = splitString(line, "=");
                     FULLSCREEN = (bool)std::stoi(parsedLine[1]);
                     RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
+                } catch (std::exception ex) {
+                    MessageManager::displayMessage(ex.what(), 5, ERR);
+                }
+            } else if (line.rfind("tutorial", 0) == 0) {
+                try {
+                    std::vector<std::string> parsedLine = splitString(line, "=");
+                    bool tutorialCompleted = (bool)std::stoi(parsedLine[1]);
+                    if (tutorialCompleted) Tutorial::completeStep(TUTORIAL_STEP::END);
                 } catch (std::exception ex) {
                     MessageManager::displayMessage(ex.what(), 5, ERR);
                 }

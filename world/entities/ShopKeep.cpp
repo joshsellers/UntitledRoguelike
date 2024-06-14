@@ -1,5 +1,6 @@
 #include "ShopKeep.h"
 #include "../World.h"
+#include "../../core/Tutorial.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -69,6 +70,8 @@ void ShopKeep::initInventory() {
         if (amount > 0) getInventory().addItem(itemId, amount);
         else getInventory().removeItem(itemId, -amount);
     }
+
+    if (!Tutorial::isCompleted()) getInventory().addItem(Item::AXE.getId(), 1);
 }
 
 void ShopKeep::update() {

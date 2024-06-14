@@ -8,6 +8,7 @@
 #include "../ui/UIMessageDisplay.h"
 #include "../world/entities/DroppedItem.h"
 #include "../ui/UILabel.h"
+#include "Tutorial.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -418,11 +419,18 @@ void Game::initUI() {
     togglefullscreenButton_fromstart->setSelectionId(1);
     _startMenu_settings->addElement(togglefullscreenButton_fromstart);
 
+    std::shared_ptr<UIButton> completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
+        43.5, 57, 12, 3, "disable tutorial", _font, this, "skiptutorial"
+    ));
+    completeTutorialButton_startSettings->setSelectionId(2);
+    _startMenu_settings->addElement(completeTutorialButton_startSettings);
+
     _startMenu_settings->useGamepadConfiguration = true;
     _startMenu_settings->defineSelectionGrid(
         {
             {backButton_startSettings->getSelectionId()},
-            {togglefullscreenButton_fromstart->getSelectionId()}
+            {togglefullscreenButton_fromstart->getSelectionId()},
+            {completeTutorialButton_startSettings->getSelectionId()}
         }
     );
     _ui->addMenu(_startMenu_settings);
@@ -558,6 +566,8 @@ void Game::update() {
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
+        if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::START);
+
         _world.update();
 
         int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
@@ -813,7 +823,9 @@ void Game::buttonPressed(std::string buttonCode) {
         try {
             std::ofstream out(fileName);
             int fullscreenSetting = FULLSCREEN ? 0 : 1;
+            int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
             out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
+            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
             out.close();
 
             MessageManager::displayMessage("The game will launch in " + (std::string)(fullscreenSetting == 1 ? "fullscreen" : "windowed") + " mode next time", 5);
@@ -915,6 +927,29 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_controls") {
         _controlsMenu->hide();
         _startMenu->show();
+    } else if (buttonCode == "skiptutorial") {
+        Tutorial::completeStep(TUTORIAL_STEP::END);
+
+        std::string fileName = "settings.config";
+        try {
+            if (!std::filesystem::remove(fileName))
+                MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
+        }
+
+        try {
+            std::ofstream out(fileName);
+            int fullscreenSetting = FULLSCREEN ? 1 : 0;
+            int tutorialCompleted = 1;
+            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
+            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
+            out.close();
+
+            MessageManager::displayMessage("Disabled the tutorial", 5);
+        } catch (std::exception ex) {
+            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
+        }
     }
 }
 
