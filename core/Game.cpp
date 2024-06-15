@@ -770,7 +770,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;
         _world._waveCounter = 0;
-        _world._currentWaveNumber = 0;
+        _world._currentWaveNumber = 1;
         _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();
