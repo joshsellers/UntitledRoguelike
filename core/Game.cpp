@@ -568,6 +568,7 @@ void Game::update() {
     if (!_isPaused && _gameStarted) {
         if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::START);
 
+        if (_world.playerIsInShop()) _world.incrementEnemySpawnCooldownTimeWhilePaused();
         _world.update();
 
         int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
@@ -731,6 +732,8 @@ void Game::buttonPressed(std::string buttonCode) {
         }
 
         _world.init(seed);
+        _world.startNewGameCooldown();
+
         _newGameMenu->hide();
         _HUDMenu->show();
         _magazineMeter->hide();
@@ -767,7 +770,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;
         _world._waveCounter = 0;
-        _world._currentWaveNumber = 1;
+        _world._currentWaveNumber = 0;
         _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();

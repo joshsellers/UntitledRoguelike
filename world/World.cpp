@@ -39,6 +39,8 @@ void World::init(unsigned int seed) {
     srand(_seed);
     gen.seed(_seed);
 
+    _newGameCooldown = false;
+
     loadChunksAroundPlayer();
 }
 
@@ -81,7 +83,7 @@ void World::update() {
 
         if (!disableMobSpawning) {
             spawnMobs();
-            if (!disableEnemySpawning) spawnEnemies();
+            if (!disableEnemySpawning && (!_newGameCooldown || currentTimeMillis() - _newGameCooldownStartTime > NEW_GAME_COOLDOWN_MILLIS)) spawnEnemies();
         }
 
         purgeScatterBuffer();
@@ -105,7 +107,7 @@ void World::update() {
             _enemiesSpawnedThisRound = 0;
             _cooldownStartTime = currentTimeMillis();
 
-            MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+            if (_waveCounter != 0) MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
             if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
             _currentWaveNumber++;
         } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
@@ -1040,4 +1042,9 @@ bool World::playerIsInShop() const {
 void World::setShopKeep(std::shared_ptr<ShopKeep> shopKeep) {
     _shopKeep = shopKeep;
     _shopKeep->setWorld(this);
+}
+
+void World::startNewGameCooldown() {
+    _newGameCooldown = true;
+    _newGameCooldownStartTime = currentTimeMillis();
 }

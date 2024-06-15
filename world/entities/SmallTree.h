@@ -3,8 +3,8 @@
 
 #include "Entity.h"
 
-constexpr int STREE_SPRITE_POS_X = 4 << SPRITE_SHEET_SHIFT;
-constexpr int STREE_SPRITE_POS_Y = 0;
+constexpr int STREE_SPRITE_POS_X = 16;
+constexpr int STREE_SPRITE_POS_Y = 8;
 
 class SmallTree : public Entity {
 public:

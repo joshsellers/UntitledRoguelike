@@ -1,7 +1,7 @@
 #include "SmallTundraTree.h"
 #include "../World.h"
 
-SmallTundraTree::SmallTundraTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 2, 3, true) {
+SmallTundraTree::SmallTundraTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 3, 4, true) {
     loadSprite(spriteSheet); 
     
     setMaxHitPoints(20);
@@ -9,8 +9,8 @@ SmallTundraTree::SmallTundraTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> 
 
     _hitBoxXOffset = 0;
     _hitBoxYOffset = 0;
-    _hitBox.width = 16 * 2;
-    _hitBox.height = 16 * 3;
+    _hitBox.width = TILE_SIZE * 3;
+    _hitBox.height = TILE_SIZE * 4;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -28,7 +28,7 @@ void SmallTundraTree::draw(sf::RenderTexture& surface) {
 void SmallTundraTree::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(
-        sf::IntRect(S_TUNDRA_TREE_SPRITE_POS_X + (randomInt(0, 1) * TILE_SIZE * 2), S_TUNDRA_TREE_SPRITE_POS_Y, TILE_SIZE * 2, TILE_SIZE * 3)
+        sf::IntRect(S_TUNDRA_TREE_SPRITE_POS_X * TILE_SIZE, S_TUNDRA_TREE_SPRITE_POS_Y * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 4)
     );
     _sprite.setPosition(getPosition());
 }

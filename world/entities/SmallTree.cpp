@@ -1,7 +1,7 @@
 #include "SmallTree.h"
 #include "../World.h"
 
-SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 2, 3, true) {
+SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 3, 4, true) {
     loadSprite(spriteSheet);
 
     setMaxHitPoints(20);
@@ -9,8 +9,8 @@ SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet)
 
     _hitBoxXOffset = 0;
     _hitBoxYOffset = 0;
-    _hitBox.width = 16 * 2;
-    _hitBox.height = 16 * 3;
+    _hitBox.width = TILE_SIZE * 3;
+    _hitBox.height = TILE_SIZE * 4;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -43,7 +43,7 @@ void SmallTree::damage(int damage) {
 void SmallTree::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(
-        sf::IntRect(STREE_SPRITE_POS_X + (randomInt(0, 1) * TILE_SIZE * 2), STREE_SPRITE_POS_Y, TILE_SIZE * 2, TILE_SIZE * 3)
+        sf::IntRect(STREE_SPRITE_POS_X * TILE_SIZE, STREE_SPRITE_POS_Y * TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 4)
     );
     _sprite.setPosition(getPosition());
 }

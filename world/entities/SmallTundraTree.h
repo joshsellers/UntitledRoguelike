@@ -3,8 +3,8 @@
 
 #include "Entity.h"
 
-constexpr int S_TUNDRA_TREE_SPRITE_POS_X = 4 << SPRITE_SHEET_SHIFT;
-constexpr int S_TUNDRA_TREE_SPRITE_POS_Y = 7 << SPRITE_SHEET_SHIFT;
+constexpr int S_TUNDRA_TREE_SPRITE_POS_X = 19;
+constexpr int S_TUNDRA_TREE_SPRITE_POS_Y = 8;
 
 class SmallTundraTree : public Entity {
 public:

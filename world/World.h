@@ -18,6 +18,8 @@ constexpr int CHUNK_LOAD_THRESHOLD = 400;
 
 constexpr long long INACTIVE_ENEMY_REMOVAL_INTERVAL = 5000LL;
 
+constexpr long long NEW_GAME_COOLDOWN_MILLIS = 15000LL;
+
 enum class TERRAIN_COLOR : sf::Uint32 {
     WATER_DEEP = 0x3370CC,
     WATER_MID = 0x4084E2,
@@ -53,7 +55,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3),
-        MobSpawnData(MOB_TYPE::DOG, 18, 1, 1)
+        MobSpawnData(MOB_TYPE::DOG, 30, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -161,6 +163,8 @@ public:
 
     void setShopKeep(std::shared_ptr<ShopKeep> shopKeep);
 
+    void startNewGameCooldown();
+
     friend class Game;
     friend class SaveManager;
 
@@ -205,6 +209,9 @@ private:
     int _enemiesSpawnedThisRound = 0;
     int _waveCounter = 0;
     int _currentWaveNumber = 1;
+
+    bool _newGameCooldown = false;
+    long long _newGameCooldownStartTime = 0;
 
     void purgeEntityBuffer();
     void purgeScatterBuffer();
