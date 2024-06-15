@@ -48,7 +48,7 @@ const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9
 );
 const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
 
-const Item Item::HOWDAH(8, "Howdah Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
+const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large handgun",
     EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(20, 6), true, 2000, true,
     [](Entity* parent) {
@@ -169,8 +169,7 @@ const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, P
     "It's a blow torch, but it\nseems like something's broken...",
     EQUIPMENT_TYPE::TOOL, 3, 0, 0, sf::Vector2f(12, 12), true, 10000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "NONE");
-        if (SoundManager::getStatus("blowtorch") != sf::SoundSource::Playing) SoundManager::playSound("blowtorch");
+        fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "blowtorch");
         return false;
     }, 750, true, 20, 2750
 );

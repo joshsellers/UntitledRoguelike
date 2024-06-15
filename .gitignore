@@ -437,3 +437,4 @@ settings.config
 *.aps
 *.rc
 resource.h
+soloud/

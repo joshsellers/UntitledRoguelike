@@ -183,4 +183,6 @@ int main() {
         window.draw(uiSurfaceSprite);
         window.display();
     }
+
+    SoundManager::shutdown();
 }
