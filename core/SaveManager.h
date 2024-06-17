@@ -96,6 +96,7 @@ public:
         std::vector<std::string> saveFiles;
         for (const auto& entry : std::filesystem::directory_iterator(_saveDir)) {
             if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+            else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "save") continue;
             saveFiles.push_back(splitString(entry.path().string(), "\\")[1]);
         }
 
