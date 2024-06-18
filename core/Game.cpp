@@ -355,10 +355,15 @@ void Game::initUI() {
     std::shared_ptr<UILabel> titleLabel = std::shared_ptr<UILabel>(new UILabel(
         GAME_NAME, 49.5f, 10.f, 6.f, _font
     ));
-    _startMenu->addElement(titleLabel);
+    //_startMenu->addElement(titleLabel);
+
+    std::shared_ptr<UILabel> logoImage = std::shared_ptr<UILabel>(new UILabel(
+        "IMAGE:res/logo.png", 29.5f, -18.f, 1.f, _font, 40.f, 40.f
+    ));
+    _startMenu->addElement(logoImage);
 
     std::shared_ptr<UILabel> versionLabel = std::shared_ptr<UILabel>(new UILabel(
-        "v" + VERSION, 43.5f, 21.f, 1.f, _font
+        "v" + VERSION, 2.f, 96.f, 1.f, _font
     ));
     _startMenu->addElement(versionLabel);
 
