@@ -165,6 +165,8 @@ public:
 
     void startNewGameCooldown();
 
+    void setDisplayedWaveNumber(int waveNumber);
+
     friend class Game;
     friend class SaveManager;
 

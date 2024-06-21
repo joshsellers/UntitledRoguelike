@@ -76,6 +76,12 @@ private:
                         processCommand("give:" + std::to_string(Item::JORTS.getId()));
                         processCommand("give:" + std::to_string(Item::WHITE_TENNIS_SHOES.getId()));
                         return "Player given Spencer's outfit";
+                    } else if (parsedCommand.at(1) == "matmura") {
+                        processCommand("give:" + std::to_string(Item::MATMURA_HELMET.getId()));
+                        processCommand("give:" + std::to_string(Item::MATMURA_CHESTPLATE.getId())); 
+                        processCommand("give:" + std::to_string(Item::MATMURA_LEGGINGS.getId()));
+                        processCommand("give:" + std::to_string(Item::MATMURA_BOOTS.getId()));
+                        return "Player given Matmura armor";
                     } else if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
                         const Item* item = nullptr;
                         for (int i = 0; i < Item::ITEMS.size(); i++) {
@@ -516,6 +522,20 @@ private:
                 }
 
                 return "Deactivated " + std::to_string(count) + " entities";
+            })
+        },
+
+        {
+            "setwavenumber",
+            Command("Set the displayed wave number",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                try {
+                    if (parsedCommand.size() < 2) return "Not enough parameters for command: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                    _world->setDisplayedWaveNumber(std::stoi(parsedCommand[1]));
+                    return "Wave number set to " + parsedCommand[1];
+                } catch (std::exception ex) {
+                    return ex.what();
+                }
             })
         }
     };

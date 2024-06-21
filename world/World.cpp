@@ -1048,3 +1048,7 @@ void World::startNewGameCooldown() {
     _newGameCooldown = true;
     _newGameCooldownStartTime = currentTimeMillis();
 }
+
+void World::setDisplayedWaveNumber(int waveNumber) {
+    _currentWaveNumber = waveNumber;
+}

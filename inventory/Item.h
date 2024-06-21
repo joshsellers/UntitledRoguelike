@@ -62,6 +62,10 @@ public:
     static const Item BONE;
     static const Item COIN_MAGNET;
     static const Item SCYTHE;
+    static const Item MATMURA_HELMET;
+    static const Item MATMURA_CHESTPLATE;
+    static const Item MATMURA_LEGGINGS;
+    static const Item MATMURA_BOOTS;
 
     static std::vector<const Item*> ITEMS;
 
