@@ -327,20 +327,20 @@ const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
 );
 
 const Item Item::MATMURA_HELMET(42, "Matmura Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
-    "Mysterious armor\n3 protection",
-    EQUIPMENT_TYPE::ARMOR_HEAD, 3, 0, 0, sf::Vector2f(), false, 10000, false
+    "Mysterious armor\n15 protection",
+    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 10000, false
 );
 const Item Item::MATMURA_CHESTPLATE(43, "Matmura Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
-    "Mysterious armor\n3 protection",
-    EQUIPMENT_TYPE::ARMOR_BODY, 3, 0, 0, sf::Vector2f(), false, 9000, false
+    "Mysterious armor\n15 protection",
+    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 9000, false
 );;
 const Item Item::MATMURA_LEGGINGS(44, "Matmura Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
-    "Mysterious armor\n3 protection",
-    EQUIPMENT_TYPE::ARMOR_LEGS, 3, 0, 0, sf::Vector2f(), false, 8500, false
+    "Mysterious armor\n15 protection",
+    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 8500, false
 );;
 const Item Item::MATMURA_BOOTS(45, "Matmura Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
-    "Mysterious armor\n3 protection",
-    EQUIPMENT_TYPE::ARMOR_FEET, 3, 0, 0, sf::Vector2f(), false, 7000, false
+    "Mysterious armor\n15 protection",
+    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 7000, false
 );;
 
 std::vector<const Item*> Item::ITEMS;

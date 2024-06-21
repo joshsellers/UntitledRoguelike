@@ -192,6 +192,8 @@ void Player::drawEquipables(sf::RenderTexture& surface) {
 
 void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface) {
     if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD || equipType == EQUIPMENT_TYPE::ARMOR_HEAD) {
+        if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD && getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_HEAD) != NOTHING_EQUIPPED) return;
+
         int spriteHeight = 3;
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
 
@@ -512,12 +514,43 @@ void Player::damage(int damage) {
             int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
             GamePad::vibrate(vibrationAmount, 250);
         }
-        _hitPoints -= damage;
+        _hitPoints -= (int)((float)damage * getTotalArmorCoefficient());
         if (_hitPoints <= 0) {
             _isActive = false;
         }
     }
 }
+
+float getArmorCoefficient(unsigned int itemId) {
+    constexpr float protectionDivisor = 100.f;
+
+    if (itemId != NOTHING_EQUIPPED) {
+        if (Item::ITEMS[itemId]->getEquipmentType() != EQUIPMENT_TYPE::ARMOR_HEAD
+            && Item::ITEMS[itemId]->getEquipmentType() != EQUIPMENT_TYPE::ARMOR_BODY
+            && Item::ITEMS[itemId]->getEquipmentType() != EQUIPMENT_TYPE::ARMOR_LEGS
+            && Item::ITEMS[itemId]->getEquipmentType() != EQUIPMENT_TYPE::ARMOR_FEET) {
+            MessageManager::displayMessage("Tried to get damage coefficient from non-armor item: " + std::to_string(itemId), 5, WARN);
+            return 0.0f;
+        }
+        return (float)Item::ITEMS[itemId]->getDamage() / protectionDivisor;
+    }
+
+    return 0.0f;
+}
+
+float Player::getTotalArmorCoefficient() {
+    float total = 0.f;
+    unsigned int helmetId = getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_HEAD);
+    unsigned int chestplateId = getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_BODY);
+    unsigned int leggingsId = getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_LEGS);
+    unsigned int bootsId = getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_FEET);
+
+    total += getArmorCoefficient(helmetId) + getArmorCoefficient(chestplateId) + getArmorCoefficient(leggingsId) + getArmorCoefficient(bootsId);
+
+    if (total == 0.f) total = 1.f;
+    return total;
+}
+
 
 void Player::mouseButtonReleased(const int mx, const int my, const int button) {
     if (button == sf::Mouse::Button::Left && !_isReloading) {

@@ -109,6 +109,8 @@ private:
         return (0.075f * (float)(std::pow((float)dodgeTimer, 2) - 4) + (float)2);
     }
 
+    float getTotalArmorCoefficient();
+
     bool _isDodging = false;
     int _dodgeTimer = 0;
     int _maxDodgeTime = 10;
