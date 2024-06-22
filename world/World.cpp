@@ -822,13 +822,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     chunk.terrainData = data;
 
+    if (!disablePropGeneration) generateChunkScatters(chunk);
+
     if (BENCHMARK_TERRAIN_AND_BIOME_GEN) {
         endTime = currentTimeMillis();
         MessageManager::displayMessage("Terrain for chunk at (" + std::to_string(chunk.pos.x) + ", " + std::to_string(chunk.pos.y)
             + ") generated in " + std::to_string(endTime - startTime) + "ms", 2, DEBUG);
     }
-
-    if (!disablePropGeneration) generateChunkScatters(chunk);
 
     return image;
 }

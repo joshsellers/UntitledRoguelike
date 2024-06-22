@@ -364,6 +364,9 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isGun(isGun), _magazineSize(magazineSize), _isAutomatic(isAutomatic), _fireRateMilliseconds(fireRateMilliseconds),
     _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable) {
 
+    for (auto& item : Item::ITEMS) {
+        if (item->getId() == id) MessageManager::displayMessage("Duplicate item ID: " + std::to_string(id) + "\nCulprits:\n" + item->getName() + "\n" + name, 5, WARN);
+    }
     ITEMS.push_back(this);
 }
 
@@ -404,7 +407,7 @@ std::string Item::getDescription() const {
 }
 
 /**
-* For armor, this returns protection value
+* For armor, this returns protection value, which ideally should be < 25 for any singular piece of armor
 */
 int Item::getDamage() const {
     return _damage;

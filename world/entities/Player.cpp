@@ -547,8 +547,13 @@ float Player::getTotalArmorCoefficient() {
 
     total += getArmorCoefficient(helmetId) + getArmorCoefficient(chestplateId) + getArmorCoefficient(leggingsId) + getArmorCoefficient(bootsId);
 
-    if (total == 0.f) total = 1.f;
-    return total;
+    if (total >= 1.0f) {
+        total = 1.0f;
+        MessageManager::displayMessage("High total armor coefficient: \n"
+            + std::to_string(helmetId) + ", " + std::to_string(chestplateId) + ", " + std::to_string(leggingsId) + ", " + std::to_string(bootsId), 5, WARN);
+    }
+
+    return 1.0f - total;
 }
 
 

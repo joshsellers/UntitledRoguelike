@@ -6,9 +6,11 @@ unsigned int WINDOW_HEIGHT = 0;
 bool FULLSCREEN = false;
 float RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
 
-int SCALE = 4; // this doesn't do anything
-int WIDTH = 360 * 1.5; 
-int HEIGHT = 202 * 1.5;
+float SCALE = 1.5; 
+int WIDTH = 384 * SCALE; // 360 // 352
+int HEIGHT = 224 * SCALE; // 200
+// * 2 is good here if we can improve chunk gen time a lot
+
 
 bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 

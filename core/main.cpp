@@ -48,6 +48,9 @@ int main() {
     MessageManager::start();
     SoundManager::loadSounds();
 
+    if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
+    if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
+
     loadSettings();
 
     if (FULLSCREEN) {
@@ -64,7 +67,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), GAME_NAME, FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
-    //window.setVerticalSyncEnabled();
+    //window.setVerticalSyncEnabled(true);
 
     // Set icon
     sf::Image icon;
@@ -110,6 +113,7 @@ int main() {
     MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
     MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
+    float i = 0;
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {

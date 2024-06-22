@@ -8,7 +8,7 @@ extern float RELATIVE_WINDOW_SIZE;
 
 extern bool FULLSCREEN;
 
-extern int SCALE;
+extern float SCALE;
 extern int WIDTH;
 extern int HEIGHT;
 
