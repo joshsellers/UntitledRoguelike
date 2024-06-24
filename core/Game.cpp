@@ -9,6 +9,7 @@
 #include "../world/entities/DroppedItem.h"
 #include "../ui/UILabel.h"
 #include "Tutorial.h"
+#include "ShaderManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -647,6 +648,8 @@ void Game::displayEnemyWaveCountdownUpdates() {
 }
 
 void Game::draw(sf::RenderTexture& surface) {
+    if (_gameStarted && !_isPaused) ShaderManager::updateShaders();
+    
     if (_gameStarted) {
         _world.draw(surface);
         _shopArrow.draw(surface);

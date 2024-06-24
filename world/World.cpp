@@ -22,6 +22,7 @@
 #include "entities/Dog.h"
 #include "../core/Tutorial.h"
 #include "entities/Shark.h"
+#include "../core/ShaderManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -127,7 +128,7 @@ void World::draw(sf::RenderTexture& surface) {
 
     if (!_isPlayerInShop) {
         for (Chunk& chunk : _chunks) {
-            surface.draw(chunk.sprite);
+            surface.draw(chunk.sprite, ShaderManager::getShader("waves_frag"));
         }
     }
 
@@ -718,9 +719,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double xOffset = 20000. / SCALE_COEFFICIENT; //20000.
             double yOffset = 20000. / SCALE_COEFFICIENT;
             int biomeOctaves = 2;
-            double biomeSampleRate = 0.00001 * SCALE_COEFFICIENT; // 0.00001;
+            double biomeSampleRate = 0.0000135 * SCALE_COEFFICIENT; // 0.00001;
             double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);
+
+            constexpr float biomeEdgeMixing = 125.f;
+            temperatureNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
+            precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
             /*float tundraTemp = 0.460 + 0.0075;
             float tundraPrecLow = 0.240 - 0.0075;
@@ -760,6 +765,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             flesh = false; // !! delete this line when flesh biome is ready
+            // !! also dont forget biomeedgemixing for rarebiomes
 
 
 
@@ -791,7 +797,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             if (terrainType != TERRAIN_TYPE::SAND && terrainType != TERRAIN_TYPE::DESERT) {
                 r += randomInt(0, 10);
                 g += randomInt(0, 10);
-                b += randomInt(0, 10);
+                if (terrainType != TERRAIN_TYPE::TUNDRA 
+                    && terrainType != TERRAIN_TYPE::MOUNTAIN_LOW
+                    && terrainType != TERRAIN_TYPE::MOUNTAIN_MID
+                    && terrainType != TERRAIN_TYPE::MOUNTAIN_HIGH) b += randomInt(0, 10);
 
                 if ((terrainType == TERRAIN_TYPE::GRASS && rgb == (sf::Uint32)TERRAIN_COLOR::DIRT_LOW) 
                     || terrainType == TERRAIN_TYPE::SAVANNA || terrainType == TERRAIN_TYPE::FLESH) {

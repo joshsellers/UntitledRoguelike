@@ -14,7 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.1.9";
+const std::string VERSION = "0.1.10";
 const std::string GAME_NAME = "rolmi";
 
 class Game : public UIButtonListener, public GamePadListener {

@@ -9,6 +9,7 @@
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
+#include "ShaderManager.h"
 
 void loadSettings() {
     std::ifstream in("settings.config");
@@ -47,6 +48,9 @@ void loadSettings() {
 int main() {
     MessageManager::start();
     SoundManager::loadSounds();
+
+    ShaderManager::compileShaders();
+    ShaderManager::configureShaders();
 
     if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
@@ -113,7 +117,7 @@ int main() {
     MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
     MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
-    float i = 0;
+    float time = 0;
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {
