@@ -14,12 +14,6 @@ vec4 get(float x, float y)
     return texture2D(texture, (gl_TexCoord[0].xy + x/resolution.x + y/resolution.y));
 }
 
-float random(vec2 st) {
-    return fract(sin(dot(st.xy,
-                         vec2(12.9898,78.233)))*
-        43758.5453123);
-}
-
 void main(void)
 {
     vec4 colHere = get(0, 0);
