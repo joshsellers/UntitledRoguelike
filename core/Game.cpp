@@ -21,7 +21,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     }
     _versionLabel.setFont(_font);
     _versionLabel.setCharacterSize(24);
-    _versionLabel.setString("v" + VERSION);
+    _versionLabel.setString("v" + VERSION + " (" + BUILD_NUMBER + ")");
     _versionLabel.setPosition(0, 0);
 
     _fpsLabel.setFont(_font);

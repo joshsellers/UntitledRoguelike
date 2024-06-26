@@ -15,7 +15,15 @@
 #include "../world/entities/ShopArrow.h"
 
 const std::string VERSION = "0.1.11";
-const std::string INTERNAL_VERSION = "";
+const std::string BUILD_NUMBER_RAW = "2";
+
+#ifdef DBGBLD
+const std::string BUILD_NUMBER = BUILD_NUMBER_RAW + "D";
+#endif
+#ifndef DBGBLD
+const std::string BUILD_NUMBER = BUILD_NUMBER_RAW + "R";
+#endif
+
 const std::string GAME_NAME = "rolmi";
 
 class Game : public UIButtonListener, public GamePadListener {

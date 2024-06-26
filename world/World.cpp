@@ -727,21 +727,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             temperatureNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
             precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
-            /*float tundraTemp = 0.460 + 0.0075;
-            float tundraPrecLow = 0.240 - 0.0075;
-            float tundraPrecHigh = 0.500 + 0.0075;
-
-            float desertTemp = 0.540 - 0.0075;
-            float desertPrec = 0.460 + 0.0075;
-            
-            float savannaTemp = 0.540 - 0.0075;
-            float savannaPrecLow = 0.315 - 0.0075;
-            float savannaPrecHigh = 0.660 + 0.0075;
-
-            bool tundra = temperatureNoise < tundraTemp && precipitationNoise >= tundraPrecLow && precipitationNoise < tundraPrecHigh;
-            bool desert = temperatureNoise > desertTemp && precipitationNoise < desertPrec;
-            bool savanna = temperatureNoise > savannaTemp && precipitationNoise >= savannaPrecLow && precipitationNoise < savannaPrecHigh;*/
-
             sf::Vector2f tundraTemp(0.0, 0.4);
             sf::Vector2f tundraPrec(0.1, 0.9);
             
@@ -766,8 +751,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             flesh = false; // !! delete this line when flesh biome is ready
             // !! also dont forget biomeedgemixing for rarebiomes
-
-
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 

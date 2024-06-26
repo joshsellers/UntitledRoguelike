@@ -19,9 +19,9 @@ void main(void)
     vec4 colHere = get(0, 0);
     vec4 col = colHere;
     if (colHere.b > colHere.r && colHere.b > colHere.g) {
-	    vec4 wavesNoiseTexCol = texture2D(wavesNoiseTex, vec2(gl_TexCoord[0].x + time, gl_TexCoord[0].y + time));
-	
-	    float reducedOffset = wavesNoiseTexCol.x / 70;
+        vec4 wavesNoiseTexCol = texture2D(wavesNoiseTex, vec2(gl_TexCoord[0].x + time, gl_TexCoord[0].y + time));
+        
+        float reducedOffset = wavesNoiseTexCol.x / 70;
 
    	    col = texture2D(texture,  gl_TexCoord[0].xy + vec2(reducedOffset, reducedOffset));
         
@@ -34,5 +34,5 @@ void main(void)
         }
 
     }
-	gl_FragColor = col;
+    gl_FragColor = col;
 }
