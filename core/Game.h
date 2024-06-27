@@ -15,7 +15,7 @@
 #include "../world/entities/ShopArrow.h"
 
 const std::string VERSION = "0.1.11";
-const std::string BUILD_NUMBER_RAW = "2";
+const std::string BUILD_NUMBER_RAW = "3";
 
 #ifdef DBGBLD
 const std::string BUILD_NUMBER = BUILD_NUMBER_RAW + "D";

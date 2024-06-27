@@ -1051,8 +1051,8 @@ void Game::togglePauseMenu() {
         if (_pauseMenu->isActive()) _pauseMenu->hide();
         else _pauseMenu->show();
         _isPaused = !_isPaused;
-    } else if (_gameStarted && _inventoryMenu->isActive()) _inventoryMenu->hide();
-    else if (_gameStarted && _shopMenu->isActive()) _shopMenu->hide();
+    } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
+    else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 }
 
 void Game::toggleInventoryMenu() {

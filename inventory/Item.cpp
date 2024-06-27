@@ -323,7 +323,7 @@ const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 999, 
 
 const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
     "Swing for slicing",
-    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 9999
+    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 5999
 );
 
 const Item Item::MATMURA_HELMET(42, "Matmura Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
@@ -348,7 +348,7 @@ const Item Item::MATMURA_BOOTS(45, "Matmura Boots", sf::IntRect(21, 43, 1, 1), f
 
 const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
     "Chop chop",
-    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 10999
+    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 7999
 );
 
 std::vector<const Item*> Item::ITEMS;
