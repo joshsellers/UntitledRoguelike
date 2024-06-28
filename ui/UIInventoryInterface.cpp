@@ -81,7 +81,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         label.setPosition(itemPos.x - (_width / 8) + _width + (_width / 8) * 3, itemPos.y + _height / 6);
         label.setString(item->getName() + (
             item->isStackable() ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
-            ));
+        ));
 
         sf::RectangleShape labelBg(sf::Vector2f(_width + (_width / 8) * 3 + label.getGlobalBounds().width + (_width / 8), _height + (_height / 8) * 2));
         labelBg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));

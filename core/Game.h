@@ -44,6 +44,7 @@ public:
 private:
 	void initUI();
 
+	bool _hideUI = false;
 	bool _showDebug = false;
 	bool _isPaused = false;
 

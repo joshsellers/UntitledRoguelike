@@ -1,4 +1,3 @@
-
 #version 120
 uniform sampler2D texture;
 uniform vec2 resolution;

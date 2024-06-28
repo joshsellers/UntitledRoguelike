@@ -668,7 +668,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(startMenuBg);
     }
 
-    _ui->draw(surface);
+    if (!_hideUI) _ui->draw(surface);
 
     if (_showDebug) {
         surface.draw(_versionLabel);
@@ -983,6 +983,9 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
             _commandMenu->show();
             _isPaused = true;
         }
+        break;
+    case sf::Keyboard::F9:
+        _hideUI = !_hideUI;
         break;
     case sf::Keyboard::Enter:
         if (_commandMenu->isActive()) {
