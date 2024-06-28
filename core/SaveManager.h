@@ -6,6 +6,7 @@
 #include "../world/entities/projectiles/Projectile.h"
 #include "../world/entities/DroppedItem.h"
 #include <filesystem>
+#include "Versioning.h"
 
 class SaveManager {
 public:

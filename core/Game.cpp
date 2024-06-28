@@ -10,6 +10,7 @@
 #include "../ui/UILabel.h"
 #include "Tutorial.h"
 #include "ShaderManager.h"
+#include "Versioning.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1056,13 +1057,12 @@ void Game::togglePauseMenu() {
 }
 
 void Game::toggleInventoryMenu() {
-    if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive()) {
+    if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive() && !_pauseMenu->isActive()) {
         if (_inventoryMenu->isActive()) _inventoryMenu->hide();
         else _inventoryMenu->show();
 
         _player->_inventoryMenuIsOpen = _inventoryMenu->isActive();
 
-        // this causes non-critical visual problems that i would like to not have happen
         //_isPaused = _inventoryMenu->isActive();
     }
 }
@@ -1075,7 +1075,7 @@ void Game::toggleShopMenu() {
                     _shopMenu->show();
                     MessageManager::displayMessage(
                         "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25",
-                        10
+                        5
                     );
                     break;
                 }

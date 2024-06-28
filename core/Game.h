@@ -14,15 +14,6 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 
-const std::string VERSION = "0.1.11";
-const std::string BUILD_NUMBER_RAW = "3";
-
-#ifdef DBGBLD
-const std::string BUILD_NUMBER = BUILD_NUMBER_RAW + "D";
-#endif
-#ifndef DBGBLD
-const std::string BUILD_NUMBER = BUILD_NUMBER_RAW + "R";
-#endif
 
 const std::string GAME_NAME = "rolmi";
 
