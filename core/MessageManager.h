@@ -71,6 +71,30 @@ public:
         deactivationThread.detach();
     }
 
+    static void displayMessage(int message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
+    static void displayMessage(float message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
+    static void displayMessage(double message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
+    static void displayMessage(long message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
+    static void displayMessage(long long message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
+    static void displayMessage(unsigned int message, int timeout, int messageType = NORMAL) {
+        displayMessage(std::to_string(message), timeout, messageType);
+    }
+
     static std::vector<std::shared_ptr<Message>> getMessages() {
         return _messages;
     }

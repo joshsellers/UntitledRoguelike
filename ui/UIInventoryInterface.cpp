@@ -112,6 +112,38 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             mousedOverItemIndex = i;
     }
 
+    if (filteredIndex + 1 > 13) {
+        constexpr float headerPadding = 8.f;
+
+        sf::RectangleShape scrollBar;
+        scrollBar.setSize(sf::Vector2f(getRelativeWidth(1.f), getRelativeHeight(10.f)));
+
+        sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+        float entryHeight = getRelativeHeight((float)ITEM_SPACING);
+        float itemAmount = (float)filteredIndex + 1;
+        float allItemsHeight = itemAmount * entryHeight;
+        float scrollDelta = (_originalY - _y);
+
+        float relY = getRelativeHeight(scrollDelta);
+        float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));
+        float scrollBarHeight = getRelativeHeight(100) - getRelativeHeight(headerPadding);
+        float handleHeight = scrollBar.getSize().y;
+        float handleY = yToDeltaHeightRatio * (scrollBarHeight - handleHeight);
+
+        scrollBarPos.y = handleY + getRelativeHeight(headerPadding);
+
+        scrollBar.setPosition(scrollBarPos);
+        scrollBar.setFillColor(sf::Color(0x0000FFAA));
+
+        sf::RectangleShape scrollBg;
+        scrollBg.setSize(getRelativePos(1.f, 91.f));
+        scrollBg.setPosition(getRelativePos(_x + 22.5f, 8.f));
+        scrollBg.setFillColor(sf::Color(0x000099AA));
+
+        surface.draw(scrollBg);
+        surface.draw(scrollBar);
+    }
+
     surface.draw(_headerBg);
     surface.draw(_text);
 

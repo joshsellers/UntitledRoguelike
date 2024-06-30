@@ -415,19 +415,19 @@ void Game::initUI() {
     
     // Settings menu (from start menu)
     std::shared_ptr<UIButton> backButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        45, 43, 9, 3, "back", _font, this, "back_startsettings"
+        45, 10, 9, 3, "back", _font, this, "back_startsettings"
     ));
     backButton_startSettings->setSelectionId(0);
     _startMenu_settings->addElement(backButton_startSettings);
 
     std::shared_ptr<UIButton> togglefullscreenButton_fromstart = std::shared_ptr<UIButton>(new UIButton(
-        36, 50, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
+        36, 17, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
     ));
     togglefullscreenButton_fromstart->setSelectionId(1);
     _startMenu_settings->addElement(togglefullscreenButton_fromstart);
 
     std::shared_ptr<UIButton> completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 57, 12, 3, "disable tutorial", _font, this, "skiptutorial"
+        43.5, 24, 12, 3, "disable tutorial", _font, this, "skiptutorial"
     ));
     completeTutorialButton_startSettings->setSelectionId(2);
     _startMenu_settings->addElement(completeTutorialButton_startSettings);

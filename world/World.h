@@ -55,7 +55,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3),
-        MobSpawnData(MOB_TYPE::DOG, 50, 1, 1)
+        MobSpawnData(MOB_TYPE::DOG, 100, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
