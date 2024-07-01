@@ -116,7 +116,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         constexpr float headerPadding = 8.f;
 
         sf::RectangleShape scrollBar;
-        scrollBar.setSize(sf::Vector2f(getRelativeWidth(1.f), getRelativeHeight(10.f)));
+        float scrollBarMinHeight = 2.f;
 
         sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
         float entryHeight = getRelativeHeight((float)ITEM_SPACING);
@@ -124,16 +124,28 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         float allItemsHeight = itemAmount * entryHeight;
         float scrollDelta = (_originalY - _y);
 
+        scrollBar.setSize(sf::Vector2f(
+            getRelativeWidth(1.f), getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f)))
+        );
+
         float relY = getRelativeHeight(scrollDelta);
         float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));
         float scrollBarHeight = getRelativeHeight(100) - getRelativeHeight(headerPadding);
         float handleHeight = scrollBar.getSize().y;
         float handleY = yToDeltaHeightRatio * (scrollBarHeight - handleHeight);
 
-        scrollBarPos.y = handleY + getRelativeHeight(headerPadding);
+        if (_userIsDraggingScrollbar) {
+            scrollBarPos.y = (_mousePos.y) - (_mouseYWhenClickedInScrollbar - (_scrollBarPosY));
+            float newY = (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding))) * scrollBarPos.y / (scrollBarHeight - scrollBar.getSize().y);
+            scrollDelta = newY / (float)WINDOW_HEIGHT * 100.f;
+            _y = (_originalY - scrollDelta);
+        } else {
+            _scrollBarPosY = handleY;
+            scrollBarPos.y = _scrollBarPosY;
+        }
 
-        scrollBar.setPosition(scrollBarPos);
-        scrollBar.setFillColor(sf::Color(0x0000FFAA));
+        scrollBar.setPosition(scrollBarPos.x, scrollBarPos.y + getRelativeHeight(headerPadding));
+        scrollBar.setFillColor(sf::Color(_userIsDraggingScrollbar || _mousedOverScrollbar ? 0x0000FFEE : 0x0000FFAA));
 
         sf::RectangleShape scrollBg;
         scrollBg.setSize(getRelativePos(1.f, 91.f));
@@ -317,7 +329,47 @@ void UIInventoryInterface::unfilterGamepadIndex() {
     } else _gamepadUnfilteredSelectedItemIndex = _gamepadSelectedItemIndex;
 }
 
-void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {}
+void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const int button) {
+    if (button == sf::Mouse::Left) {
+        int totalDisplayedItems = 0;
+        for (int i = 0; i < _source.getCurrentSize(); i++) {
+            const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+            if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
+        }
+
+        if (totalDisplayedItems + 1 > 13) {
+            constexpr float headerPadding = 8.f;
+
+            sf::FloatRect scrollBar;
+            float scrollBarMinHeight = 2.f;
+
+            sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+            float entryHeight = getRelativeHeight((float)ITEM_SPACING);
+            float itemAmount = (float)totalDisplayedItems + 1;
+            float allItemsHeight = itemAmount * entryHeight;
+            float scrollDelta = (_originalY - _y);
+
+            scrollBar.width = getRelativeWidth(1.f);
+            scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f));
+
+            float relY = getRelativeHeight(scrollDelta);
+            float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));
+            float scrollBarHeight = getRelativeHeight(100) - getRelativeHeight(headerPadding);
+            float handleHeight = scrollBar.height;
+            float handleY = yToDeltaHeightRatio * (scrollBarHeight - handleHeight);
+
+            scrollBarPos.y = handleY + getRelativeHeight(headerPadding);
+
+            scrollBar.left = scrollBarPos.x;
+            scrollBar.top = scrollBarPos.y;
+
+            if (sf::FloatRect(mx, my, 5, 5).intersects(scrollBar)) {
+                _userIsDraggingScrollbar = true;
+                _mouseYWhenClickedInScrollbar = my;
+            }
+        }
+    }
+}
 
 void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const int button) {
     if (_source.getParent()->isReloading()) return;
@@ -346,6 +398,8 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
             if (_source.getCurrentSize() == 0) _y = _originalY;
         }
     }
+
+    _userIsDraggingScrollbar = false;
 }
 
 void UIInventoryInterface::mouseMoved(const int mx, const int my) {
@@ -354,6 +408,44 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
     _mousePos = sf::Vector2f(mx, my);
     
     blockControllerInput = false;
+
+    int totalDisplayedItems = 0;
+    for (int i = 0; i < _source.getCurrentSize(); i++) {
+        const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+        if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
+    }
+
+    _mousedOverScrollbar = false;
+    if (totalDisplayedItems + 1 > 13) {
+        constexpr float headerPadding = 8.f;
+
+        sf::FloatRect scrollBar;
+        float scrollBarMinHeight = 2.f;
+
+        sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+        float entryHeight = getRelativeHeight((float)ITEM_SPACING);
+        float itemAmount = (float)totalDisplayedItems + 1;
+        float allItemsHeight = itemAmount * entryHeight;
+        float scrollDelta = (_originalY - _y);
+
+        scrollBar.width = getRelativeWidth(1.f);
+        scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f));
+
+        float relY = getRelativeHeight(scrollDelta);
+        float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));
+        float scrollBarHeight = getRelativeHeight(100) - getRelativeHeight(headerPadding);
+        float handleHeight = scrollBar.height;
+        float handleY = yToDeltaHeightRatio * (scrollBarHeight - handleHeight);
+
+        scrollBarPos.y = handleY + getRelativeHeight(headerPadding);
+
+        scrollBar.left = scrollBarPos.x;
+        scrollBar.top = scrollBarPos.y;
+
+        if (sf::FloatRect(mx, my, 5, 5).intersects(scrollBar)) {
+            _mousedOverScrollbar = true;
+        }
+    }
 }
 
 void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {

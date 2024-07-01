@@ -4,7 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "Item.h"
 
-constexpr unsigned int DEFAULT_MAX_SIZE = 64;
+constexpr unsigned int DEFAULT_MAX_SIZE = 2048;
 
 constexpr int NO_ITEM = -1;
 constexpr int NOTHING_EQUIPPED = -1;

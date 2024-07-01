@@ -68,6 +68,11 @@ protected:
 
     long long _lastDPadPressTime = 0LL;
 
+    bool _userIsDraggingScrollbar = false;
+    float _mouseYWhenClickedInScrollbar = 0.f;
+    float _scrollBarPosY = 0.f;
+    bool _mousedOverScrollbar = false;
+
     FILTER_TYPE _filter = FILTER_TYPE::NONE;
     bool isItemCorrectType(EQUIPMENT_TYPE type);
 
