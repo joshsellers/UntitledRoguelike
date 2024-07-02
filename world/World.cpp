@@ -23,6 +23,7 @@
 #include "../core/Tutorial.h"
 #include "entities/Shark.h"
 #include "../core/ShaderManager.h"
+#include "entities/FingerTree.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -568,6 +569,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     const int smallSavannaTreeSpawnRate = 200000;
     const int largeSavannaTreeSpawnRate = 250000;
     const int smallTundraTreeSpawnRate = 300000;
+    const int fingerTreeSpawnRate = 175000;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -630,6 +632,13 @@ void World::generateChunkScatters(Chunk& chunk) {
                 boost::random::uniform_int_distribution<> smallTreeDist(0, smallTundraTreeSpawnRate);
                 if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<SmallTundraTree> tree = std::shared_ptr<SmallTundraTree>(new SmallTundraTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
+                    _scatterBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::FLESH) {
+                boost::random::uniform_int_distribution<> fingerTreeDist(0, fingerTreeSpawnRate);
+                if (fingerTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<FingerTree> tree = std::shared_ptr<FingerTree>(new FingerTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _scatterBuffer.push_back(tree);
                 }
