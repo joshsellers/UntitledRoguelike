@@ -2,7 +2,7 @@
 #include "../core/Util.h"
 #include "../core/MessageManager.h"
 
-UILabel::UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth, float imageHeight) 
+UILabel::UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth, float imageHeight, bool square) 
     : UIElement(x, y, 10, 10, false, true, font) {
     _text.setFont(_font);
     _text.setString(label);
@@ -16,7 +16,10 @@ UILabel::UILabel(const sf::String label, float x, float y, float characterSize, 
             MessageManager::displayMessage(_text.getString() + " could not be loaded", 5, WARN);
         } else {
             _sprite.setTexture(*_spriteSheet);
-            sf::Vector2f imageScale(getRelativeWidth(imageWidth) / _sprite.getGlobalBounds().width, getRelativeWidth(imageHeight) / _sprite.getGlobalBounds().height);
+            sf::Vector2f imageScale(
+                getRelativeWidth(imageWidth) / _sprite.getGlobalBounds().width, 
+                square ? getRelativeWidth(imageHeight) / _sprite.getGlobalBounds().height : getRelativeHeight(imageHeight) / _sprite.getGlobalBounds().height
+            );
             _sprite.setScale(imageScale);
             _sprite.setPosition(_x, _y);
             _drawSprite = true;

@@ -4,7 +4,7 @@
 
 class UILabel : public UIElement {
 public:
-    UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth = 10.f, float imageHeight = 10.f);
+    UILabel(const sf::String label, float x, float y, float characterSize, sf::Font font, float imageWidth = 10.f, float imageHeight = 10.f, bool square = true);
 
     void update();
     void draw(sf::RenderTexture& surface);
