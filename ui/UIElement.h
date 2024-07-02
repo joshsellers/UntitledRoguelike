@@ -18,7 +18,7 @@ public:
 
     virtual void update() = 0;
     virtual void draw(sf::RenderTexture& surface) = 0;
-    void render(sf::RenderTexture& surface);
+    void render(sf::RenderTexture& surface, const sf::RenderStates& states = sf::RenderStates::Default);
 
     virtual void controllerButtonReleased(GAMEPAD_BUTTON button);
     virtual void controllerButtonPressed(GAMEPAD_BUTTON button);

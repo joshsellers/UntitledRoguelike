@@ -13,6 +13,7 @@
 #include "../world/entities/ShopKeep.h"
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
+#include "../ui/UILabel.h"
 
 
 const std::string GAME_NAME = "rolmi";
@@ -82,6 +83,8 @@ private:
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 	std::shared_ptr<UIAttributeMeter> _staminaMeter;
 	std::shared_ptr<UIAttributeMeter> _waveCounterMeter;
+
+	std::shared_ptr<UILabel> _titleScreenBackground;
 
 	sf::Font _font;
 	sf::Text _versionLabel;

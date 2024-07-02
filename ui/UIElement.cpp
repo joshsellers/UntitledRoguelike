@@ -31,14 +31,14 @@ UIElement::UIElement(float x, float y, float width, float height,
     _height = WINDOW_WIDTH * (height / 100);
 }
 
-void UIElement::render(sf::RenderTexture& surface) {
+void UIElement::render(sf::RenderTexture& surface, const sf::RenderStates& states) {
     if (!_disableAutomaticTextAlignment) {
         _text.setPosition(
             _sprite.getPosition().x + _sprite.getGlobalBounds().width / 2 - _text.getGlobalBounds().width / 2,
             _sprite.getPosition().y + _text.getGlobalBounds().height / 2
         );
     }
-    if (_drawSprite) surface.draw(_sprite);
+    if (_drawSprite) surface.draw(_sprite, states);
     if (_drawText) surface.draw(_text);
 
     draw(surface);

@@ -94,6 +94,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 }
 
 void Game::initUI() {
+    // Title screen background;
+    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg.png", 0, 0, 0, _font, 100.f, 100.f));
+    _titleScreenBackground->show();
+
+
     // Load game menu
     _ui->addMenu(_loadGameMenu);
 
@@ -649,7 +654,7 @@ void Game::displayEnemyWaveCountdownUpdates() {
 }
 
 void Game::draw(sf::RenderTexture& surface) {
-    if (_gameStarted && !_isPaused) ShaderManager::updateShaders();
+    if (!_isPaused) ShaderManager::updateShaders();
     
     if (_gameStarted) {
         _world.draw(surface);
@@ -666,6 +671,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
         startMenuBg.setPosition(0, 0);
         startMenuBg.setSize(sf::Vector2f(surface.getSize().x, surface.getSize().y));
         surface.draw(startMenuBg);
+
+        _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
     }
 
     if (!_hideUI) _ui->draw(surface);

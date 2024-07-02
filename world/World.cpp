@@ -118,7 +118,13 @@ void World::update() {
         purgeEntityBuffer();
         _player->update();
         for (auto& entity : getEntities()) {
-            if (entity->getEntityType() == "shopint" || entity->getEntityType() == "shopcounter" || entity->getEntityType() == "shopext") entity->update();
+            if (entity->getEntityType() == "shopint" 
+                || entity->getEntityType() == "shopcounter" 
+                || entity->getEntityType() == "shopext"
+                || entity->getEntityType() == "barberint"
+                || entity->getEntityType() == "barberext"
+                || entity->getEntityType() == "barbercounter"
+                || entity->getEntityType() == "barberchair") entity->update();
         }
     }
 }
@@ -152,11 +158,15 @@ void World::draw(sf::RenderTexture& surface) {
     }
 
     for (const auto& entity : _entities) {
-        if (!entity->isDormant() && !_isPlayerInShop 
+        if (!entity->isDormant() && !_isPlayerInShop
             || (_isPlayerInShop && entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 
-                || entity->getEntityType() == "shopkeep")) entity->draw(surface);
+                || entity->getEntityType() == "shopkeep"
+                || entity->getEntityType() == "barberint"
+                || entity->getEntityType() == "barbercounter"
+                || entity->getEntityType() == "barberchair"
+                || entity->getEntityType() == "barber")) entity->draw(surface);
         
         if (showDebug() && entity->isDamageable()) {
             sf::RectangleShape hitBox;

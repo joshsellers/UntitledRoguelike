@@ -18,6 +18,7 @@
 #include "../world/entities/Dog.h"
 #include "../world/entities/Skeleton.h"
 #include "../world/entities/Shark.h"
+#include "../world/entities/BarberExterior.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -249,6 +250,8 @@ private:
                             entity = std::shared_ptr<Skeleton>(new Skeleton(pos));
                         } else if (entityName == "shark") {
                             entity = std::shared_ptr<Shark>(new Shark(pos));
+                        } else if (entityName == "barberext") {
+                            entity = std::shared_ptr<BarberExterior>(new BarberExterior(pos, _world->getSpriteSheet()));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

@@ -1,13 +1,12 @@
-#include "ShopExterior.h"
+#include "BarberExterior.h"
 #include "../World.h"
-#include "ShopInterior.h"
 
-ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 192, 96, true) {
+BarberExterior::BarberExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 128, 80, true) {
     _pos = pos;
     loadSprite(spriteSheet);
 
-    _hitBoxXOffset = 80;
-    _hitBoxYOffset = 64;
+    _hitBoxXOffset = 24;
+    _hitBoxYOffset = 48;
     _hitBox.width = TILE_SIZE * 2;
     _hitBox.height = 4;
 
@@ -17,50 +16,50 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
     setMaxHitPoints(10000000);
     heal(getMaxHitPoints());
 
-    _entityType = "shopext";
+    _entityType = "barberext";
 
     _hasColliders = true;
     sf::FloatRect colliderLeft;
     colliderLeft.left = getSprite().getPosition().x + 16;
-    colliderLeft.top = getSprite().getPosition().y + (16 * 3 - 2);
-    colliderLeft.width = 64;
-    colliderLeft.height = 26;
+    colliderLeft.top = getSprite().getPosition().y + (27);
+    colliderLeft.width = 8;
+    colliderLeft.height = 30;
 
     sf::FloatRect colliderRight;
-    colliderRight.left = getSprite().getPosition().x + 16 * 7;
-    colliderRight.top = getSprite().getPosition().y + (16 * 3 - 2);
-    colliderRight.width = 64;
-    colliderRight.height = 26;
+    colliderRight.left = getSprite().getPosition().x + 57;
+    colliderRight.top = getSprite().getPosition().y + (27);
+    colliderRight.width = 54;
+    colliderRight.height = 30;
 
     sf::FloatRect colliderTop;
-    colliderTop.left = getSprite().getPosition().x + 16 * 5;
-    colliderTop.top = getSprite().getPosition().y + (16 * 3 - 2);
+    colliderTop.left = getSprite().getPosition().x + 24;
+    colliderTop.top = getSprite().getPosition().y + (27);
     colliderTop.width = 32;
-    colliderTop.height = 17;
+    colliderTop.height = 20;
 
     _colliders.push_back(colliderLeft);
     _colliders.push_back(colliderRight);
     _colliders.push_back(colliderTop);
 }
 
-void ShopExterior::update() {
+void BarberExterior::update() {
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
         auto& entity = getWorld()->getPlayer();
         if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-            getWorld()->enterShop(sf::Vector2f(_pos.x + 16, _pos.y - 48));
+            //getWorld()->enterBarber(sf::Vector2f(_pos.x + 16, _pos.y - 48));
         }
     } else _hasColliders = false;
 }
 
-void ShopExterior::draw(sf::RenderTexture& surface) {
+void BarberExterior::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
 }
 
-void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+void BarberExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(
-        sf::IntRect(45 * TILE_SIZE, 23 * TILE_SIZE, 192, 96)
+        sf::IntRect(736, 480, 128, 80)
     );
     _sprite.setPosition(getPosition());
 }
