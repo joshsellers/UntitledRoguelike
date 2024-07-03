@@ -47,7 +47,7 @@ void BarberExterior::update() {
         _hasColliders = true;
         auto& entity = getWorld()->getPlayer();
         if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-            //getWorld()->enterBarber(sf::Vector2f(_pos.x + 16, _pos.y - 48));
+            getWorld()->enterBuilding("barber", sf::Vector2f(_pos.x + 8, _pos.y));
         }
     } else _hasColliders = false;
 }

@@ -48,7 +48,7 @@ void ShopExterior::update() {
         _hasColliders = true;
         auto& entity = getWorld()->getPlayer();
         if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-            getWorld()->enterShop(sf::Vector2f(_pos.x + 16, _pos.y - 48));
+            getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48));
         }
     } else _hasColliders = false;
 }

@@ -50,7 +50,7 @@ void ShopArrow::update() {
 }
 
 void ShopArrow::draw(sf::RenderTexture& surface) {
-    if (_isVisible) surface.draw(_sprite);
+    if (_isVisible && !_world->playerIsInShop()) surface.draw(_sprite);
 }
 
 void ShopArrow::setWorld(World* world) {

@@ -157,8 +157,8 @@ public:
 
     void resetChunks();
 
-    void enterShop(sf::Vector2f shopPos);
-    void exitShop();
+    void enterBuilding(std::string buildingID, sf::Vector2f buildingPos);
+    void exitBuilding();
     bool playerIsInShop() const;
 
     void setShopKeep(std::shared_ptr<ShopKeep> shopKeep);

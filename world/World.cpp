@@ -24,6 +24,9 @@
 #include "entities/Shark.h"
 #include "../core/ShaderManager.h"
 #include "entities/FingerTree.h"
+#include "entities/BarberInterior.h"
+#include "entities/BarberCounter.h"
+#include "entities/BarberChair.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1021,28 +1024,43 @@ void World::resetChunks() {
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, WARN);
 }
 
-void World::enterShop(sf::Vector2f shopPos) {
+void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
     _isPlayerInShop = true;
-    std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(shopPos, getSpriteSheet()));
-    shopInterior->setWorld(this);
-    addEntity(shopInterior);
+    if (buildingID == "shop") {
+        std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet()));
+        shopInterior->setWorld(this);
+        addEntity(shopInterior);
 
-    std::shared_ptr<ShopCounter> shopCounter = std::shared_ptr<ShopCounter>(new ShopCounter(sf::Vector2f(shopPos.x, shopPos.y + 80), getSpriteSheet()));
-    shopCounter->setWorld(this);
-    addEntity(shopCounter);
+        std::shared_ptr<ShopCounter> shopCounter = std::shared_ptr<ShopCounter>(new ShopCounter(sf::Vector2f(buildingPos.x, buildingPos.y + 80), getSpriteSheet()));
+        shopCounter->setWorld(this);
+        addEntity(shopCounter);
 
-    _shopKeep->setPosition(sf::Vector2f(shopPos.x + 32, shopPos.y + 80 - 12));
-    _shopKeep->initInventory();
-    _shopKeep->activate();
-    addEntity(_shopKeep);
+        _shopKeep->setPosition(sf::Vector2f(buildingPos.x + 32, buildingPos.y + 80 - 12));
+        _shopKeep->initInventory();
+        _shopKeep->activate();
+        addEntity(_shopKeep);
 
-    _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
-    _player->_pos.y = shopCounter->getPosition().y + 46;
+        _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
+        _player->_pos.y = shopCounter->getPosition().y + 46;
 
-    MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+        MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+    } else if (buildingID == "barber") {
+        std::shared_ptr<BarberInterior> barberInterior = std::shared_ptr<BarberInterior>(new BarberInterior(buildingPos, getSpriteSheet()));
+        barberInterior->setWorld(this);
+        addEntity(barberInterior);
+        _player->_pos = barberInterior->getEntrancePos();
+
+        std::shared_ptr<BarberCounter> barberCounter = std::shared_ptr<BarberCounter>(new BarberCounter(sf::Vector2f(buildingPos.x, buildingPos.y + 32), getSpriteSheet()));
+        barberCounter->setWorld(this);
+        addEntity(barberCounter);
+
+        std::shared_ptr<BarberChair> barberChair = std::shared_ptr<BarberChair>(new BarberChair(sf::Vector2f(buildingPos.x + 96, buildingPos.y + 32), getSpriteSheet()));
+        barberChair->setWorld(this);
+        addEntity(barberChair);
+    }
 }
 
-void World::exitShop() {
+void World::exitBuilding() {
     _isPlayerInShop = false;
 }
 
