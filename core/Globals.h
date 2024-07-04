@@ -12,6 +12,8 @@ extern float SCALE;
 extern int WIDTH;
 extern int HEIGHT;
 
+extern bool VSYNC_ENABLED;
+
 extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 
 extern float PLAYER_SCORE;

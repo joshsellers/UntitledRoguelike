@@ -25,6 +25,8 @@ public:
     void update();
     void draw(sf::RenderTexture& surface);
 
+    void setLabelText(std::string labelText);
+
     void controllerButtonPressed(GAMEPAD_BUTTON button);
     void controllerButtonReleased(GAMEPAD_BUTTON button);
 

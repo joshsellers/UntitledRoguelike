@@ -36,6 +36,14 @@ void loadSettings() {
                 } catch (std::exception ex) {
                     MessageManager::displayMessage(ex.what(), 5, ERR);
                 }
+            } else if (line.rfind("vsync", 0) == 0) {
+                try {
+                    std::vector<std::string> parsedLine = splitString(line, "=");
+                    bool vsyncEnabled = (bool)std::stoi(parsedLine[1]);
+                    VSYNC_ENABLED = vsyncEnabled;
+                } catch (std::exception ex) {
+                    MessageManager::displayMessage(ex.what(), 5, ERR);
+                }
             }
         }
     }
@@ -71,7 +79,7 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), GAME_NAME, FULLSCREEN ? sf::Style::Fullscreen : sf::Style::Default);
     window.setFramerateLimit(60);
-    //window.setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(VSYNC_ENABLED);
 
     // Set icon
     sf::Image icon;

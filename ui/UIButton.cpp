@@ -106,6 +106,10 @@ void UIButton::update() {
 
 void UIButton::draw(sf::RenderTexture& surface) {}
 
+void UIButton::setLabelText(std::string labelText) {
+    _text.setString(labelText);
+}
+
 void UIButton::controllerButtonPressed(GAMEPAD_BUTTON button) {
     if (_isSelected && button == GAMEPAD_BUTTON::A && !pressWhenSelected) _mouseDown = true;
 }

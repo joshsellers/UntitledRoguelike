@@ -74,6 +74,9 @@ private:
 	std::shared_ptr<UIMenu> _loadGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _controlsMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
+	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
+	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;
+
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;
 	std::shared_ptr<UITextField> _steamNameField;

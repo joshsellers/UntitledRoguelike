@@ -153,11 +153,18 @@ void Game::initUI() {
     togglefullscreenButton->setSelectionId(1);
     _pauseMenu_settings->addElement(togglefullscreenButton);
 
+    _vsyncToggleButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
+        1, 17, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync"
+    ));
+    _vsyncToggleButton_pauseMenu->setSelectionId(2);
+    _pauseMenu_settings->addElement(_vsyncToggleButton_pauseMenu);
+
     _pauseMenu_settings->useGamepadConfiguration = true;
     _pauseMenu_settings->defineSelectionGrid(
         {
             {backSettingsMenuButton->getSelectionId()},
-            {togglefullscreenButton->getSelectionId()}
+            {togglefullscreenButton->getSelectionId()},
+            {_vsyncToggleButton_pauseMenu->getSelectionId()}
         }
     );
     _ui->addMenu(_pauseMenu_settings);
@@ -431,10 +438,16 @@ void Game::initUI() {
     togglefullscreenButton_fromstart->setSelectionId(1);
     _startMenu_settings->addElement(togglefullscreenButton_fromstart);
 
-    std::shared_ptr<UIButton> completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 24, 12, 3, "disable tutorial", _font, this, "skiptutorial"
+    _vsyncToggleButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
+        43.5, 24, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync"
     ));
-    completeTutorialButton_startSettings->setSelectionId(2);
+    _vsyncToggleButton_mainMenu->setSelectionId(2);
+    _startMenu_settings->addElement(_vsyncToggleButton_mainMenu);
+
+    std::shared_ptr<UIButton> completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
+        43.5, 31, 12, 3, "disable tutorial", _font, this, "skiptutorial"
+    ));
+    completeTutorialButton_startSettings->setSelectionId(3);
     _startMenu_settings->addElement(completeTutorialButton_startSettings);
 
     _startMenu_settings->useGamepadConfiguration = true;
@@ -442,6 +455,7 @@ void Game::initUI() {
         {
             {backButton_startSettings->getSelectionId()},
             {togglefullscreenButton_fromstart->getSelectionId()},
+            {_vsyncToggleButton_mainMenu->getSelectionId()},
             {completeTutorialButton_startSettings->getSelectionId()}
         }
     );
@@ -843,8 +857,10 @@ void Game::buttonPressed(std::string buttonCode) {
             std::ofstream out(fileName);
             int fullscreenSetting = FULLSCREEN ? 0 : 1;
             int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
+            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
             out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
             out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
+            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
             out.close();
 
             MessageManager::displayMessage("The game will launch in " + (std::string)(fullscreenSetting == 1 ? "fullscreen" : "windowed") + " mode next time", 5);
@@ -961,11 +977,42 @@ void Game::buttonPressed(std::string buttonCode) {
             std::ofstream out(fileName);
             int fullscreenSetting = FULLSCREEN ? 1 : 0;
             int tutorialCompleted = 1;
+            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
             out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
             out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
+            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
             out.close();
 
             MessageManager::displayMessage("Disabled the tutorial", 5);
+        } catch (std::exception ex) {
+            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
+        }
+    } else if (buttonCode == "togglevsync") {
+        VSYNC_ENABLED = !VSYNC_ENABLED;
+        _window->setVerticalSyncEnabled(VSYNC_ENABLED);
+
+        std::string fileName = "settings.config";
+        try {
+            if (!std::filesystem::remove(fileName))
+                MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
+        }
+
+        try {
+            std::ofstream out(fileName);
+            int fullscreenSetting = FULLSCREEN ? 1 : 0;
+            int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
+            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
+            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
+            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
+            out.close();
+
+            MessageManager::displayMessage((VSYNC_ENABLED ? "Enabled" : "Disabled") + (std::string)" vsync", 5);
+
+            _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
+            _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
         }
