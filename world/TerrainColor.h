@@ -1,0 +1,29 @@
+#ifndef _TERRAIN_COLOR_H
+#define _TERRAIN_COLOR_H
+
+#include "SFML/Config.hpp"
+
+
+enum class TERRAIN_COLOR : sf::Uint32 {
+    WATER_DEEP = 0x3370CC,
+    WATER_MID = 0x4084E2,
+    WATER_SHALLOW = 0x55AEF0,
+
+    SAND = 0xF7E898,
+    DIRT_LOW = 0x77C73A,
+    DIRT_HIGH = 0x417D13,
+
+    MOUNTAIN_LOW = 0x5B5E5C,
+    MOUNTAIN_MID = 0x414545,
+    MOUNTAIN_HIGH = 0xE2EDEC,
+
+    TUNDRA = MOUNTAIN_HIGH,
+    SAVANNA = 0x95A54F, //0xB5954F
+    DESERT = 0xFDE898,
+
+    FLESH = 0xEEC39A,
+
+    FOREST = 0x55A51A
+};
+
+#endif

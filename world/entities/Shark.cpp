@@ -29,13 +29,13 @@ void Shark::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE;
 
-    if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
+    if (!getWorld()->getPlayer()->isInBoat() && getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
         getWorld()->getPlayer()->takeDamage(8);
         getWorld()->getPlayer()->knockBack(15.f, getMovingDir());
     }
 
-    bool playerIsInWater = getWorld()->getPlayer()->isSwimming();
-    _isHostile = playerIsInWater && !getWorld()->getPlayer()->isInBoat();
+    bool playerIsInWater = getWorld()->getPlayer()->isSwimming() && !getWorld()->getPlayer()->isInBoat();
+    _isHostile = playerIsInWater;
 
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 2);

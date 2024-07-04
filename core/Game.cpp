@@ -1120,6 +1120,7 @@ void Game::toggleInventoryMenu() {
 
         _player->_inventoryMenuIsOpen = _inventoryMenu->isActive();
 
+        // This causes a problem but i keep not writing down what it is DON'T UNCOMMENT THIS
         //_isPaused = _inventoryMenu->isActive();
     } else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 }
@@ -1140,7 +1141,11 @@ void Game::toggleShopMenu() {
                 }
             }
         }
-    } else if (_shopMenu->isActive()) _shopMenu->hide();
+    } else if (_shopMenu->isActive()) {
+        _shopMenu->hide();
+    } else if (!_shopMenu->isActive() && _inventoryMenu->isActive()) {
+        toggleInventoryMenu();
+    }
 
     _player->_inventoryMenuIsOpen = _shopMenu->isActive();
 }

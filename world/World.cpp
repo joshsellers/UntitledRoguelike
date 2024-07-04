@@ -27,6 +27,7 @@
 #include "entities/BarberInterior.h"
 #include "entities/BarberCounter.h"
 #include "entities/BarberChair.h"
+#include "TerrainColor.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -573,6 +574,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     const int largeSavannaTreeSpawnRate = 250000;
     const int smallTundraTreeSpawnRate = 300000;
     const int fingerTreeSpawnRate = 175000;
+    const int forestSmallTreeSpawnRate = 4000;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -642,6 +644,13 @@ void World::generateChunkScatters(Chunk& chunk) {
                 boost::random::uniform_int_distribution<> fingerTreeDist(0, fingerTreeSpawnRate);
                 if (fingerTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<FingerTree> tree = std::shared_ptr<FingerTree>(new FingerTree(sf::Vector2f(x, y), _spriteSheet));
+                    tree->setWorld(this);
+                    _scatterBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::GRASS_FOREST) {
+                boost::random::uniform_int_distribution<> smallTreeDist(0, forestSmallTreeSpawnRate);
+                if (smallTreeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _scatterBuffer.push_back(tree);
                 }
@@ -758,9 +767,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             sf::Vector2f savannaTemp(0.5, 0.6);
             sf::Vector2f savannaPrec(0.5, 0.7);
 
+            sf::Vector2f forestTemp(0.3, 0.6);
+            sf::Vector2f forestPrec(0.5, 0.9);
+
             bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
             bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
             bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
+            bool forest = temperatureNoise > forestTemp.x && temperatureNoise < forestTemp.y && precipitationNoise > forestPrec.x && precipitationNoise < forestPrec.y;
 
             // rare biomes 
             double rareBiomeSampleRate = biomeSampleRate / 2;
@@ -786,6 +799,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 } else if (savanna) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::SAVANNA;
                     rgb = (sf::Uint32)TERRAIN_COLOR::SAVANNA;
+                } else if (forest) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::GRASS_FOREST;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::FOREST;
                 }
                 
                 if (flesh) {

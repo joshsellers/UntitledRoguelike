@@ -20,27 +20,6 @@ constexpr long long INACTIVE_ENEMY_REMOVAL_INTERVAL = 5000LL;
 
 constexpr long long NEW_GAME_COOLDOWN_MILLIS = 15000LL;
 
-enum class TERRAIN_COLOR : sf::Uint32 {
-    WATER_DEEP = 0x3370CC,
-    WATER_MID = 0x4084E2,
-    WATER_SHALLOW = 0x55AEF0,
-
-    SAND = 0xF7E898,
-    DIRT_LOW = 0x77C73A,
-    DIRT_HIGH = 0x417D13,
-
-    MOUNTAIN_LOW = 0x5B5E5C,
-    MOUNTAIN_MID = 0x414545,
-    MOUNTAIN_HIGH = 0xE2EDEC,
-
-    TUNDRA = MOUNTAIN_HIGH,
-    SAVANNA = 0x95A54F, //0xB5954F
-    DESERT = 0xFDE898,
-
-    FLESH = 0xEEC39A,
-
-    FOREST = 0x77C73A
-};
 
 constexpr int MAX_ACTIVE_MOBS = 80;
 constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 5;
@@ -70,7 +49,9 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
+        MobSpawnData(MOB_TYPE::FROG, 6, 2, 4)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
 };
@@ -97,7 +78,10 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
+        MobSpawnData(MOB_TYPE::SKELETON, 2, 3, 6),
+        MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 5, 10)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
 };
