@@ -1121,7 +1121,7 @@ void Game::toggleInventoryMenu() {
         _player->_inventoryMenuIsOpen = _inventoryMenu->isActive();
 
         //_isPaused = _inventoryMenu->isActive();
-    }
+    } else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 }
 
 void Game::toggleShopMenu() {
@@ -1134,6 +1134,8 @@ void Game::toggleShopMenu() {
                         "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25",
                         5
                     );
+
+                    if (GamePad::isConnected()) MessageManager::displayMessage("Press down on the left joystick\nto see prices", 8);
                     break;
                 }
             }
