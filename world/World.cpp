@@ -28,6 +28,7 @@
 #include "entities/BarberCounter.h"
 #include "entities/BarberChair.h"
 #include "TerrainColor.h"
+#include "entities/Cyclops.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -331,6 +332,9 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::SKELETON:
                                 mob = std::shared_ptr<Skeleton>(new Skeleton(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::CYCLOPS:
+                                mob = std::shared_ptr<Cyclops>(new Cyclops(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -779,13 +783,14 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             double rareBiomeSampleRate = biomeSampleRate / 2;
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
             double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);
+            rareBiomeTemp += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
+            rareBiomePrec += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
             sf::Vector2f fleshTemp(0.0005, 0.3);
             sf::Vector2f fleshPrec(0.04, 0.7);
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
-            flesh = false; // !! delete this line when flesh biome is ready
-            // !! also dont forget biomeedgemixing for rarebiomes
+            if (_seed == 124959026) flesh = true;
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 

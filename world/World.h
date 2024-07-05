@@ -42,7 +42,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
-        MobSpawnData(MOB_TYPE::CACTOID, 1, 1, 1)
+        MobSpawnData(MOB_TYPE::CACTOID, 10, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {}),
@@ -76,7 +76,9 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 4, 10)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
+        MobSpawnData(MOB_TYPE::CYCLOPS, 0, 4, 5)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
         MobSpawnData(MOB_TYPE::SKELETON, 2, 3, 6),

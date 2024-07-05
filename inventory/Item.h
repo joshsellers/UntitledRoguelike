@@ -67,6 +67,7 @@ public:
     static const Item MATMURA_LEGGINGS;
     static const Item MATMURA_BOOTS;
     static const Item BROADSWORD;
+    static const Item ENERGY_DRINK;
 
     static std::vector<const Item*> ITEMS;
 

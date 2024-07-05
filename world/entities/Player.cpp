@@ -3,7 +3,7 @@
 #include "../World.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
-    Entity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE, false), _window(window), _gamePaused(gamePaused) {
+    HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
     _canPickUpItems = true;
 
     setMaxHitPoints(100);
@@ -176,8 +176,10 @@ void Player::draw(sf::RenderTexture& surface) {
 }
 
 void Player::drawEquipables(sf::RenderTexture& surface) {
+    drawHair(surface);
+
     drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
-    drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_HEAD, surface);
+    drawApparel(_armorHeadSprite, EQUIPMENT_TYPE::ARMOR_HEAD, surface);
 
     if (!isSwimming() || isInBoat()) {
         drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
@@ -194,7 +196,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
     if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD || equipType == EQUIPMENT_TYPE::ARMOR_HEAD) {
         if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD && getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_HEAD) != NOTHING_EQUIPPED) return;
 
-        int spriteHeight = 3;
+        constexpr int spriteHeight = 3;
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
 
         if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
@@ -679,4 +681,6 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _armorFeetSprite.setTexture(*spriteSheet);
 
     _toolSprite.setTexture(*spriteSheet);
+
+    initHairSprites(spriteSheet);
 }

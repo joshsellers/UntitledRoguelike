@@ -351,6 +351,15 @@ const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0
     EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 7999
 );
 
+const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEET_SHIFT, 192 >> SPRITE_SHEET_SHIFT, 1, 1), true, 32, true,
+    "Increases stamina restore rate",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 3999, true,
+    [](Entity* parent) {
+        parent->increaseStaminaRefreshRate(1);
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 

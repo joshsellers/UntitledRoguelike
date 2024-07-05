@@ -2,7 +2,7 @@
 #define _PLAYER_H
 
 #include <SFML/Graphics.hpp>
-#include "Entity.h"
+#include "HairyEntity.h"
 #include "../../core/gamepad/GamePad.h"
 #include "../Chunk.h"
 
@@ -20,7 +20,7 @@ constexpr int INITIAL_STAMINA_REFRESH_RATE = 5;
 
 constexpr long double PI = 3.14159265358979L;
 
-class Player : public Entity, public GamePadListener {
+class Player : public HairyEntity, public GamePadListener {
 public:
     Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused);
 
@@ -100,8 +100,6 @@ private:
     virtual TERRAIN_TYPE getCurrentTerrain();
 
     float _sprintMultiplier = 2;
-
-    MOVING_DIRECTION _facingDir = (MOVING_DIRECTION)_movingDir;
 
     long long _lastTimeBoatBobbedUp = 0;
 
