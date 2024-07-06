@@ -1042,7 +1042,7 @@ void World::resetChunks() {
         _chunks.clear();
         _currentChunk = nullptr;
         _scatterBuffer.clear();
-    } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, WARN);
+    } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 
 void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {

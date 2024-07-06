@@ -761,6 +761,9 @@ void Game::buttonPressed(std::string buttonCode) {
             seed = currentTimeMillis();
         }
 
+        // fixes tried to reset chunks while chunks were loading
+        _world.resetChunks();
+        //
         _world.init(seed);
         _world.startNewGameCooldown();
 
@@ -1106,11 +1109,16 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
 
 void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
-        if (_pauseMenu->isActive()) _pauseMenu->hide();
-        else _pauseMenu->show();
-        _isPaused = !_isPaused;
+        if (_pauseMenu->isActive()) { 
+            _pauseMenu->hide();
+            _isPaused = !_isPaused;
+        } else if (!_pauseMenu_settings->isActive()) {
+            _pauseMenu->show();
+            _isPaused = !_isPaused;
+        } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
+
 }
 
 void Game::toggleInventoryMenu() {
@@ -1136,7 +1144,7 @@ void Game::toggleShopMenu() {
                         5
                     );
 
-                    if (GamePad::isConnected()) MessageManager::displayMessage("Press down on the left joystick\nto see prices", 8);
+                    if (GamePad::isConnected()) MessageManager::displayMessage("Press down on the left joystick\nwhen an item is selected to see prices", 8);
                     break;
                 }
             }
