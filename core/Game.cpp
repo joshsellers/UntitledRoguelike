@@ -780,6 +780,12 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.addEntity(droppedSlimeBall);
 
         _gameStarted = true;
+        if (!Tutorial::isCompleted()) {
+            std::string msg;
+            if (GamePad::isConnected()) msg = "Hold left bumper to sprint, press A to dodge";
+            else msg = "Hold shift to sprint, press spacebar to dodge";
+            MessageManager::displayMessage(msg, 7);
+        }
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
@@ -1024,6 +1030,7 @@ void Game::buttonPressed(std::string buttonCode) {
 
 void Game::keyPressed(sf::Keyboard::Key& key) {
     _ui->keyPressed(key);
+    _player->keyPressed(key);
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {

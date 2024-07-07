@@ -5,11 +5,11 @@
 #include "SoundManager.h"
 #include <fstream>
 #include "Tutorial.h"
+#include "ShaderManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
-#include "ShaderManager.h"
 
 void loadSettings() {
     std::ifstream in("settings.config");

@@ -46,10 +46,14 @@ void Player::update() {
     }
 
     float xa = 0, ya = 0;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || (std::abs(yAxis) > std::abs(xAxis) && yAxis < 0)) {
+    bool upOrDownIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+    bool leftOrRightIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+    bool verticalPressedLast = _lastUpOrDownPressTime > _lastLeftOrRightPressTime;
+
+    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis < 0)) {
         ya = -getBaseSpeed();
         _movingDir = UP;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || (std::abs(yAxis) > std::abs(xAxis) && yAxis > 0)) {
+    } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis > 0)) {
         ya = getBaseSpeed();
         _movingDir = DOWN;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (std::abs(yAxis) < std::abs(xAxis) && xAxis < 0)) {
@@ -565,9 +569,27 @@ void Player::mouseButtonReleased(const int mx, const int my, const int button) {
     }
 }
 
+void Player::keyPressed(sf::Keyboard::Key& key) {
+    if ((key == sf::Keyboard::W || key == sf::Keyboard::S) && !_verticalMovementKeyIsPressed) {
+        _verticalMovementKeyIsPressed = true;
+        _lastUpOrDownPressTime = currentTimeMillis();
+    }
+    if ((key == sf::Keyboard::A || key == sf::Keyboard::D) && !_horizontalMovementKeyIsPressed) {
+        _horizontalMovementKeyIsPressed = true;
+        _lastLeftOrRightPressTime = currentTimeMillis();
+    }
+}
+
 void Player::keyReleased(sf::Keyboard::Key& key) {
     if (key == sf::Keyboard::R) {
         startReloadingWeapon();
+    }
+
+    if ((key == sf::Keyboard::W || key == sf::Keyboard::S) && _verticalMovementKeyIsPressed) {
+        _verticalMovementKeyIsPressed = false;
+    }
+    if ((key == sf::Keyboard::A || key == sf::Keyboard::D) && _horizontalMovementKeyIsPressed) {
+        _horizontalMovementKeyIsPressed = false;
     }
 }
 

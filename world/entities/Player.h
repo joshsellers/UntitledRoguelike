@@ -59,6 +59,7 @@ public:
     bool freeMove = false;
 
     void mouseButtonReleased(const int mx, const int my, const int button);
+    void keyPressed(sf::Keyboard::Key& key);
     void keyReleased(sf::Keyboard::Key& key);
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
@@ -137,6 +138,11 @@ private:
     unsigned int _coinMagnetCount = 0;
 
     sf::RenderWindow* _window;
+
+    bool _verticalMovementKeyIsPressed = false;
+    bool _horizontalMovementKeyIsPressed = false;
+    long long _lastLeftOrRightPressTime = 0;
+    long long _lastUpOrDownPressTime = 0;
 };
 
 #endif
