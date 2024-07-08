@@ -64,7 +64,7 @@ protected:
 
     int _gamepadSelectedItemIndex = -1;
     int _gamepadUnfilteredSelectedItemIndex = -1;
-    bool _gamepadShowTooltip = false;
+    bool _gamepadShowTooltip = true;
 
     long long _lastDPadPressTime = 0LL;
 

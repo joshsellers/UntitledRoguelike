@@ -159,9 +159,13 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_headerBg);
     surface.draw(_text);
 
-    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize())) {
+    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0)) {
         const Item* item = Item::ITEMS[
-            _source.getItemIdAt(_gamepadShowTooltip ? _gamepadUnfilteredSelectedItemIndex : mousedOverItemIndex)
+            _source.getItemIdAt(
+                (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0) ?
+                _gamepadUnfilteredSelectedItemIndex : 
+                mousedOverItemIndex
+            )
         ];
 
         float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
@@ -171,9 +175,10 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         float textHeight = _tooltipText.getGlobalBounds().height;
         sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
-        if (_gamepadShowTooltip) {
+        if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
             sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
             pos.x = _background.getGlobalBounds().width;
+            if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
             pos.y = itemPos.y;
         }
 
@@ -404,7 +409,7 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
 
 void UIInventoryInterface::mouseMoved(const int mx, const int my) {
     _gamepadSelectedItemIndex = -1;
-    _gamepadShowTooltip = false;
+    //_gamepadShowTooltip = false;
     _mousePos = sf::Vector2f(mx, my);
     
     blockControllerInput = false;
@@ -461,7 +466,7 @@ void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
 void UIInventoryInterface::hide() {
     _isActive = false;
     _gamepadSelectedItemIndex = -1;
-    _gamepadShowTooltip = false;
+    //_gamepadShowTooltip = false;
     _y = _originalY;
 }
 

@@ -1,5 +1,6 @@
 #include "UIShopInterface.h"
 #include "../inventory/ShopManager.h"
+#include "../core/gamepad/GamePad.h"
 
 UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet)
     : UIInventoryInterface(buyMode ? 2 : 76, 11, source, font, spriteSheet), _shopManager(shopManager) {
@@ -47,7 +48,11 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
 
 void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {
     const Item* item = Item::ITEMS[
-        _source.getItemIdAt(_gamepadShowTooltip ? _gamepadUnfilteredSelectedItemIndex : mousedOverItemIndex)
+        _source.getItemIdAt(
+            (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0) ?
+            _gamepadUnfilteredSelectedItemIndex :
+            mousedOverItemIndex
+        )
     ];
 
     float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
@@ -61,9 +66,10 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
     float textHeight = _tooltipText.getGlobalBounds().height;
     sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
-    if (_gamepadShowTooltip) {
+    if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
         pos.x = _background.getGlobalBounds().width;
+        if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
         pos.y = itemPos.y;
     }
 

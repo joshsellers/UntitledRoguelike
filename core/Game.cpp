@@ -1146,12 +1146,12 @@ void Game::toggleShopMenu() {
             if (entity->isActive() && entity->getEntityType() == "shopkeep") {
                 if (_player->getHitBox().intersects(entity->getHitBox())) {
                     _shopMenu->show();
-                    MessageManager::displayMessage(
-                        "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25",
-                        5
-                    );
 
-                    if (GamePad::isConnected()) MessageManager::displayMessage("Press down on the left joystick\nwhen an item is selected to see prices", 8);
+                    std::string controlsMsg = "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25";
+                    if (GamePad::isConnected()) controlsMsg = "Press A to buy/sell 1 item\nPress Y to buy/sell a stack\nPress down on the right joystick to buy/sell 25";
+                    MessageManager::displayMessage(controlsMsg, 5);
+
+                    if (GamePad::isConnected()) MessageManager::displayMessage("Use the bumpers to switch between buying and selling", 8);
                     break;
                 }
             }
