@@ -150,6 +150,7 @@ int main() {
                 break;
             case sf::Event::MouseMoved:
                 window.setMouseCursorVisible(true);
+                USING_MOUSE = true;
                 game->mouseMoved(
                     event.mouseMove.x, event.mouseMove.y
                 );
@@ -168,14 +169,17 @@ int main() {
                 break;
             case sf::Event::JoystickMoved:
                 window.setMouseCursorVisible(false);
+                USING_MOUSE = false;
                 GamePad::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickButtonReleased:
                 window.setMouseCursorVisible(false);
+                USING_MOUSE = false;
                 GamePad::receiveControllerEvent(event);
                 break;
             case sf::Event::JoystickButtonPressed:
                 window.setMouseCursorVisible(false);
+                USING_MOUSE = false;
                 GamePad::receiveControllerEvent(event);
                 break;
             }

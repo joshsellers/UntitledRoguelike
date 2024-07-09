@@ -49,7 +49,7 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
 void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {
     const Item* item = Item::ITEMS[
         _source.getItemIdAt(
-            (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0) ?
+            (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
             _gamepadUnfilteredSelectedItemIndex :
             mousedOverItemIndex
         )
@@ -58,8 +58,9 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
     float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
 
     std::string ttText = item->getId() == Item::PENNY.getId() ? 
-        item->getDescription() 
+        "The shopkeep can use these to buy\nstuff you want to sell him"
         : "PRICE: " + std::to_string(item->getValue()) + "¢\n\n" + item->getDescription();
+    if (!_buyMode && item->getId() == Item::PENNY.getId()) ttText = "Use these to buy stuff";
 
     _tooltipText.setString(ttText);
     float textWidth = _tooltipText.getGlobalBounds().width;

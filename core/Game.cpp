@@ -128,13 +128,20 @@ void Game::initUI() {
     settingsButton->setSelectionId(3);
     _pauseMenu->addElement(settingsButton);
 
+    std::shared_ptr<UIButton> pauseControlsButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 29, 9, 3, "controls", _font, this, "controls"
+    ));
+    pauseControlsButton->setSelectionId(4);
+    _pauseMenu->addElement(pauseControlsButton);
+
     _pauseMenu->useGamepadConfiguration = true;
     _pauseMenu->defineSelectionGrid(
         {
             {mainMenuButton->getSelectionId()},
             {exitButton->getSelectionId()},
             {saveButton->getSelectionId()},
-            {settingsButton->getSelectionId()}
+            {settingsButton->getSelectionId()},
+            {pauseControlsButton->getSelectionId()}
         }
     );
     _ui->addMenu(_pauseMenu);
@@ -640,9 +647,7 @@ void Game::update() {
         else _staminaMeter->hide();
 
         if (!_player->isActive()) {
-            MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
-            SaveManager::deleteSaveFile();
-            buttonPressed("mainmenu");
+            onPlayerDeath();
         }
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
@@ -689,7 +694,16 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
     }
 
-    if (!_hideUI) _ui->draw(surface);
+    if (!_hideUI) {
+        if (_gameStarted && _controlsMenu->isActive()) {
+            sf::RectangleShape controlsMenuBg;
+            controlsMenuBg.setFillColor(sf::Color(0x444448FF));
+            controlsMenuBg.setPosition(0, 0);
+            controlsMenuBg.setSize(sf::Vector2f(surface.getSize().x, surface.getSize().y));
+            surface.draw(controlsMenuBg);
+        }
+        _ui->draw(surface);
+    }
 
     if (_showDebug) {
         surface.draw(_versionLabel);
@@ -765,6 +779,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.resetChunks();
         //
         _world.init(seed);
+        if (!Tutorial::isCompleted()) _world._newGameCooldownLength = 45000LL;
+        else _world._newGameCooldownLength = 15000LL;
         _world.startNewGameCooldown();
 
         _newGameMenu->hide();
@@ -784,7 +800,7 @@ void Game::buttonPressed(std::string buttonCode) {
             std::string msg;
             if (GamePad::isConnected()) msg = "Hold left bumper to sprint, press A to dodge";
             else msg = "Hold shift to sprint, press spacebar to dodge";
-            MessageManager::displayMessage(msg, 7);
+            MessageManager::displayMessage(msg, 15);
         }
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
@@ -966,11 +982,13 @@ void Game::buttonPressed(std::string buttonCode) {
             buttonPressed("mainmenu");
         }
     } else if (buttonCode == "controls") {
+        if (_gameStarted) _pauseMenu->hide();
         _startMenu->hide();
         _controlsMenu->show();
     } else if (buttonCode == "back_controls") {
         _controlsMenu->hide();
-        _startMenu->show();
+        if (!_gameStarted) _startMenu->show();
+        else _pauseMenu->show();
     } else if (buttonCode == "skiptutorial") {
         Tutorial::completeStep(TUTORIAL_STEP::END);
 
@@ -1116,13 +1134,14 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
 
 void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
-        if (_pauseMenu->isActive()) { 
+        if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
-        } else if (!_pauseMenu_settings->isActive()) {
+        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
+        else if (_controlsMenu->isActive()) buttonPressed("back_controls");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 
@@ -1163,6 +1182,75 @@ void Game::toggleShopMenu() {
     }
 
     _player->_inventoryMenuIsOpen = _shopMenu->isActive();
+}
+
+void Game::onPlayerDeath() {
+    constexpr long long deathCallCooldown = 1000LL;
+    if (currentTimeMillis() - _lastPlayerDeathCallTime > deathCallCooldown) {
+        bool tutorialComplete = Tutorial::isCompleted();
+        MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+        if (tutorialComplete) {
+            SaveManager::deleteSaveFile();
+            buttonPressed("mainmenu");
+        } else {
+            int playerPennyIndex = _player->getInventory().findItem(Item::PENNY.getId());
+            if (playerPennyIndex != NO_ITEM) _player->getInventory().removeItem(Item::PENNY.getId(), _player->getInventory().getItemAmountAt(playerPennyIndex));
+
+            _cmdPrompt->unlock();
+            _cmdPrompt->processCommand("removedroppeditems");
+            _cmdPrompt->processCommand("killenemies");
+            _cmdPrompt->processCommand("setmaxhp:100");
+            _cmdPrompt->processCommand("addhp:100");
+            _cmdPrompt->processCommand("respawn");
+
+            if (!DEBUG_MODE) _cmdPrompt->lock();
+
+            PLAYER_SCORE = 1.f;
+            _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
+            _world._enemiesSpawnedThisRound = 0;
+            _world._waveCounter = 0;
+            _world._currentWaveNumber = 1;
+            _world._maxEnemiesReached = false;
+
+            _world._isPlayerInShop = false;
+
+            _player->_pos = sf::Vector2f(0, 0);
+            _player->_movingDir = DOWN;
+            _player->_facingDir = DOWN;
+            _player->_isDodging = false;
+            _player->_dodgeTimer = 0;
+            _player->_maxDodgeTime = 10;
+            _player->_dodgeSpeedMultiplier = 1.f;
+            _player->_dodgeKeyReleased = true;
+            _player->_magazineSize = 0;
+            _player->_magazineContents = 0;
+            _player->_baseSpeed = BASE_PLAYER_SPEED;
+            _player->_isReloading = false;
+            _player->_damageMultiplier = 1.f;
+            _player->_maxStamina = INITIAL_MAX_STAMINA;
+            _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
+            _player->_coinMagnetCount = 0;
+
+            _world.resetChunks();
+            _world.loadChunksAroundPlayer();
+            _world.resetEnemySpawnCooldown();
+            _world.startNewGameCooldown();
+
+            if (_player->getInventory().findItem(Item::SLIME_BALL.getId()) == NO_ITEM) {
+                std::shared_ptr<DroppedItem> droppedSlimeBall
+                    = std::shared_ptr<DroppedItem>(new DroppedItem(
+                        sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+                        );
+                droppedSlimeBall->setWorld(&_world);
+                droppedSlimeBall->loadSprite(_world.getSpriteSheet());
+                _world.addEntity(droppedSlimeBall);
+
+                Tutorial::reset();
+            }
+        }
+    }
+
+    _lastPlayerDeathCallTime = currentTimeMillis();
 }
 
 void Game::textEntered(sf::Uint32 character) {

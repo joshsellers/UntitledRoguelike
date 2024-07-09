@@ -79,7 +79,9 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         label.setCharacterSize(relativeFontSize);
         label.setFillColor(sf::Color::White);
         label.setPosition(itemPos.x - (_width / 8) + _width + (_width / 8) * 3, itemPos.y + _height / 6);
-        label.setString(item->getName() + (
+        std::string itemName = item->getName();
+        if (item->getId() == Item::PENNY.getId() && _source.getParent()->getEntityType() == "shopkeep") itemName = "Shopkeep's pennies";
+        label.setString(itemName + (
             item->isStackable() ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
         ));
 
@@ -108,7 +110,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         filteredIndex++;
 
-        if (labelBg.getGlobalBounds().contains(_mousePos) && !bg.getGlobalBounds().contains(_mousePos))
+        if (labelBg.getGlobalBounds().contains(_mousePos) || bg.getGlobalBounds().contains(_mousePos))
             mousedOverItemIndex = i;
     }
 
@@ -162,7 +164,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0)) {
         const Item* item = Item::ITEMS[
             _source.getItemIdAt(
-                (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0) ?
+                (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
                 _gamepadUnfilteredSelectedItemIndex : 
                 mousedOverItemIndex
             )

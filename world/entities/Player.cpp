@@ -523,6 +523,7 @@ void Player::damage(int damage) {
         _hitPoints -= (int)((float)damage * getTotalArmorCoefficient());
         if (_hitPoints <= 0) {
             _isActive = false;
+            _hitPoints = 0;
         }
     }
 }

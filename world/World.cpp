@@ -78,9 +78,9 @@ void World::loadChunksAroundPlayer() {
             }
         }
     } else if (getActiveChunkCount() != 0) {
-        MessageManager::displayMessage("loadChunksAroundPlayer was called while there were active chunks", 10, WARN);
+        MessageManager::displayMessage("loadChunksAroundPlayer was called while there were active chunks", 10, DEBUG);
     } else if (_loadingChunks.size() != 0) {
-        MessageManager::displayMessage("loadChunksAroundPlayer was called while chunks were already loading", 10, WARN);
+        MessageManager::displayMessage("loadChunksAroundPlayer was called while chunks were already loading", 10, DEBUG);
     }
 }
 
@@ -90,7 +90,7 @@ void World::update() {
 
         if (!disableMobSpawning) {
             spawnMobs();
-            if (!disableEnemySpawning && (!_newGameCooldown || currentTimeMillis() - _newGameCooldownStartTime > NEW_GAME_COOLDOWN_MILLIS)) spawnEnemies();
+            if (!disableEnemySpawning && (!_newGameCooldown || currentTimeMillis() - _newGameCooldownStartTime > _newGameCooldownLength)) spawnEnemies();
         }
 
         purgeScatterBuffer();
@@ -348,7 +348,7 @@ void World::spawnEnemies() {
                             _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
-                            if (_maxActiveEnemies == 2) _maxActiveEnemies = 6;
+                            if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
                             PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_player->getMaxHitPoints() / 100.f));
                             _waveCounter++;
                             break;
@@ -390,11 +390,15 @@ void World::updateEntities() {
     }*/
     _entities.erase(std::remove_if(_entities.begin(), _entities.end(), [](std::shared_ptr<Entity> entity) {return !entity->isActive(); }), _entities.end());
 
+    bool foundPlayer = false;
+
     for (const auto& entity : _entities) {
         if (entity == nullptr) {
             MessageManager::displayMessage("An entity was nullptr", 0, DEBUG);
             continue;
         }
+
+        if (!Tutorial::isCompleted() && entity->getEntityType() == "player") foundPlayer = true;
 
         if (!entity->isProp() && entity->isActive() && !entity->usesDormancyRules()) {
             entity->update();
@@ -435,6 +439,11 @@ void World::updateEntities() {
             entity->update();
         }
         else if (!entity->isDormant()) entity->update();
+    }
+
+    if (!foundPlayer && !Tutorial::isCompleted()) {
+        _player->activate();
+        addEntity(_player);
     }
 }
 
@@ -779,6 +788,11 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             bool savanna = temperatureNoise > savannaTemp.x && temperatureNoise < savannaTemp.y && precipitationNoise > savannaPrec.x && precipitationNoise < savannaPrec.y;
             bool forest = temperatureNoise > forestTemp.x && temperatureNoise < forestTemp.y && precipitationNoise > forestPrec.x && precipitationNoise < forestPrec.y;
 
+            if (!Tutorial::isCompleted()) {
+                desert = false;
+                tundra = false;
+            }
+
             // rare biomes 
             double rareBiomeSampleRate = biomeSampleRate / 2;
             double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
@@ -791,6 +805,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
+            forest = false;
+            flesh = false;
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 

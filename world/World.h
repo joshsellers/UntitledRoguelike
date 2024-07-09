@@ -18,11 +18,9 @@ constexpr int CHUNK_LOAD_THRESHOLD = 400;
 
 constexpr long long INACTIVE_ENEMY_REMOVAL_INTERVAL = 5000LL;
 
-constexpr long long NEW_GAME_COOLDOWN_MILLIS = 15000LL;
-
 
 constexpr int MAX_ACTIVE_MOBS = 80;
-constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 5;
+constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 3;
 constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 1;
 constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
@@ -200,6 +198,7 @@ private:
 
     bool _newGameCooldown = false;
     long long _newGameCooldownStartTime = 0;
+    long long _newGameCooldownLength = 15000LL;
 
     void purgeEntityBuffer();
     void purgeScatterBuffer();

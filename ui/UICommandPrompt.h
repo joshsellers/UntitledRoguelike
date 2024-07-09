@@ -543,6 +543,20 @@ private:
                     return ex.what();
                 }
             })
+        },
+
+        {
+            "killenemies",
+            Command("Remove all enemies",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                int count = 0;
+                for (const auto& enemy : _world->getEnemies()) {
+                    enemy->deactivate();
+                    count++;
+                }
+
+                return "Deactivated " + std::to_string(count) + " entities";
+            })
         }
     };
 };

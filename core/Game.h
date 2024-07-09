@@ -115,6 +115,9 @@ private:
 
 	World _world;
 
+	void onPlayerDeath();
+	long long _lastPlayerDeathCallTime = 0LL;
+
 	void togglePauseMenu();
 	void toggleInventoryMenu();
 	void toggleShopMenu();
