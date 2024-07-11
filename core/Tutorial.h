@@ -37,7 +37,7 @@ public:
             _currentStep = (TUTORIAL_STEP)((int)_currentStep + 1);
             if (_currentStep == TUTORIAL_STEP::END) {
                 _tutorialCompleted = true;
-                writeToSettingsFile();
+                updateSettingsFiles();
             }
         }
     }
@@ -73,27 +73,6 @@ private:
 
     inline static TUTORIAL_STEP _currentStep = TUTORIAL_STEP::START;
     inline static bool _tutorialCompleted = false;
-
-    static void writeToSettingsFile() {
-        std::string fileName = "settings.config";
-        try {
-            if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
-        } catch (const std::filesystem::filesystem_error& err) {
-            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
-        }
-
-        try {
-            std::ofstream out(fileName);
-            int fullscreenSetting = FULLSCREEN ? 1 : 0;
-            int tutorialCompleted = _tutorialCompleted ? 1 : 0;
-            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
-            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
-            out.close();
-        } catch (std::exception ex) {
-            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
-        }
-    }
 };
 
 #endif

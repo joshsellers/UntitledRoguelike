@@ -1,7 +1,7 @@
 #include "Versioning.h"
 #include "Globals.h"
 
-const std::string VERSION = "0.1.15";
+const std::string VERSION = "0.1.16";
 
 const std::string BUILD_NUMBER_RAW =
 std::to_string(BUILD_DATE_YEAR_INT - 2000)

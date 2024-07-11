@@ -11,47 +11,60 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-void loadSettings() {
-    std::ifstream in("settings.config");
-    if (!in.good()) {
-        MessageManager::displayMessage("Could not find settings file", 5, WARN);
-        in.close();
-        return;
-    } else {
-        std::string line;
-        while (getline(in, line)) {
-            if (line.rfind("fullscreen", 0) == 0) {
-                try {
-                    std::vector<std::string> parsedLine = splitString(line, "=");
-                    FULLSCREEN = (bool)std::stoi(parsedLine[1]);
-                    RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
-                } catch (std::exception ex) {
-                    MessageManager::displayMessage(ex.what(), 5, ERR);
-                }
-            } else if (line.rfind("tutorial", 0) == 0) {
-                try {
-                    std::vector<std::string> parsedLine = splitString(line, "=");
-                    bool tutorialCompleted = (bool)std::stoi(parsedLine[1]);
-                    if (tutorialCompleted) Tutorial::completeStep(TUTORIAL_STEP::END);
-                } catch (std::exception ex) {
-                    MessageManager::displayMessage(ex.what(), 5, ERR);
-                }
-            } else if (line.rfind("vsync", 0) == 0) {
-                try {
-                    std::vector<std::string> parsedLine = splitString(line, "=");
-                    bool vsyncEnabled = (bool)std::stoi(parsedLine[1]);
-                    VSYNC_ENABLED = vsyncEnabled;
-                } catch (std::exception ex) {
-                    MessageManager::displayMessage(ex.what(), 5, ERR);
-                }
+void readSettings(std::ifstream& in) {
+    std::string line;
+    while (getline(in, line)) {
+        if (line.rfind("fullscreen", 0) == 0) {
+            try {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                FULLSCREEN = (bool)std::stoi(parsedLine[1]);
+                RELATIVE_WINDOW_SIZE = FULLSCREEN ? 1 : 0.75;
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
+        } else if (line.rfind("tutorial", 0) == 0) {
+            try {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                bool tutorialCompleted = (bool)std::stoi(parsedLine[1]);
+                if (tutorialCompleted) Tutorial::completeStep(TUTORIAL_STEP::END);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
+        } else if (line.rfind("vsync", 0) == 0) {
+            try {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                bool vsyncEnabled = (bool)std::stoi(parsedLine[1]);
+                VSYNC_ENABLED = vsyncEnabled;
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
             }
         }
+    }
+}
+
+void loadSettings() {
+    std::string localLowPath = getLocalLowPath() + "\\settings.config";
+    std::ifstream in(localLowPath);
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find LocalLow settings file", 5, DEBUG);
+        in.close();
+
+        std::ifstream steamDirIn("settings.config");
+        if (!steamDirIn.good()) {
+            MessageManager::displayMessage("Could not find steam directory settings file", 5, DEBUG);
+            steamDirIn.close();
+            return;
+        } else {
+            readSettings(steamDirIn);
+        }
+        steamDirIn.close();
+        return;
+    } else {
+        readSettings(in);
     }
 
     in.close();
 }
-
-
 
 int main() {
     MessageManager::start();

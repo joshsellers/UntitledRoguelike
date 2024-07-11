@@ -20,4 +20,9 @@ bool stringStartsWith(std::string str, std::string start);
 
 std::string generateUID();
 
+std::string getLocalLowPath();
+
+void updateSettingsFile(std::string path);
+void updateSettingsFiles();
+
 #endif

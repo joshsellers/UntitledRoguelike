@@ -296,18 +296,18 @@ void Player::drawTool(sf::RenderTexture& surface) {
             _toolSprite.setRotation(angle);
 
             switch (_facingDir) {
-            case UP:
-                handPos.x += 13;
-                break;
-            case DOWN:
-                handPos.x += 2;
-                break;
-            case LEFT:
-                handPos.x += 7;
-                break;
-            case RIGHT:
-                handPos.x += 8;
-                break;
+                case UP:
+                    handPos.x += 13;
+                    break;
+                case DOWN:
+                    handPos.x += 2;
+                    break;
+                case LEFT:
+                    handPos.x += 7;
+                    break;
+                case RIGHT:
+                    handPos.x += 8;
+                    break;
             }
 
             _toolSprite.setPosition(sf::Vector2f(

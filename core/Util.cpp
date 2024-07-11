@@ -1,6 +1,11 @@
 #include "Util.h"
 #include <random>
 #include <sstream>
+#include <filesystem>
+#include <fstream>
+#include "MessageManager.h"
+#include "Tutorial.h"
+#include <regex>
 
 int randomInt(int min, int max) {
     return (rand() % (max - min + 1)) + min;
@@ -82,4 +87,58 @@ std::string generateUID() {
         ss << dis(gen);
     };
     return ss.str();
+}
+
+std::string getLocalLowPath() {
+    std::string pathStr = "err";
+    char* buf = nullptr;
+    size_t sz = 0;
+    if (_dupenv_s(&buf, &sz, "APPDATA") == 0 && buf != nullptr) {
+        std::string temp(buf);
+        pathStr =
+            std::regex_replace(
+                temp, std::regex("Roaming"),
+                "LocalLow\\Rolmi"
+            );
+        free(buf);
+    } else {
+        MessageManager::displayMessage("Failed path retrieval", 5, ERR);
+    }
+    return pathStr;
+}
+
+void updateSettingsFile(std::string path) {
+    try {
+        if (!std::filesystem::remove(path)) {
+            MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
+        }
+    } catch (const std::filesystem::filesystem_error& err) {
+        MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
+    }
+
+    try {
+        std::ofstream out(path);
+        int fullscreenSetting = FULLSCREEN ? 1 : 0;
+        int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
+        int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+        out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
+        out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
+        out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
+        out.close();
+    } catch (std::exception ex) {
+        MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
+    }
+}
+
+void updateSettingsFiles() {
+    updateSettingsFile("settings.config");
+
+    std::string localLowPath = getLocalLowPath();
+    if (localLowPath == "err") return;
+    if (!std::filesystem::is_directory(localLowPath + "\\")) {
+        std::filesystem::create_directory(localLowPath);
+    }
+
+    localLowPath += "\\settings.config";
+    updateSettingsFile(localLowPath);
 }

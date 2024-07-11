@@ -96,6 +96,7 @@ private:
 
     // this might be the single worst thing i've ever done
     bool _isActuallyMoving = false;
+    // this (and probably the above) were for multiplayer and can probably be removed
     bool _isHoldingWeapon = false;
 
     virtual TERRAIN_TYPE getCurrentTerrain();

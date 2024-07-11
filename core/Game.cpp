@@ -870,28 +870,10 @@ void Game::buttonPressed(std::string buttonCode) {
         _pauseMenu_settings->hide();
         _pauseMenu->show();
     } else if (buttonCode == "togglefullscreen") {
-        std::string fileName = "settings.config";
-        try {
-            if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("Could not replace settings file", 5, ERR);
-        } catch (const std::filesystem::filesystem_error& err) {
-            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
-        }
+        FULLSCREEN = !FULLSCREEN;
 
-        try {
-            std::ofstream out(fileName);
-            int fullscreenSetting = FULLSCREEN ? 0 : 1;
-            int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
-            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
-            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
-            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
-            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
-            out.close();
-
-            MessageManager::displayMessage("The game will launch in " + (std::string)(fullscreenSetting == 1 ? "fullscreen" : "windowed") + " mode next time", 5);
-        } catch (std::exception ex) {
-            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
-        }
+        MessageManager::displayMessage("The game will launch in " + (std::string)(FULLSCREEN == 1 ? "fullscreen" : "windowed") + " mode next time", 5);
+        updateSettingsFiles();
 
     } else if (buttonCode == "settings_mainmenu") {
         _startMenu->hide();
@@ -976,6 +958,7 @@ void Game::buttonPressed(std::string buttonCode) {
             _magazineMeter->hide();
 
             _gameStarted = true;
+            Tutorial::completeStep(TUTORIAL_STEP::END);
         } else {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
@@ -991,58 +974,18 @@ void Game::buttonPressed(std::string buttonCode) {
         else _pauseMenu->show();
     } else if (buttonCode == "skiptutorial") {
         Tutorial::completeStep(TUTORIAL_STEP::END);
-
-        std::string fileName = "settings.config";
-        try {
-            if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
-        } catch (const std::filesystem::filesystem_error& err) {
-            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
-        }
-
-        try {
-            std::ofstream out(fileName);
-            int fullscreenSetting = FULLSCREEN ? 1 : 0;
-            int tutorialCompleted = 1;
-            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
-            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
-            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
-            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
-            out.close();
-
-            MessageManager::displayMessage("Disabled the tutorial", 5);
-        } catch (std::exception ex) {
-            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
-        }
+           
+        updateSettingsFiles();
+        MessageManager::displayMessage("Disabled the tutorial", 5);
     } else if (buttonCode == "togglevsync") {
         VSYNC_ENABLED = !VSYNC_ENABLED;
         _window->setVerticalSyncEnabled(VSYNC_ENABLED);
+        updateSettingsFiles();
 
-        std::string fileName = "settings.config";
-        try {
-            if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("Could not replace settings file", 5, DEBUG);
-        } catch (const std::filesystem::filesystem_error& err) {
-            MessageManager::displayMessage("Could not replace settings file: " + (std::string)err.what(), 5, ERR);
-        }
+        MessageManager::displayMessage((VSYNC_ENABLED ? "Enabled" : "Disabled") + (std::string)" vsync", 5);
 
-        try {
-            std::ofstream out(fileName);
-            int fullscreenSetting = FULLSCREEN ? 1 : 0;
-            int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
-            int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
-            out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
-            out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
-            out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
-            out.close();
-
-            MessageManager::displayMessage((VSYNC_ENABLED ? "Enabled" : "Disabled") + (std::string)" vsync", 5);
-
-            _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
-            _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
-        } catch (std::exception ex) {
-            MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);
-        }
+        _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
+        _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
     }
 }
 
