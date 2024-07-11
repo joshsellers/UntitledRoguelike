@@ -5,7 +5,7 @@
 
 class Projectile : public Entity {
 public:
-    Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false);
+    Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false, int damageBoost = 0);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -35,6 +35,8 @@ private:
     const ProjectileData _data;
 
     int _animationTime = 0;
+
+    int _damageBoost = 0;
 };
 
 #endif 

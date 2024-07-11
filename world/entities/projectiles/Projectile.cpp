@@ -3,8 +3,8 @@
 
 constexpr long long LIFETIME = 5000LL;
 
-Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer) :
-    Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data),
+Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, int damageBoost) :
+    Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data), _damageBoost(damageBoost),
     _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer) {
 
     sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
@@ -47,7 +47,7 @@ void Projectile::update() {
                 && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
                 && entity->getEntityType() != _parent->getEntityType()) {
                 if (entity->getHitBox().intersects(_hitBox)) {
-                    entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+                    entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
                     _isActive = false;
                     return;
                 }
@@ -59,7 +59,7 @@ void Projectile::update() {
                 && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
                 && entity->getEntityType() != _parent->getEntityType()) {
                 if (entity->getHitBox().intersects(_hitBox)) {
-                    entity->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+                    entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
                     _isActive = false;
                     return;
                 }

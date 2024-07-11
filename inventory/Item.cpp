@@ -50,7 +50,7 @@ const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6,
 
 const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large handgun",
-    EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(20, 6), true, 2000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 6), true, 2000, true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455, "revolver");
         return false;
@@ -65,7 +65,7 @@ const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
-    EQUIPMENT_TYPE::TOOL, 10, 0, 0, sf::Vector2f(30, 0), true, 200000, false,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 200000, false,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD, "slip");
         return false;
@@ -122,7 +122,7 @@ const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::In
 
 const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
-    EQUIPMENT_TYPE::TOOL, 6, 0, 0, sf::Vector2f(20, 3), true, 15000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 15000, true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_RIFLE_ROUND.baseVelocity, parent, DATA_RIFLE_ROUND, "ar");
         return false;
@@ -136,18 +136,18 @@ const Item Item::PENNY(20, "Penny", sf::IntRect(3, 10, 1, 1), true, 1000000000, 
 
 const Item Item::LIGHT_LASER_CHARGE(21, "Light Laser Charge", sf::IntRect(43, 3, 1, 1), true, 9999, false,
     "Ammo for a laser pistol", 
-    EQUIPMENT_TYPE::AMMO, 12, 0, 0, sf::Vector2f(), false, 150
+    EQUIPMENT_TYPE::AMMO, 8, 0, 0, sf::Vector2f(), false, 150
 );
 
 const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 12, 0, 0, sf::Vector2f(), false
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true);
 
 const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
-    EQUIPMENT_TYPE::TOOL, 12, 0, 0, sf::Vector2f(14, 4), true, 7000, true,
+    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 7000, true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_PROJECTILE_LIGHT_LASER_CHARGE.baseVelocity, parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -167,7 +167,7 @@ const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.get
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
     "It's a blow torch, but it\nseems like something's broken...",
-    EQUIPMENT_TYPE::TOOL, 3, 0, 0, sf::Vector2f(12, 12), true, 10000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(12, 12), true, 10000, true,
     [](Entity* parent) {
         fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "blowtorch");
         return false;
@@ -360,6 +360,15 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
     }
 );
 
+const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+    "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, true,
+    [](Entity* parent) {
+        fireTargetedProjectile(DATA_PROJECTILE_LIGHT_LASER_CHARGE.baseVelocity, parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
+        return false;
+    }, 20, true, 225, 1200
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 
@@ -399,7 +408,7 @@ void Item::fireTargetedProjectile(const float velocity, Entity* parent, const Pr
         float angle = (float)((std::atan2(y, x)));
 
         std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-            spawnPos, parent, angle, velocity, projData
+            spawnPos, parent, angle, velocity, projData, false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage()
         ));
         proj->loadSprite(parent->getWorld()->getSpriteSheet());
         proj->setWorld(parent->getWorld());
