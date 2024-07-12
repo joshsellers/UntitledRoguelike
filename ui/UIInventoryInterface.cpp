@@ -161,7 +161,8 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_headerBg);
     surface.draw(_text);
 
-    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0)) {
+    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0
+        && _gamepadUnfilteredSelectedItemIndex < (int)_source.getCurrentSize())) {
         const Item* item = Item::ITEMS[
             _source.getItemIdAt(
                 (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?

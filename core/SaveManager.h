@@ -543,7 +543,8 @@ private:
                 entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
                 entity->setWorld(_world);
-                _world->addEntity(entity);
+                // not deferring here solves a problem but also scares me a little check for bugs
+                _world->addEntity(entity, false);
             }
         }
     }
