@@ -48,8 +48,12 @@ void Projectile::update() {
                 && entity->getEntityType() != _parent->getEntityType()) {
                 if (entity->getHitBox().intersects(_hitBox)) {
                     entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
-                    _isActive = false;
-                    return;
+                    _entitiesPassedThrough++;
+                    if (_entitiesPassedThrough >= passThroughCount) {
+                        _isActive = false;
+                        return;
+                    }
+                    break;
                 }
             }
         }
@@ -60,8 +64,12 @@ void Projectile::update() {
                 && entity->getEntityType() != _parent->getEntityType()) {
                 if (entity->getHitBox().intersects(_hitBox)) {
                     entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
-                    _isActive = false;
-                    return;
+                    _entitiesPassedThrough++;
+                    if (_entitiesPassedThrough >= passThroughCount) {
+                        _isActive = false;
+                        return;
+                    }
+                    break;
                 }
             }
         }

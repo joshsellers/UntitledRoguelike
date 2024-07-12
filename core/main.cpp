@@ -6,6 +6,7 @@
 #include <fstream>
 #include "Tutorial.h"
 #include "ShaderManager.h"
+#include "InputBindings.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -68,8 +69,8 @@ void loadSettings() {
 
 int main() {
     MessageManager::start();
+    InputBindingManager::init();
     SoundManager::loadSounds();
-
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
 

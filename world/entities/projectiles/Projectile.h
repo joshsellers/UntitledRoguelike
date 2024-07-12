@@ -16,6 +16,8 @@ public:
 
     bool onlyDamagePlayer = false;
 
+    int passThroughCount = 1;
+
 private:
     Entity* _parent;
 
@@ -37,6 +39,8 @@ private:
     int _animationTime = 0;
 
     int _damageBoost = 0;
+
+    int _entitiesPassedThrough = 0;
 };
 
 #endif 

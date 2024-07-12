@@ -52,7 +52,7 @@ const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULL
     "A large handgun",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 6), true, 2000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_B455.baseVelocity, parent, DATA_B455, "revolver");
+        fireTargetedProjectile(parent, DATA_B455, "revolver");
         return false;
     }, 8, false, 0, 1000
 );
@@ -67,7 +67,7 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
     "Don't vape, kids",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 200000, false,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_POD.baseVelocity, parent, DATA_POD, "slip");
+        fireTargetedProjectile(parent, DATA_POD, "slip");
         return false;
     }, 1, false, 0, 3500
 );
@@ -124,7 +124,7 @@ const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), fa
     "Big scary shoots fast",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 15000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_RIFLE_ROUND.baseVelocity, parent, DATA_RIFLE_ROUND, "ar");
+        fireTargetedProjectile(parent, DATA_RIFLE_ROUND, "ar");
         return false;
     }, 30, true, 150, 2000
 );
@@ -149,7 +149,7 @@ const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), fals
     "Pew Pew",
     EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 7000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_PROJECTILE_LIGHT_LASER_CHARGE.baseVelocity, parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
+        fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
     }, 12, false, 0, 200
 );
@@ -169,7 +169,7 @@ const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, P
     "It's a blow torch, but it\nseems like something's broken...",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(12, 12), true, 10000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_PROJECTILE_PROPANE.baseVelocity, parent, DATA_PROJECTILE_PROPANE, "blowtorch");
+        fireTargetedProjectile(parent, DATA_PROJECTILE_PROPANE, "blowtorch");
         return false;
     }, 750, true, 20, 2750
 );
@@ -364,9 +364,30 @@ const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIG
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, true,
     [](Entity* parent) {
-        fireTargetedProjectile(DATA_PROJECTILE_LIGHT_LASER_CHARGE.baseVelocity, parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
+        fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
     }, 20, true, 225, 1200
+);
+
+const Item Item::RAILGUN_DART(49, "Railgun Dart", sf::IntRect(68, 3, 1, 1), true, 9999, false,
+    "Warning: warm to touch after use",
+    EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10
+);
+
+const Item Item::_PROJECTILE_RAILGUN_DART(50, "_PROJECTILE_RAILGUN_DART", sf::IntRect(68, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGUN_DART.getId(), 15, sf::IntRect(8, 8, 8, 8), true, true);
+
+const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
+    "Harness the power of electromagnets\nto solve your problems",
+    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, true,
+    [](Entity* parent) {
+        constexpr int railgunPassThroughCount = 5;
+        fireTargetedProjectile(parent, DATA_PROJECTILE_RAILGUN_DART, "railgun", railgunPassThroughCount);
+        return false;
+    }, 1, true, 0, 500
 );
 
 std::vector<const Item*> Item::ITEMS;
@@ -396,7 +417,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     ITEMS.push_back(this);
 }
 
-void Item::fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName) {
+void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
     const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
     if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {
         sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
@@ -408,8 +429,9 @@ void Item::fireTargetedProjectile(const float velocity, Entity* parent, const Pr
         float angle = (float)((std::atan2(y, x)));
 
         std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-            spawnPos, parent, angle, velocity, projData, false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage()
+            spawnPos, parent, angle, projData.baseVelocity, projData, false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage()
         ));
+        proj->passThroughCount = passThroughCount;
         proj->loadSprite(parent->getWorld()->getSpriteSheet());
         proj->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(proj);

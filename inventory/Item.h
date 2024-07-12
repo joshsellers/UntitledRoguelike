@@ -69,10 +69,14 @@ public:
     static const Item BROADSWORD;
     static const Item ENERGY_DRINK;
     static const Item AUTOLASER;
+    static const Item RAILGUN_DART;
+    static const Item _PROJECTILE_RAILGUN_DART;
+    static const ProjectileData DATA_PROJECTILE_RAILGUN_DART;
+    static const Item RAILGUN;
 
     static std::vector<const Item*> ITEMS;
 
-    static void fireTargetedProjectile(const float velocity, Entity* parent, const ProjectileData projData, std::string soundName = "NONE");
+    static void fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName = "NONE", int passThroughCount = 1);
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 
