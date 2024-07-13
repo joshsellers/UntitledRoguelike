@@ -19,6 +19,8 @@ float PLAYER_SCORE = 1.f;
 
 bool USING_MOUSE = true;
 
+bool MAJOR_RELEASE = true;
+
 #ifdef DBGBLD
 bool DEBUG_MODE = true;
 #endif

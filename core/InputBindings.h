@@ -18,6 +18,42 @@ public:
         TOGGLE_PAUSE
     };
 
+    GAMEPAD_BUTTON getGamepadBinding(BINDABLE_ACTION action) {
+        return GAMEPAD_BINDINGS[action];
+    }
+
+    sf::Keyboard::Key getKeyboardBinding(BINDABLE_ACTION action) {
+        return KEYBOARD_BINDINGS[action];
+    }
+
+    std::string getGamepadButtonName(GAMEPAD_BUTTON button) {
+        return GAMEPAD_BUTTON_NAMES[button];
+    }
+
+    std::string getKeyName(sf::Keyboard::Key key) {
+        return KEY_NAMES[key];
+    }
+
+    std::string getActionName(BINDABLE_ACTION action) {
+        return ACTION_NAMES[action];
+    }
+
+    static void init() {
+        for (int i = 0; i <= 100; i++) {
+            sf::Keyboard::Key key = (sf::Keyboard::Key)i;
+            KEY_NAMES[key] = getKeyNameFromKey(key);
+        }
+    }
+
+    void gamePadBindingSelected(BINDABLE_ACTION action, GAMEPAD_BUTTON button) {
+        GAMEPAD_BINDINGS[action] = button;
+    }
+
+    void keyboardBindingSelected(BINDABLE_ACTION action, sf::Keyboard::Key key) {
+        KEYBOARD_BINDINGS[action] = key;
+    }
+
+private:
     inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> GAMEPAD_BINDINGS = {
         {BINDABLE_ACTION::SPRINT, GAMEPAD_BUTTON::LEFT_BUMPER},
         {BINDABLE_ACTION::DODGE, GAMEPAD_BUTTON::A},
@@ -68,15 +104,7 @@ public:
 
     inline static std::map<sf::Keyboard::Key, std::string> KEY_NAMES;
 
-    static void init() {
-        for (int i = 0; i <= 100; i++) {
-            sf::Keyboard::Key key = (sf::Keyboard::Key)i;
-            KEY_NAMES[key] = getKeyName(key);
-        }
-    }
-
-private:
-    static const std::string getKeyName(const sf::Keyboard::Key key) {
+    static const std::string getKeyNameFromKey(const sf::Keyboard::Key key) {
         switch (key) {
             default:
             case sf::Keyboard::Unknown:
