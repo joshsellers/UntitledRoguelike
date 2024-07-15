@@ -22,24 +22,28 @@ public:
     UIButton(float x, float y, float width, float height, sf::String labelText,
         sf::Font font, UIButtonListener* listener, std::string code);
 
-    void update();
+    virtual void update();
     void draw(sf::RenderTexture& surface);
 
     void setLabelText(std::string labelText);
 
     void controllerButtonPressed(GAMEPAD_BUTTON button);
-    void controllerButtonReleased(GAMEPAD_BUTTON button);
+    virtual void controllerButtonReleased(GAMEPAD_BUTTON button);
 
     void mouseButtonPressed(const int mx, const int my, const int button);
-    void mouseButtonReleased(const int mx, const int my, const int button);
+    virtual void mouseButtonReleased(const int mx, const int my, const int button);
     void mouseMoved(const int mx, const int my);
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 
     bool pressWhenSelected = false;
+protected:
+    std::shared_ptr<sf::Texture> getHoverTexture();
+    std::shared_ptr<sf::Texture> getClickTexture();
 
-private:
+    sf::Vector2i getMousePos();
     bool _mouseDown = false;
+private:
     int _mx = 0, _my = 0;
 
     std::shared_ptr<sf::Texture> _hoverTexture =

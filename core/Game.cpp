@@ -11,6 +11,7 @@
 #include "Tutorial.h"
 #include "ShaderManager.h"
 #include "Versioning.h"
+#include "InputBindings.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1024,16 +1025,11 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     case sf::Keyboard::Equal:
         if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(0.5);
         break;
-    case sf::Keyboard::Escape:
-        togglePauseMenu();
-        break;
-    case sf::Keyboard::Tab:
-        toggleInventoryMenu();
-        break;
-    case sf::Keyboard::E:
-        toggleShopMenu();
-        break;
     }
+
+    if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) togglePauseMenu();
+    else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY)) toggleInventoryMenu();
+    else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) toggleShopMenu();
 
     _ui->keyReleased(key);
     _player->keyReleased(key);
@@ -1060,16 +1056,12 @@ void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
 }
 
 void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
-    switch (button) {
-        case GAMEPAD_BUTTON::START:
-            togglePauseMenu();
-            break;
-        case GAMEPAD_BUTTON::SELECT:
-            toggleInventoryMenu();
-            break;
-        case GAMEPAD_BUTTON::X:
-            toggleShopMenu();
-            break;
+    if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) {
+        togglePauseMenu();
+    } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY)) {
+        toggleInventoryMenu();
+    } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
+        toggleShopMenu();
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);

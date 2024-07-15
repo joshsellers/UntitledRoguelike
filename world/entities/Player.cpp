@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <iostream>
 #include "../World.h"
+#include "../../core/InputBindings.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -66,7 +67,8 @@ void Player::update() {
 
     bool isSprinting = false;
     if (hasSufficientStamina(SPRINT_STAMINA_COST) 
-        && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || GamePad::isButtonPressed(GAMEPAD_BUTTON::LEFT_BUMPER))
+        && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SPRINT))
+            || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SPRINT)))
         && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) || isInBoat()) {
         xa *= _sprintMultiplier;
         ya *= _sprintMultiplier;
@@ -83,7 +85,8 @@ void Player::update() {
     }
 
     if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
-        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || GamePad::isButtonPressed(GAMEPAD_BUTTON::A)) && _dodgeKeyReleased) {
+        && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
+            || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE))) && _dodgeKeyReleased) {
         _isDodging = true;
         _dodgeTimer++;
 
@@ -97,7 +100,9 @@ void Player::update() {
         _dodgeSpeedMultiplier = 1.f;
     }
 
-    _dodgeKeyReleased = !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !GamePad::isButtonPressed(GAMEPAD_BUTTON::A);
+    _dodgeKeyReleased = 
+        !sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
+        && !GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE));
 
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
 
@@ -582,7 +587,7 @@ void Player::keyPressed(sf::Keyboard::Key& key) {
 }
 
 void Player::keyReleased(sf::Keyboard::Key& key) {
-    if (key == sf::Keyboard::R) {
+    if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
         startReloadingWeapon();
     }
 
@@ -595,23 +600,11 @@ void Player::keyReleased(sf::Keyboard::Key& key) {
 }
 
 void Player::controllerButtonReleased(GAMEPAD_BUTTON button) {
-    switch (button) {
-        case GAMEPAD_BUTTON::X:
-            startReloadingWeapon();
-            break;
-        default:
-            break;
-    }
+    if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) startReloadingWeapon();
 }
 
 void Player::controllerButtonPressed(GAMEPAD_BUTTON button) {
-    switch (button) {
-        case GAMEPAD_BUTTON::RIGHT_TRIGGER:
-            if (!_isReloading) fireWeapon();
-            break;
-        default:
-            break;
-    }
+    if (!_isReloading && button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)) fireWeapon();
 }
 
 void Player::fireWeapon() {
@@ -627,7 +620,8 @@ void Player::fireWeapon() {
 
 void Player::fireAutomaticWeapon() {
     if (!_gamePaused && !_inventoryMenuIsOpen &&
-        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(GAMEPAD_BUTTON::RIGHT_TRIGGER)) && !_isReloading &&
+        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT))) 
+        && !_isReloading &&
         getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isAutomatic() &&

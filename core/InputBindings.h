@@ -18,23 +18,23 @@ public:
         TOGGLE_PAUSE
     };
 
-    GAMEPAD_BUTTON getGamepadBinding(BINDABLE_ACTION action) {
+    static GAMEPAD_BUTTON getGamepadBinding(BINDABLE_ACTION action) {
         return GAMEPAD_BINDINGS[action];
     }
 
-    sf::Keyboard::Key getKeyboardBinding(BINDABLE_ACTION action) {
+    static sf::Keyboard::Key getKeyboardBinding(BINDABLE_ACTION action) {
         return KEYBOARD_BINDINGS[action];
     }
 
-    std::string getGamepadButtonName(GAMEPAD_BUTTON button) {
+    static std::string getGamepadButtonName(GAMEPAD_BUTTON button) {
         return GAMEPAD_BUTTON_NAMES[button];
     }
 
-    std::string getKeyName(sf::Keyboard::Key key) {
+    static std::string getKeyName(sf::Keyboard::Key key) {
         return KEY_NAMES[key];
     }
 
-    std::string getActionName(BINDABLE_ACTION action) {
+    static std::string getActionName(BINDABLE_ACTION action) {
         return ACTION_NAMES[action];
     }
 
@@ -45,11 +45,11 @@ public:
         }
     }
 
-    void gamePadBindingSelected(BINDABLE_ACTION action, GAMEPAD_BUTTON button) {
+    static void gamePadBindingSelected(BINDABLE_ACTION action, GAMEPAD_BUTTON button) {
         GAMEPAD_BINDINGS[action] = button;
     }
 
-    void keyboardBindingSelected(BINDABLE_ACTION action, sf::Keyboard::Key key) {
+    static void keyboardBindingSelected(BINDABLE_ACTION action, sf::Keyboard::Key key) {
         KEYBOARD_BINDINGS[action] = key;
     }
 
