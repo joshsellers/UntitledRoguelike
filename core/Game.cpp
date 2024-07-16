@@ -12,6 +12,8 @@
 #include "ShaderManager.h"
 #include "Versioning.h"
 #include "InputBindings.h"
+#include "../ui/UIKeyboardBindingButton.h"
+#include "../ui/UIGamepadBindingButton.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -555,6 +557,12 @@ void Game::initUI() {
     backControlsMenuButton->setSelectionId(0);
     _controlsMenu->addElement(backControlsMenuButton);
 
+    std::shared_ptr<UIButton> bindingsMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        16.f, 5.f, 14.f, 3.f, "change bindings", _font, this, "bindings"
+    ));
+    bindingsMenuButton->setSelectionId(1);
+    _controlsMenu->addElement(bindingsMenuButton);
+
     std::shared_ptr<UILabel> controlsLabel = std::shared_ptr<UILabel>(new UILabel(
         "", 5.f, 11.f, 1.f, _font
     ));
@@ -589,10 +597,131 @@ void Game::initUI() {
     _controlsMenu->useGamepadConfiguration = true;
     _controlsMenu->defineSelectionGrid(
         {
-            {backControlsMenuButton->getSelectionId()}
+            {backControlsMenuButton->getSelectionId(), bindingsMenuButton->getSelectionId()}
         }
     );
     _ui->addMenu(_controlsMenu);
+
+
+    // Input bindings menu
+    std::shared_ptr<UIButton> backBindingsMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        5.f, 5.f, 9.f, 3.f, "back", _font, this, "back_bindings"
+    ));
+    backBindingsMenuButton->setSelectionId(0);
+    _inputBindingsMenu->addElement(backBindingsMenuButton);
+
+    std::shared_ptr<UILabel> keyboardLabel = std::shared_ptr<UILabel>(new UILabel(
+        "keyboard controls", 25.f, 6.f, 1.5f, _font
+    ));
+    _inputBindingsMenu->addElement(keyboardLabel);
+
+    std::shared_ptr<UILabel> gamepadLabel = std::shared_ptr<UILabel>(new UILabel(
+        "gamepad controls", 57.f, 6.f, 1.5f, _font
+    ));
+    _inputBindingsMenu->addElement(gamepadLabel);
+
+    // keyboard
+    std::shared_ptr<UIKeyboardBindingButton> sprintButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+    ));
+    sprintButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(sprintButtonKeyboard);
+
+    std::shared_ptr<UIKeyboardBindingButton> dodgeButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 18.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::DODGE
+    ));
+    dodgeButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(dodgeButtonKeyboard);
+
+    std::shared_ptr<UIKeyboardBindingButton> reloadButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 24.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::RELOAD
+    ));
+    reloadButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(reloadButtonKeyboard);
+
+    std::shared_ptr<UIKeyboardBindingButton> interactButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 30.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::INTERACT
+    ));
+    interactButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(interactButtonKeyboard);
+
+    std::shared_ptr<UIKeyboardBindingButton> inventoryButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 36.f, 20.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY
+    ));
+    inventoryButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(inventoryButtonKeyboard);
+
+    std::shared_ptr<UIKeyboardBindingButton> pauseButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 42.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE
+    ));
+    pauseButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(pauseButtonKeyboard);
+
+    // gamepad
+    std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+    ));
+    sprintButtonGamepad->setSelectionId(1);
+    _inputBindingsMenu->addElement(sprintButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> dodgeButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 18.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::DODGE
+    ));
+    dodgeButtonGamepad->setSelectionId(2);
+    _inputBindingsMenu->addElement(dodgeButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> reloadButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 24.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::RELOAD
+    ));
+    reloadButtonGamepad->setSelectionId(3);
+    _inputBindingsMenu->addElement(reloadButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> shootButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 30.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SHOOT
+    ));
+    shootButtonGamepad->setSelectionId(4);
+    _inputBindingsMenu->addElement(shootButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> interactButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 36.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::INTERACT
+    ));
+    interactButtonGamepad->setSelectionId(5);
+    _inputBindingsMenu->addElement(interactButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> inventoryButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 42.f, 20.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY
+    ));
+    inventoryButtonGamepad->setSelectionId(6);
+    _inputBindingsMenu->addElement(inventoryButtonGamepad);
+
+    std::shared_ptr<UIGamepadBindingButton> pauseButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 48.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE
+    ));
+    pauseButtonGamepad->setSelectionId(7);
+    _inputBindingsMenu->addElement(pauseButtonGamepad);
+
+
+    std::shared_ptr<UIButton> resetBindingsButton = std::shared_ptr<UIButton>(new UIButton(
+        38.f, 80.f, 14.f, 3.f, "rest to default", _font, this, "resetbindings"
+    ));
+    resetBindingsButton->setSelectionId(8);
+    _inputBindingsMenu->addElement(resetBindingsButton);
+
+    _inputBindingsMenu->useGamepadConfiguration = true;
+    _inputBindingsMenu->defineSelectionGrid(
+        {
+            {backBindingsMenuButton->getSelectionId()},
+            {sprintButtonGamepad->getSelectionId()},
+            {dodgeButtonGamepad->getSelectionId()},
+            {reloadButtonGamepad->getSelectionId()},
+            {shootButtonGamepad->getSelectionId()},
+            {interactButtonGamepad->getSelectionId()},
+            {inventoryButtonGamepad->getSelectionId()},
+            {pauseButtonGamepad->getSelectionId()},
+            {resetBindingsButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_inputBindingsMenu);
 }
 
 void Game::update() {
@@ -696,7 +825,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
     }
 
     if (!_hideUI) {
-        if (_gameStarted && _controlsMenu->isActive()) {
+        if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive())) {
             sf::RectangleShape controlsMenuBg;
             controlsMenuBg.setFillColor(sf::Color(0x444448FF));
             controlsMenuBg.setPosition(0, 0);
@@ -987,6 +1116,14 @@ void Game::buttonPressed(std::string buttonCode) {
 
         _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
+    } else if (buttonCode == "bindings") {
+        _controlsMenu->hide();
+        _inputBindingsMenu->show();
+    } else if (buttonCode == "back_bindings") {
+        _inputBindingsMenu->hide();
+        _controlsMenu->show();
+    } else if (buttonCode == "resetbindings") {
+        InputBindingManager::resetBindings();
     }
 }
 
@@ -1072,11 +1209,12 @@ void Game::togglePauseMenu() {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
-        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive()) {
+        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
         else if (_controlsMenu->isActive()) buttonPressed("back_controls");
+        else if (_inputBindingsMenu->isActive()) buttonPressed("back_bindings");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 

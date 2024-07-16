@@ -4,9 +4,14 @@ UIKeyboardBindingButton::UIKeyboardBindingButton(float x, float y, float width, 
     UIButton(x, y, width, height, "", font, nullptr, ""), _action(action) {
     _keyBinding = InputBindingManager::getKeyboardBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
+
+    _disableMouseMovementDeseletion = true;
 }
 
 void UIKeyboardBindingButton::update() {
+    _keyBinding = InputBindingManager::getKeyboardBinding(_action);
+    setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
+
     sf::FloatRect bounds = _sprite.getGlobalBounds();
     if (!_mouseDown && (bounds.contains(getMousePos().x, getMousePos().y)) && !_isSelected) {
         _sprite.setTexture(*getHoverTexture());
@@ -29,5 +34,6 @@ void UIKeyboardBindingButton::keyReleased(sf::Keyboard::Key& key) {
     if (_isSelected) {
         _keyBinding = key;
         InputBindingManager::keyboardBindingSelected(_action, _keyBinding);
+        setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
     }
 }

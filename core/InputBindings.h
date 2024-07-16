@@ -5,6 +5,11 @@
 #include <map>
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
+#include <fstream>
+#include <vector>
+#include "MessageManager.h"
+#include "Util.h"
+#include <filesystem>
 
 class InputBindingManager {
 public:
@@ -43,17 +48,137 @@ public:
             sf::Keyboard::Key key = (sf::Keyboard::Key)i;
             KEY_NAMES[key] = getKeyNameFromKey(key);
         }
+
+        loadKeyboardBindings();
+        loadGamepadBindings();
     }
 
     static void gamePadBindingSelected(BINDABLE_ACTION action, GAMEPAD_BUTTON button) {
         GAMEPAD_BINDINGS[action] = button;
+        saveBindings("gamepadbindings.config");
     }
 
     static void keyboardBindingSelected(BINDABLE_ACTION action, sf::Keyboard::Key key) {
         KEYBOARD_BINDINGS[action] = key;
+        saveBindings("keybindings.config");
+    }
+
+    static void resetBindings() {
+        KEYBOARD_BINDINGS = DEFAULT_KEYBOARD_BINDINGS;
+        GAMEPAD_BINDINGS = DEFAULT_GAMEPAD_BINDINGS;
+        saveBindings("gamepadbindings.config");
+        saveBindings("keybindings.config");
     }
 
 private:
+    static void loadKeyboardBindings() {
+        std::string localLowPath = getLocalLowPath() + "\\keybindings.config";
+        std::ifstream in(localLowPath);
+
+        if (!in.good()) {
+            MessageManager::displayMessage("Could not find keybindings.config", 5, DEBUG);
+            in.close();
+            return;
+        } else {
+            std::string line;
+            while (getline(in, line)) {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                bool foundAction = false;
+                for (auto& actionName : ACTION_NAMES) {
+                    if (actionName.second == parsedLine[0]) {
+                        foundAction = true;
+                        bool foundKey = false;
+                        for (auto& keyName : KEY_NAMES) {
+                            if (keyName.second == parsedLine[1]) {
+                                KEYBOARD_BINDINGS[actionName.first] = keyName.first;
+                                foundKey = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundKey) MessageManager::displayMessage("Could not find key named \"" + parsedLine[1] + "\"", 5, WARN);
+                        break;
+                    }
+                }
+
+                if (!foundAction) MessageManager::displayMessage("Could not find bindable action named \"" + parsedLine[0] + "\"", 5, WARN);
+            }
+        }
+
+        in.close();
+    }
+
+    static void loadGamepadBindings() {
+        std::string localLowPath = getLocalLowPath() + "\\gamepadbindings.config";
+        std::ifstream in(localLowPath);
+
+        if (!in.good()) {
+            MessageManager::displayMessage("Could not find gamepadbindings.config", 5, DEBUG);
+            in.close();
+            return;
+        } else {
+            std::string line;
+            while (getline(in, line)) {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                bool foundAction = false;
+                for (auto& actionName : ACTION_NAMES) {
+                    if (actionName.second == parsedLine[0]) {
+                        foundAction = true;
+                        bool foundButton = false;
+                        for (auto& buttonName : GAMEPAD_BUTTON_NAMES) {
+                            if (buttonName.second == parsedLine[1]) {
+                                GAMEPAD_BINDINGS[actionName.first] = buttonName.first;
+                                foundButton = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundButton) MessageManager::displayMessage("Could not find button named \"" + parsedLine[1] + "\"", 5, WARN);
+                        break;
+                    }
+                }
+
+                if (!foundAction) MessageManager::displayMessage("Could not find bindable action named \"" + parsedLine[0] + "\"", 5, WARN);
+            }
+        }
+
+        in.close();
+    }
+
+    static void saveBindings(std::string fileName) {
+        std::string localLowPath = getLocalLowPath();
+        if (localLowPath == "err") return;
+        if (!std::filesystem::is_directory(localLowPath + "\\")) {
+            std::filesystem::create_directory(localLowPath);
+        }
+
+        std::string path = localLowPath + "\\" + fileName;
+
+        try {
+            if (!std::filesystem::remove(path)) {
+                MessageManager::displayMessage("Could not replace " + fileName, 5, DEBUG);
+            }
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not replace " + fileName + ": " + (std::string)err.what(), 5, ERR);
+        }
+
+        try {
+            std::ofstream out(path);
+            if (fileName == "keybindings.config") {
+                for (auto& binding : KEYBOARD_BINDINGS) {
+                    out << getActionName(binding.first) << "=" << getKeyName(binding.second) << std::endl;
+                }
+            } else if (fileName == "gamepadbindings.config") {
+                for (auto& binding : GAMEPAD_BINDINGS) {
+                    out << getActionName(binding.first) << "=" << getGamepadButtonName(binding.second) << std::endl;
+                }
+            }
+            out.close();
+        } catch (std::exception ex) {
+            MessageManager::displayMessage("Error writing to " + path + ": " + (std::string)ex.what(), 5, ERR);
+        }
+    }
+
     inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> GAMEPAD_BINDINGS = {
         {BINDABLE_ACTION::SPRINT, GAMEPAD_BUTTON::LEFT_BUMPER},
         {BINDABLE_ACTION::DODGE, GAMEPAD_BUTTON::A},
@@ -63,6 +188,7 @@ private:
         {BINDABLE_ACTION::TOGGLE_INVENTORY, GAMEPAD_BUTTON::SELECT},
         {BINDABLE_ACTION::TOGGLE_PAUSE, GAMEPAD_BUTTON::START}
     };
+    inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> DEFAULT_GAMEPAD_BINDINGS = GAMEPAD_BINDINGS;
 
     inline static std::map<BINDABLE_ACTION, sf::Keyboard::Key> KEYBOARD_BINDINGS = {
         {BINDABLE_ACTION::SPRINT, sf::Keyboard::Key::LShift},
@@ -72,6 +198,7 @@ private:
         {BINDABLE_ACTION::TOGGLE_INVENTORY, sf::Keyboard::Key::Tab},
         {BINDABLE_ACTION::TOGGLE_PAUSE, sf::Keyboard::Key::Escape}
     };
+    inline static std::map<BINDABLE_ACTION, sf::Keyboard::Key> DEFAULT_KEYBOARD_BINDINGS = KEYBOARD_BINDINGS;
 
     inline static std::map<BINDABLE_ACTION, std::string> ACTION_NAMES = {
         {BINDABLE_ACTION::SPRINT, "sprint"},

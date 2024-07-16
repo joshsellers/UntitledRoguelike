@@ -61,6 +61,7 @@ protected:
 
     bool _isSelected = false;
     int _selectionId;
+    bool _disableMouseMovementDeseletion = false;
 
     bool _drawSprite = true;
     bool _drawText = true;

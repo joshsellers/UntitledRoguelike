@@ -42,8 +42,8 @@ void Orbiter::update() {
     _sprite.setPosition(getPosition());
 
     if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::CONTACT) {
-        _hitBox.left = getPosition().x - _hitBox.width / 2;;
-        _hitBox.top = getPosition().y - _hitBox.width / 2;;
+        _hitBox.left = getPosition().x - _hitBox.width / 2;
+        _hitBox.top = getPosition().y - _hitBox.width / 2;
     }
 }
 
