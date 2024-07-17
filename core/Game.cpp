@@ -702,7 +702,7 @@ void Game::initUI() {
 
 
     std::shared_ptr<UIButton> resetBindingsButton = std::shared_ptr<UIButton>(new UIButton(
-        38.f, 80.f, 14.f, 3.f, "rest to default", _font, this, "resetbindings"
+        38.f, 80.f, 14.f, 3.f, "reset to default", _font, this, "resetbindings"
     ));
     resetBindingsButton->setSelectionId(8);
     _inputBindingsMenu->addElement(resetBindingsButton);

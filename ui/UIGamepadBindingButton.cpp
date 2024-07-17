@@ -6,7 +6,7 @@ UIGamepadBindingButton::UIGamepadBindingButton(float x, float y, float width, fl
     _gamepadBinding = InputBindingManager::getGamepadBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getGamepadButtonName(_gamepadBinding));
 
-    _disableMouseMovementDeseletion = true;
+    _disableMouseMovementDeselection = true;
 }
 
 void UIGamepadBindingButton::update() {

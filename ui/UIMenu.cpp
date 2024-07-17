@@ -104,7 +104,7 @@ void UIMenu::mouseMoved(const int mx, const int my) {
     for (auto& element : _elements) {
         if (element->isActive()) {
             element->mouseMoved(mx, my);
-            if (!element->_disableMouseMovementDeseletion) element->_isSelected = false;
+            if (!element->_disableMouseMovementDeselection) element->_isSelected = false;
         }
     }
 }

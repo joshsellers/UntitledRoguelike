@@ -5,7 +5,7 @@ UIKeyboardBindingButton::UIKeyboardBindingButton(float x, float y, float width, 
     _keyBinding = InputBindingManager::getKeyboardBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
 
-    _disableMouseMovementDeseletion = true;
+    _disableMouseMovementDeselection = true;
 }
 
 void UIKeyboardBindingButton::update() {
