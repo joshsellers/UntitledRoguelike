@@ -476,7 +476,7 @@ void Game::initUI() {
     _worldNameField = std::shared_ptr<UITextField>(new UITextField(
         "world name:", 49.5, 37, _font
     ));
-    _worldNameField->setDefaultText("My World");
+    _worldNameField->setDefaultText("New World");
     _worldNameField->setSelectionId(0);
     _newGameMenu->addElement(_worldNameField);
 

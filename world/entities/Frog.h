@@ -17,6 +17,8 @@ protected:
 private:
 
     boost::random::mt19937 _gen = boost::random::mt19937();
+
+    long long _lastTimePlayerCameTooClose = 0;
 };
 
 #endif

@@ -558,6 +558,11 @@ void World::buildChunk(sf::Vector2f pos) {
 
     _mutex.unlock();
 
+    if (!disablePropGeneration) {
+        std::thread scatterSpawnThread(&World::generateChunkScatters, this, chunk);
+        scatterSpawnThread.detach();
+    }
+
     for (int i = 0; i < _loadingChunks.size(); i++) {
         sf::Vector2i loadingChunk = _loadingChunks.at(i);
         if (loadingChunk.x == (int)pos.x && loadingChunk.y == (int)pos.y) {
@@ -707,7 +712,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     const siv::PerlinNoise perlin{ (siv::PerlinNoise::seed_type)_seed };
 
     sf::Image image;
-    image.create(CHUNK_SIZE, CHUNK_SIZE, sf::Color::White);
+    image.create(CHUNK_SIZE, CHUNK_SIZE);
 
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
@@ -875,7 +880,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     chunk.terrainData = data;
 
-    if (!disablePropGeneration) generateChunkScatters(chunk);
+    //if (!disablePropGeneration) generateChunkScatters(chunk);
 
     if (BENCHMARK_TERRAIN_AND_BIOME_GEN) {
         endTime = currentTimeMillis();

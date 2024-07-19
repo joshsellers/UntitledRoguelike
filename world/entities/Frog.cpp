@@ -1,5 +1,6 @@
 #include "Frog.h"
 #include "../../core/Util.h"
+#include "../World.h"
 
 Frog::Frog(sf::Vector2f pos) : Entity(FROG, pos, 1, 16, 16, false) {
     _gen.seed(currentTimeNano());
@@ -28,7 +29,17 @@ void Frog::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE;
 
-    wander(feetPos, _gen, 500);
+    constexpr float maxPlayerDistSquared = 40 * 40;
+    const sf::Vector2f playerPos = getWorld()->getPlayer()->getPosition();
+    int movementChance = 500;
+    float playerDistSquared = std::pow(playerPos.x - getPosition().x, 2) + std::pow(playerPos.y - getPosition().y, 2);
+    if (playerDistSquared < maxPlayerDistSquared && currentTimeMillis() - _lastTimePlayerCameTooClose > 1000LL) {
+        _wanderTargetPos = feetPos;
+        movementChance = 0;
+        _lastTimePlayerCameTooClose = currentTimeMillis();
+    }
+
+    wander(feetPos, _gen, movementChance, 32);
 
     _sprite.setPosition(getPosition());
     _hitBox.left = getPosition().x + _hitBoxXOffset;

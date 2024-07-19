@@ -236,14 +236,14 @@ const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly
     }
 }
 
-void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance) {
+void Entity::wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance, int maxDistance) {
     if (_world != nullptr) {
         float xa = 0, ya = 0;
 
         boost::random::uniform_int_distribution<> shouldMove(0, movementChance);
         if (_wanderTargetPos == feetPos && shouldMove(generator) == 0 ||
             _world->getTerrainDataAt(_wanderTargetPos) == TERRAIN_TYPE::WATER) {
-            const int maxDist = _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER ? 200 : 100;
+            const int maxDist = _world->getTerrainDataAt(feetPos) == TERRAIN_TYPE::WATER ? 200 : maxDistance;
             boost::random::uniform_int_distribution<> xDist(-maxDist, maxDist);
             boost::random::uniform_int_distribution<> yDist(-maxDist, maxDist);
             _wanderTargetPos.x = feetPos.x + xDist(generator);

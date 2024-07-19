@@ -151,7 +151,7 @@ protected:
     bool _isSwimming = false;
     
     void hoardMove(float xa, float ya, bool sameTypeOnly = false, float minDist = 32.f, float visionRange = 100.f);
-    void wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance = 100);
+    void wander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance = 100, int maxDistance = 100);
     void swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator, int movementChance = 0);
     sf::Vector2f _wanderTargetPos;
 
