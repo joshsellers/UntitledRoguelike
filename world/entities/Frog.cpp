@@ -32,7 +32,7 @@ void Frog::update() {
     constexpr float maxPlayerDistSquared = 40 * 40;
     const sf::Vector2f playerPos = getWorld()->getPlayer()->getPosition();
     int movementChance = 500;
-    float playerDistSquared = std::pow(playerPos.x - getPosition().x, 2) + std::pow(playerPos.y - getPosition().y, 2);
+    float playerDistSquared = std::pow((playerPos.x + PLAYER_WIDTH / 2) - getPosition().x, 2) + std::pow((playerPos.y + PLAYER_HEIGHT / 2) - getPosition().y, 2);
     if (playerDistSquared < maxPlayerDistSquared && currentTimeMillis() - _lastTimePlayerCameTooClose > 1000LL) {
         _wanderTargetPos = feetPos;
         movementChance = 0;

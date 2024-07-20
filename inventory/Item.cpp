@@ -390,6 +390,26 @@ const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN
     }, 1, true, 0, 500
 );
 
+const Item Item::GASOLINE(52, "Gasoline", sf::IntRect(75, 3, 1, 1), true, 99999, false,
+    "Liquid dinosaur bones\nFuel for chainsaw",
+    EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, MAJOR_RELEASE
+);
+
+const Item Item::_PROJECITLE_CHAINSAW(53, "_PROJECTILE_CHAINSAW", sf::IntRect(75, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 2, 0, 0, sf::Vector2f(), false
+);
+const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.getId(), 0, sf::IntRect(0, 0, 16, 16), false, true, 100);
+
+const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
+    "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(25, 0), true, 74999, MAJOR_RELEASE,
+    [](Entity* parent) {
+        fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW);
+        return false;
+    }, 9999, true, 75, 5000
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 

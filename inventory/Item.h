@@ -73,6 +73,10 @@ public:
     static const Item _PROJECTILE_RAILGUN_DART;
     static const ProjectileData DATA_PROJECTILE_RAILGUN_DART;
     static const Item RAILGUN;
+    static const Item GASOLINE;
+    static const Item _PROJECITLE_CHAINSAW;
+    static const ProjectileData DATA_PROJECTILE_CHAINSAW;
+    static const Item CHAINSAW;
 
     static std::vector<const Item*> ITEMS;
 

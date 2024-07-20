@@ -39,7 +39,7 @@ void ShopKeep::initInventory() {
         int itemId = randomInt(0, Item::ITEMS.size() - 1);
         if (itemId == Item::BULLET_455.getId() || itemId == Item::RIFLE_ROUND.getId()
             || itemId == Item::LIGHT_LASER_CHARGE.getId() || itemId == Item::PROPANE.getId()
-            || itemId == Item::POD.getId()) {
+            || itemId == Item::POD.getId() || itemId == Item::GASOLINE.getId()) {
             itemAmount += 100;
             itemAmount *= 5;
         }

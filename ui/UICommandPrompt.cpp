@@ -27,19 +27,30 @@ void UICommandPrompt::update() {
 }
 
 void UICommandPrompt::draw(sf::RenderTexture& surface) {
-    float width = _text.getGlobalBounds().width;
-    float height = _text.getGlobalBounds().height;
+    sf::Text displayText = _text;
+    std::string textString = displayText.getString();
+    std::string displayTextString;
+    for (int i = 0; i < textString.length(); i++) {
+        displayTextString += textString.at(i);
+        if (textString.at(i) == ';') {
+            displayTextString += '\n';
+        }
+    }
+    displayText.setString(displayTextString);
+
+    float width = displayText.getGlobalBounds().width;
+    float height = displayText.getGlobalBounds().height;
 
     float x = getRelativeWidth(50.f) - width / 2;
-    float y = getRelativeHeight(88.f);
-    _text.setPosition(sf::Vector2f(x, y));
+    float y = getRelativeHeight(88.f) - height / 2;
+    displayText.setPosition(sf::Vector2f(x, y));
 
     float padding = getRelativeWidth(1.f);
     _bg.setPosition(sf::Vector2f(x - padding, y - padding));
     _bg.setSize(sf::Vector2f(width + padding * 2, height + padding * 2));
 
     surface.draw(_bg);
-    if (_unlocked) surface.draw(_text);
+    if (_unlocked) surface.draw(displayText);
     else {
         _hiddenText.setPosition(_text.getPosition());
         _hiddenText.setString(_text.getString());
@@ -102,7 +113,15 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
         if (userInput != "") _history.push_back(userInput);
         _historyIndex = _history.size();
         if (_unlocked) {
-            MessageManager::displayMessage(processCommand(userInput), 5);
+            const std::vector<std::string> chainedCommands = splitString(userInput, ";");
+            if (chainedCommands.size() > 1) {
+                for (auto& command : chainedCommands) {
+                    if (command == "") continue;
+                    MessageManager::displayMessage(processCommand(command), 5);
+                }
+            } else {
+                MessageManager::displayMessage(processCommand(userInput), 5);
+            }
         } else if (processCommand("hash:" + userInput) == UNLOCK_HASH) {
             unlock();
             MessageManager::displayMessage("Command prompt has been unlocked", 5);

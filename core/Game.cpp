@@ -219,12 +219,6 @@ void Game::initUI() {
     _ui->addMenu(_HUDMenu);
 
 
-    // Command prompt menu
-    _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
-    _commandMenu->addElement(_cmdPrompt);
-    _ui->addMenu(_commandMenu);
-
-
     // Inventory menu
     std::shared_ptr<UIInventoryInterface> inventoryInterface = std::shared_ptr<UIInventoryInterface>(new UIInventoryInterface(
         _player->getInventory(), _font, _spriteSheet
@@ -722,6 +716,12 @@ void Game::initUI() {
         }
     );
     _ui->addMenu(_inputBindingsMenu);
+
+
+    // Command prompt menu
+    _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
+    _commandMenu->addElement(_cmdPrompt);
+    _ui->addMenu(_commandMenu);
 }
 
 void Game::update() {
