@@ -123,6 +123,8 @@ void Player::update() {
     if (!isUsingStamina()) {
         _stamina = std::min(_stamina + getStaminaRefreshRate(), getMaxStamina());
     }
+
+    blink();
 }
 
 void Player::draw(sf::RenderTexture& surface) {
@@ -154,8 +156,8 @@ void Player::draw(sf::RenderTexture& surface) {
     int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
     int yOffset = isMoving() || (isSwimming() && !isInBoat()) ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
     _sprite.setTextureRect(sf::IntRect(
-        isDodging() && isMoving() ? xOffset : 16 * _facingDir, 
-        isDodging() && isMoving() ? 128 : 0 + yOffset, 
+        isDodging() && isMoving() ? xOffset : 16 * _facingDir, (_isBlinking ? 592 : 0) + 
+        (isDodging() && isMoving() ? 128 : 0 + yOffset), 
         16, 
         terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
     );
@@ -407,6 +409,17 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
     }
 
     _meleeAttackDelayCounter++;
+}
+
+void Player::blink() {
+    const long long blinkDuration = 100LL;
+    const int blinkChance = 600;
+    if (!_isBlinking) {
+        _isBlinking = randomInt(0, blinkChance) == 0;
+        if (_isBlinking) _blinkStartTime = currentTimeMillis();
+    } else if (currentTimeMillis() - _blinkStartTime > blinkDuration) _isBlinking = false;
+
+    if (isDodging() && isMoving()) _isBlinking = false;
 }
 
 void Player::move(float xa, float ya) {

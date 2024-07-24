@@ -144,6 +144,10 @@ private:
     bool _horizontalMovementKeyIsPressed = false;
     long long _lastLeftOrRightPressTime = 0;
     long long _lastUpOrDownPressTime = 0;
+
+    void blink();
+    bool _isBlinking = false;
+    long long _blinkStartTime = 0LL;
 };
 
 #endif
