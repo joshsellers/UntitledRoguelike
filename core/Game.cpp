@@ -901,7 +901,7 @@ void Game::buttonPressed(std::string buttonCode) {
                 }
             } else seed = std::stoul(seedText);
         } catch (std::exception ex) {
-            MessageManager::displayMessage(ex.what(), 10, ERR);
+            MessageManager::displayMessage((std::string)ex.what() + "\nseedText was: \"" + seedText + "\"", 10, ERR);
             seed = currentTimeMillis();
         }
 

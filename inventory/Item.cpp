@@ -261,7 +261,7 @@ const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), 
 
 const Item Item::WOOD_BOAT(36, "Boat", sf::IntRect(12, 31, 1, 1), false, 0, false, 
     "Helps you survive in the sea\nEquip it while in the water",
-    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 45000
+    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 9999
 );
 
 const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10, true,

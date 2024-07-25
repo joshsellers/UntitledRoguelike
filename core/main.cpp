@@ -7,6 +7,7 @@
 #include "Tutorial.h"
 #include "ShaderManager.h"
 #include "InputBindings.h"
+#include "Globals.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")

@@ -27,7 +27,9 @@ bool ShopManager::buy(int itemId, int amount) {
         _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, -amount);
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), price);
 
-        if (!Tutorial::isCompleted() && itemId == Item::AXE.getId()) Tutorial::completeStep(TUTORIAL_STEP::BUY_AXE);
+        if (!Tutorial::isCompleted() 
+            && Item::ITEMS[itemId]->getEquipmentType() == EQUIPMENT_TYPE::TOOL
+            && !Item::ITEMS[itemId]->isGun()) Tutorial::completeStep(TUTORIAL_STEP::BUY_AXE);
 
         return true;
     } else {
