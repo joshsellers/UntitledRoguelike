@@ -47,23 +47,49 @@ void Player::update() {
     }
 
     float xa = 0, ya = 0;
-    bool upOrDownIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-    bool leftOrRightIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-    bool verticalPressedLast = _lastUpOrDownPressTime > _lastLeftOrRightPressTime;
 
-    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis < 0)) {
-        ya = -getBaseSpeed();
-        _movingDir = UP;
-    } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis > 0)) {
-        ya = getBaseSpeed();
-        _movingDir = DOWN;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (std::abs(yAxis) < std::abs(xAxis) && xAxis < 0)) {
-        xa = -getBaseSpeed();
-        _movingDir = LEFT;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || (std::abs(yAxis) < std::abs(xAxis) && xAxis > 0)) {
-        xa = getBaseSpeed();
-        _movingDir = RIGHT;
+    if (DIAGONAL_MOVEMENT_ENABLED) {
+        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (yAxis < -20.f)) {
+            ya = -getBaseSpeed();
+            _movingDir = UP;
+        } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (yAxis > 20.f)) {
+            ya = getBaseSpeed();
+            _movingDir = DOWN;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (xAxis < -20.f)) {
+            xa = -getBaseSpeed();
+            _movingDir = LEFT;
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || (xAxis > 20.f)) {
+            xa = getBaseSpeed();
+            _movingDir = RIGHT;
+        }
+    } else {
+        bool upOrDownIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        bool leftOrRightIsPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+        bool verticalPressedLast = _lastUpOrDownPressTime > _lastLeftOrRightPressTime;
+
+        if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis < 0)) {
+            ya = -getBaseSpeed();
+            _movingDir = UP;
+        } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S) && (!leftOrRightIsPressed || verticalPressedLast)) || (std::abs(yAxis) > std::abs(xAxis) && yAxis > 0)) {
+            ya = getBaseSpeed();
+            _movingDir = DOWN;
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (std::abs(yAxis) < std::abs(xAxis) && xAxis < 0)) {
+            xa = -getBaseSpeed();
+            _movingDir = LEFT;
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || (std::abs(yAxis) < std::abs(xAxis) && xAxis > 0)) {
+            xa = getBaseSpeed();
+            _movingDir = RIGHT;
+        }
     }
+
+    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
+        constexpr float diagonalMultiplier = 0.707107; // 0.785398
+        xa *= diagonalMultiplier;
+        ya *= diagonalMultiplier;
+    }
+    const float velX = xa, velY = ya;
 
     bool isSprinting = false;
     if (hasSufficientStamina(SPRINT_STAMINA_COST) 
@@ -104,7 +130,19 @@ void Player::update() {
         !sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
         && !GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE));
 
+    float oldX = getPosition().x, oldY = getPosition().y;
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
+    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
+        if (std::abs(oldX - getPosition().x) > std::abs(oldY - getPosition().y)) {
+            float xRounded = std::round(_pos.x);
+            float yRounded = std::round(_pos.y + (xRounded - _pos.x) * velY / velX);
+            _pos.y = yRounded;
+        } else if (std::abs(oldX - getPosition().x) <= std::abs(oldY - getPosition().y)) {
+            float yRounded = std::round(_pos.y);
+            float xRounded = std::round(_pos.x + (yRounded - _pos.y) * velX / velY);
+            _pos.x = xRounded;
+        }
+    }
 
     _sprite.setPosition(getPosition()); 
     if (isInBoat()) _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
@@ -423,14 +461,20 @@ void Player::blink() {
 }
 
 void Player::move(float xa, float ya) {
+    bool collidingX = false, collidingY = false;
+
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
 
         for (auto& entity : getWorld()->getEntities()) {
             if (entity->isActive() && entity->hasColliders()) {
                 for (auto& collider : entity->getColliders()) {
-                    if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) return;
+                    if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingX = true;
+                    if (sf::FloatRect(_pos.x, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingY = true;
+                    if (collidingX && collidingY) return;
+                    else if (collidingX || collidingY) break;
                 }
+                if (collidingX || collidingY) break;
             }
         }
 
@@ -447,8 +491,9 @@ void Player::move(float xa, float ya) {
         _isActuallyMoving = false;
     }
 
-    _pos.x += xa;
-    _pos.y += ya;
+    if (!collidingX) _pos.x += xa;
+    if (!collidingY) _pos.y += ya;
+    // these are never used anywhere else 
     _velocity.x = xa;
     _velocity.y = ya;
 }

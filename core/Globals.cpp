@@ -19,7 +19,9 @@ float PLAYER_SCORE = 1.f;
 
 bool USING_MOUSE = true;
 
-bool MAJOR_RELEASE = true;
+bool DIAGONAL_MOVEMENT_ENABLED = false;
+
+bool UPCOMING_FEATURES_ENABLED = true;
 
 #ifdef DBGBLD
 bool DEBUG_MODE = true;

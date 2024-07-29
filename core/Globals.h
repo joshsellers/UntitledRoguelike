@@ -21,7 +21,9 @@ extern float PLAYER_SCORE;
 
 extern bool USING_MOUSE;
 
-extern bool MAJOR_RELEASE;
+extern bool DIAGONAL_MOVEMENT_ENABLED;
+
+extern bool UPCOMING_FEATURES_ENABLED;
 
 extern bool DEBUG_MODE;
 

@@ -94,6 +94,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     SaveManager::init(&_world, &_shopManager);
 
     initUI();
+
+    displayStartupMessages();
 }
 
 void Game::initUI() {
@@ -1328,4 +1330,12 @@ void Game::onPlayerDeath() {
 
 void Game::textEntered(sf::Uint32 character) {
     _ui->textEntered(character);
+}
+
+void Game::displayStartupMessages() {
+    if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
+        MessageManager::displayMessage(
+            "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
+            10);
+    }
 }

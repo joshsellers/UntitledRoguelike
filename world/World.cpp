@@ -810,7 +810,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
-            if (!MAJOR_RELEASE) {
+            if (!UPCOMING_FEATURES_ENABLED) {
                 forest = false;
                 flesh = false;
             }

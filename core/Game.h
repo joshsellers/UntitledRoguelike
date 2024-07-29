@@ -122,6 +122,8 @@ private:
 	void togglePauseMenu();
 	void toggleInventoryMenu();
 	void toggleShopMenu();
+
+	void displayStartupMessages();
 };
 
 #endif 

@@ -557,6 +557,15 @@ private:
 
                 return "Deactivated " + std::to_string(count) + " entities";
             })
+        },
+
+        {
+            "tdm",
+            Command("Toggle diagonal movement",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DIAGONAL_MOVEMENT_ENABLED = !DIAGONAL_MOVEMENT_ENABLED;
+                return (DIAGONAL_MOVEMENT_ENABLED ? "Enabled" : "Disabled") + (std::string)" diagonal movement";
+            })
         }
     };
 };

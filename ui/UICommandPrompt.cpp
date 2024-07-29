@@ -52,8 +52,8 @@ void UICommandPrompt::draw(sf::RenderTexture& surface) {
     surface.draw(_bg);
     if (_unlocked) surface.draw(displayText);
     else {
-        _hiddenText.setPosition(_text.getPosition());
-        _hiddenText.setString(_text.getString());
+        _hiddenText.setPosition(displayText.getPosition());
+        _hiddenText.setString(displayText.getString());
         std::string temp = _hiddenText.getString();
         for (int i = 0; i < temp.length(); i++) {
             temp.at(i) = '*';

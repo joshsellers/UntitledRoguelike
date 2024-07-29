@@ -8,6 +8,8 @@
 
 class Hairstyle {
 public:
+    static const Hairstyle HAIR_EMO;
+    static const Hairstyle HAIR_BASIC;
     static std::vector<const Hairstyle*> HAIRSTYLES;
 
     Hairstyle(const unsigned int id, HAIR_TYPE hairType, sf::Vector2i spriteCoords);

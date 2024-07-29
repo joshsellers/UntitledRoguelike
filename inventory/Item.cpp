@@ -362,7 +362,7 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
 
 const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, MAJOR_RELEASE,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, UPCOMING_FEATURES_ENABLED,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -371,7 +371,7 @@ const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIG
 
 const Item Item::RAILGUN_DART(49, "Railgun Dart", sf::IntRect(68, 3, 1, 1), true, 9999, false,
     "Warning: warm to touch after use",
-    EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10, MAJOR_RELEASE
+    EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10, UPCOMING_FEATURES_ENABLED
 );
 
 const Item Item::_PROJECTILE_RAILGUN_DART(50, "_PROJECTILE_RAILGUN_DART", sf::IntRect(68, 4, 1, 1), false, 0, false,
@@ -382,7 +382,7 @@ const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGU
 
 const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
     "Harness the power of electromagnets\nto solve your problems",
-    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, MAJOR_RELEASE,
+    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, UPCOMING_FEATURES_ENABLED,
     [](Entity* parent) {
         constexpr int railgunPassThroughCount = 5;
         fireTargetedProjectile(parent, DATA_PROJECTILE_RAILGUN_DART, "railgun", railgunPassThroughCount);
@@ -392,7 +392,7 @@ const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN
 
 const Item Item::GASOLINE(52, "Gasoline", sf::IntRect(75, 3, 1, 1), true, 99999, false,
     "Liquid dinosaur bones\nFuel for chainsaw",
-    EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, MAJOR_RELEASE
+    EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, UPCOMING_FEATURES_ENABLED
 );
 
 const Item Item::_PROJECITLE_CHAINSAW(53, "_PROJECTILE_CHAINSAW", sf::IntRect(75, 4, 1, 1), false, 0, false,
@@ -403,7 +403,7 @@ const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.g
 
 const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
     "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(25, 0), true, 74999, MAJOR_RELEASE,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(25, 0), true, 74999, UPCOMING_FEATURES_ENABLED,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW);
         return false;
