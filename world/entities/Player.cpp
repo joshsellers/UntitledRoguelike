@@ -469,7 +469,7 @@ void Player::move(float xa, float ya) {
         for (auto& entity : getWorld()->getEntities()) {
             if (entity->isActive() && entity->hasColliders()) {
                 for (auto& collider : entity->getColliders()) {
-                    if (sf::FloatRect(_pos.x + xa, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingX = true;
+                    if (sf::FloatRect(_pos.x + xa, _pos.y, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingX = true;
                     if (sf::FloatRect(_pos.x, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingY = true;
                     if (collidingX && collidingY) return;
                     else if (collidingX || collidingY) break;
@@ -559,6 +559,8 @@ void Player::addCoinMagnet() {
 }
 
 void Player::knockBack(float amt, MOVING_DIRECTION dir) {
+    if (isDodging() && isMoving()) return;
+
     if (!freeMove) {
         switch (dir) {
             case UP:
@@ -578,11 +580,14 @@ void Player::knockBack(float amt, MOVING_DIRECTION dir) {
 }
 
 void Player::damage(int damage) {
+    if (isDodging() && isMoving()) return;
+
     if (!isDodging() && !freeMove) {
         if (GamePad::isConnected()) {
             int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
             GamePad::vibrate(vibrationAmount, 250);
         }
+
         _hitPoints -= (int)((float)damage * getTotalArmorCoefficient());
         if (_hitPoints <= 0) {
             _isActive = false;
