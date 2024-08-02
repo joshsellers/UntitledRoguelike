@@ -63,8 +63,18 @@ void Projectile::update() {
                 && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
                 && entity->getEntityType() != _parent->getEntityType()) {
                 if (entity->getHitBox().intersects(_hitBox)) {
+                    bool alreadyHitThisEntity = false;
+                    for (const std::string& uid : _hitEntities) {
+                        if (uid == entity->getUID()) {
+                            alreadyHitThisEntity = true;
+                            break;
+                        }
+                    }
+                    if (alreadyHitThisEntity) continue;
+
                     entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
                     _entitiesPassedThrough++;
+                    _hitEntities.push_back(entity->getUID());
                     if (_entitiesPassedThrough >= passThroughCount) {
                         _isActive = false;
                         return;

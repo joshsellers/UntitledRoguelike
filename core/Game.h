@@ -74,6 +74,9 @@ private:
 	std::shared_ptr<UIMenu> _loadGameMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _controlsMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _inputBindingsMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _bossHUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UIAttributeMeter> _bossHPMeter;
 
 	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
 	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;

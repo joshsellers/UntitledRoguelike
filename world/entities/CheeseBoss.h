@@ -17,8 +17,6 @@ protected:
 private:
     sf::Sprite _wavesSprite;
 
-    float _desiredDist = 512.f;
-
     void blink();
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;

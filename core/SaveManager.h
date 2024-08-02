@@ -536,6 +536,9 @@ private:
                 case CYCLOPS:
                     entity = std::shared_ptr<Cyclops>(new Cyclops(pos));
                     break;
+                case CHEESE_BOSS:
+                    entity = std::shared_ptr<CheeseBoss>(new CheeseBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

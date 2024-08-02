@@ -10,6 +10,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
+#include "Logger.h"
 
 inline bool DISPLAY_DEBUG_MESSAGES = DEBUG_MODE;
 
@@ -56,13 +57,20 @@ constexpr unsigned int PURGE_INTERVAL_SECONDS = 60;
 class MessageManager {
 public:
     static void start() {
+        _isHalted = false;
+
         std::thread managementThread(MessageManager::manageMessages);
         managementThread.detach();
+    }
+
+    static void stop() {
+        _isHalted = true;
     }
 
     static void displayMessage(std::string text, int timeout, int messageType = NORMAL) {
         if (messageType != NORMAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
         std::cout << text << std::endl;
+        Logger::log(text);
 
         std::shared_ptr<Message> message = std::shared_ptr<Message>(new Message(text, timeout, messageType));
         _messages.push_back(message);

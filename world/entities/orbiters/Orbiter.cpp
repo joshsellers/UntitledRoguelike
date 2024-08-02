@@ -26,6 +26,7 @@ Entity(ORBITER, parent->getPosition(), OrbiterType::ORBITER_TYPES.at(orbiterType
     }
 
     _entityType = "dontblockplayershots";
+    _isOrbiter = true;
 }
 
 void Orbiter::update() {

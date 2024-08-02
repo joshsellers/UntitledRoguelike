@@ -377,6 +377,7 @@ void World::purgeScatterBuffer() {
 void World::purgeEntityBuffer() {
     if (_entityBuffer.size() != 0) {
         for (auto& entity : _entityBuffer) {
+            if (entity->isOrbiter()) _orbiters.push_back(entity);
             _entities.push_back(entity);
         }
         _entityBuffer.clear();
@@ -393,6 +394,8 @@ void World::updateEntities() {
     bool foundPlayer = false;
 
     for (const auto& entity : _entities) {
+        if (entity->isOrbiter()) continue;
+
         if (entity == nullptr) {
             MessageManager::displayMessage("An entity was nullptr", 0, DEBUG);
             continue;
@@ -445,6 +448,10 @@ void World::updateEntities() {
         _player->activate();
         addEntity(_player);
     }
+
+    for (const auto& orbiter : _orbiters) {
+        if (orbiter->isActive()) orbiter->update();
+    }
 }
 
 void World::removeInactiveEntitiesFromSubgroups() {
@@ -457,6 +464,11 @@ void World::removeInactiveEntitiesFromSubgroups() {
         for (int i = 0; i < _collectorMobs.size(); i++) {
             auto& entity = _collectorMobs.at(i);
             if (!entity->isActive()) _collectorMobs.erase(_collectorMobs.begin() + i);
+        }
+
+        for (int i = 0; i < _orbiters.size(); i++) {
+            auto& orbiter = _orbiters.at(i);
+            if (!orbiter->isActive()) _orbiters.erase(_orbiters.begin() + i);
         }
     }
 }
@@ -939,9 +951,16 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
 
     if (entity->isEnemy()) _enemies.push_back(entity);
 
-    if (entity->isMob()) entity->shouldUseDormancyRules(true);
+    if (entity->isMob() && (!entity->isEnemy() || entity->isInitiallyDocile())) entity->shouldUseDormancyRules(true);
 
     if (entity->canPickUpItems()) _collectorMobs.push_back(entity);
+
+    if (entity->isBoss()) {
+        _bossIsActive = true;
+        _currentBoss = entity;
+    }
+
+    if (entity->isOrbiter() && !defer) _orbiters.push_back(entity);
 }
 
 bool World::showDebug() const {
@@ -1124,4 +1143,16 @@ void World::startNewGameCooldown() {
 
 void World::setDisplayedWaveNumber(int waveNumber) {
     _currentWaveNumber = waveNumber;
+}
+
+bool World::bossIsActive() const {
+    return _bossIsActive;
+}
+
+void World::bossDefeated() {
+    _bossIsActive = false;
+}
+
+std::shared_ptr<Entity> World::getCurrentBoss() const {
+    return _currentBoss;
 }

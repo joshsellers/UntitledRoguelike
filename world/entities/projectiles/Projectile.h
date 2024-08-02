@@ -41,6 +41,7 @@ private:
     int _damageBoost = 0;
 
     int _entitiesPassedThrough = 0;
+    std::vector<std::string> _hitEntities;
 };
 
 #endif 

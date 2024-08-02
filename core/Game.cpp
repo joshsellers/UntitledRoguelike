@@ -108,6 +108,18 @@ void Game::initUI() {
     _ui->addMenu(_loadGameMenu);
 
 
+    // Boss HUD menu
+    int placeholder = 0;
+    _bossHPMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "", 50, 8, 32, 1.5f, placeholder, placeholder, _font
+    ));
+    _bossHPMeter->setColor(0xCC0000FF);
+    _bossHPMeter->setBackgroundColor(0xAA0000FF);
+    _bossHPMeter->useDefaultLabel(false);
+    _bossHPMeter->useAttributes(false);
+    _bossHUDMenu->addElement(_bossHPMeter);
+    _ui->addMenu(_bossHUDMenu);
+
     // Pause menu
     std::shared_ptr<UIButton> mainMenuButton = std::shared_ptr<UIButton>(new UIButton(
         1, 5, 9, 3, "main menu", _font, this, "mainmenu"
@@ -207,7 +219,6 @@ void Game::initUI() {
     _staminaMeter->setBackgroundColor(0x00AA00FF);
     _HUDMenu->addElement(_staminaMeter);
 
-    int placeholder = 0;
     _waveCounterMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
         "", 50.f, 97.f, 14.f, 0.75f, placeholder, placeholder, _font
     ));
@@ -736,6 +747,15 @@ void Game::update() {
         if (_world.playerIsInShop()) _world.incrementEnemySpawnCooldownTimeWhilePaused();
         _world.update();
 
+        if (_world.bossIsActive() && !_bossHUDMenu->isActive()) {
+            auto& boss = _world.getCurrentBoss();
+            _bossHPMeter->setText(boss->getDisplayName());
+            _bossHUDMenu->show();
+        } else if (!_world.bossIsActive() && _bossHUDMenu->isActive()) _bossHUDMenu->hide();
+        else if (_world.bossIsActive()) {
+            _bossHPMeter->setPercentFull(((float)_world.getCurrentBoss()->getHitPoints() / (float)_world.getCurrentBoss()->getMaxHitPoints()));
+        }
+
         int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         if (equippedTool != NOTHING_EQUIPPED && Item::ITEMS[equippedTool]->isGun()) {
             int ammoIndex = _player->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO);
@@ -938,6 +958,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _newGameMenu->hide();
         _startMenu->show();
     } else if (buttonCode == "mainmenu") {
+        _bossHUDMenu->hide();
+
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
         _gameStarted = false;

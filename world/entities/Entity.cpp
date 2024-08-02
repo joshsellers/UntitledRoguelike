@@ -404,6 +404,14 @@ bool Entity::isEnemy() const {
     return _isEnemy;
 }
 
+bool Entity::isBoss() const {
+    return _isBoss;
+}
+
+bool Entity::isOrbiter() const {
+    return _isOrbiter;
+}
+
 bool Entity::canPickUpItems() const {
     return _canPickUpItems;
 }
@@ -623,6 +631,10 @@ bool Entity::compare(Entity* entity) const {
 
 const std::string& Entity::getEntityType() const {
     return _entityType;
+}
+
+const std::string& Entity::getDisplayName() const {
+    return _displayName;
 }
 
 unsigned int Entity::getMagazineAmmoType() const {

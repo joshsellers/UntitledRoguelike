@@ -69,6 +69,7 @@ void loadSettings() {
 }
 
 int main() {
+    Logger::start();
     MessageManager::start();
     InputBindingManager::init();
     SoundManager::loadSounds();
@@ -220,4 +221,6 @@ int main() {
     }
 
     SoundManager::shutdown();
+    MessageManager::stop();
+    Logger::stop();
 }

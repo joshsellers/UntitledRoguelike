@@ -2,7 +2,7 @@
 #include "../World.h"
 
 CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, false) {
-    setMaxHitPoints(500);
+    setMaxHitPoints(750);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 5) / 2;
@@ -16,8 +16,10 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE
     _canPickUpItems = false;
     _isMob = true;
     _isEnemy = true;
+    _isBoss = true;
 
     _entityType = "cheeseboss";
+    _displayName = "Wisconsin Joe";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(10000, 12000);
@@ -29,54 +31,47 @@ void CheeseBoss::update() {
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5);
 
     float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
-    float desiredDist = 100.f;
+    float desiredDist = 110.f;
     float distanceRatio = desiredDist / dist;
 
     float xa = 0.f, ya = 0.f;
 
     sf::Vector2f goalPos((1.f - distanceRatio) * playerPos.x + distanceRatio * cLoc.x, (1.f - distanceRatio) * playerPos.y + distanceRatio * cLoc.y);
-    if (dist > desiredDist) {
-        if (goalPos.y < cLoc.y) {
-            ya--;
-            _movingDir = UP;
-        } else if (goalPos.y > cLoc.y) {
-            ya++;
-            _movingDir = DOWN;
-        }
-
-        if (goalPos.x < cLoc.x) {
-            xa--;
-            _movingDir = LEFT;
-        } else if (goalPos.x > cLoc.x) {
-            xa++;
-            _movingDir = RIGHT;
-        }
-
-        if (xa && ya) {
-            xa *= 0.785398;
-            ya *= 0.785398;
-
-            if (xa > 0) _movingDir = RIGHT;
-            else _movingDir = LEFT;
-        }
-    } else {
-        // fix 
-        if (std::abs(goalPos.y - cLoc.y) > std::abs(goalPos.x - cLoc.x)) {
-            if (goalPos.y < cLoc.y) {
-                _movingDir = DOWN;
-            } else if (goalPos.y > cLoc.y) {
-                _movingDir = UP;
-            }
-        } else {
-            if (goalPos.x < cLoc.x) {
-                _movingDir = RIGHT;
-            } else if (goalPos.x > cLoc.x) {
-                _movingDir = LEFT;
-            }
-        }
+    if (goalPos.y < cLoc.y) {
+        ya--;
+        _movingDir = UP;
+    } else if (goalPos.y > cLoc.y) {
+        ya++;
+        _movingDir = DOWN;
     }
 
-    move(xa, ya); 
+    if (goalPos.x < cLoc.x) {
+        xa--;
+        _movingDir = LEFT;
+    } else if (goalPos.x > cLoc.x) {
+        xa++;
+        _movingDir = RIGHT;
+    }
+
+    if (xa && ya) {
+        xa *= 0.785398;
+        ya *= 0.785398;
+
+        if (xa > 0) _movingDir = RIGHT;
+        else _movingDir = LEFT;
+    }
+
+    if (dist < desiredDist) {
+        xa = 0;
+        ya = 0;
+
+        if (_movingDir == UP) _movingDir = DOWN;
+        else if (_movingDir == DOWN) _movingDir = UP;
+        else if (_movingDir == LEFT) _movingDir = RIGHT;
+        else if (_movingDir == RIGHT) _movingDir = LEFT;
+    }
+
+    move(xa, ya);
     
     _sprite.setPosition(getPosition());
 
@@ -133,6 +128,15 @@ void CheeseBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 }
 
 void CheeseBoss::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+        }
+
+        getWorld()->bossDefeated();
+    }
 }
 
 void CheeseBoss::blink() {

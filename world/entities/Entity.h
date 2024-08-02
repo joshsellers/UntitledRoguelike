@@ -44,6 +44,8 @@ public:
     bool isMob() const;
     bool isProp() const;
     bool isEnemy() const;
+    bool isBoss() const;
+    bool isOrbiter() const;
     bool canPickUpItems() const;
     
     bool usesDormancyRules() const;
@@ -113,6 +115,7 @@ public:
     bool compare(Entity* entity) const;
 
     const std::string& getEntityType() const;
+    const std::string& getDisplayName() const;
 
     unsigned int getMagazineAmmoType() const;
     int& getMagazineSize();
@@ -131,6 +134,7 @@ public:
 
 protected:
     std::string _entityType = "";
+    std::string _displayName = "";
 
     const int _spriteWidth, _spriteHeight;
 
@@ -158,6 +162,8 @@ protected:
     bool _isMob = false;
     const bool _isProp = false;
     bool _isEnemy = false;
+    bool _isBoss = false;
+    bool _isOrbiter = false;
     bool _canPickUpItems = false;
     bool _usesDormancyRules = false;
 

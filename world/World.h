@@ -151,6 +151,10 @@ public:
 
     void setDisplayedWaveNumber(int waveNumber);
 
+    bool bossIsActive() const;
+    void bossDefeated();
+    std::shared_ptr<Entity> getCurrentBoss() const;
+
     friend class Game;
     friend class SaveManager;
 
@@ -172,6 +176,7 @@ private:
 
     std::vector<std::shared_ptr<Entity>> _enemies;
     std::vector<std::shared_ptr<Entity>> _collectorMobs;
+    std::vector<std::shared_ptr<Entity>> _orbiters;
 
     std::vector<sf::Vector2f> _destroyedProps;
     bool isPropDestroyedAt(sf::Vector2f pos) const;
@@ -228,6 +233,9 @@ private:
     bool& _showDebug;
 
     bool _isPlayerInShop = false;
+
+    bool _bossIsActive = false;
+    std::shared_ptr<Entity> _currentBoss = nullptr;
 };
 
 #endif
