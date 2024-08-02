@@ -461,11 +461,11 @@ void Game::initUI() {
     _vsyncToggleButton_mainMenu->setSelectionId(2);
     _startMenu_settings->addElement(_vsyncToggleButton_mainMenu);
 
-    std::shared_ptr<UIButton> completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 31, 12, 3, "disable tutorial", _font, this, "skiptutorial"
+    _completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
+        43.5, 31, 12, 3, (!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial", _font, this, "skiptutorial"
     ));
-    completeTutorialButton_startSettings->setSelectionId(3);
-    _startMenu_settings->addElement(completeTutorialButton_startSettings);
+    _completeTutorialButton_startSettings->setSelectionId(3);
+    _startMenu_settings->addElement(_completeTutorialButton_startSettings);
 
     _startMenu_settings->useGamepadConfiguration = true;
     _startMenu_settings->defineSelectionGrid(
@@ -473,7 +473,7 @@ void Game::initUI() {
             {backButton_startSettings->getSelectionId()},
             {togglefullscreenButton_fromstart->getSelectionId()},
             {_vsyncToggleButton_mainMenu->getSelectionId()},
-            {completeTutorialButton_startSettings->getSelectionId()}
+            {_completeTutorialButton_startSettings->getSelectionId()}
         }
     );
     _ui->addMenu(_startMenu_settings);
@@ -742,7 +742,18 @@ void Game::update() {
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
-        if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::START);
+        if (!Tutorial::isCompleted()) {
+            Tutorial::completeStep(TUTORIAL_STEP::START);
+
+            if (currentTimeMillis() - Tutorial::tutorialStartTime >= Tutorial::tutorialAutoDisableTime) {
+                Tutorial::completeStep(TUTORIAL_STEP::END);
+                MessageManager::displayMessage("Tutorial auto-disabled", 5, DEBUG);
+
+                updateSettingsFiles();
+
+                _completeTutorialButton_startSettings->setLabelText((!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial");
+            }
+        }
 
         if (_world.playerIsInShop()) _world.incrementEnemySpawnCooldownTimeWhilePaused();
         _world.update();
@@ -1127,10 +1138,13 @@ void Game::buttonPressed(std::string buttonCode) {
         if (!_gameStarted) _startMenu->show();
         else _pauseMenu->show();
     } else if (buttonCode == "skiptutorial") {
-        Tutorial::completeStep(TUTORIAL_STEP::END);
+        if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::END);
+        else Tutorial::reset();
            
         updateSettingsFiles();
-        MessageManager::displayMessage("Disabled the tutorial", 5);
+        MessageManager::displayMessage((Tutorial::isCompleted() ? "Disabled" : "Enabled") + (std::string)" the tutorial", 5);
+
+        _completeTutorialButton_startSettings->setLabelText((!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial");
     } else if (buttonCode == "togglevsync") {
         VSYNC_ENABLED = !VSYNC_ENABLED;
         _window->setVerticalSyncEnabled(VSYNC_ENABLED);

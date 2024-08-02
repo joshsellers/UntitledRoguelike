@@ -25,6 +25,8 @@ public:
         if (step == TUTORIAL_STEP::END) {
             _tutorialCompleted = true;
             return;
+        } else if (step == TUTORIAL_STEP::START && _currentStep == TUTORIAL_STEP::START) {
+            tutorialStartTime = currentTimeMillis();
         }
 
         if (!isCompleted() && _currentStep == step) {
@@ -48,7 +50,11 @@ public:
 
     static void reset() {
         _currentStep = TUTORIAL_STEP::START;
+        _tutorialCompleted = false;
     }
+
+    inline static long long tutorialStartTime = 0LL;
+    const inline static long long tutorialAutoDisableTime = 5 * 60 * 1000;
     
 private:
     inline static std::map<TUTORIAL_STEP, std::string> _messagesKeyboard = {

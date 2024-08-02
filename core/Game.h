@@ -78,6 +78,8 @@ private:
 
 	std::shared_ptr<UIAttributeMeter> _bossHPMeter;
 
+	std::shared_ptr<UIButton> _completeTutorialButton_startSettings;
+
 	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
 	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;
 

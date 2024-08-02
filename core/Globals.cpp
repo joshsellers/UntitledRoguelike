@@ -19,7 +19,7 @@ float PLAYER_SCORE = 1.f;
 
 bool USING_MOUSE = true;
 
-bool DIAGONAL_MOVEMENT_ENABLED = false;
+bool DIAGONAL_MOVEMENT_ENABLED = true;
 
 bool UPCOMING_FEATURES_ENABLED = true;
 
