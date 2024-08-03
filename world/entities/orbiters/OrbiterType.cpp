@@ -8,7 +8,7 @@ const OrbiterType OrbiterType::BOWLING_BALL(1, "Bowling Ball", sf::IntRect(4, 10
     OrbiterAttackMethod::CONTACT, 500LL, 5);
 
 const OrbiterType OrbiterType::CHEESE_SLICE(2, "Cheese Slice", sf::IntRect(3, 11, 1, 1), 1.f, 48,
-    OrbiterAttackMethod::FIRE_ON_TIMEOUT, 5000LL, 0, "NONE", Item::DATA_PROJECTILE_CHEESE_SLICE);
+    OrbiterAttackMethod::FIRE_ON_TIMEOUT, 3000LL, 0, "NONE", Item::DATA_PROJECTILE_CHEESE_SLICE);
 
 
 std::vector<const OrbiterType*> OrbiterType::ORBITER_TYPES;

@@ -2,7 +2,14 @@
 #include "../World.h"
 #include "orbiters/Orbiter.h"
 
-CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, false) {
+
+CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, 
+    {
+        BossState((int)BEHAVIOR_STATE::REST, 3000LL, 5000LL),
+        BossState((int)BEHAVIOR_STATE::RING_OF_CHEESE, 3000LL, 5000LL),
+        BossState((int)BEHAVIOR_STATE::RAPID_FIRE, 4500LL, 6000LL)
+    }) 
+{
     setMaxHitPoints(750);
     heal(getMaxHitPoints());
 
@@ -15,9 +22,6 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     _canPickUpItems = false;
-    _isMob = true;
-    _isEnemy = true;
-    _isBoss = true;
 
     _entityType = "cheeseboss";
     _displayName = "Wisconsin Joe";
@@ -27,23 +31,7 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
-void CheeseBoss::update() {
-    // !TEMP
-    if (!_spawnedOrbiters) {
-        const int orbiterCount = 20;
-        float angle = 0;
-        for (int i = 0; i < orbiterCount; i++) {
-            std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, OrbiterType::CHEESE_SLICE.getId(), this));
-            orbiter->loadSprite(getWorld()->getSpriteSheet());
-            orbiter->setWorld(getWorld());
-            getWorld()->addEntity(orbiter);
-
-            orbiter->setCenterPointOffset(0, TILE_SIZE * 6.f / 2.f);
-            angle += 360.f / (float)orbiterCount;
-        }
-        _spawnedOrbiters = true;
-    }
-
+void CheeseBoss::subUpdate() {
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5);
 
@@ -101,6 +89,14 @@ void CheeseBoss::update() {
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    const long long contactDamageRateMillis = 500LL;
+    if (getWorld()->getPlayer()->isActive() 
+        && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())
+        && currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis) {
+        getWorld()->getPlayer()->takeDamage(5);
+        _lastContactDamageTimeMillis = currentTimeMillis();
+    }
 
     blink();
 }
@@ -163,4 +159,47 @@ void CheeseBoss::blink() {
         _isBlinking = randomInt(0, blinkChance) == 0;
         if (_isBlinking) _blinkStartTime = currentTimeMillis();
     } else if (currentTimeMillis() - _blinkStartTime > blinkDuration) _isBlinking = false;
+}
+
+void CheeseBoss::onStateChange(BossState previousState) {
+    switch ((BEHAVIOR_STATE)previousState.stateId) {
+        case BEHAVIOR_STATE::RING_OF_CHEESE:
+            _spawnedOrbiters = false;
+            break;
+        case BEHAVIOR_STATE::RAPID_FIRE:
+            _fireAngle = 0.f;
+            break;
+    }
+}
+
+void CheeseBoss::runCurrentState() {
+    if (!_spawnedOrbiters && _currentState.stateId == (int)BEHAVIOR_STATE::RING_OF_CHEESE) {
+        const int orbiterCount = 20;
+        float angle = 0;
+        for (int i = 0; i < orbiterCount; i++) {
+            std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, OrbiterType::CHEESE_SLICE.getId(), this));
+            orbiter->loadSprite(getWorld()->getSpriteSheet());
+            orbiter->setWorld(getWorld());
+            getWorld()->addEntity(orbiter);
+
+            orbiter->setCenterPointOffset(0, TILE_SIZE * 6.f / 2.f);
+            angle += 360.f / (float)orbiterCount;
+        }
+        _spawnedOrbiters = true;
+    } else if (_currentState.stateId == (int)BEHAVIOR_STATE::RAPID_FIRE) {
+        _fireAngle++;
+        if (_fireAngle > 360.f) _fireAngle = 0;
+
+        if (currentTimeMillis() - _lastFireTimeMillis >= _fireRateMillis) {
+            constexpr int dirNumber = 4;
+            for (int i = 0; i < dirNumber; i++) {
+                float currentAngle = _fireAngle + 90.f * i;
+                if (currentAngle >= 360.f) currentAngle -= 360.f;
+
+                float fireAngleRads = currentAngle * ((float)PI / 180.f);
+                fireTargetedProjectile(fireAngleRads, Item::DATA_PROJECTILE_CHEESE_SLICE, "NONE", true);
+            }
+            _lastFireTimeMillis = currentTimeMillis();
+        }
+    }
 }

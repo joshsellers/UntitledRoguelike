@@ -148,12 +148,18 @@ void Player::update() {
     if (isInBoat()) _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
 
     if (isSwimming() && !isInBoat()) {
-        _hitBoxYOffset = TILE_SIZE;
+        _hitBoxYOffset = TILE_SIZE; 
+        _hitBox.width = TILE_SIZE;
         _hitBox.height = TILE_SIZE;
-    } else {
+    } else if (!isDodging() || !isMoving()) {
         _hitBoxYOffset = 0;
+        _hitBox.width = TILE_SIZE;
         _hitBox.height = TILE_SIZE * 2;
+    } else if (isDodging() && isMoving()) {
+        _hitBox.width = 0;
+        _hitBox.height = 0;
     }
+
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 

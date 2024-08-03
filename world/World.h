@@ -236,6 +236,7 @@ private:
 
     bool _bossIsActive = false;
     std::shared_ptr<Entity> _currentBoss = nullptr;
+    void spawnBoss(int currentWaveNumber);
 };
 
 #endif

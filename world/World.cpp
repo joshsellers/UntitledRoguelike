@@ -29,6 +29,7 @@
 #include "entities/BarberChair.h"
 #include "TerrainColor.h"
 #include "entities/Cyclops.h"
+#include "entities/CheeseBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -117,9 +118,11 @@ void World::update() {
             if (_waveCounter != 0) MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
             if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
             _currentWaveNumber++;
+
+            spawnBoss(_currentWaveNumber);
         } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
             _cooldownActive = false;
-        }
+        } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
     } else {
         purgeEntityBuffer();
         _player->update();
@@ -1051,6 +1054,39 @@ void World::sortEntities() {
         [](std::shared_ptr<Entity> e0, std::shared_ptr<Entity> e1) {
             return e0->getPosition().y + e0->getSprite().getGlobalBounds().height < e1->getPosition().y + e1->getSprite().getGlobalBounds().height;
         });
+}
+
+void World::spawnBoss(int currentWaveNumber) {
+    sf::Vector2f spawnPos;
+    const int dirFromPlayer = randomInt(0, 3);
+    constexpr int maxDistFromPlayer = CHUNK_SIZE;
+    constexpr int minDistFromPlayer = CHUNK_SIZE / 2;
+    if (dirFromPlayer == 0) {
+        spawnPos.x = getPlayer()->getPosition().x + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+        spawnPos.y = getPlayer()->getPosition().y - randomInt(minDistFromPlayer, maxDistFromPlayer);
+    } else if (dirFromPlayer == 1) {
+        spawnPos.x = getPlayer()->getPosition().x + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+        spawnPos.y = getPlayer()->getPosition().y + randomInt(minDistFromPlayer, maxDistFromPlayer);
+    } else if (dirFromPlayer == 2) {
+        spawnPos.x = getPlayer()->getPosition().x - randomInt(minDistFromPlayer, maxDistFromPlayer);
+        spawnPos.y = getPlayer()->getPosition().y + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+    } else if (dirFromPlayer == 3) {
+        spawnPos.x = getPlayer()->getPosition().x + randomInt(minDistFromPlayer, maxDistFromPlayer);
+        spawnPos.y = getPlayer()->getPosition().y + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+    }
+
+    std::shared_ptr<Entity> boss = nullptr;
+    switch (currentWaveNumber) {
+        case 16:
+            boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
+            break;
+    }
+
+    if (boss != nullptr) {
+        boss->loadSprite(getSpriteSheet());
+        boss->setWorld(this);
+        addEntity(boss);
+    }
 }
 
 void World::propDestroyedAt(sf::Vector2f pos) {

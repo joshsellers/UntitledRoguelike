@@ -30,7 +30,7 @@ void Projectile::update() {
         return;
     }
 
-    if (!_parent->isActive() && !onlyDamagePlayer) {
+    if (!onlyDamagePlayer && !_parent->isActive()) {
         deactivate();
         return;
     }

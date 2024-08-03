@@ -105,7 +105,7 @@ void SnowMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(sf::IntRect(28 * TILE_SIZE, 21 * TILE_SIZE, TILE_SIZE, TILE_SIZE * 2));
     _sprite.setPosition(getPosition());
-    _sprite.setOrigin(TILE_SIZE / 2, 0);
+    _sprite.setOrigin((float)TILE_SIZE / 2.f, 0);
 
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));

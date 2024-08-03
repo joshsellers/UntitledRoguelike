@@ -172,6 +172,7 @@ protected:
     bool _isHostile = false;
 
     void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false);
+    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false);
 
     Inventory _inventory = Inventory(this);
 

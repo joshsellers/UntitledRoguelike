@@ -415,7 +415,7 @@ const Item Item::_PROJECTILE_CHEESE_SLICE(55, "_CHEESE_SLICE_PROJECTILE", sf::In
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 10, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_CHEESE_SLICE(Item::_PROJECTILE_CHEESE_SLICE.getId(), 2, sf::IntRect(0, 0, 16, 16), true);
+const ProjectileData Item::DATA_PROJECTILE_CHEESE_SLICE(Item::_PROJECTILE_CHEESE_SLICE.getId(), 3.5f, sf::IntRect(0, 0, 16, 16), true);
 
 std::vector<const Item*> Item::ITEMS;
 

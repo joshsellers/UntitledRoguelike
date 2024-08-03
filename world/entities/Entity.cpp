@@ -345,13 +345,18 @@ void Entity::swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator,
 }
 
 void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer) {
-    const sf::Vector2f centerPoint(getPosition().x - _spriteWidth / 2, getPosition().y + _spriteHeight / 2);
-    sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
+    const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
     double x = (double)(targetPos.x - centerPoint.x);
     double y = (double)(targetPos.y - centerPoint.y);
 
     float angle = (float)((std::atan2(y, x)));
+    fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer);
+}
+
+void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer) {
+    const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
+    sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2, centerPoint.y);
 
     std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
         spawnPos, this, angle, projData.baseVelocity, projData
