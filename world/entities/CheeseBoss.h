@@ -17,6 +17,9 @@ protected:
 private:
     sf::Sprite _wavesSprite;
 
+    // !TEMP
+    bool _spawnedOrbiters = false;
+
     void blink();
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;

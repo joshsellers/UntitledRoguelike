@@ -27,10 +27,15 @@ Entity(ORBITER, parent->getPosition(), OrbiterType::ORBITER_TYPES.at(orbiterType
 
     _entityType = "dontblockplayershots";
     _isOrbiter = true;
+
+    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::FIRE_ON_TIMEOUT) _lastFireTime = currentTimeMillis();
 }
 
 void Orbiter::update() {
-    const sf::Vector2f centerPoint(_parent->getPosition().x + 8, _parent->getPosition().y + 16);
+    const sf::Vector2f centerPoint(
+        _parent->getPosition().x + (_centerPointOffsetWasReset ? _centerPointOffset.x : (_parent->getSpriteSize().x * TILE_SIZE) / 2), 
+        _parent->getPosition().y + (_centerPointOffsetWasReset ? _centerPointOffset.y : (_parent->getSpriteSize().y * TILE_SIZE) / 2)
+    );
 
     _pos.x = centerPoint.x + getDistance() * std::cos(_angle * (M_PI / 180.f));
     _pos.y = centerPoint.y + getDistance() * std::sin(_angle * (M_PI / 180.f));
@@ -57,6 +62,10 @@ void Orbiter::attack() {
             case OrbiterAttackMethod::PROJECTILE:
                 projectileAttack();
                 break;
+            case OrbiterAttackMethod::FIRE_ON_TIMEOUT:
+                projectileAttack();
+                deactivate();
+                break;
         }
     }
 
@@ -64,25 +73,32 @@ void Orbiter::attack() {
 }
 
 void Orbiter::projectileAttack() {
-    const float fireRange = 350.f;
-    float closestDistance = fireRange;
-    std::shared_ptr<Entity> closestEnemy = nullptr;
-    for (auto& entity : getWorld()->getEnemies()) {
-        if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
-            float dist = std::sqrt(std::pow(_pos.x - entity->getPosition().x, 2) + std::pow(_pos.y - entity->getPosition().y, 2));
-            if (dist <= fireRange && dist < closestDistance) {
-                closestDistance = dist;
-                closestEnemy = entity;
+    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::PROJECTILE) {
+        const float fireRange = 350.f;
+        float closestDistance = fireRange;
+        std::shared_ptr<Entity> closestEnemy = nullptr;
+        for (auto& entity : getWorld()->getEnemies()) {
+            if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
+                float dist = std::sqrt(std::pow(_pos.x - entity->getPosition().x, 2) + std::pow(_pos.y - entity->getPosition().y, 2));
+                if (dist <= fireRange && dist < closestDistance) {
+                    closestDistance = dist;
+                    closestEnemy = entity;
+                }
             }
         }
-    }
 
-    if (closestEnemy != nullptr) {
-        fireTargetedProjectile(
-            sf::Vector2f(closestEnemy->getPosition().x, closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2),
-            _orbiterType->getProjectileData(), _orbiterType->getAttackSoundName()
-        );
-        _lastFireTime = currentTimeMillis();
+        if (closestEnemy != nullptr) {
+            fireTargetedProjectile(
+                sf::Vector2f(closestEnemy->getPosition().x, closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2),
+                _orbiterType->getProjectileData(), _orbiterType->getAttackSoundName()
+            );
+            _lastFireTime = currentTimeMillis();
+        }
+    } else if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::FIRE_ON_TIMEOUT) {
+        float fireAngle = _angle;
+        if (fireAngle < 0) fireAngle += 360;
+        fireAngle = fireAngle * (M_PI / 180.f);
+        fireTargetedProjectile(fireAngle, _orbiterType->getProjectileData(), _orbiterType->getAttackSoundName());
     }
 }
 
@@ -100,15 +116,22 @@ void Orbiter::contactAttack() {
 
 void Orbiter::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y);
-    sf::Vector2f spawnPos(centerPoint.x - 8, centerPoint.y);
 
     double x = (double)(targetPos.x - centerPoint.x);
     double y = (double)(targetPos.y - centerPoint.y);
 
     float angle = (float)((std::atan2(y, x)));
 
+    fireTargetedProjectile(angle, projData, soundName);
+}
+
+void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName) {
+    const sf::Vector2f centerPoint(getPosition().x, getPosition().y);
+    sf::Vector2f spawnPos(centerPoint.x - 8, centerPoint.y);
+
+    bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT;
     std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-        spawnPos, this, angle, projData.baseVelocity, projData
+        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId(), addParentVelocity
     ));
     proj->loadSprite(getWorld()->getSpriteSheet());
     proj->setWorld(getWorld());
@@ -135,6 +158,15 @@ float Orbiter::getDistance() const {
 
 float Orbiter::getSpeed() const {
     return _speed;
+}
+
+void Orbiter::setCenterPointOffset(float xOffset, float yOffset) {
+    setCenterPointOffset(sf::Vector2f(xOffset, yOffset));
+}
+
+void Orbiter::setCenterPointOffset(sf::Vector2f offset) {
+    _centerPointOffset = offset;
+    _centerPointOffsetWasReset = true;
 }
 
 Entity* Orbiter::getParent() const {

@@ -53,7 +53,7 @@ void loadSettings() {
 
         std::ifstream steamDirIn("settings.config");
         if (!steamDirIn.good()) {
-            MessageManager::displayMessage("Could not find steam directory settings file", 5, DEBUG);
+            MessageManager::displayMessage("Could not find steam directory settings file", 5, WARN);
             steamDirIn.close();
             return;
         } else {

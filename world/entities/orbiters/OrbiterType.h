@@ -8,13 +8,15 @@
 
 enum class OrbiterAttackMethod {
     CONTACT,
-    PROJECTILE
+    PROJECTILE,
+    FIRE_ON_TIMEOUT
 };
 
 class OrbiterType {
 public:
     static const OrbiterType SLIME_BALL;
     static const OrbiterType BOWLING_BALL;
+    static const OrbiterType CHEESE_SLICE;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

@@ -374,7 +374,7 @@ const Item Item::RAILGUN_DART(49, "Railgun Dart", sf::IntRect(68, 3, 1, 1), true
     EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10, UPCOMING_FEATURES_ENABLED
 );
 
-const Item Item::_PROJECTILE_RAILGUN_DART(50, "_PROJECTILE_RAILGUN_DART", sf::IntRect(68, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_RAILGUN_DART(50, "_RAILGUN_DART_PROJECTILE", sf::IntRect(68, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
 );
@@ -395,7 +395,7 @@ const Item Item::GASOLINE(52, "Gasoline", sf::IntRect(75, 3, 1, 1), true, 99999,
     EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, UPCOMING_FEATURES_ENABLED
 );
 
-const Item Item::_PROJECITLE_CHAINSAW(53, "_PROJECTILE_CHAINSAW", sf::IntRect(75, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECITLE_CHAINSAW(53, "_CHAINSAW_PROJECTILE", sf::IntRect(75, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 2, 0, 0, sf::Vector2f(), false
 );
@@ -409,6 +409,13 @@ const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOL
         return false;
     }, 9999, true, 75, 5000
 );
+
+const Item Item::_PROJECTILE_CHEESE_SLICE(55, "_CHEESE_SLICE_PROJECTILE", sf::IntRect(2, 11, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 10, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_CHEESE_SLICE(Item::_PROJECTILE_CHEESE_SLICE.getId(), 2, sf::IntRect(0, 0, 16, 16), true);
 
 std::vector<const Item*> Item::ITEMS;
 

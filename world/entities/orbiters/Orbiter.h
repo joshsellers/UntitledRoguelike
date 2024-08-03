@@ -21,6 +21,9 @@ public:
     float getDistance() const;
     float getSpeed() const;
 
+    void setCenterPointOffset(float xOffset, float yOffset);
+    void setCenterPointOffset(sf::Vector2f offset);
+
     Entity* getParent() const;
 
     virtual std::string getSaveData() const;
@@ -36,7 +39,11 @@ protected:
     float _distance;
     float _speed;
 
+    sf::Vector2f _centerPointOffset;
+    bool _centerPointOffsetWasReset = false;
+
     void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName);
+    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName);
     long long _lastFireTime = 0LL;
 private:
     Entity* _parent;

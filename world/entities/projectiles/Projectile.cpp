@@ -3,14 +3,14 @@
 
 constexpr long long LIFETIME = 5000LL;
 
-Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, int damageBoost) :
+Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, int damageBoost, bool addParentVelocity) :
     Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data), _damageBoost(damageBoost),
     _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer) {
 
     sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
 
-    _velocityComponents.x = _velocity * std::cos(directionAngle) + shooterVelocity.x;
-    _velocityComponents.y = _velocity * std::sin(directionAngle) + shooterVelocity.y;
+    _velocityComponents.x = _velocity * std::cos(directionAngle) + (addParentVelocity ? shooterVelocity.x : 0);
+    _velocityComponents.y = _velocity * std::sin(directionAngle) + (addParentVelocity ? shooterVelocity.y : 0);
 
     _lifeTime = data.lifeTime;
     _spawnTime = currentTimeMillis();
@@ -30,14 +30,14 @@ void Projectile::update() {
         return;
     }
 
-    if (!_parent->isActive()) {
+    if (!_parent->isActive() && !onlyDamagePlayer) {
         deactivate();
         return;
     }
 
     if (onlyDamagePlayer) {
         if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
-            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage() * _parent->getDamageMultiplier());
+            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage()/* * _parent->getDamageMultiplier()*/);
             _isActive = false;
             return;
         }

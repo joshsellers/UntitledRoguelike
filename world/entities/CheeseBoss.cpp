@@ -1,5 +1,6 @@
 #include "CheeseBoss.h"
 #include "../World.h"
+#include "orbiters/Orbiter.h"
 
 CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, false) {
     setMaxHitPoints(750);
@@ -27,6 +28,22 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Entity(CHEESE_BOSS, pos, 1, TILE_SIZE
 }
 
 void CheeseBoss::update() {
+    // !TEMP
+    if (!_spawnedOrbiters) {
+        const int orbiterCount = 20;
+        float angle = 0;
+        for (int i = 0; i < orbiterCount; i++) {
+            std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, OrbiterType::CHEESE_SLICE.getId(), this));
+            orbiter->loadSprite(getWorld()->getSpriteSheet());
+            orbiter->setWorld(getWorld());
+            getWorld()->addEntity(orbiter);
+
+            orbiter->setCenterPointOffset(0, TILE_SIZE * 6.f / 2.f);
+            angle += 360.f / (float)orbiterCount;
+        }
+        _spawnedOrbiters = true;
+    }
+
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5);
 
@@ -120,7 +137,7 @@ void CheeseBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(sf::IntRect(400, 736, TILE_SIZE * 5, TILE_SIZE * 6));
     _sprite.setPosition(getPosition());
-    _sprite.setOrigin(TILE_SIZE * 5 / 2, 0);
+    _sprite.setOrigin((float)TILE_SIZE * 5 / 2, 0);
 
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));

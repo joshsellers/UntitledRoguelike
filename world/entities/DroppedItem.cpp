@@ -41,8 +41,8 @@ void DroppedItem::update() {
         }
     }
 
+    _animCounter++;
     if (_itemId != Item::PENNY.getId()) {
-        _animCounter++;
         if ((_animCounter & 1) == 0)
             if (!_down)
                 if (_pos.y > _minY) _pos.y--;
@@ -56,6 +56,19 @@ void DroppedItem::update() {
 }
 
 void DroppedItem::draw(sf::RenderTexture& surface) {
+    if (_itemId == Item::PENNY.getId()) {
+        const sf::Vector2i textureCoords(128, 192);
+        constexpr int ticksPerFrame = 4;
+        constexpr int frameCount = 13;
+        int xOffset = ((_animCounter / ticksPerFrame) % frameCount) * TILE_SIZE;
+
+        _sprite.setTextureRect(sf::IntRect(
+            textureCoords.x + xOffset,
+            textureCoords.y, 
+            TILE_SIZE,
+            TILE_SIZE
+        ));
+    }
     surface.draw(_sprite);
 }
 
