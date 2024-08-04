@@ -14,10 +14,10 @@ protected:
     virtual void damage(int damage);
 
     void subUpdate();
-    void onStateChange(BossState previousState);
+    void onStateChange(const BossState previousState, const BossState newState);
     void runCurrentState();
 
-    enum class BEHAVIOR_STATE {
+    enum BEHAVIOR_STATE {
         REST,
         RING_OF_CHEESE,
         RAPID_FIRE
@@ -26,8 +26,6 @@ private:
     sf::Sprite _wavesSprite;
 
     long long _lastContactDamageTimeMillis = 0LL;
-
-    bool _spawnedOrbiters = false;
 
     float _fireAngle = 0.f;
     const long long _fireRateMillis = 250LL;

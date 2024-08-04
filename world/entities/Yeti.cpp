@@ -83,7 +83,7 @@ void Yeti::draw(sf::RenderTexture& surface) {
         int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
 
         _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y + (TILE_SIZE * 2) / 2 + 9));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE * 2) / 2 + 9));
         surface.draw(_wavesSprite);
     }
 

@@ -161,43 +161,48 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_headerBg);
     surface.draw(_text);
 
-    if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0
-        && _gamepadUnfilteredSelectedItemIndex < (int)_source.getCurrentSize())) {
-        const Item* item = Item::ITEMS[
-            _source.getItemIdAt(
-                (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
-                _gamepadUnfilteredSelectedItemIndex : 
-                mousedOverItemIndex
-            )
-        ];
+    try {
+        if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0
+            && _gamepadUnfilteredSelectedItemIndex < (int)_source.getCurrentSize())) {
+            const Item* item = Item::ITEMS[
+                _source.getItemIdAt(
+                    (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
+                    _gamepadUnfilteredSelectedItemIndex :
+                    mousedOverItemIndex
+                )
+            ];
 
-        float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
+            float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
 
-        _tooltipText.setString(item->getDescription());
-        float textWidth = _tooltipText.getGlobalBounds().width;
-        float textHeight = _tooltipText.getGlobalBounds().height;
-        sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
+            _tooltipText.setString(item->getDescription());
+            float textWidth = _tooltipText.getGlobalBounds().width;
+            float textHeight = _tooltipText.getGlobalBounds().height;
+            sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
-        if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
-            sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
-            pos.x = _background.getGlobalBounds().width;
-            if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
-            pos.y = itemPos.y;
+            if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
+                sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+                pos.x = _background.getGlobalBounds().width;
+                if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
+                pos.y = itemPos.y;
+            }
+
+            _tooltipText.setPosition(pos);
+
+            float padding = (float)WINDOW_HEIGHT * (1.f / 100);
+
+            float bgWidth = textWidth + padding * 2;
+            float bgHeight = textHeight + padding * 2;
+            _tooltipBg.setPosition(pos.x - padding, pos.y - padding);
+            _tooltipBg.setSize(sf::Vector2f(bgWidth, bgHeight));
+
+            surface.draw(_tooltipBg);
+            surface.draw(_tooltipText);
+
+            drawAdditionalTooltip(surface, mousedOverItemIndex);
         }
-
-        _tooltipText.setPosition(pos);
-
-        float padding = (float)WINDOW_HEIGHT * (1.f / 100);
-
-        float bgWidth = textWidth + padding * 2;
-        float bgHeight = textHeight + padding * 2;
-        _tooltipBg.setPosition(pos.x - padding, pos.y - padding);
-        _tooltipBg.setSize(sf::Vector2f(bgWidth, bgHeight));
-
-        surface.draw(_tooltipBg);
-        surface.draw(_tooltipText);
-
-        drawAdditionalTooltip(surface, mousedOverItemIndex);
+    } catch (std::exception ex) {
+        MessageManager::displayMessage("Error in UIInventoryInterface::draw: " + (std::string)ex.what(), 5, ERR);
+        return;
     }
 
     subDraw(surface);

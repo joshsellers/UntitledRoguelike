@@ -310,11 +310,13 @@ const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
 
 const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 999, true,
     "Bring me coin\nThe more you have, the more you'll pull\nEquip to activate",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 7499, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1025, true, 
     [](Entity* parent) {
         if (parent->getEntityType() == "player") {
             Player* player = dynamic_cast<Player*>(parent);
-            player->addCoinMagnet();
+            if (player->getCoinMagnetCount() < 12) {
+                player->addCoinMagnet();
+            }
             return true;
         }
         return false;

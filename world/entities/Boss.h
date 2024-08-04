@@ -23,7 +23,7 @@ public:
 
 protected:
     virtual void subUpdate() = 0;
-    virtual void onStateChange(BossState previousState) = 0;
+    virtual void onStateChange(const BossState previousState, const BossState newState) = 0;
     virtual void runCurrentState() = 0;
 
     std::vector<BossState> _bossStates;

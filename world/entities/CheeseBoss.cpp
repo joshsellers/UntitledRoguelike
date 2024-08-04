@@ -5,9 +5,9 @@
 
 CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, 
     {
-        BossState((int)BEHAVIOR_STATE::REST, 3000LL, 5000LL),
-        BossState((int)BEHAVIOR_STATE::RING_OF_CHEESE, 3000LL, 5000LL),
-        BossState((int)BEHAVIOR_STATE::RAPID_FIRE, 4500LL, 6000LL)
+        BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
+        BossState(BEHAVIOR_STATE::RING_OF_CHEESE, 5000LL, 6000LL),
+        BossState(BEHAVIOR_STATE::RAPID_FIRE, 4500LL, 6000LL)
     }) 
 {
     setMaxHitPoints(750);
@@ -24,7 +24,7 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE *
     _canPickUpItems = false;
 
     _entityType = "cheeseboss";
-    _displayName = "Wisconsin Joe";
+    _displayName = "William Cheesequake";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(10000, 12000);
@@ -112,10 +112,10 @@ void CheeseBoss::draw(sf::RenderTexture& surface) {
     if (isSwimming()) {
         _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE * 3));
 
-        int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
+        int yOffset = ((_numSteps >> _animSpeed + 1) & 1) * TILE_SIZE;
 
-        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y + (TILE_SIZE * 2) / 2 + 9));
+        _wavesSprite.setTextureRect(sf::IntRect(400, 688 + yOffset, TILE_SIZE * 5, TILE_SIZE));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE * 5 / 2, getPosition().y + (TILE_SIZE * 6)));
         surface.draw(_wavesSprite);
     }
 
@@ -161,32 +161,32 @@ void CheeseBoss::blink() {
     } else if (currentTimeMillis() - _blinkStartTime > blinkDuration) _isBlinking = false;
 }
 
-void CheeseBoss::onStateChange(BossState previousState) {
-    switch ((BEHAVIOR_STATE)previousState.stateId) {
-        case BEHAVIOR_STATE::RING_OF_CHEESE:
-            _spawnedOrbiters = false;
-            break;
+void CheeseBoss::onStateChange(const BossState previousState, const BossState newState) {
+    switch (previousState.stateId) {
         case BEHAVIOR_STATE::RAPID_FIRE:
             _fireAngle = 0.f;
+            break;
+    }
+
+    switch (newState.stateId) {
+        case BEHAVIOR_STATE::RING_OF_CHEESE:
+            const int orbiterCount = 20;
+            float angle = 0;
+            for (int i = 0; i < orbiterCount; i++) {
+                std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, OrbiterType::CHEESE_SLICE.getId(), this));
+                orbiter->loadSprite(getWorld()->getSpriteSheet());
+                orbiter->setWorld(getWorld());
+                getWorld()->addEntity(orbiter);
+
+                orbiter->setCenterPointOffset(0, TILE_SIZE * 6.f / 2.f);
+                angle += 360.f / (float)orbiterCount;
+            }
             break;
     }
 }
 
 void CheeseBoss::runCurrentState() {
-    if (!_spawnedOrbiters && _currentState.stateId == (int)BEHAVIOR_STATE::RING_OF_CHEESE) {
-        const int orbiterCount = 20;
-        float angle = 0;
-        for (int i = 0; i < orbiterCount; i++) {
-            std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, OrbiterType::CHEESE_SLICE.getId(), this));
-            orbiter->loadSprite(getWorld()->getSpriteSheet());
-            orbiter->setWorld(getWorld());
-            getWorld()->addEntity(orbiter);
-
-            orbiter->setCenterPointOffset(0, TILE_SIZE * 6.f / 2.f);
-            angle += 360.f / (float)orbiterCount;
-        }
-        _spawnedOrbiters = true;
-    } else if (_currentState.stateId == (int)BEHAVIOR_STATE::RAPID_FIRE) {
+    if (_currentState.stateId == BEHAVIOR_STATE::RAPID_FIRE) {
         _fireAngle++;
         if (_fireAngle > 360.f) _fireAngle = 0;
 

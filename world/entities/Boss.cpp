@@ -20,7 +20,7 @@ void Boss::update() {
 }
 
 void Boss::changeState() {
-    onStateChange(_currentState);
+    const BossState previousState = _currentState;
 
     std::vector<BossState> availableStates;
     for (int i = 0; i < _numBossStates; i++) {
@@ -31,4 +31,6 @@ void Boss::changeState() {
 
     _currentStateLength = (long long)randomInt(_currentState.minLength, _currentState.maxLength);
     _lastStateChangeTime = currentTimeMillis();
+
+    onStateChange(previousState, _currentState);
 }
