@@ -126,6 +126,8 @@ public:
     void setMaxActiveEnemies(int maxActiveEnemies);
     void incrementEnemySpawnCooldownTimeWhilePaused();
 
+    unsigned int getCurrentWaveNumber() const;
+
     std::shared_ptr<Player> getPlayer() const;
 
     bool showDebug() const;
@@ -214,6 +216,9 @@ private:
 
     void removeInactiveEntitiesFromSubgroups();
     long long _lastEntityRemovalTime = 0;
+
+    void manageCurrentWave();
+    void onWaveCleared();
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);

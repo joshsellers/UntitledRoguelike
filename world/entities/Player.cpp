@@ -30,11 +30,15 @@ void Player::update() {
         if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
             _isReloading = false;
             _magazineContents = _magContentsFilled;
+
+            _magContentsPercentage = 100;
         } else {
             float maxAmmo = ((float)weapon->getMagazineSize()) - ((float)weapon->getMagazineSize() - (float)_magContentsFilled);
             float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / weapon->getReloadTimeMilliseconds();
 
             _magazineContents = maxAmmo * reloadProgress;
+
+            _magContentsPercentage = reloadProgress * 100;
         }
     }
     fireAutomaticWeapon();
@@ -564,6 +568,25 @@ void Player::addCoinMagnet() {
     _coinMagnetCount++;
 }
 
+int& Player::getMagazineContentsPercentage() {
+    return _magContentsPercentage;
+}
+
+void Player::decrementMagazine() {
+    if (_magazineContents != 0) {
+        _magazineContents--;
+        if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED) {
+            const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+            _magContentsPercentage = ((float)_magazineContents / (float)weapon->getMagazineSize()) * 100.f;
+        }
+    }
+}
+
+void Player::emptyMagazine() {
+    _magazineContents = 0;
+    _magContentsPercentage = 0;
+}
+
 void Player::knockBack(float amt, MOVING_DIRECTION dir) {
     if (isDodging() && isMoving()) return;
 
@@ -725,7 +748,7 @@ bool Player::reloadWeapon() {
                 EQUIPMENT_TYPE::AMMO
             );
 
-            if (getMagazineContents() == 0) {
+            if (getMagazineContents() == 0 && !isReloading()) {
                 const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
                 const Item* ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
                 const unsigned int removeAmount = std::min(

@@ -54,6 +54,10 @@ public:
     unsigned int getCoinMagnetCount() const;
     void addCoinMagnet();
 
+    int& getMagazineContentsPercentage();
+    void decrementMagazine();
+    void emptyMagazine();
+
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     bool freeMove = false;
@@ -121,6 +125,7 @@ private:
     void fireAutomaticWeapon();
     bool reloadWeapon();
     void startReloadingWeapon();
+    int _magContentsPercentage = 0.f;
     long long _lastAutoFireTimeMillis = 0;
     long long _reloadStartTimeMillis = 0;
     int _magContentsFilled = 0;

@@ -76,6 +76,8 @@ int main() {
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
 
+    Item::checkForIncompleteItemConfigs();
+
     if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
 

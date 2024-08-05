@@ -109,20 +109,7 @@ void World::update() {
 
         loadNewChunks(pX, pY);
 
-        if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
-            _cooldownActive = true;
-            _maxEnemiesReached = false;
-            _enemiesSpawnedThisRound = 0;
-            _cooldownStartTime = currentTimeMillis();
-
-            if (_waveCounter != 0) MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
-            if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
-            _currentWaveNumber++;
-
-            spawnBoss(_currentWaveNumber);
-        } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
-            _cooldownActive = false;
-        } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
+        manageCurrentWave();
     } else {
         purgeEntityBuffer();
         _player->update();
@@ -546,6 +533,35 @@ void World::loadNewChunks(int pX, int pY) {
     } else if (_currentChunk == nullptr) {
         MessageManager::displayMessage("currentChunk was nullptr", 0, DEBUG);
     }
+}
+
+void World::manageCurrentWave() {
+    if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
+        onWaveCleared();
+    } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
+        _cooldownActive = false;
+    } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
+}
+
+void World::onWaveCleared() {
+    _cooldownActive = true;
+    _maxEnemiesReached = false;
+    _enemiesSpawnedThisRound = 0;
+    _cooldownStartTime = currentTimeMillis();
+
+    if (_waveCounter != 0) MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+    if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
+    _currentWaveNumber++;
+
+    int unlockedItemCount = 0;
+    for (const auto& item : Item::ITEMS) {
+        if (_currentWaveNumber == item->getRequiredWave()) unlockedItemCount++;
+    }
+    if (unlockedItemCount > 0) {
+        MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
+    }
+
+    spawnBoss(_currentWaveNumber);
 }
 
 void World::loadChunk(sf::Vector2f pos) {
@@ -1014,6 +1030,10 @@ void World::setMaxActiveEnemies(int maxActiveEnemies) {
 
 void World::incrementEnemySpawnCooldownTimeWhilePaused() {
     if (onEnemySpawnCooldown()) _cooldownStartTime += 16LL;
+}
+
+unsigned int World::getCurrentWaveNumber() const {
+    return _currentWaveNumber;
 }
 
 std::vector<std::shared_ptr<Entity>> World::getEntities() const {

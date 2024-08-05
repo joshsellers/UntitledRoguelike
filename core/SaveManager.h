@@ -16,13 +16,13 @@ public:
         std::string fileName = _saveDir + "/" + _currentSaveFileName;
         try {
             if (!std::filesystem::remove(fileName))
-                MessageManager::displayMessage("[deleteSaveFile] Could not delete save file", 5, DEBUG);
+                MessageManager::displayMessage("Could not delete save file", 5, DEBUG);
         } catch (const std::filesystem::filesystem_error& err) {
             MessageManager::displayMessage("Could not delete save file: " + (std::string)err.what(), 5, ERR);
         }
     }
 
-    static void saveGame() {
+    static void saveGame(bool displaySuccessfulSaveMessage = true) {
         if (_currentSaveFileName == "NONE") {
             MessageManager::displayMessage("Saving game while _currentSaveFileName is \"NONE\"", 5, WARN);
             _currentSaveFileName += ".save";
@@ -49,7 +49,7 @@ public:
 
             out.close();
 
-            MessageManager::displayMessage("Game saved succesfully", 2);
+            if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2);
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to save file: " + (std::string)ex.what(), 5, ERR);
         }
@@ -359,6 +359,7 @@ private:
             player->_magazineAmmoType = std::stoul(data[4]);
             player->_magazineContents = std::stoi(data[5]);
             player->_magazineSize = std::stoi(data[6]);
+            player->_magContentsPercentage = ((float)player->getMagazineContents() / (float)player->getMagazineSize()) * 100.f;
             player->_stamina = std::stoi(data[7]);
             player->_maxStamina = std::stoi(data[8]);
             player->_staminaRefreshRate = std::stoi(data[9]);

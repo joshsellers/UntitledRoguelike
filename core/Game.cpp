@@ -109,6 +109,7 @@ void Game::initUI() {
 
 
     // Boss HUD menu
+    // probably should not be passing this as a reference but it should be okay
     int placeholder = 0;
     _bossHPMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
         "", 50, 8, 32, 1.5f, placeholder, placeholder, _font
@@ -203,7 +204,7 @@ void Game::initUI() {
     _HUDMenu->addElement(playerHpMeter);
 
     _magazineMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "", 90, 92, 6, 3.f, _player->getMagazineContents(), _player->getMagazineSize(), _font
+        "", 90, 92, 6, 3.f, _player->getMagazineContentsPercentage(), _maxMagPercentage, _font
     ));
     _magazineMeter->setBackgroundColor(0x55555599);
     _magazineMeter->setColor(0x99999999);
@@ -811,6 +812,8 @@ void Game::update() {
 
         if (!_player->isActive()) {
             onPlayerDeath();
+        } else {
+            autoSave();
         }
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
@@ -965,6 +968,8 @@ void Game::buttonPressed(std::string buttonCode) {
             else msg = "Hold shift to sprint, press spacebar to dodge";
             MessageManager::displayMessage(msg, 15);
         }
+
+        _lastAutosaveTime = currentTimeMillis();
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
@@ -1124,6 +1129,8 @@ void Game::buttonPressed(std::string buttonCode) {
 
             _gameStarted = true;
             Tutorial::completeStep(TUTORIAL_STEP::END);
+            
+            _lastAutosaveTime = currentTimeMillis();
         } else {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
@@ -1368,10 +1375,18 @@ void Game::textEntered(sf::Uint32 character) {
     _ui->textEntered(character);
 }
 
-void Game::displayStartupMessages() {
+void Game::displayStartupMessages() const {
     if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
         MessageManager::displayMessage(
             "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
             10);
+    }
+}
+
+void Game::autoSave() {
+    if (AUTOSAVE_ENABLED && !_world.playerIsInShop() && currentTimeMillis() - _lastAutosaveTime >= AUTOSAVE_INTERVAL_SECONDS * 1000) {
+        SaveManager::saveGame(false);
+        _lastAutosaveTime = currentTimeMillis();
+        MessageManager::displayMessage("Autosaved", 0, DEBUG);
     }
 }

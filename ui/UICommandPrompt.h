@@ -569,6 +569,15 @@ private:
                 DIAGONAL_MOVEMENT_ENABLED = !DIAGONAL_MOVEMENT_ENABLED;
                 return (DIAGONAL_MOVEMENT_ENABLED ? "Enabled" : "Disabled") + (std::string)" diagonal movement";
             })
+        },
+
+        {
+            "tas",
+            Command("Toggle autosave",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                AUTOSAVE_ENABLED = !AUTOSAVE_ENABLED;
+                return (AUTOSAVE_ENABLED ? "Enabled" : "Disabled" + (std::string)" autosave");
+            })
         }
     };
 };

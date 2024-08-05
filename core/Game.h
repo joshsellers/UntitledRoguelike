@@ -89,6 +89,7 @@ private:
 
 	std::shared_ptr<UICommandPrompt> _cmdPrompt;
 
+	int _maxMagPercentage = 100;
 	std::shared_ptr<UIAttributeMeter> _magazineMeter;
 	std::shared_ptr<UIAttributeMeter> _staminaMeter;
 	std::shared_ptr<UIAttributeMeter> _waveCounterMeter;
@@ -128,7 +129,11 @@ private:
 	void toggleInventoryMenu();
 	void toggleShopMenu();
 
-	void displayStartupMessages();
+	void displayStartupMessages() const;
+
+	void autoSave();
+
+	long long _lastAutosaveTime = 0;
 };
 
 #endif 

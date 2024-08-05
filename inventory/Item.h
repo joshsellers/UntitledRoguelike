@@ -8,6 +8,7 @@
 #include "EquipmentType.h"
 #include <memory>
 #include "../world/entities/projectiles/ProjectileData.h"
+#include <map>
 
 class Entity;
 
@@ -123,7 +124,14 @@ public:
 
     EQUIPMENT_TYPE getEquipmentType() const;
 
+    bool isUnlocked(unsigned int waveNumber) const;
+    unsigned int getRequiredWave() const;
+
+    static void checkForIncompleteItemConfigs();
+
 private:
+    static const std::map<unsigned int, unsigned int> ITEM_UNLOCK_WAVE_NUMBERS;
+
     const unsigned int _id;
     const std::string _name;
     const std::string _description;

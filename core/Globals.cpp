@@ -13,6 +13,9 @@ int HEIGHT = 224 * SCALE; // 200
 
 bool VSYNC_ENABLED = false;
 
+bool AUTOSAVE_ENABLED = true;
+long long AUTOSAVE_INTERVAL_SECONDS = 30;
+
 bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 
 float PLAYER_SCORE = 1.f;

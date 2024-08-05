@@ -37,14 +37,16 @@ void ShopKeep::initInventory() {
     for (int i = 0; i < itemCount; i++) {
         int itemAmount = randomInt(1, 100);
         int itemId = randomInt(0, Item::ITEMS.size() - 1);
-        if (itemId == Item::BULLET_455.getId() || itemId == Item::RIFLE_ROUND.getId()
-            || itemId == Item::LIGHT_LASER_CHARGE.getId() || itemId == Item::PROPANE.getId()
-            || itemId == Item::POD.getId() || itemId == Item::GASOLINE.getId()) {
-            itemAmount += 100;
-            itemAmount *= 5;
+        for (const auto& item : Item::ITEMS) {
+            if (item->isGun() && item->getAmmoId() == itemId) {
+                itemAmount += 100;
+                itemAmount *= 5;
+            }
         }
 
-        if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_") || !Item::ITEMS[itemId]->isBuyable()) continue;
+        if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_") 
+            || !Item::ITEMS[itemId]->isBuyable() 
+            || !Item::ITEMS[itemId]->isUnlocked(getWorld()->getCurrentWaveNumber())) continue;
 
         if (!Item::ITEMS[itemId]->isStackable()) itemAmount = 1;
         else itemAmount = std::min((int)Item::ITEMS[itemId]->getStackLimit(), itemAmount);

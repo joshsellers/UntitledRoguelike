@@ -120,8 +120,8 @@ public:
     unsigned int getMagazineAmmoType() const;
     int& getMagazineSize();
     int& getMagazineContents();
-    void decrementMagazine();
-    void emptyMagazine();
+    virtual void decrementMagazine();
+    virtual void emptyMagazine();
     bool isReloading() const;
 
     ENTITY_SAVE_ID getSaveId() const;
