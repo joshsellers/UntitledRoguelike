@@ -2,6 +2,7 @@
 #include "../World.h"
 #include "../../core/SoundManager.h"
 #include "../../core/Tutorial.h"
+#include "../../statistics/StatManager.h"
 
 DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect) :
     _itemId(itemId), _amount(amount), _textureRect(textureRect), _minY(pos.y - _hoverDist), _originalY(pos.y),
@@ -21,7 +22,10 @@ void DroppedItem::update() {
     if (isActive()) {
         if (_world->getPlayer()->getHitBox().intersects(getSprite().getGlobalBounds())) {
             _world->getPlayer()->getInventory().addItem(_itemId, _amount);
-            if (_itemId == Item::PENNY.getId()) SoundManager::playSound("coinpickup");
+            if (_itemId == Item::PENNY.getId()) {
+                SoundManager::playSound("coinpickup");
+                StatManager::increaseStat(PENNIES_COLLECTED, _amount);
+            }
             _isActive = false;
 
             if (!Tutorial::isCompleted() && _itemId == Item::SLIME_BALL.getId()) Tutorial::completeStep(TUTORIAL_STEP::PICK_UP_SLIMEBALL);

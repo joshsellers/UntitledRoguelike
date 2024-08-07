@@ -4,6 +4,7 @@
 #include "DamageParticle.h"
 #include "projectiles/Projectile.h"
 #include "../../core/SoundManager.h"
+#include "../../statistics/StatManager.h"
 
 Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp), _saveId(saveId) {
@@ -562,6 +563,8 @@ void Entity::takeDamage(int damage) {
         getWorld()->addEntity(damageParticle);
     }
     this->damage(damage);
+
+    if (_isEnemy && _hitPoints <= 0) StatManager::increaseStat(ENEMIES_DEFEATED, 1.f);
 }
 
 void Entity::damage(int damage) {

@@ -32,6 +32,8 @@ protected:
 
     long long _currentStateLength = 1000LL;
     long long _lastStateChangeTime = 0LL;
+
+    void damage(int damage);
 private:
     void changeState();
 };

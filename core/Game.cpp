@@ -152,6 +152,12 @@ void Game::initUI() {
     pauseControlsButton->setSelectionId(4);
     _pauseMenu->addElement(pauseControlsButton);
 
+    std::shared_ptr<UIButton> statsMenuButton_pause = std::shared_ptr<UIButton>(new UIButton(
+        1, 35, 9, 3, "stats", _font, this, "stats_pause"
+    ));
+    statsMenuButton_pause->setSelectionId(5);
+    _pauseMenu->addElement(statsMenuButton_pause);
+
     _pauseMenu->useGamepadConfiguration = true;
     _pauseMenu->defineSelectionGrid(
         {
@@ -159,7 +165,8 @@ void Game::initUI() {
             {exitButton->getSelectionId()},
             {saveButton->getSelectionId()},
             {settingsButton->getSelectionId()},
-            {pauseControlsButton->getSelectionId()}
+            {pauseControlsButton->getSelectionId()},
+            {statsMenuButton_pause->getSelectionId()}
         }
     );
     _ui->addMenu(_pauseMenu);
@@ -422,11 +429,17 @@ void Game::initUI() {
     ));
     controlsButton->setSelectionId(3);
     _startMenu->addElement(controlsButton);
+
+    std::shared_ptr<UIButton> statsMenuButton_main = std::shared_ptr<UIButton>(new UIButton(
+        45, 67, 9, 3, "stats", _font, this, "stats_main"
+    ));
+    statsMenuButton_main->setSelectionId(4);
+    _startMenu->addElement(statsMenuButton_main);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 67, 9, 3, "exit game", _font, this, "exit"
+        45, 74, 9, 3, "exit game", _font, this, "exit"
     ));
-    exitGameButton->setSelectionId(4);
+    exitGameButton->setSelectionId(5);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
@@ -436,6 +449,7 @@ void Game::initUI() {
             {loadGameButton->getSelectionId()},
             {settingsButton_mainMenu->getSelectionId()},
             {controlsButton->getSelectionId()},
+            {statsMenuButton_main->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
@@ -732,6 +746,52 @@ void Game::initUI() {
     _ui->addMenu(_inputBindingsMenu);
 
 
+    // Stats menu from pause
+    _currentSaveStatsLabel = std::shared_ptr<UILabel>(new UILabel(
+        "", 15.f, 13.5f, 1.25f, _font
+    ));
+    _statsMenu_pauseMenu->addElement(_currentSaveStatsLabel);
+
+    _overallStatsLabel_pauseMenu = std::shared_ptr<UILabel>(new UILabel(
+        "", 45.f, 13.5f, 1.25f, _font
+    ));
+    _statsMenu_pauseMenu->addElement(_overallStatsLabel_pauseMenu);
+
+    std::shared_ptr<UIButton> back_stats_pauseButton = std::shared_ptr<UIButton>(new UIButton(
+        5.f, 5.f, 9.f, 3.f, "back", _font, this, "back_stats_pause"
+    ));
+    back_stats_pauseButton->setSelectionId(0);
+    _statsMenu_pauseMenu->addElement(back_stats_pauseButton);
+
+    _statsMenu_pauseMenu->useGamepadConfiguration = true;
+    _statsMenu_pauseMenu->defineSelectionGrid(
+        {
+            {back_stats_pauseButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_statsMenu_pauseMenu);
+
+
+    // Stats menu from main
+    _overallStatsLabel_mainMenu = std::shared_ptr<UILabel>(new UILabel(
+        "", 15.f, 15.f, 1.25f, _font
+    ));
+    _statsMenu_mainMenu->addElement(_overallStatsLabel_mainMenu);
+
+    std::shared_ptr<UIButton> back_stats_mainButton = std::shared_ptr<UIButton>(new UIButton(
+        5.f, 5.f, 9.f, 3.f, "back", _font, this, "back_stats_main"
+    ));
+    back_stats_mainButton->setSelectionId(0);
+    _statsMenu_mainMenu->addElement(back_stats_mainButton);
+
+    _statsMenu_mainMenu->useGamepadConfiguration = true;
+    _statsMenu_mainMenu->defineSelectionGrid(
+        {
+            {back_stats_mainButton->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_statsMenu_mainMenu);
+
     // Command prompt menu
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
@@ -861,7 +921,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
     }
 
     if (!_hideUI) {
-        if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive())) {
+        if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive() || _statsMenu_pauseMenu->isActive())) {
             sf::RectangleShape controlsMenuBg;
             controlsMenuBg.setFillColor(sf::Color(0x444448FF));
             controlsMenuBg.setPosition(0, 0);
@@ -999,6 +1059,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();
+        _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;
         _shopManager.clearLedger();
@@ -1169,6 +1230,31 @@ void Game::buttonPressed(std::string buttonCode) {
         _controlsMenu->show();
     } else if (buttonCode == "resetbindings") {
         InputBindingManager::resetBindings();
+    } else if (buttonCode == "stats_pause") {
+        _pauseMenu->hide();
+        _statsMenu_pauseMenu->show();
+
+        std::string currentStatsText = "Stats for this save\n\n\n";
+        generateStatsString(currentStatsText, false);
+
+        std::string overallStatsText = "Overall stats\n\n\n";
+        generateStatsString(overallStatsText, true);
+
+        _currentSaveStatsLabel->setText(currentStatsText);
+        _overallStatsLabel_pauseMenu->setText(overallStatsText);
+    } else if (buttonCode == "back_stats_pause") {
+        _statsMenu_pauseMenu->hide();
+        _pauseMenu->show();
+    } else if (buttonCode == "stats_main") {
+        _startMenu->hide();
+        _statsMenu_mainMenu->show();
+
+        std::string overallStatsText = "Stats\n\n\n";
+        generateStatsString(overallStatsText, true);
+        _overallStatsLabel_mainMenu->setText(overallStatsText);
+    } else if (buttonCode == "back_stats_main") {
+        _statsMenu_mainMenu->hide();
+        _startMenu->show();
     }
 }
 
@@ -1254,12 +1340,13 @@ void Game::togglePauseMenu() {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
-        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive()) {
+        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
         else if (_controlsMenu->isActive()) buttonPressed("back_controls");
         else if (_inputBindingsMenu->isActive()) buttonPressed("back_bindings");
+        else if (_statsMenu_pauseMenu->isActive()) buttonPressed("back_stats_pause");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 
@@ -1307,6 +1394,9 @@ void Game::onPlayerDeath() {
     if (currentTimeMillis() - _lastPlayerDeathCallTime > deathCallCooldown) {
         bool tutorialComplete = Tutorial::isCompleted();
         MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+
+        StatManager::increaseStat(TIMES_DIED, 1.f);
+
         if (tutorialComplete) {
             SaveManager::deleteSaveFile();
             buttonPressed("mainmenu");
@@ -1376,11 +1466,11 @@ void Game::textEntered(sf::Uint32 character) {
 }
 
 void Game::displayStartupMessages() const {
-    if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
+    /*if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
         MessageManager::displayMessage(
             "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
             10);
-    }
+    }*/
 }
 
 void Game::autoSave() {
@@ -1388,5 +1478,24 @@ void Game::autoSave() {
         SaveManager::saveGame(false);
         _lastAutosaveTime = currentTimeMillis();
         MessageManager::displayMessage("Autosaved", 0, DEBUG);
+    }
+}
+
+void Game::generateStatsString(std::string& statsString, bool overall) {
+    for (int i = 0; i < StatManager::NUM_STATS; i++) {
+        const std::string statName = STAT_NAMES[(STATISTIC)i];
+        float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
+
+        std::string unit = "";
+        if (stringStartsWith(statName, "Distance")) {
+            unit = " meters";
+            if (statValue >= 1000) {
+                statValue /= 1000;
+                unit = " kilometers";
+            }
+        }
+        const std::string statString = unit != "" ? trimString(std::to_string(statValue)) : std::to_string((int)statValue);
+
+        statsString += statName + ":  " + statString + unit + "\n_______________\n";
     }
 }

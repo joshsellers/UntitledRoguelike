@@ -6,6 +6,7 @@
 #include "../core/SoundManager.h"
 #include "../world/entities/Dog.h"
 #include "../core/Tutorial.h"
+#include "../statistics/StatManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -467,6 +468,11 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         parent->decrementMagazine();
 
         if (soundName != "NONE") SoundManager::playSound(soundName);
+
+        const unsigned int itemId = parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        if (parent->getSaveId() == PLAYER && itemId != CHAINSAW.getId() && itemId != BLOW_TORCH.getId()) {
+            StatManager::increaseStat(SHOTS_FIRED, 1.f);
+        }
     }
 }
 

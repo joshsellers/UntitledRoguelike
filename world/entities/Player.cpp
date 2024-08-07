@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../World.h"
 #include "../../core/InputBindings.h"
+#include "../../statistics/StatManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -128,6 +129,8 @@ void Player::update() {
         _isDodging = false;
         _dodgeTimer = 0;
         _dodgeSpeedMultiplier = 1.f;
+
+        StatManager::increaseStat(TIMES_ROLLED, 1.f);
     }
 
     _dodgeKeyReleased = 
@@ -446,7 +449,9 @@ void Player::meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos
     if ((std::abs(delta.x) > threshold || std::abs(delta.y) > threshold) && (_meleeAttackDelayCounter & 3) == 0) {
         for (auto& entity : getWorld()->getEntities()) {
             if (!entity->compare(this) && entity->isDamageable() && meleeHitBox.intersects(entity->getHitBox())) {
-                entity->takeDamage(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * getDamageMultiplier());
+                int damage = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * getDamageMultiplier();
+                entity->takeDamage(damage);
+                StatManager::increaseStat(DAMAGE_DEALT, damage);
             }
         }
     }
@@ -506,6 +511,17 @@ void Player::move(float xa, float ya) {
     // these are never used anywhere else 
     _velocity.x = xa;
     _velocity.y = ya;
+
+
+    if ((!collidingX || !collidingY) && (xa != 0 || ya != 0)) {
+        const int deltaPos = std::max(std::abs(xa), std::abs(ya));
+        constexpr float metersPerPixel = 0.053;
+        const float distMoved = (float)deltaPos * metersPerPixel;
+
+        StatManager::increaseStat(DIST_TRAVELLED, distMoved);
+        if (isSwimming() && !isInBoat()) StatManager::increaseStat(DIST_SWAM, distMoved);
+        else if (isInBoat()) StatManager::increaseStat(DIST_SAILED, distMoved);
+    }
 }
 
 sf::Vector2f Player::getPosition() const {
@@ -622,6 +638,8 @@ void Player::damage(int damage) {
             _isActive = false;
             _hitPoints = 0;
         }
+
+        StatManager::increaseStat(DAMAGE_TAKEN, damage);
     }
 }
 

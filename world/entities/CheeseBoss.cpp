@@ -140,18 +140,6 @@ void CheeseBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
 }
 
-void CheeseBoss::damage(int damage) {
-    _hitPoints -= damage;
-    if (_hitPoints <= 0) {
-        _isActive = false;
-        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
-        }
-
-        getWorld()->bossDefeated();
-    }
-}
-
 void CheeseBoss::blink() {
     const long long blinkDuration = 150LL;
     const int blinkChance = 600;

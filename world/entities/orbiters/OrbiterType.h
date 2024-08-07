@@ -5,12 +5,16 @@
 #include <string>
 #include <SFML/Graphics/Rect.hpp>
 #include "../projectiles/ProjectileData.h"
+#include <functional>
 
 enum class OrbiterAttackMethod {
     CONTACT,
-    PROJECTILE,
-    FIRE_ON_TIMEOUT
+    PROJECTILE_CLOSEST_ENEMY,
+    FIRE_ON_TIMEOUT,
+    CUSTOM
 };
+
+class Orbiter;
 
 class OrbiterType {
 public:
@@ -22,7 +26,8 @@ public:
 
     OrbiterType(const unsigned int id, const std::string name, const sf::IntRect textureRect, const float orbitSpeed, const float orbitRadius, 
         const OrbiterAttackMethod attackMethod, const long long attackFrequency, const int contactDamage = 0,
-        const std::string attackSoundName = "NONE", const ProjectileData projectileData = {0, 0, sf::IntRect(), false});
+        const std::string attackSoundName = "NONE", const ProjectileData projectileData = {0, 0, sf::IntRect(), false}, 
+        const std::function<void(Orbiter*)> attack = [](Orbiter* orbiterInstance) {});
 
     const unsigned int getId() const;
     const std::string getName() const;
@@ -40,6 +45,8 @@ public:
     const std::string getAttackSoundName() const;
     const ProjectileData getProjectileData() const;
 
+    void attack(Orbiter* orbiterInstance) const;
+
 private:
     const unsigned int _id;
     const std::string _name;
@@ -56,6 +63,8 @@ private:
 
     const std::string _attackSoundName;
     const ProjectileData _projectileData;
+
+    const std::function<void(Orbiter* orbiterInstance)> _attack;
 };
 
 #endif

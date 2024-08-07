@@ -8,6 +8,7 @@
 #include "ShaderManager.h"
 #include "InputBindings.h"
 #include "Globals.h"
+#include "../statistics/StatManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -68,6 +69,18 @@ void loadSettings() {
     in.close();
 }
 
+void checkLocalLowExists() {
+    std::string localLowPath = getLocalLowPath();
+    if (localLowPath == "err") {
+        MessageManager::displayMessage("getLocalLowPath returned \"err\"", 5, WARN);
+        return;
+    }
+    if (!std::filesystem::is_directory(localLowPath + "\\")) {
+        std::filesystem::create_directory(localLowPath);
+        MessageManager::displayMessage("Created LocalLow directory", 5, DEBUG);
+    }
+}
+
 int main() {
     Logger::start();
     MessageManager::start();
@@ -75,8 +88,11 @@ int main() {
     SoundManager::loadSounds();
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
+    StatManager::loadOverallStats();
 
     Item::checkForIncompleteItemConfigs();
+
+    checkLocalLowExists();
 
     if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);

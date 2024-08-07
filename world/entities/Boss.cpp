@@ -1,5 +1,6 @@
 #include "Boss.h"
 #include "../../core/Util.h"
+#include "../World.h"
 
 Boss::Boss(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, std::vector<BossState> bossStates) :
 Entity(saveId, pos, baseSpeed, spriteWidth, spriteHeight, false), _numBossStates(bossStates.size()), _currentState(bossStates.at(0)) {
@@ -33,4 +34,16 @@ void Boss::changeState() {
     _lastStateChangeTime = currentTimeMillis();
 
     onStateChange(previousState, _currentState);
+}
+
+void Boss::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+        }
+
+        getWorld()->bossDefeated();
+    }
 }

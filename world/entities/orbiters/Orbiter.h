@@ -27,6 +27,8 @@ public:
     Entity* getParent() const;
 
     virtual std::string getSaveData() const;
+
+    friend class OrbiterType;
 protected:
     void attack();
     void projectileAttack();

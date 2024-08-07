@@ -59,12 +59,15 @@ void Orbiter::attack() {
             case OrbiterAttackMethod::CONTACT:
                 contactAttack();
                 break;
-            case OrbiterAttackMethod::PROJECTILE:
+            case OrbiterAttackMethod::PROJECTILE_CLOSEST_ENEMY:
                 projectileAttack();
                 break;
             case OrbiterAttackMethod::FIRE_ON_TIMEOUT:
                 projectileAttack();
                 deactivate();
+                break;
+            case OrbiterAttackMethod::CUSTOM:
+                _orbiterType->attack(this);
                 break;
         }
     }
@@ -73,7 +76,7 @@ void Orbiter::attack() {
 }
 
 void Orbiter::projectileAttack() {
-    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::PROJECTILE) {
+    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::PROJECTILE_CLOSEST_ENEMY) {
         const float fireRange = 350.f;
         float closestDistance = fireRange;
         std::shared_ptr<Entity> closestEnemy = nullptr;

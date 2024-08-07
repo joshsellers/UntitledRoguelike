@@ -7,6 +7,7 @@
 #include "../world/entities/DroppedItem.h"
 #include <filesystem>
 #include "Versioning.h"
+#include "../statistics/StatManager.h"
 
 class SaveManager {
 public:
@@ -42,6 +43,7 @@ public:
             out << "GAMEVERSION:" << VERSION << std::endl;
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
+            saveStats(out);
             saveWorldData(out);
             saveShopData(out);
             savePlayerData(out);
@@ -53,6 +55,8 @@ public:
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to save file: " + (std::string)ex.what(), 5, ERR);
         }
+
+        StatManager::saveOverallStats();
     }
 
     static bool loadGame(std::string saveFileName) {
@@ -211,6 +215,14 @@ private:
             }
         }
     }
+
+    static void saveStats(std::ofstream& out) {
+        out << "STATS";
+        for (int i = 0; i < StatManager::NUM_STATS; i++) {
+            out << ":" << std::to_string(StatManager::getStatThisSave((STATISTIC)i));
+        }
+        out << std::endl;
+    }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
     static void loadDeferredOrbiters() {
@@ -327,6 +339,10 @@ private:
             _world->init(seed);
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
+        } else if (header == "STATS") {
+            for (int i = 0; i < data.size(); i++) {
+                StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+            }
         } else if (header == "DESTROYEDPROPS") {
             for (auto& propPosData : data) {
                 std::vector<std::string> parsedData = splitString(propPosData, ",");

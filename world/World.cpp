@@ -30,6 +30,7 @@
 #include "TerrainColor.h"
 #include "entities/Cyclops.h"
 #include "entities/CheeseBoss.h"
+#include "../statistics/StatManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -549,7 +550,11 @@ void World::onWaveCleared() {
     _enemiesSpawnedThisRound = 0;
     _cooldownStartTime = currentTimeMillis();
 
-    if (_waveCounter != 0) MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+    if (_waveCounter != 0) {
+        MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+        StatManager::increaseStat(WAVES_CLEARED, 1.f);
+    }
+
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
 
@@ -1207,6 +1212,7 @@ bool World::bossIsActive() const {
 
 void World::bossDefeated() {
     _bossIsActive = false;
+    StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
 }
 
 std::shared_ptr<Entity> World::getCurrentBoss() const {

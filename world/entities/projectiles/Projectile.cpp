@@ -1,5 +1,6 @@
 #include "Projectile.h"
 #include "../../World.h"
+#include "../../../statistics/StatManager.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -72,7 +73,10 @@ void Projectile::update() {
                     }
                     if (alreadyHitThisEntity) continue;
 
-                    entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
+                    int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier();
+                    entity->takeDamage(damage);
+                    StatManager::increaseStat(DAMAGE_DEALT, damage);
+
                     _entitiesPassedThrough++;
                     _hitEntities.push_back(entity->getUID());
                     if (_entitiesPassedThrough >= passThroughCount) {
