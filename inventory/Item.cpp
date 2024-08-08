@@ -356,7 +356,7 @@ const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0
 
 const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEET_SHIFT, 192 >> SPRITE_SHEET_SHIFT, 1, 1), true, 32, true,
     "Increases stamina restore rate",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 3999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 3250, true,
     [](Entity* parent) {
         parent->increaseStaminaRefreshRate(1);
         return true;
@@ -419,6 +419,22 @@ const Item Item::_PROJECTILE_CHEESE_SLICE(55, "_CHEESE_SLICE_PROJECTILE", sf::In
 );
 
 const ProjectileData Item::DATA_PROJECTILE_CHEESE_SLICE(Item::_PROJECTILE_CHEESE_SLICE.getId(), 3.5f, sf::IntRect(0, 0, 16, 16), true);
+
+const Item Item::ARROW(56, "Arrow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 48 >> SPRITE_SHEET_SHIFT, 1, 1), true, 9999, false,
+    "The shopkeep made this himself!\nNo warranty",
+    EQUIPMENT_TYPE::AMMO, 5, 0, 0, sf::Vector2f(), false, 8
+);
+
+const ProjectileData Item::DATA_PROJECTILE_ARROW(Item::ARROW.getId(), 3.75f, sf::IntRect(4, 4, 12, 12), true, true, 1000LL, false, 0, 0, true);
+
+const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1), false, ARROW.getId(), false,
+    "Helps you get nice forearms",
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(6, 0), true, 100, true,
+    [](Entity* parent) {
+        fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW);
+        return false;
+    }, 1, false, 0, 500
+);
 
 std::vector<const Item*> Item::ITEMS;
 
@@ -575,62 +591,64 @@ EQUIPMENT_TYPE Item::getEquipmentType() const {
 }
 
 const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
-    {Item::TOP_HAT.getId(),                         0},
-    {Item::TUX_VEST.getId(),                        0},
-    {Item::TUX_PANTS.getId(),                       0},
-    {Item::DRESS_SHOES.getId(),                     0},
-    {Item::SOMBRERO.getId(),                        0},
+    {Item::TOP_HAT.getId(),                         8},
+    {Item::TUX_VEST.getId(),                        8},
+    {Item::TUX_PANTS.getId(),                       8},
+    {Item::DRESS_SHOES.getId(),                     8},
+    {Item::SOMBRERO.getId(),                        3},
     {Item::AXE.getId(),                             0},
-    {Item::DAGGER.getId(),                          0},
-    {Item::BULLET_455.getId(),                      0},
-    {Item::HOWDAH.getId(),                          0},
+    {Item::DAGGER.getId(),                          3},
+    {Item::BULLET_455.getId(),                      3},
+    {Item::HOWDAH.getId(),                          3},
     {Item::POD.getId(),                             100},
     {Item::POD_LAUNCHER.getId(),                    100},
-    {Item::WIFE_BEATER.getId(),                     0},
-    {Item::JORTS.getId(),                           0},
-    {Item::WHITE_TENNIS_SHOES.getId(),              0},
+    {Item::WIFE_BEATER.getId(),                     2},
+    {Item::JORTS.getId(),                           2},
+    {Item::WHITE_TENNIS_SHOES.getId(),              2},
     {Item::APPLE.getId(),                           0},
-    {Item::RED_TEE_SHIRT.getId(),                   0},
-    {Item::OVERALLS.getId(),                        0},
-    {Item::BOOTS.getId(),                           0},
-    {Item::RIFLE_ROUND.getId(),                     0},
-    {Item::ASSAULT_RIFLE.getId(),                   0},
+    {Item::RED_TEE_SHIRT.getId(),                   6},
+    {Item::OVERALLS.getId(),                        6},
+    {Item::BOOTS.getId(),                           6},
+    {Item::RIFLE_ROUND.getId(),                     16},
+    {Item::ASSAULT_RIFLE.getId(),                   16},
     {Item::PENNY.getId(),                           0},
-    {Item::LIGHT_LASER_CHARGE.getId(),              0},
+    {Item::LIGHT_LASER_CHARGE.getId(),              18},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
-    {Item::LASER_PISTOL.getId(),                    0},
-    {Item::PROPANE.getId(),                         0},
+    {Item::LASER_PISTOL.getId(),                    18},
+    {Item::PROPANE.getId(),                         20},
     {Item::_PROJECTILE_PROPANE.getId(),             0},
-    {Item::BLOW_TORCH.getId(),                      0},
+    {Item::BLOW_TORCH.getId(),                      20},
     {Item::_PROJECTILE_SLIME_BALL.getId(),          0},
-    {Item::SLIME_BALL.getId(),                      0},
+    {Item::SLIME_BALL.getId(),                      12},
     {Item::BANANA.getId(),                          0},
-    {Item::BOWLING_BALL.getId(),                    0},
+    {Item::BOWLING_BALL.getId(),                    10},
     {Item::WOOD.getId(),                            0},
     {Item::_PROJECTILE_SNOW_BALL.getId(),           0},
-    {Item::STEROIDS.getId(),                        0},
-    {Item::PROTEIN_SHAKE.getId(),                   0},
-    {Item::BOTTLE_OF_MILK.getId(),                  0},
-    {Item::WOOD_BOAT.getId(),                       0},
-    {Item::LIQUID_NAP.getId(),                      0},
-    {Item::LOCUS_LIFT.getId(),                      0},
+    {Item::STEROIDS.getId(),                        18},
+    {Item::PROTEIN_SHAKE.getId(),                   8},
+    {Item::BOTTLE_OF_MILK.getId(),                  5},
+    {Item::WOOD_BOAT.getId(),                       10},
+    {Item::LIQUID_NAP.getId(),                      6},
+    {Item::LOCUS_LIFT.getId(),                      4},
     {Item::BONE.getId(),                            0},
-    {Item::COIN_MAGNET.getId(),                     0},
-    {Item::SCYTHE.getId(),                          0},
+    {Item::COIN_MAGNET.getId(),                     6},
+    {Item::SCYTHE.getId(),                          10},
     {Item::MATMURA_HELMET.getId(),                  0},
     {Item::MATMURA_CHESTPLATE.getId(),              0},
     {Item::MATMURA_LEGGINGS.getId(),                0},
     {Item::MATMURA_BOOTS.getId(),                   0},
-    {Item::BROADSWORD.getId(),                      0},
-    {Item::ENERGY_DRINK.getId(),                    0},
-    {Item::AUTOLASER.getId(),                       0},
-    {Item::RAILGUN_DART.getId(),                    0},
+    {Item::BROADSWORD.getId(),                      8},
+    {Item::ENERGY_DRINK.getId(),                    4},
+    {Item::AUTOLASER.getId(),                       24},
+    {Item::RAILGUN_DART.getId(),                    30},
     {Item::_PROJECTILE_RAILGUN_DART.getId(),        0},
-    {Item::RAILGUN.getId(),                         0},
-    {Item::GASOLINE.getId(),                        0},
+    {Item::RAILGUN.getId(),                         30},
+    {Item::GASOLINE.getId(),                        34},
     {Item::_PROJECITLE_CHAINSAW.getId(),            0},
-    {Item::CHAINSAW.getId(),                        0},
-    {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0}
+    {Item::CHAINSAW.getId(),                        34},
+    {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0},
+    {Item::ARROW.getId(),                           2},
+    {Item::BOW.getId(),                             2}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

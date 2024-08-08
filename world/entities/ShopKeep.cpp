@@ -30,13 +30,21 @@ void ShopKeep::initInventory() {
     unsigned int seed = _pos.x + _pos.y * (_pos.x - _pos.y);
     srand(seed);
 
+    std::vector<int> availableItems;
+    for (const auto& item : Item::ITEMS) {
+        if (item->isUnlocked(getWorld()->getCurrentWaveNumber())) {
+            availableItems.push_back(item->getId());
+        }
+    }
+
     int pennyCount = randomInt(5000, 10000);
     getInventory().addItem(Item::PENNY.getId(), pennyCount);
 
     int itemCount = randomInt(5, 50);
     for (int i = 0; i < itemCount; i++) {
         int itemAmount = randomInt(1, 100);
-        int itemId = randomInt(0, Item::ITEMS.size() - 1);
+        //int itemId = randomInt(0, Item::ITEMS.size() - 1);
+        int itemId = availableItems[randomInt(0, availableItems.size() - 1)];
         for (const auto& item : Item::ITEMS) {
             if (item->isGun() && item->getAmmoId() == itemId) {
                 itemAmount += 100;
