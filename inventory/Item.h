@@ -83,6 +83,7 @@ public:
     static const Item ARROW;
     static const ProjectileData DATA_PROJECTILE_ARROW;
     static const Item BOW;
+    static const Item CHEESE_SLICE;
 
     static std::vector<const Item*> ITEMS;
 

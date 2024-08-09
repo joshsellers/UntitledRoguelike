@@ -262,7 +262,7 @@ const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), 
 
 const Item Item::WOOD_BOAT(36, "Boat", sf::IntRect(12, 31, 1, 1), false, 0, false, 
     "Helps you survive in the sea\nEquip it while in the water",
-    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 9999
+    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 7599
 );
 
 const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10, true,
@@ -434,6 +434,18 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
         fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW);
         return false;
     }, 1, false, 0, 500
+);
+
+const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 16, true,
+    "Nummy\nHeals 20 HP",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 500, false,
+    [](Entity* parent) {
+        if (parent->getHitPoints() < parent->getMaxHitPoints()) {
+            parent->heal(20);
+            return true;
+        }
+        return false;
+    }
 );
 
 std::vector<const Item*> Item::ITEMS;
@@ -648,7 +660,8 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CHAINSAW.getId(),                        34},
     {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0},
     {Item::ARROW.getId(),                           2},
-    {Item::BOW.getId(),                             2}
+    {Item::BOW.getId(),                             2},
+    {Item::CHEESE_SLICE.getId(),                    0}        
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
