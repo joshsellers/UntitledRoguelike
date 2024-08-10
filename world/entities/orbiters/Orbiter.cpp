@@ -134,7 +134,7 @@ void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData,
 
     bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT;
     std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId(), addParentVelocity
+        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId(), 0, addParentVelocity
     ));
     proj->loadSprite(getWorld()->getSpriteSheet());
     proj->setWorld(getWorld());

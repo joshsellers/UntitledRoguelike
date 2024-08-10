@@ -15,7 +15,7 @@ const OrbiterType OrbiterType::CHEESE_SLICE(2, "Cheese Slice", sf::IntRect(3, 11
     OrbiterAttackMethod::FIRE_ON_TIMEOUT, 3000LL, 0, false, "NONE", Item::DATA_PROJECTILE_CHEESE_SLICE);
 
 const OrbiterType OrbiterType::EYE_BALL(3, "Eye", sf::IntRect(3, 12, 1, 1), 1.5f, 64,
-    OrbiterAttackMethod::CUSTOM, 250LL, 0, true, "NONE", Item::DATA_PROJECTILE_RAILGUN_DART,
+    OrbiterAttackMethod::CUSTOM, 100LL, 0, true, "NONE", Item::DATA_PROJECTILE_TEAR_DROP,
     [](Orbiter* orbiterInstance) {
         constexpr float fireRange = 350.f;
         bool enemyWithinRange = false;

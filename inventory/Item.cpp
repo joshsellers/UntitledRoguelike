@@ -448,6 +448,26 @@ const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 16, 
     }
 );
 
+const Item Item::_PROJECTILE_TEAR_DROP(59, "_TEAR_DROP_PROJECTILE", sf::IntRect(2, 12, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 4, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_TEAR_DROP(Item::_PROJECTILE_TEAR_DROP.getId(), 2.5f, sf::IntRect(4, 4, 12, 12), true, true);
+
+const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false, 0, true,
+    "Equip it and it will cry for you",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, false,
+    [](Entity* parent) {
+        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::EYE_BALL.getId(), parent));
+        eye->loadSprite(parent->getWorld()->getSpriteSheet());
+        eye->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(eye);
+
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
@@ -661,7 +681,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0},
     {Item::ARROW.getId(),                           2},
     {Item::BOW.getId(),                             2},
-    {Item::CHEESE_SLICE.getId(),                    0}        
+    {Item::CHEESE_SLICE.getId(),                    0},
+    {Item::_PROJECTILE_TEAR_DROP.getId(),           0},
+    {Item::CYCLOPS_EYE.getId(),                     0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
