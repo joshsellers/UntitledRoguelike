@@ -99,7 +99,7 @@ void Orbiter::projectileAttack() {
         }
     } else if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::FIRE_ON_TIMEOUT) {
         float fireAngle = _angle;
-        if (fireAngle < 0) fireAngle += 360;
+        //if (fireAngle < 0) fireAngle += 360;
         fireAngle = fireAngle * (M_PI / 180.f);
         fireTargetedProjectile(fireAngle, _orbiterType->getProjectileData(), _orbiterType->getAttackSoundName());
     }
@@ -144,6 +144,7 @@ void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData,
 }
 
 void Orbiter::draw(sf::RenderTexture& surface) {
+    if (_orbiterType->rotateSprite()) _sprite.setRotation(_angle);
     surface.draw(_sprite);
 }
 

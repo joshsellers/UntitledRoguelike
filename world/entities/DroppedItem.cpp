@@ -20,7 +20,7 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
 void DroppedItem::update() {
     if (isActive()) {
-        if (_world->getPlayer()->getHitBox().intersects(getSprite().getGlobalBounds())) {
+        if (_world->getPlayer()->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
             _world->getPlayer()->getInventory().addItem(_itemId, _amount);
             if (_itemId == Item::PENNY.getId()) {
                 SoundManager::playSound("coinpickup");

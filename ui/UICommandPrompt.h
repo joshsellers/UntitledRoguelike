@@ -21,6 +21,7 @@
 #include "../world/entities/BarberExterior.h"
 #include "../world/entities/Cyclops.h"
 #include "../world/entities/CheeseBoss.h"
+#include "../world/entities/orbiters/Orbiter.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -577,6 +578,41 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 AUTOSAVE_ENABLED = !AUTOSAVE_ENABLED;
                 return (AUTOSAVE_ENABLED ? "Enabled" : "Disabled" + (std::string)" autosave");
+            })
+        },
+
+        {
+            "giveorbiter",
+            Command("Give the player an orbiter",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    unsigned int orbiterId;
+                    bool foundOrbiter = false;
+                    std::string inputName = parsedCommand[1];
+                    boost::to_lower(inputName);
+                    for (auto& orbiterType : OrbiterType::ORBITER_TYPES) {
+                        std::string orbiterName = orbiterType->getName();
+                        boost::to_lower(orbiterName);
+                        if (orbiterName == inputName) {
+                            orbiterId = orbiterType->getId();
+                            foundOrbiter = true;
+                            break;
+                        }
+                    }
+
+                    if (foundOrbiter) {
+                        Entity* player = _world->getPlayer().get();
+                        std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(90.f, orbiterId, player));
+                        orbiter->loadSprite(_world->getSpriteSheet());
+                        orbiter->setWorld(_world);
+                        _world->addEntity(orbiter);
+                        return "Player given orbiter \"" + parsedCommand[1] + "\"";
+                    } else {
+                        return "No orbiter named " + parsedCommand[1];
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

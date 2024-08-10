@@ -278,7 +278,7 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 );
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
-    "Makes you a little bit stronger",
+    "Increases damage multiplier juuust a little bit",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 499, true,
     [](Entity* parent) {
         parent->increaseDamageMultiplier(0.02f);
