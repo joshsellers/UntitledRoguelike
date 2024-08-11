@@ -18,7 +18,8 @@ enum ENTITY_SAVE_ID {
     SKELETON,
     SHARK,
     CYCLOPS,
-    CHEESE_BOSS
+    CHEESE_BOSS,
+    FLESH_CHICKEN
 };
 
 #endif

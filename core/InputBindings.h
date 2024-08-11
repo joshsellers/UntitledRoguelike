@@ -20,7 +20,8 @@ public:
         SHOOT,
         INTERACT,
         TOGGLE_INVENTORY,
-        TOGGLE_PAUSE
+        TOGGLE_PAUSE,
+        SKIP_COOLDOWN
     };
 
     static GAMEPAD_BUTTON getGamepadBinding(BINDABLE_ACTION action) {
@@ -186,7 +187,8 @@ private:
         {BINDABLE_ACTION::SHOOT, GAMEPAD_BUTTON::RIGHT_TRIGGER},
         {BINDABLE_ACTION::INTERACT, GAMEPAD_BUTTON::X},
         {BINDABLE_ACTION::TOGGLE_INVENTORY, GAMEPAD_BUTTON::SELECT},
-        {BINDABLE_ACTION::TOGGLE_PAUSE, GAMEPAD_BUTTON::START}
+        {BINDABLE_ACTION::TOGGLE_PAUSE, GAMEPAD_BUTTON::START},
+        {BINDABLE_ACTION::SKIP_COOLDOWN, GAMEPAD_BUTTON::B}
     };
     inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> DEFAULT_GAMEPAD_BINDINGS = GAMEPAD_BINDINGS;
 
@@ -196,7 +198,8 @@ private:
         {BINDABLE_ACTION::RELOAD, sf::Keyboard::Key::R},
         {BINDABLE_ACTION::INTERACT, sf::Keyboard::Key::E},
         {BINDABLE_ACTION::TOGGLE_INVENTORY, sf::Keyboard::Key::Tab},
-        {BINDABLE_ACTION::TOGGLE_PAUSE, sf::Keyboard::Key::Escape}
+        {BINDABLE_ACTION::TOGGLE_PAUSE, sf::Keyboard::Key::Escape},
+        {BINDABLE_ACTION::SKIP_COOLDOWN, sf::Keyboard::Key::B}
     };
     inline static std::map<BINDABLE_ACTION, sf::Keyboard::Key> DEFAULT_KEYBOARD_BINDINGS = KEYBOARD_BINDINGS;
 
@@ -207,7 +210,8 @@ private:
         {BINDABLE_ACTION::SHOOT, "shoot"},
         {BINDABLE_ACTION::INTERACT, "interact"},
         {BINDABLE_ACTION::TOGGLE_INVENTORY, "show/hide inventory"},
-        {BINDABLE_ACTION::TOGGLE_PAUSE, "pause"}
+        {BINDABLE_ACTION::TOGGLE_PAUSE, "pause"},
+        {BINDABLE_ACTION::SKIP_COOLDOWN, "skip to next wave"}
     };
 
     inline static std::map<GAMEPAD_BUTTON, std::string> GAMEPAD_BUTTON_NAMES = {

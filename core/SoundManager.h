@@ -39,7 +39,7 @@ private:
     inline static std::map<std::string, SoLoud::Wav> sounds;
 
     inline static std::vector<std::string> soundNames = {
-        "revolver", "slip", "ar", "laser_pistol", "blowtorch", "coinpickup", "railgun"
+        "revolver", "slip", "ar", "laser_pistol", "blowtorch", "coinpickup", "railgun", "chainsaw"
     };
 };
 

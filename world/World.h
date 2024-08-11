@@ -75,7 +75,8 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
-        MobSpawnData(MOB_TYPE::CYCLOPS, 0, 4, 5)
+        MobSpawnData(MOB_TYPE::CYCLOPS, 0, 4, 5),
+        MobSpawnData(MOB_TYPE::FLESH_CHICKEN, 4, 1, 2)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {

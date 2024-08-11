@@ -31,6 +31,7 @@
 #include "entities/Cyclops.h"
 #include "entities/CheeseBoss.h"
 #include "../statistics/StatManager.h"
+#include "entities/FleshChicken.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -326,6 +327,9 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::CYCLOPS:
                                 mob = std::shared_ptr<Cyclops>(new Cyclops(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FLESH_CHICKEN:
+                                mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

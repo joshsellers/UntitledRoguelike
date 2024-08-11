@@ -130,6 +130,9 @@ private:
     long long _reloadStartTimeMillis = 0;
     int _magContentsFilled = 0;
 
+    int _automaticWeaponAnimationCounter = 0;
+    bool _isFiringAutomaticWeapon = false;
+
     bool _inventoryMenuIsOpen = false;
 
     void meleeAttack(sf::FloatRect meleeHitBox, sf::Vector2f currentMousePos);

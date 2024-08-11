@@ -266,14 +266,11 @@ const Item Item::WOOD_BOAT(36, "Boat", sf::IntRect(12, 31, 1, 1), false, 0, fals
 );
 
 const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10, true,
-    "Makes you feel rested",
+    "Makes you feel rested\nIncreases stamina restore rate by 5",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 15000, true,
     [](Entity* parent) {
-        if (parent->getStamina() < parent->getMaxStamina()) {
-            parent->restoreStamina(parent->getMaxStamina());
-            return true;
-        }
-        return false;
+        parent->increaseStaminaRefreshRate(5);
+        return true;
     }
 );
 
@@ -402,13 +399,13 @@ const Item Item::_PROJECITLE_CHAINSAW(53, "_CHAINSAW_PROJECTILE", sf::IntRect(75
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 2, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.getId(), 0, sf::IntRect(0, 0, 16, 16), false, true, 100);
+const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.getId(), 0, sf::IntRect(0, 0, 16, 16), false, false, 100);
 
 const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
     "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(25, 0), true, 74999, UPCOMING_FEATURES_ENABLED,
     [](Entity* parent) {
-        fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW);
+        fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW, "chainsaw");
         return false;
     }, 9999, true, 75, 5000
 );
@@ -464,6 +461,15 @@ const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false,
         eye->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(eye);
 
+        return true;
+    }
+);
+
+const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1), true, 10, true,
+    "Increases max stamina by 50",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 15000, true,
+    [](Entity* parent) {
+        parent->setMaxStamina(parent->getMaxStamina() + 50);
         return true;
     }
 );
@@ -683,7 +689,8 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::BOW.getId(),                             2},
     {Item::CHEESE_SLICE.getId(),                    0},
     {Item::_PROJECTILE_TEAR_DROP.getId(),           0},
-    {Item::CYCLOPS_EYE.getId(),                     0}
+    {Item::CYCLOPS_EYE.getId(),                     0},
+    {Item::LIQUID_EXERCISE.getId(),                 7}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
@@ -692,6 +699,18 @@ bool Item::isUnlocked(unsigned int waveNumber) const {
 
 unsigned int Item::getRequiredWave() const {
     return ITEM_UNLOCK_WAVE_NUMBERS.at(getId());
+}
+
+const std::map<unsigned int, WeaponAnimationConfig> Item::ANIMATION_CONFIGS = {
+    {Item::CHAINSAW.getId(), {Item::CHAINSAW.getId(), 4, 2}}
+};
+
+bool Item::isAnimated() const {
+    return ANIMATION_CONFIGS.find(getId()) != ANIMATION_CONFIGS.end();
+}
+
+WeaponAnimationConfig Item::getAnimationConfig() const {
+    return ANIMATION_CONFIGS.at(getId());
 }
 
 void Item::checkForIncompleteItemConfigs() {

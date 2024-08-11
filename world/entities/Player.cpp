@@ -42,6 +42,7 @@ void Player::update() {
             _magContentsPercentage = reloadProgress * 100;
         }
     }
+
     fireAutomaticWeapon();
 
     float xAxis = 0;
@@ -294,17 +295,23 @@ void Player::drawTool(sf::RenderTexture& surface) {
         sf::RectangleShape meleeHitBoxDisplay;
         sf::RectangleShape barrelDisplay;
         if (!_gamePaused) {
+            const Item* equippedTool = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
             sf::IntRect itemTextureRect =
-                Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getTextureRect();
+                equippedTool->getTextureRect();
             int spriteX = itemTextureRect.left + TILE_SIZE;
-            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-                int ammoId = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
+            int spriteY = itemTextureRect.top;
+            if (equippedTool->isGun()) {
+                int ammoId = equippedTool->getAmmoId();
                 if (getMagazineAmmoType() != ammoId || getMagazineContents() == 0) {
                     spriteX += TILE_SIZE * 3;
+                } else if (_isFiringAutomaticWeapon && equippedTool->isAnimated()) {
+                    const WeaponAnimationConfig* animConfig = &equippedTool->getAnimationConfig();
+                    spriteY += ((_automaticWeaponAnimationCounter / animConfig->ticksPerFrame) % animConfig->frameCount) * TILE_SIZE * 3;
+                    _automaticWeaponAnimationCounter++;
                 }
             }
             _toolSprite.setTextureRect(sf::IntRect(
-                spriteX, itemTextureRect.top, TILE_SIZE * 3, TILE_SIZE * 3
+                spriteX, spriteY, TILE_SIZE * 3, TILE_SIZE * 3
             ));
 
             _toolSprite.setOrigin(sf::Vector2f(_toolSprite.getLocalBounds().width / 2, _toolSprite.getLocalBounds().height));
@@ -372,9 +379,9 @@ void Player::drawTool(sf::RenderTexture& surface) {
                 handPos.x, handPos.y
             ));
 
-            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isMeleeWeapon()) {
-                int meleeHitBoxSize = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getHitBoxSize();
-                float r = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getHitBoxPos();
+            if (equippedTool->isMeleeWeapon()) {
+                int meleeHitBoxSize = equippedTool->getHitBoxSize();
+                float r = equippedTool->getHitBoxPos();
                 sf::Vector2f meleeHitBoxPos(handPos.x + r * std::cos((angle - 90.f) * (PI / 180.f)), handPos.y + r * std::sin((angle - 90.f) * (PI / 180.f)));
                 meleeHitBoxPos.x -= (float)meleeHitBoxSize / 2;
                 meleeHitBoxPos.y -= (float)meleeHitBoxSize / 2;
@@ -396,8 +403,8 @@ void Player::drawTool(sf::RenderTexture& surface) {
                 meleeAttack(meleeHitBox, _window->mapPixelToCoords(mPos, surface.getView()));
             }
 
-            if (Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-                sf::Vector2f barrelPos = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getBarrelPos();
+            if (equippedTool->isGun()) {
+                sf::Vector2f barrelPos = equippedTool->getBarrelPos();
                 float r = barrelPos.x;
                 sf::Vector2f xAxisPos(handPos.x + r * std::cos((angle - 90.f) * (PI / 180.f)), handPos.y + r * std::sin((angle - 90.f) * (PI / 180.f)));
                 float q = barrelPos.y * _toolSprite.getScale().x;
@@ -730,7 +737,7 @@ void Player::fireWeapon() {
 
 void Player::fireAutomaticWeapon() {
     if (!_gamePaused && !_inventoryMenuIsOpen &&
-        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT))) 
+        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)))
         && !_isReloading &&
         getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
@@ -740,7 +747,16 @@ void Player::fireAutomaticWeapon() {
         _lastAutoFireTimeMillis = currentTimeMillis();
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         Item::ITEMS[id]->use(this);
-    }
+
+    } else if (!_gamePaused && !_inventoryMenuIsOpen &&
+        (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)))
+        && !_isReloading &&
+        getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
+        Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isAutomatic()
+        && !isSwimming() && !isDodging()) {
+        _isFiringAutomaticWeapon = true;
+    } else _isFiringAutomaticWeapon = false;
 }
 
 void Player::startReloadingWeapon() {

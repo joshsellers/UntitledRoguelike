@@ -9,6 +9,7 @@
 #include <memory>
 #include "../world/entities/projectiles/ProjectileData.h"
 #include <map>
+#include "WeaponAnimationConfig.h"
 
 class Entity;
 
@@ -87,6 +88,7 @@ public:
     static const Item _PROJECTILE_TEAR_DROP;
     static const ProjectileData DATA_PROJECTILE_TEAR_DROP;
     static const Item CYCLOPS_EYE;
+    static const Item LIQUID_EXERCISE;
 
     static std::vector<const Item*> ITEMS;
 
@@ -134,10 +136,14 @@ public:
     bool isUnlocked(unsigned int waveNumber) const;
     unsigned int getRequiredWave() const;
 
+    bool isAnimated() const;
+    WeaponAnimationConfig getAnimationConfig() const;
+
     static void checkForIncompleteItemConfigs();
 
 private:
     static const std::map<unsigned int, unsigned int> ITEM_UNLOCK_WAVE_NUMBERS;
+    static const std::map<unsigned int, WeaponAnimationConfig> ANIMATION_CONFIGS;
 
     const unsigned int _id;
     const std::string _name;

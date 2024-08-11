@@ -1,16 +1,15 @@
-#include "PlantMan.h"
-#include <boost/random/uniform_int_distribution.hpp>
+#include "FleshChicken.h"
+#include "../../core/Util.h"
 #include "../World.h"
 
-PlantMan::PlantMan(sf::Vector2f pos) :
-    Entity(PLANTMAN, pos, 3, TILE_SIZE * 2, TILE_SIZE * 2, false) {
-    setMaxHitPoints(40);
+FleshChicken::FleshChicken(sf::Vector2f pos) : Entity(FLESH_CHICKEN, pos, 3.5f, TILE_SIZE * 2, TILE_SIZE * 2, false) {
+    setMaxHitPoints(30);
     heal(getMaxHitPoints());
 
-    _hitBoxXOffset = -TILE_SIZE / 2;
-    _hitBoxYOffset = 8;
-    _hitBox.width = TILE_SIZE;
-    _hitBox.height = TILE_SIZE * 2 - 8;
+    _hitBoxXOffset = -14;
+    _hitBoxYOffset = 10;
+    _hitBox.width = 28;
+    _hitBox.height = TILE_SIZE * 2 - 10;
 
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
@@ -19,7 +18,7 @@ PlantMan::PlantMan(sf::Vector2f pos) :
     _isMob = true;
     _isEnemy = true;
 
-    _entityType = "plantman";
+    _entityType = "fleshchicken";
 
     srand(currentTimeNano());
     const int hasPennyChance = 10;
@@ -27,7 +26,7 @@ PlantMan::PlantMan(sf::Vector2f pos) :
     if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
 }
 
-void PlantMan::update() {
+void FleshChicken::update() {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 2;
 
@@ -65,14 +64,14 @@ void PlantMan::update() {
         _hitBoxYOffset = TILE_SIZE;
         _hitBox.height = TILE_SIZE;
     } else {
-        _hitBoxYOffset = 8;
-        _hitBox.height = TILE_SIZE * 2 - 8;
+        _hitBoxYOffset = 10;
+        _hitBox.height = TILE_SIZE * 2 - 10;
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
-void PlantMan::draw(sf::RenderTexture& surface) {
+void FleshChicken::draw(sf::RenderTexture& surface) {
     sf::Vector2f feetPos = getPosition();
     feetPos.y += TILE_SIZE * 2;
     TERRAIN_TYPE terrainType = _world->getTerrainDataAt(
@@ -86,37 +85,30 @@ void PlantMan::draw(sf::RenderTexture& surface) {
         int xOffset = ((_numSteps >> _animSpeed) & 1) * TILE_SIZE;
 
         _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, TILE_SIZE, TILE_SIZE));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE) + 9));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE / 2, getPosition().y + (TILE_SIZE)+9));
         surface.draw(_wavesSprite);
     }
 
     int xOffset = getMovingDir() * TILE_SIZE * 2;
-    int yOffset = isMoving() || isSwimming()  ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 2 : 0;
+    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 1) * TILE_SIZE * 2 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        36 * TILE_SIZE + xOffset, 21 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE : TILE_SIZE * 2
+        36 * TILE_SIZE + xOffset, 17 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE : TILE_SIZE * 2
     ));
 
     surface.draw(_sprite);
 }
 
-void PlantMan::damage(int damage) {
-    _hitPoints -= damage;
-    if (_hitPoints <= 0) {
-        _isActive = false;
-        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
-        }
-    }
-}
-
-void PlantMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+void FleshChicken::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(36 * TILE_SIZE, 21 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
+    _sprite.setTextureRect(sf::IntRect(36 * TILE_SIZE, 17 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin(TILE_SIZE, 0);
 
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, TILE_SIZE, TILE_SIZE));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
+}
+
+void FleshChicken::damage(int damage) {
 }

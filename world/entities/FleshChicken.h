@@ -1,13 +1,11 @@
-#ifndef _PLANT_MAN_H
-#define _PLANT_MAN_H
+#ifndef _FLESH_CHICKEN_H
+#define _FLESH_CHICKEN_H
 
 #include "Entity.h"
-#include <boost/random/mersenne_twister.hpp>
 
-
-class PlantMan : public Entity {
+class FleshChicken : public Entity {
 public:
-    PlantMan(sf::Vector2f pos);
+    FleshChicken(sf::Vector2f pos);
 
     void update();
 
@@ -21,3 +19,4 @@ private:
 };
 
 #endif
+

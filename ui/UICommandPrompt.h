@@ -22,6 +22,7 @@
 #include "../world/entities/Cyclops.h"
 #include "../world/entities/CheeseBoss.h"
 #include "../world/entities/orbiters/Orbiter.h"
+#include "../world/entities/FleshChicken.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -259,6 +260,8 @@ private:
                             entity = std::shared_ptr<Cyclops>(new Cyclops(pos));
                         } else if (entityName == "cheeseboss") {
                             entity = std::shared_ptr<CheeseBoss>(new CheeseBoss(pos));
+                        } else if (entityName == "fleshchicken") {
+                            entity = std::shared_ptr<FleshChicken>(new FleshChicken(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

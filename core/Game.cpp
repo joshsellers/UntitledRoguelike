@@ -679,6 +679,12 @@ void Game::initUI() {
     pauseButtonKeyboard->setSelectionId(-1);
     _inputBindingsMenu->addElement(pauseButtonKeyboard);
 
+    std::shared_ptr<UIKeyboardBindingButton> skipCooldownButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
+        18.f, 48.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN
+    ));
+    skipCooldownButtonKeyboard->setSelectionId(-1);
+    _inputBindingsMenu->addElement(skipCooldownButtonKeyboard);
+
     // gamepad
     std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
         50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
@@ -722,11 +728,17 @@ void Game::initUI() {
     pauseButtonGamepad->setSelectionId(7);
     _inputBindingsMenu->addElement(pauseButtonGamepad);
 
+    std::shared_ptr<UIGamepadBindingButton> skipCooldownButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+        50.f, 54.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN
+    ));
+    skipCooldownButtonGamepad->setSelectionId(8);
+    _inputBindingsMenu->addElement(skipCooldownButtonGamepad);
+
 
     std::shared_ptr<UIButton> resetBindingsButton = std::shared_ptr<UIButton>(new UIButton(
         38.f, 80.f, 14.f, 3.f, "reset to default", _font, this, "resetbindings"
     ));
-    resetBindingsButton->setSelectionId(8);
+    resetBindingsButton->setSelectionId(9);
     _inputBindingsMenu->addElement(resetBindingsButton);
 
     _inputBindingsMenu->useGamepadConfiguration = true;
@@ -740,6 +752,7 @@ void Game::initUI() {
             {interactButtonGamepad->getSelectionId()},
             {inventoryButtonGamepad->getSelectionId()},
             {pauseButtonGamepad->getSelectionId()},
+            {skipCooldownButtonGamepad->getSelectionId()},
             {resetBindingsButton->getSelectionId()}
         }
     );
@@ -856,6 +869,11 @@ void Game::update() {
                     + (timeRemainingSeconds < 10 ? "0" : "") + std::to_string(timeRemainingSeconds);
 
                 _waveCounterMeter->setPercentFull(((float)cooldownTimeRemaining / (float)cooldownTimeAtStart));
+
+                if (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))
+                    || (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN)))) {
+                    _world._cooldownStartTime -= 500LL;
+                }
             } else {
                 _waveCounterMeter->setPercentFull(0.f);
             }
