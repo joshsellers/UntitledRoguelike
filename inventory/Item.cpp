@@ -474,6 +474,18 @@ const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1)
     }
 );
 
+const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, false,
+    "Prickly pieces\n\nSell it to the shopkeep for some pennies",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35, false
+);
+
+const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(5, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 4, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_BLOOD_BALL(Item::_PROJECTILE_BLOOD_BALL.getId(), 2.5f, sf::IntRect(5, 5, 6, 6), false);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
@@ -690,7 +702,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CHEESE_SLICE.getId(),                    0},
     {Item::_PROJECTILE_TEAR_DROP.getId(),           0},
     {Item::CYCLOPS_EYE.getId(),                     0},
-    {Item::LIQUID_EXERCISE.getId(),                 7}
+    {Item::LIQUID_EXERCISE.getId(),                 7},
+    {Item::CACTUS_FLESH.getId(),                    0},
+    {Item::_PROJECTILE_BLOOD_BALL.getId(),          0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

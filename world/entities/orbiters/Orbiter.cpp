@@ -28,7 +28,7 @@ Entity(ORBITER, parent->getPosition(), OrbiterType::ORBITER_TYPES.at(orbiterType
     _entityType = "dontblockplayershots";
     _isOrbiter = true;
 
-    if (_orbiterType->getAttackMethod() == OrbiterAttackMethod::FIRE_ON_TIMEOUT) _lastFireTime = currentTimeMillis();
+    _lastFireTime = currentTimeMillis();
 }
 
 void Orbiter::update() {
@@ -132,9 +132,10 @@ void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData,
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y);
     sf::Vector2f spawnPos(centerPoint.x - 8, centerPoint.y);
 
-    bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT;
+    bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT && _orbiterType->getAttackMethod() != OrbiterAttackMethod::CUSTOM;
     std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId(), 0, addParentVelocity
+        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId() || _orbiterType->onlyHitPlayer()
+        , 0, addParentVelocity
     ));
     proj->loadSprite(getWorld()->getSpriteSheet());
     proj->setWorld(getWorld());

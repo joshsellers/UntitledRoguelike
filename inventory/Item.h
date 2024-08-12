@@ -89,6 +89,9 @@ public:
     static const ProjectileData DATA_PROJECTILE_TEAR_DROP;
     static const Item CYCLOPS_EYE;
     static const Item LIQUID_EXERCISE;
+    static const Item CACTUS_FLESH;
+    static const Item _PROJECTILE_BLOOD_BALL;
+    static const ProjectileData DATA_PROJECTILE_BLOOD_BALL;
 
     static std::vector<const Item*> ITEMS;
 

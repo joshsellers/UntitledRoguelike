@@ -23,6 +23,10 @@ Entity(CACTOID, pos, 3.5, 2, 2, false) {
     const int hasPennyChance = 10;
     unsigned int pennyAmount = randomInt(0, 510);
     if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+
+    constexpr int hasFleshChance = 20;
+    const unsigned int fleshAmount = randomInt(0, hasFleshChance + 5);
+    if (fleshAmount >= hasFleshChance) getInventory().addItem(Item::CACTUS_FLESH.getId(), fleshAmount - hasFleshChance);
 }
 
 void Cactoid::update() {

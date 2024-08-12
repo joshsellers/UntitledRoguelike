@@ -22,13 +22,14 @@ public:
     static const OrbiterType BOWLING_BALL;
     static const OrbiterType CHEESE_SLICE;
     static const OrbiterType EYE_BALL;
+    static const OrbiterType BLOOD_BALL;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 
     OrbiterType(const unsigned int id, const std::string name, const sf::IntRect textureRect, const float orbitSpeed, const float orbitRadius, 
         const OrbiterAttackMethod attackMethod, const long long attackFrequency, const int contactDamage = 0, const bool rotateSprite = false,
         const std::string attackSoundName = "NONE", const ProjectileData projectileData = {0, 0, sf::IntRect(), false}, 
-        const std::function<void(Orbiter*)> attack = [](Orbiter* orbiterInstance) {});
+        const std::function<void(Orbiter*)> attack = [](Orbiter* orbiterInstance) {}, const bool onlyHitPlayer = false);
 
     const unsigned int getId() const;
     const std::string getName() const;
@@ -50,6 +51,8 @@ public:
 
     void attack(Orbiter* orbiterInstance) const;
 
+    const bool onlyHitPlayer() const;
+
 private:
     const unsigned int _id;
     const std::string _name;
@@ -70,6 +73,8 @@ private:
     const ProjectileData _projectileData;
 
     const std::function<void(Orbiter* orbiterInstance)> _attack;
+    
+    const bool _onlyHitPlayer = false;
 };
 
 #endif

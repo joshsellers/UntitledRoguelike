@@ -40,16 +40,36 @@ const OrbiterType OrbiterType::EYE_BALL(3, "Eye", sf::IntRect(3, 12, 1, 1), 1.5f
     }
 );
 
+const OrbiterType OrbiterType::BLOOD_BALL(4, "Blood Ball", sf::IntRect(4, 4, 1, 1), 3, 64,
+    OrbiterAttackMethod::CUSTOM, 6100LL, 0, false, "NONE", Item::DATA_PROJECTILE_BLOOD_BALL,
+    [](Orbiter* orbiterInstance) {
+        float fireAngle = randomInt(0, 360);
+        constexpr int angleCount = 8;
+        for (int i = 0; i < angleCount; i++) {
+            fireAngle += (360.f / (float)angleCount) * i;
+            float finalFireAngle = fireAngle;
+            if (finalFireAngle >= 360.f) finalFireAngle -= 360.f;
+            finalFireAngle = finalFireAngle * (M_PI / 180.f);
+
+            orbiterInstance->fireTargetedProjectile(
+                finalFireAngle, orbiterInstance->_orbiterType->getProjectileData(), orbiterInstance->_orbiterType->getAttackSoundName()
+            );
+        }
+
+        orbiterInstance->deactivate();
+    }, true
+);
+
 
 std::vector<const OrbiterType*> OrbiterType::ORBITER_TYPES;
 
 OrbiterType::OrbiterType(const unsigned int id, const std::string name, const sf::IntRect textureRect,
     const float orbitSpeed, const float orbitRadius, const OrbiterAttackMethod attackMethod, const long long attackFrequency,
     const int contactDamage, const bool rotateSprite, const std::string attackSoundName, const ProjectileData projectileData,
-    const std::function<void(Orbiter* orbiterInstance)> attack) :
+    const std::function<void(Orbiter* orbiterInstance)> attack, const bool onlyHitPlayer) :
     _id(id), _name(name), _textureRect(textureRect), _orbitSpeed(orbitSpeed), _contactDamage(contactDamage),
     _orbitRadius(orbitRadius), _attackMethod(attackMethod), _attackFrequency(attackFrequency),
-    _attackSoundName(attackSoundName), _projectileData(projectileData), _attack(attack), _rotateSprite(rotateSprite)
+    _attackSoundName(attackSoundName), _projectileData(projectileData), _attack(attack), _rotateSprite(rotateSprite), _onlyHitPlayer(onlyHitPlayer)
 {
     ORBITER_TYPES.push_back(this);
 }
@@ -100,4 +120,8 @@ const ProjectileData OrbiterType::getProjectileData() const {
 
 void OrbiterType::attack(Orbiter* orbiterInstance) const {
     return _attack(orbiterInstance);
+}
+
+const bool OrbiterType::onlyHitPlayer() const {
+    return _onlyHitPlayer;
 }

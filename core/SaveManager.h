@@ -556,6 +556,12 @@ private:
                 case CHEESE_BOSS:
                     entity = std::shared_ptr<CheeseBoss>(new CheeseBoss(pos));
                     break;
+                case FLESH_CHICKEN:
+                    entity = std::shared_ptr<FleshChicken>(new FleshChicken(pos));
+                    break;
+                case CANNON_BOSS:
+                    entity = std::shared_ptr<CannonBoss>(new CannonBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {
