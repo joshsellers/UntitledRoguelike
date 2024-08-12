@@ -6,8 +6,9 @@
 CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE * 6, TILE_SIZE * 7,
     {
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
-        BossState(BEHAVIOR_STATE::RING_OF_BLOOD, 11000LL, 12000LL)//,
-        //BossState(BEHAVIOR_STATE::TARGETED_FIRE, 5000LL, 7000LL)
+        BossState(BEHAVIOR_STATE::RING_OF_BLOOD, 11000LL, 12000LL),
+        BossState(BEHAVIOR_STATE::TARGETED_FIRE, 2000LL, 4000LL),
+        BossState(BEHAVIOR_STATE::BLASTING, 4000LL, 6000LL)
     })
 {
     setMaxHitPoints(1750);
@@ -154,8 +155,36 @@ void CannonBoss::runCurrentState() {
             break;
         }
         case TARGETED_FIRE:
+        {
+            if (currentTimeMillis() - _lastFireTimeMillis >= _fireRateMillis) {
+                sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
+                
+                const sf::Vector2f playerVel = _world->getPlayer()->getVelocity();
+                playerPos.x += playerVel.x * 4;
+                playerPos.y += playerVel.y * 4;
 
+                fireTargetedProjectile(playerPos, Item::DATA_PROJECTILE_LARGE_BLOOD_BALL, "NONE", true, getMovingDir() == DOWN);
+                _lastFireTimeMillis = currentTimeMillis();
+            }
             break;
+        }
+        case BLASTING:
+        {
+            if (currentTimeMillis() - _lastBlastTimeMillis >= _blastRateMillis) {
+                constexpr int projectilesPerBlast = 30;
+                float fireAngle = (float)randomInt(0, 360);
+                for (int i = 0; i < projectilesPerBlast; i++) {
+                    fireAngle += 360.f / projectilesPerBlast;
+                    if (fireAngle >= 360.f) fireAngle -= 360.f;
+
+                    const float fireAngleRads = fireAngle * ((float)PI / 180.f);
+                    fireTargetedProjectile(fireAngleRads, Item::DATA_PROJECTILE_LARGE_BLOOD_BALL, "NONE", true, getMovingDir() == DOWN);
+
+                    _lastBlastTimeMillis = currentTimeMillis();
+                }
+            }
+            break;
+        }
     }
 }
 

@@ -620,6 +620,16 @@ private:
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "bighp",
+            Command("Give the player a bunch of HP",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                processCommand("setmaxhp:100000000");
+                processCommand("addhp:100000000");
+                return "Player given 100000000 hit points";
+            })
         }
     };
 };

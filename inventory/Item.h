@@ -92,6 +92,9 @@ public:
     static const Item CACTUS_FLESH;
     static const Item _PROJECTILE_BLOOD_BALL;
     static const ProjectileData DATA_PROJECTILE_BLOOD_BALL;
+    static const Item _PROJECTILE_LARGE_BLOOD_BALL;
+    static const ProjectileData DATA_PROJECTILE_LARGE_BLOOD_BALL;
+    static const Item FINGER_NAIL;
 
     static std::vector<const Item*> ITEMS;
 

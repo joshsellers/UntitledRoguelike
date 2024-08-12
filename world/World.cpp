@@ -32,6 +32,7 @@
 #include "entities/CheeseBoss.h"
 #include "../statistics/StatManager.h"
 #include "entities/FleshChicken.h"
+#include "entities/CannonBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -850,10 +851,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
-            if (!UPCOMING_FEATURES_ENABLED) {
-                forest = false;
-                flesh = false;
-            }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 
@@ -1081,7 +1078,8 @@ void World::sortEntities() {
 
     std::sort(_entities.begin(), _entities.end(), 
         [](std::shared_ptr<Entity> e0, std::shared_ptr<Entity> e1) {
-            return e0->getPosition().y + e0->getSprite().getGlobalBounds().height < e1->getPosition().y + e1->getSprite().getGlobalBounds().height;
+            return e0->getPosition().y + e0->getSprite().getGlobalBounds().height < e1->getPosition().y + e1->getSprite().getGlobalBounds().height
+            || (e1->displayOnTop() && !e0->displayOnTop());
         });
 }
 
@@ -1108,6 +1106,9 @@ void World::spawnBoss(int currentWaveNumber) {
     switch (currentWaveNumber) {
         case 16:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
+            break;
+        case 32:
+            boss = std::shared_ptr<CannonBoss>(new CannonBoss(spawnPos));
             break;
     }
 

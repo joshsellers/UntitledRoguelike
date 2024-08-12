@@ -59,6 +59,7 @@ public:
     sf::Sprite getSprite() const;
 
     bool displayBottom() const;
+    bool displayOnTop() const;
 
     sf::Vector2i getSpriteSize() const;
 
@@ -139,6 +140,7 @@ protected:
     const int _spriteWidth, _spriteHeight;
 
     bool _displayBottom = false;
+    bool _displayOnTop = false;
 
     sf::Sprite _sprite;
 
@@ -171,8 +173,10 @@ protected:
     bool _isInitiallyDocile = false;
     bool _isHostile = false;
 
-    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false);
-    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false);
+    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
+        bool displayProjectileOnTop = false);
+    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
+        bool displayProjectileOnTop = false);
 
     Inventory _inventory = Inventory(this);
 

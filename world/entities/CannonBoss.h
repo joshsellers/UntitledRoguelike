@@ -18,7 +18,8 @@ protected:
     enum BEHAVIOR_STATE {
         REST,
         RING_OF_BLOOD,
-        TARGETED_FIRE
+        TARGETED_FIRE,
+        BLASTING
     };
 private:
     sf::Sprite _wavesSprite;
@@ -30,6 +31,9 @@ private:
 
     int _currentOrbiterCount = 0;
     long long _lastOrbiterSpawnTime = 0LL;
+
+    const long long _blastRateMillis = 500LL;
+    long long _lastBlastTimeMillis = 0LL;
 };
 
 #endif

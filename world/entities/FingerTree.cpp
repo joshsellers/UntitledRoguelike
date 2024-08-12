@@ -15,8 +15,7 @@ FingerTree::FingerTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteShee
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    //unsigned int woodAmount = randomInt(1, 8);
-    //getInventory().addItem(Item::WOOD.getId(), woodAmount);
+    getInventory().addItem(Item::FINGER_NAIL.getId(), 1);
 
     _displayBottom = true;
 }

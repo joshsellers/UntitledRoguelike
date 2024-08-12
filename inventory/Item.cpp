@@ -362,7 +362,7 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
 
 const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, UPCOMING_FEATURES_ENABLED,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -371,7 +371,7 @@ const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIG
 
 const Item Item::RAILGUN_DART(49, "Railgun Dart", sf::IntRect(68, 3, 1, 1), true, 9999, false,
     "Warning: warm to touch after use",
-    EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10, UPCOMING_FEATURES_ENABLED
+    EQUIPMENT_TYPE::AMMO, 15, 0, 0, sf::Vector2f(), false, 10, true
 );
 
 const Item Item::_PROJECTILE_RAILGUN_DART(50, "_RAILGUN_DART_PROJECTILE", sf::IntRect(68, 4, 1, 1), false, 0, false,
@@ -382,7 +382,7 @@ const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGU
 
 const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
     "Harness the power of electromagnets\nto solve your problems",
-    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, UPCOMING_FEATURES_ENABLED,
+    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, true,
     [](Entity* parent) {
         constexpr int railgunPassThroughCount = 5;
         fireTargetedProjectile(parent, DATA_PROJECTILE_RAILGUN_DART, "railgun", railgunPassThroughCount);
@@ -392,7 +392,7 @@ const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN
 
 const Item Item::GASOLINE(52, "Gasoline", sf::IntRect(75, 3, 1, 1), true, 99999, false,
     "Liquid dinosaur bones\nFuel for chainsaw",
-    EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, UPCOMING_FEATURES_ENABLED
+    EQUIPMENT_TYPE::AMMO, 2, 0, 0, sf::Vector2f(), false, 5, true
 );
 
 const Item Item::_PROJECITLE_CHAINSAW(53, "_CHAINSAW_PROJECTILE", sf::IntRect(75, 4, 1, 1), false, 0, false,
@@ -403,7 +403,7 @@ const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.g
 
 const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
     "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(25, 0), true, 74999, UPCOMING_FEATURES_ENABLED,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 19999, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW, "chainsaw");
         return false;
@@ -481,10 +481,22 @@ const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true
 
 const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(5, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 4, 0, 0, sf::Vector2f(), false
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 12, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_BLOOD_BALL(Item::_PROJECTILE_BLOOD_BALL.getId(), 2.5f, sf::IntRect(5, 5, 6, 6), false);
+const ProjectileData Item::DATA_PROJECTILE_BLOOD_BALL(Item::_PROJECTILE_BLOOD_BALL.getId(), 4.25f, sf::IntRect(5, 5, 6, 6), false);
+
+const Item Item::_PROJECTILE_LARGE_BLOOD_BALL(64, "_LARGE_BLOOD_BALL_PROJECTILE", sf::IntRect(4, 4, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(), 4.0f, sf::IntRect(0, 0, 16, 16), false);
+
+const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
+    "Smells weird\n\nSell it to the shopkeep for a pretty penny",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, false
+);
 
 std::vector<const Item*> Item::ITEMS;
 
@@ -704,7 +716,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CYCLOPS_EYE.getId(),                     0},
     {Item::LIQUID_EXERCISE.getId(),                 7},
     {Item::CACTUS_FLESH.getId(),                    0},
-    {Item::_PROJECTILE_BLOOD_BALL.getId(),          0}
+    {Item::_PROJECTILE_BLOOD_BALL.getId(),          0},
+    {Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(),    0},
+    {Item::FINGER_NAIL.getId(),                     0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

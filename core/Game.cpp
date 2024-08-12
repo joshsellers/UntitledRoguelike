@@ -900,7 +900,7 @@ void Game::update() {
 }
 
 void Game::displayEnemyWaveCountdownUpdates() {
-    if (currentTimeMillis() - _lastCooldownUpdateTime > 1000 && !_world.playerIsInShop() && !_isPaused) {
+    if (currentTimeMillis() - _lastCooldownUpdateTime > 1000 && !_world.playerIsInShop() && !_isPaused && !_world.bossIsActive()) {
         int secondsUntilNextWave = _world.getTimeUntilNextEnemyWave() / 1000;
 
         std::string timeRemainingString = "NONE";
