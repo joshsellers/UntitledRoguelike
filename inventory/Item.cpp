@@ -172,7 +172,7 @@ const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, P
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_PROPANE, "blowtorch");
         return false;
-    }, 750, true, 20, 2750
+    }, 500, true, 20, 2750
 );
 
 const Item Item::_PROJECTILE_SLIME_BALL(27, "_SLIMEBALL_PROJECTILE", sf::IntRect(7, 4, 1, 1), false, 0, false,
