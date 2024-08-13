@@ -407,7 +407,7 @@ const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOL
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW, "chainsaw");
         return false;
-    }, 9999, true, 75, 5000
+    }, 300, true, 75, 5000
 );
 
 const Item Item::_PROJECTILE_CHEESE_SLICE(55, "_CHEESE_SLICE_PROJECTILE", sf::IntRect(2, 11, 1, 1), false, 0, false,
