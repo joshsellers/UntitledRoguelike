@@ -69,6 +69,8 @@ public:
     void controllerButtonReleased(GAMEPAD_BUTTON button);
     void controllerButtonPressed(GAMEPAD_BUTTON button);
 
+    void toggleVisible();
+
     friend class Game;
     friend class RemotePlayer;
     friend class World;
@@ -77,6 +79,8 @@ protected:
     virtual void damage(int damage);
 
 private:
+    bool _isVisible = true;
+
     bool& _gamePaused;
 
     sf::Sprite _wavesSprite;

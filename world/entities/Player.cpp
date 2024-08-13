@@ -180,61 +180,63 @@ void Player::update() {
 }
 
 void Player::draw(sf::RenderTexture& surface) {
-    TERRAIN_TYPE terrainType = getCurrentTerrain();
-    _isSwimming =  terrainType == TERRAIN_TYPE::WATER;
+    if (_isVisible) {
+        TERRAIN_TYPE terrainType = getCurrentTerrain();
+        _isSwimming = terrainType == TERRAIN_TYPE::WATER;
 
-    if (getWorld()->playerIsInShop()) {
-        _isSwimming = false;
-        terrainType = TERRAIN_TYPE::EMPTY;
-    }
+        if (getWorld()->playerIsInShop()) {
+            _isSwimming = false;
+            terrainType = TERRAIN_TYPE::EMPTY;
+        }
 
-    if (isSwimming() && !isInBoat()) {
-        _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
+        if (isSwimming() && !isInBoat()) {
+            _sprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
-        int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
+            int xOffset = ((_numSteps >> _animSpeed) & 1) * 16;
 
-        _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2 + 8));
-        surface.draw(_wavesSprite);
-    } else if (isInBoat()) {
-        _numSteps = 0;
-        const long long boatAnimationTime = 500LL;
-        if (currentTimeMillis() - _lastTimeBoatBobbedUp < boatAnimationTime && !_gamePaused) {
-            _sprite.move(0, 1);
-            _boatSprite.move(0, 1);
-        } else if (!_gamePaused && currentTimeMillis() - _lastTimeBoatBobbedUp >= boatAnimationTime * 2) _lastTimeBoatBobbedUp = currentTimeMillis();
-    }
+            _wavesSprite.setTextureRect(sf::IntRect(xOffset, 160, 16, 16));
+            _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2 + 8));
+            surface.draw(_wavesSprite);
+        } else if (isInBoat()) {
+            _numSteps = 0;
+            const long long boatAnimationTime = 500LL;
+            if (currentTimeMillis() - _lastTimeBoatBobbedUp < boatAnimationTime && !_gamePaused) {
+                _sprite.move(0, 1);
+                _boatSprite.move(0, 1);
+            } else if (!_gamePaused && currentTimeMillis() - _lastTimeBoatBobbedUp >= boatAnimationTime * 2) _lastTimeBoatBobbedUp = currentTimeMillis();
+        }
 
-    int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
-    int yOffset = isMoving() || (isSwimming() && !isInBoat()) ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
-    _sprite.setTextureRect(sf::IntRect(
-        isDodging() && isMoving() ? xOffset : 16 * _facingDir, (_isBlinking ? 592 : 0) + 
-        (isDodging() && isMoving() ? 128 : 0 + yOffset), 
-        16, 
-        terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
-    );
+        int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
+        int yOffset = isMoving() || (isSwimming() && !isInBoat()) ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+        _sprite.setTextureRect(sf::IntRect(
+            isDodging() && isMoving() ? xOffset : 16 * _facingDir, (_isBlinking ? 592 : 0) +
+            (isDodging() && isMoving() ? 128 : 0 + yOffset),
+            16,
+            terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
+        );
 
-    if (_facingDir == UP || _facingDir == LEFT) {
-        drawTool(surface);
+        if (_facingDir == UP || _facingDir == LEFT) {
+            drawTool(surface);
 
-        surface.draw(_sprite);
+            surface.draw(_sprite);
 
-        if (!isDodging() || !isMoving()) drawEquipables(surface);
-    } else if (_facingDir == DOWN || _facingDir == RIGHT) {
-        surface.draw(_sprite);
+            if (!isDodging() || !isMoving()) drawEquipables(surface);
+        } else if (_facingDir == DOWN || _facingDir == RIGHT) {
+            surface.draw(_sprite);
 
-        if (!isDodging() || !isMoving()) drawEquipables(surface);
-        drawTool(surface);
-    }
+            if (!isDodging() || !isMoving()) drawEquipables(surface);
+            drawTool(surface);
+        }
 
-    if (isInBoat()) {
-        _boatSprite.setTextureRect(sf::IntRect(
-            (TILE_SIZE * 3) * _facingDir,
-            544,
-            TILE_SIZE * 3, TILE_SIZE * 3
-        ));
+        if (isInBoat()) {
+            _boatSprite.setTextureRect(sf::IntRect(
+                (TILE_SIZE * 3) * _facingDir,
+                544,
+                TILE_SIZE * 3, TILE_SIZE * 3
+            ));
 
-        surface.draw(_boatSprite);
+            surface.draw(_boatSprite);
+        }
     }
 }
 
@@ -826,4 +828,8 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _toolSprite.setTexture(*spriteSheet);
 
     initHairSprites(spriteSheet);
+}
+
+void Player::toggleVisible() {
+    _isVisible = !_isVisible;
 }

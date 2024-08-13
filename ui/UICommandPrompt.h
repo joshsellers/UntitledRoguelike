@@ -630,6 +630,15 @@ private:
                 processCommand("addhp:100000000");
                 return "Player given 100000000 hit points";
             })
+        },
+
+        {
+            "toggleplayer",
+            Command("Toggle player visibility",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->getPlayer()->toggleVisible();
+                return "Toggled player visibility";
+            })
         }
     };
 };

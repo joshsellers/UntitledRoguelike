@@ -1,8 +1,7 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
-// DON'T FORGET replace MAJOR_RELEASE with permanent values upon release (items, biomes)
-#define DBGBLD
+//#define DBGBLD
 
 extern unsigned int WINDOW_WIDTH, WINDOW_HEIGHT;
 extern float RELATIVE_WINDOW_SIZE;
