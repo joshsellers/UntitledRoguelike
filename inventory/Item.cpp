@@ -34,13 +34,13 @@ const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, fa
 );
 
 const Item Item::AXE(5, "Axe", sf::IntRect(18, 4, 1, 1), false, 0, false,
-    "A large, formidible axe",
+    "A large, formidible axe\nGood for cutting down trees, but not much else",
     EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 50
 );
 
 const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     "Careful! It's sharp",
-    EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false, 20
+    EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false, 20, false
 );
 
 const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9999, false,
@@ -659,7 +659,7 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::DRESS_SHOES.getId(),                     8},
     {Item::SOMBRERO.getId(),                        3},
     {Item::AXE.getId(),                             0},
-    {Item::DAGGER.getId(),                          3},
+    {Item::DAGGER.getId(),                          0},
     {Item::BULLET_455.getId(),                      3},
     {Item::HOWDAH.getId(),                          3},
     {Item::POD.getId(),                             100},
