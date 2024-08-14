@@ -40,5 +40,6 @@ void UIGamepadBindingButton::controllerButtonReleased(GAMEPAD_BUTTON button) {
         _gamepadBinding = button;
         InputBindingManager::gamePadBindingSelected(_action, _gamepadBinding);
         setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getGamepadButtonName(_gamepadBinding));
+        _isSelected = false;
     }
 }

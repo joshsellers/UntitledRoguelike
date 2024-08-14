@@ -1102,7 +1102,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();
 
-        _worldNameField->setDefaultText("My World");
+        _worldNameField->setDefaultText("New World");
         _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
         _textSeed = "NONE";
         _startMenu->show();

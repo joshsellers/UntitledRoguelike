@@ -392,7 +392,7 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
         if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
 
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
-        sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), _width + (_width / 8) * 2, _height + (_height / 8) * 2);
+        sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), (_width + (_width / 8) * 2) * 5.5f, _height + (_height / 8) * 2);
         filteredIndex++;
 
         if (itemBounds.contains(mx, my)) {

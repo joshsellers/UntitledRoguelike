@@ -32,14 +32,14 @@ void Player::update() {
             _isReloading = false;
             _magazineContents = _magContentsFilled;
 
-            _magContentsPercentage = 100;
+            _magContentsPercentage = ((float)_magazineContents / weapon->getMagazineSize()) * 100;
         } else {
             float maxAmmo = ((float)weapon->getMagazineSize()) - ((float)weapon->getMagazineSize() - (float)_magContentsFilled);
             float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / weapon->getReloadTimeMilliseconds();
 
             _magazineContents = maxAmmo * reloadProgress;
 
-            _magContentsPercentage = reloadProgress * 100;
+            _magContentsPercentage = ((float)(maxAmmo * reloadProgress) / (float)weapon->getMagazineSize()) * 100;
         }
     }
 

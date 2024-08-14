@@ -35,5 +35,6 @@ void UIKeyboardBindingButton::keyReleased(sf::Keyboard::Key& key) {
         _keyBinding = key;
         InputBindingManager::keyboardBindingSelected(_action, _keyBinding);
         setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
+        _isSelected = false;
     }
 }
