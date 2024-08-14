@@ -2,6 +2,7 @@
 #include "../core/Util.h"
 #include <fstream>
 #include "../core/MessageManager.h"
+#include "AchievementManager.h"
 
 float StatManager::getOverallStat(STATISTIC stat) {
     return _STATS_OVERALL[stat];
@@ -14,6 +15,10 @@ float StatManager::getStatThisSave(STATISTIC stat) {
 void StatManager::increaseStat(STATISTIC stat, float amt) {
     _STATS_OVERALL[stat] += amt;
     _STATS_THIS_SAVE[stat] += amt;
+
+    if (stat == PENNIES_COLLECTED && getStatThisSave(PENNIES_COLLECTED) >= 1000000) {
+        AchievementManager::getInstance().unlock(MILLIONAIRE);
+    }
 }
 
 void StatManager::loadOverallStats() {

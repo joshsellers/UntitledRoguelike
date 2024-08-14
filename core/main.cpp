@@ -11,6 +11,7 @@
 #include "../statistics/StatManager.h"
 #include "../../SteamworksHeaders/steam_api.h"
 #include "Versioning.h"
+#include "../statistics/AchievementManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -113,6 +114,7 @@ int main() {
     StatManager::loadOverallStats();
 
     steamworksSetup();
+    AchievementManager::getInstance().start();
 
     Item::checkForIncompleteItemConfigs();
 
