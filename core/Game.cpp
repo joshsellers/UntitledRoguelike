@@ -1537,10 +1537,6 @@ void Game::generateStatsString(std::string& statsString, bool overall) {
 void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
     if (pCallback->m_bActive) {
         MessageManager::displayMessage("Steam overlay opened", 2, DEBUG);
-        if (!_isPaused) {
-            if (_inventoryMenu->isActive()) toggleInventoryMenu();
-            if (_shopMenu->isActive()) toggleShopMenu();
-            togglePauseMenu();
-        }
+        interruptPause();
     } else MessageManager::displayMessage("Steam overlay closed", 2, DEBUG);
 }
