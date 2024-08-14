@@ -9,6 +9,8 @@
 #include "InputBindings.h"
 #include "Globals.h"
 #include "../statistics/StatManager.h"
+#include "../../SteamworksHeaders/steam_api.h"
+#include "Versioning.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -81,14 +83,36 @@ void checkLocalLowExists() {
     }
 }
 
+void shutdown() {
+    SteamAPI_Shutdown();
+    SoundManager::shutdown();
+    MessageManager::stop();
+    Logger::stop();
+}
+
+void steamworksSetup() {
+    /*if (SteamAPI_RestartAppIfNecessary(480)) {
+        MessageManager::displayMessage("Steam did not connect", 5, DEBUG);
+        shutdown();
+        exit(0);
+    }*/
+
+    STEAMAPI_INITIATED = SteamAPI_Init();
+
+    MessageManager::displayMessage("STEAMAPI_INITIATED: " + (std::string)(STEAMAPI_INITIATED ? "true" : "false"), 5, DEBUG);
+}
+
 int main() {
     Logger::start();
+    Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();
     InputBindingManager::init();
     SoundManager::loadSounds();
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
     StatManager::loadOverallStats();
+
+    steamworksSetup();
 
     Item::checkForIncompleteItemConfigs();
 
@@ -238,7 +262,5 @@ int main() {
         window.display();
     }
 
-    SoundManager::shutdown();
-    MessageManager::stop();
-    Logger::stop();
+    shutdown();
 }

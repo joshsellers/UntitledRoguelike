@@ -18,6 +18,8 @@ long long AUTOSAVE_INTERVAL_SECONDS = 30;
 
 bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 
+bool STEAMAPI_INITIATED = false;
+
 float PLAYER_SCORE = 1.f;
 
 bool USING_MOUSE = true;

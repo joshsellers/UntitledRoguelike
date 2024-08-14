@@ -14,6 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 #include "../ui/UILabel.h"
+#include "../../SteamworksHeaders/steam_api.h"
 
 
 const std::string GAME_NAME = "rolmi";
@@ -142,6 +143,8 @@ private:
 	long long _lastAutosaveTime = 0;
 
 	void generateStatsString(std::string& statsString, bool overall);
+
+	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };
 
 #endif 

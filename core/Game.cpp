@@ -812,6 +812,10 @@ void Game::initUI() {
 }
 
 void Game::update() {
+    if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
+        SteamAPI_RunCallbacks();
+    }
+
     if (!_world.playerIsInShop()) _shopMenu->hide();
 
     _ui->update();
@@ -1516,4 +1520,15 @@ void Game::generateStatsString(std::string& statsString, bool overall) {
 
         statsString += statName + ":  " + statString + unit + "\n_______________\n";
     }
+}
+
+void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
+    if (pCallback->m_bActive) {
+        MessageManager::displayMessage("Steam overlay opened", 2, DEBUG);
+        if (!_isPaused) {
+            if (_inventoryMenu->isActive()) toggleInventoryMenu();
+            if (_shopMenu->isActive()) toggleShopMenu();
+            togglePauseMenu();
+        }
+    } else MessageManager::displayMessage("Steam overlay closed", 2, DEBUG);
 }
