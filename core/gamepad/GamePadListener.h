@@ -7,6 +7,8 @@ class GamePadListener {
 public:
     virtual void controllerButtonReleased(GAMEPAD_BUTTON button) = 0;
     virtual void controllerButtonPressed(GAMEPAD_BUTTON button) = 0;
+
+    virtual void gamepadDisconnected() = 0;
 };
 
 #endif

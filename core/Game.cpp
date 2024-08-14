@@ -1353,6 +1353,10 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
 }
 
+void Game::gamepadDisconnected() {
+    interruptPause();
+}
+
 void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
@@ -1405,6 +1409,14 @@ void Game::toggleShopMenu() {
     }
 
     _player->_inventoryMenuIsOpen = _shopMenu->isActive();
+}
+
+void Game::interruptPause() {
+    if (!_isPaused) {
+        if (_inventoryMenu->isActive()) toggleInventoryMenu();
+        if (_shopMenu->isActive()) toggleShopMenu();
+        togglePauseMenu();
+    }
 }
 
 void Game::onPlayerDeath() {

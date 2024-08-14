@@ -39,6 +39,7 @@ public:
 
 	void controllerButtonPressed(GAMEPAD_BUTTON button);
 	void controllerButtonReleased(GAMEPAD_BUTTON button);
+	void gamepadDisconnected();
 
 	void textEntered(sf::Uint32 character);
 
@@ -134,6 +135,8 @@ private:
 	void togglePauseMenu();
 	void toggleInventoryMenu();
 	void toggleShopMenu();
+
+	void interruptPause();
 
 	void displayStartupMessages() const;
 
