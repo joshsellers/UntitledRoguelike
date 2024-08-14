@@ -82,6 +82,7 @@ public:
                 break;
             case sf::Event::JoystickDisconnected:
                 MessageManager::displayMessage("Controller disconnected", 5);
+                for (auto& listener : _listeners) listener->gamepadDisconnected();
                 break;
             case sf::Event::JoystickButtonReleased:
                 listenerButtonReleaseCallback((GAMEPAD_BUTTON)event.joystickButton.button);

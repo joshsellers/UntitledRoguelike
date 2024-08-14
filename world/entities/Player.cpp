@@ -726,6 +726,8 @@ void Player::controllerButtonPressed(GAMEPAD_BUTTON button) {
     if (!_isReloading && button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)) fireWeapon();
 }
 
+void Player::gamepadDisconnected() {}
+
 void Player::fireWeapon() {
     if (!_gamePaused &&
         getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
