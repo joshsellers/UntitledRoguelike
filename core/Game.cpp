@@ -812,6 +812,10 @@ void Game::initUI() {
 }
 
 void Game::update() {
+    if (STEAMAPI_INITIATED && SteamAPI_IsSteamRunning()) {
+        SteamAPI_RunCallbacks();
+    }
+
     if (!_world.playerIsInShop()) _shopMenu->hide();
 
     _ui->update();
@@ -1069,6 +1073,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        StatManager::resetStatsForThisSave();
+
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;
@@ -1353,6 +1359,10 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
 }
 
+void Game::gamepadDisconnected() {
+    interruptPause();
+}
+
 void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
@@ -1405,6 +1415,14 @@ void Game::toggleShopMenu() {
     }
 
     _player->_inventoryMenuIsOpen = _shopMenu->isActive();
+}
+
+void Game::interruptPause() {
+    if (!_isPaused) {
+        if (_inventoryMenu->isActive()) toggleInventoryMenu();
+        if (_shopMenu->isActive()) toggleShopMenu();
+        togglePauseMenu();
+    }
 }
 
 void Game::onPlayerDeath() {
@@ -1516,4 +1534,11 @@ void Game::generateStatsString(std::string& statsString, bool overall) {
 
         statsString += statName + ":  " + statString + unit + "\n_______________\n";
     }
+}
+
+void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
+    if (pCallback->m_bActive) {
+        MessageManager::displayMessage("Steam overlay opened", 2, DEBUG);
+        interruptPause();
+    } else MessageManager::displayMessage("Steam overlay closed", 2, DEBUG);
 }

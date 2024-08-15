@@ -14,6 +14,7 @@
 #include "../inventory/ShopManager.h"
 #include "../world/entities/ShopArrow.h"
 #include "../ui/UILabel.h"
+#include "../../SteamworksHeaders/steam_api.h"
 
 
 const std::string GAME_NAME = "rolmi";
@@ -39,6 +40,7 @@ public:
 
 	void controllerButtonPressed(GAMEPAD_BUTTON button);
 	void controllerButtonReleased(GAMEPAD_BUTTON button);
+	void gamepadDisconnected();
 
 	void textEntered(sf::Uint32 character);
 
@@ -135,6 +137,8 @@ private:
 	void toggleInventoryMenu();
 	void toggleShopMenu();
 
+	void interruptPause();
+
 	void displayStartupMessages() const;
 
 	void autoSave();
@@ -142,6 +146,8 @@ private:
 	long long _lastAutosaveTime = 0;
 
 	void generateStatsString(std::string& statsString, bool overall);
+
+	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };
 
 #endif 

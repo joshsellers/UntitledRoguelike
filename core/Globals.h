@@ -19,6 +19,8 @@ extern long long AUTOSAVE_INTERVAL_SECONDS;
 
 extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 
+extern bool STEAMAPI_INITIATED;
+
 extern float PLAYER_SCORE;
 
 extern bool USING_MOUSE;

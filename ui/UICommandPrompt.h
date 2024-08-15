@@ -24,6 +24,7 @@
 #include "../world/entities/orbiters/Orbiter.h"
 #include "../world/entities/FleshChicken.h"
 #include "../world/entities/CannonBoss.h"
+#include "../statistics/AchievementManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -638,6 +639,15 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 _world->getPlayer()->toggleVisible();
                 return "Toggled player visibility";
+            })
+        },
+
+        {
+            "resetach",
+            Command("Reset all achivements",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                AchievementManager::resetAchievements();
+                return "Attempted achievement reset";
             })
         }
     };

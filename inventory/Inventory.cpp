@@ -10,7 +10,7 @@ Inventory::Inventory(Entity* parent) :
 
 void Inventory::addItem(unsigned int itemId, unsigned int amount) {
     if (amount > 0) {
-        const Item* itemData = Item::ITEMS[itemId];;
+        const Item* itemData = Item::ITEMS[itemId];
 
         if (_inventory.size() + amount <= getMaxSize() || itemData->isStackable()) {
             for (auto& item : _inventory) {

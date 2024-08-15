@@ -30,6 +30,8 @@ void UIHandler::controllerButtonPressed(GAMEPAD_BUTTON button) {
     }
 }
 
+void UIHandler::gamepadDisconnected() {}
+
 void UIHandler::keyPressed(sf::Keyboard::Key& key) {
     for (auto& menu : _menus) {
         if (menu->isActive()) menu->keyPressed(key);

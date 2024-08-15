@@ -68,6 +68,7 @@ public:
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
     void controllerButtonPressed(GAMEPAD_BUTTON button);
+    void gamepadDisconnected();
 
     void toggleVisible();
 

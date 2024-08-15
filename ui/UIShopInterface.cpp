@@ -1,6 +1,7 @@
 #include "UIShopInterface.h"
 #include "../inventory/ShopManager.h"
 #include "../core/gamepad/GamePad.h"
+#include "../statistics/StatManager.h"
 
 UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet)
     : UIInventoryInterface(buyMode ? 2 : 76, 11, source, font, spriteSheet), _shopManager(shopManager) {
@@ -42,6 +43,7 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
 
     if (transactionWasSuccessful) {
         _source.addItem(Item::PENNY.getId(), Item::ITEMS[_source.getItemIdAt(index)]->getValue() * amount);
+        if (!_buyMode) StatManager::increaseStat(PENNIES_COLLECTED, Item::ITEMS[_source.getItemIdAt(index)]->getValue() * amount);
         _source.removeItemAt(index, amount);
     }
 }

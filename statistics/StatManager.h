@@ -16,6 +16,7 @@ public:
     static void saveOverallStats();
 
     static void setStatThisSave(STATISTIC stat, float val);
+    static void resetStatsForThisSave();
 
 private:
     inline static float _STATS_OVERALL[NUM_STATS] = {};
