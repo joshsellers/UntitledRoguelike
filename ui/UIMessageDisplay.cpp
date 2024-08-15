@@ -8,7 +8,6 @@ void UIMessageDisplay::update() {
 }
 
 void UIMessageDisplay::draw(sf::RenderTexture& surface) {
-    int index = 0;
     int lastHeight = getRelativeHeight(3.f);
     for (auto& message : MessageManager::getMessages()) {
         if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) {
@@ -37,8 +36,6 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
 
             surface.draw(background);
             surface.draw(messageText);
-
-            index++;
         }
     }
 }

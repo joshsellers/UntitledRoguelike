@@ -33,6 +33,7 @@
 #include "../statistics/StatManager.h"
 #include "entities/FleshChicken.h"
 #include "entities/CannonBoss.h"
+#include "../statistics/AchievementManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -558,10 +559,13 @@ void World::onWaveCleared() {
     if (_waveCounter != 0) {
         MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
+
+        if (getPlayer()->getHitPoints() < 10) AchievementManager::unlock(SURVIVOR);
     }
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
+    if (_currentWaveNumber == 100) AchievementManager::unlock(UNSTOPPABLE);
 
     int unlockedItemCount = 0;
     for (const auto& item : Item::ITEMS) {
@@ -1218,6 +1222,15 @@ bool World::bossIsActive() const {
 void World::bossDefeated() {
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
+
+    switch (getCurrentBoss()->getSaveId()) {
+        case CHEESE_BOSS:
+            AchievementManager::unlock(DEFEAT_CHEESEBOSS);
+            break;
+        case CANNON_BOSS:
+            AchievementManager::unlock(DEFEAT_CANNONBOSS);
+            break;
+    }
 }
 
 std::shared_ptr<Entity> World::getCurrentBoss() const {

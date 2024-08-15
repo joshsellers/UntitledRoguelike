@@ -2,6 +2,7 @@
 #include "../core/Util.h"
 #include <fstream>
 #include "../core/MessageManager.h"
+#include "AchievementManager.h"
 
 float StatManager::getOverallStat(STATISTIC stat) {
     return _STATS_OVERALL[stat];
@@ -14,6 +15,8 @@ float StatManager::getStatThisSave(STATISTIC stat) {
 void StatManager::increaseStat(STATISTIC stat, float amt) {
     _STATS_OVERALL[stat] += amt;
     _STATS_THIS_SAVE[stat] += amt;
+
+    AchievementManager::checkAchievementsOnStatIncrease(stat, getStatThisSave(stat));
 }
 
 void StatManager::loadOverallStats() {
@@ -64,4 +67,10 @@ void StatManager::saveOverallStats() {
 
 void StatManager::setStatThisSave(STATISTIC stat, float val) {
     _STATS_THIS_SAVE[stat] = val;
+}
+
+void StatManager::resetStatsForThisSave() {
+    for (int i = 0; i < NUM_STATS; i++) {
+        setStatThisSave((STATISTIC)i, 0);
+    }
 }

@@ -11,6 +11,7 @@
 #include "../statistics/StatManager.h"
 #include "../../SteamworksHeaders/steam_api.h"
 #include "Versioning.h"
+#include "../statistics/AchievementManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -113,6 +114,7 @@ int main() {
     StatManager::loadOverallStats();
 
     steamworksSetup();
+    AchievementManager::start();
 
     Item::checkForIncompleteItemConfigs();
 
@@ -183,7 +185,6 @@ int main() {
     MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
     MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
-    float time = 0;
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {
