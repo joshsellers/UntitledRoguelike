@@ -2,13 +2,14 @@
 #include "../core/MessageManager.h"
 
 void AchievementManagerInstance::start() {
+    if (!STEAMAPI_INITIATED) return;
     SteamUserStats()->RequestCurrentStats();
 }
 
 void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
     if (!STEAMAPI_INITIATED || !_achievementsReady) return;
     else if (isUnlocked(achievement)) {
-        MessageManager::displayMessage("Achievement " + AchievementManager::achievementNames.at(achievement) + " already unlocked", 2, DEBUG);
+        MessageManager::displayMessage("Achievement " + AchievementManager::achievementNames.at(achievement) + " already unlocked", 1, DEBUG);
         return;
     }
 
@@ -22,6 +23,8 @@ void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
 }
 
 void AchievementManagerInstance::resetAchievements() {
+    if (!STEAMAPI_INITIATED || !_achievementsReady) return;
+
     if (!SteamUserStats()->ResetAllStats(true)) {
         MessageManager::displayMessage("Failed to reset achievements", 5, WARN);
     } else {
@@ -60,5 +63,5 @@ void AchievementManagerInstance::onStatStored(UserStatsStored_t* pCallback) {
 }
 
 void AchievementManagerInstance::onAchievementStored(UserAchievementStored_t* pCallback) {
-    MessageManager::displayMessage("Achievment set: " + std::string(pCallback->m_rgchAchievementName), 5, DEBUG);
+    MessageManager::displayMessage("Achievement set: " + std::string(pCallback->m_rgchAchievementName), 5, DEBUG);
 }

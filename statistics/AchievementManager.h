@@ -5,9 +5,11 @@
 #include <vector>
 #include <string>
 
-constexpr int NUM_ACHIEVEMENTS = 1;
+constexpr int NUM_ACHIEVEMENTS = 3;
 enum ACHIEVEMENT {
-    MILLIONAIRE
+    MILLIONAIRE,
+    DEFEAT_CHEESEBOSS,
+    DEFEAT_CANNONBOSS
 };
 
 class AchievementManagerInstance {
@@ -36,8 +38,22 @@ public:
     }
 
     inline static const std::vector<std::string> achievementNames = {
-        "ACH_MILLIONAIRE"
+        "ACH_MILLIONAIRE",
+        "ACH_CHEESEBOSS",
+        "ACH_CANNONBOSS"
     };
+
+    static void start() {
+        getInstance().start();
+    }
+
+    static void unlock(ACHIEVEMENT achievement) {
+        getInstance().unlock(achievement);
+    }
+
+    static void resetAchievements() {
+        getInstance().resetAchievements();
+    }
 
 private:
     inline static AchievementManagerInstance _instance;

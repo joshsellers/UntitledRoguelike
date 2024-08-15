@@ -33,6 +33,7 @@
 #include "../statistics/StatManager.h"
 #include "entities/FleshChicken.h"
 #include "entities/CannonBoss.h"
+#include "../statistics/AchievementManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1218,6 +1219,15 @@ bool World::bossIsActive() const {
 void World::bossDefeated() {
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
+
+    switch (getCurrentBoss()->getSaveId()) {
+        case CHEESE_BOSS:
+            AchievementManager::unlock(DEFEAT_CHEESEBOSS);
+            break;
+        case CANNON_BOSS:
+            AchievementManager::unlock(DEFEAT_CANNONBOSS);
+            break;
+    }
 }
 
 std::shared_ptr<Entity> World::getCurrentBoss() const {

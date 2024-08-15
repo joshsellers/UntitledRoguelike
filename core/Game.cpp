@@ -1073,6 +1073,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        StatManager::resetStatsForThisSave();
+
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
         _world._enemiesSpawnedThisRound = 0;

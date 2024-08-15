@@ -114,7 +114,7 @@ int main() {
     StatManager::loadOverallStats();
 
     steamworksSetup();
-    AchievementManager::getInstance().start();
+    AchievementManager::start();
 
     Item::checkForIncompleteItemConfigs();
 

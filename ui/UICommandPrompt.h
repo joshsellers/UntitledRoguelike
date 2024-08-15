@@ -646,7 +646,7 @@ private:
             "resetach",
             Command("Reset all achivements",
             [this](std::vector<std::string>& parsedCommand)->std::string {
-                AchievementManager::getInstance().resetAchievements();
+                AchievementManager::resetAchievements();
                 return "Attempted achievement reset";
             })
         }
