@@ -474,7 +474,7 @@ const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1)
     }
 );
 
-const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, false,
+const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, true,
     "Prickly pieces\n\nHeals 6 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35, false,
     [](Entity* parent) {
