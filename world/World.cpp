@@ -559,10 +559,13 @@ void World::onWaveCleared() {
     if (_waveCounter != 0) {
         MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
+
+        if (getPlayer()->getHitPoints() < 10) AchievementManager::unlock(SURVIVOR);
     }
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
+    if (_currentWaveNumber == 100) AchievementManager::unlock(UNSTOPPABLE);
 
     int unlockedItemCount = 0;
     for (const auto& item : Item::ITEMS) {

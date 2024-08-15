@@ -185,7 +185,6 @@ int main() {
     MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
     MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
-    float time = 0;
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {

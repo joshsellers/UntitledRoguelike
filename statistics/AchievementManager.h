@@ -4,12 +4,22 @@
 #include "../../SteamworksHeaders/steam_api.h"
 #include <vector>
 #include <string>
+#include "Statistic.h"
 
-constexpr int NUM_ACHIEVEMENTS = 3;
+constexpr int NUM_ACHIEVEMENTS = 12;
 enum ACHIEVEMENT {
     MILLIONAIRE,
     DEFEAT_CHEESEBOSS,
-    DEFEAT_CANNONBOSS
+    DEFEAT_CANNONBOSS,
+    TRIATHLON,
+    MARATHON,
+    AROUND_THE_WORLD,
+    SURVIVOR,
+    BUSINESSPERSON,
+    TRIAL_AND_ERROR,
+    EXTERMINATOR,
+    UNSTOPPABLE,
+    TRIGGER_HAPPY
 };
 
 class AchievementManagerInstance {
@@ -40,7 +50,16 @@ public:
     inline static const std::vector<std::string> achievementNames = {
         "ACH_MILLIONAIRE",
         "ACH_CHEESEBOSS",
-        "ACH_CANNONBOSS"
+        "ACH_CANNONBOSS",
+        "ACH_TRIATHLON",
+        "ACH_MARATHON",
+        "ACH_AROUND_THE_WORLD",
+        "ACH_SURVIVOR",
+        "ACH_BUSINESSPERSON",
+        "ACH_TRIAL_AND_ERROR",
+        "ACH_EXTERMINATOR",
+        "ACH_UNSTOPPABLE",
+        "ACH_TRIGGER_HAPPY"
     };
 
     static void start() {
@@ -54,6 +73,8 @@ public:
     static void resetAchievements() {
         getInstance().resetAchievements();
     }
+
+    static void checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave);
 
 private:
     inline static AchievementManagerInstance _instance;

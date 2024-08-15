@@ -16,9 +16,7 @@ void StatManager::increaseStat(STATISTIC stat, float amt) {
     _STATS_OVERALL[stat] += amt;
     _STATS_THIS_SAVE[stat] += amt;
 
-    if (stat == PENNIES_COLLECTED && getStatThisSave(PENNIES_COLLECTED) >= 1000000) {
-        AchievementManager::unlock(MILLIONAIRE);
-    }
+    AchievementManager::checkAchievementsOnStatIncrease(stat, getStatThisSave(stat));
 }
 
 void StatManager::loadOverallStats() {

@@ -1,5 +1,6 @@
 #include "AchievementManager.h"
 #include "../core/MessageManager.h"
+#include "StatManager.h"
 
 void AchievementManagerInstance::start() {
     if (!STEAMAPI_INITIATED) return;
@@ -64,4 +65,28 @@ void AchievementManagerInstance::onStatStored(UserStatsStored_t* pCallback) {
 
 void AchievementManagerInstance::onAchievementStored(UserAchievementStored_t* pCallback) {
     MessageManager::displayMessage("Achievement set: " + std::string(pCallback->m_rgchAchievementName), 5, DEBUG);
+}
+
+void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave) {
+    if (stat == PENNIES_COLLECTED && valueThisSave >= 1000000) {
+        unlock(MILLIONAIRE);
+    } else if ((stat == DIST_TRAVELLED || stat == DIST_SWAM || stat == DIST_SAILED)
+        && StatManager::getStatThisSave(DIST_TRAVELLED) >= 20000
+        && StatManager::getStatThisSave(DIST_SWAM) >= 20000
+        && StatManager::getStatThisSave(DIST_SAILED) >= 20000) {
+        unlock(TRIATHLON);
+    } else if (stat == DIST_TRAVELLED && valueThisSave >= 40000000) {
+        unlock(AROUND_THE_WORLD);
+    } else if (stat == DIST_TRAVELLED && valueThisSave >= 42000) {
+        unlock(MARATHON);
+    } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
+        && StatManager::getStatThisSave(ITEMS_PURCHASED) >= 1000 && StatManager::getStatThisSave(ITEMS_SOLD) >= 1000) {
+        unlock(BUSINESSPERSON);
+    } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
+        unlock(TRIAL_AND_ERROR);
+    } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
+        unlock(EXTERMINATOR);
+    } else if (stat == SHOTS_FIRED && valueThisSave == 1000) {
+        unlock(TRIGGER_HAPPY);
+    }
 }
