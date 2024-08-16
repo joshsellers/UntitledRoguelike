@@ -97,23 +97,18 @@ void Player::update() {
     }
     const float velX = xa, velY = ya;
 
-    bool isSprinting = false;
-    if (hasSufficientStamina(SPRINT_STAMINA_COST) 
-        && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SPRINT))
-            || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SPRINT)))
-        && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) || isInBoat()) {
-        xa *= _sprintMultiplier;
-        ya *= _sprintMultiplier;
-        _animSpeed = 2;
-
-        isSprinting = true;
-        _stamina = std::max(_stamina - SPRINT_STAMINA_COST, 0);
-    } else if (!isSwimming() && isMoving()) {
+    if ((sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::WALK))
+            || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::WALK)))
+        && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isInBoat()) {
+        xa *= _slowMoveMultiplier;
+        ya *= _slowMoveMultiplier;
         _animSpeed = 3;
+    } else if (!isSwimming() && isMoving() || isInBoat()) {
+        _animSpeed = 2;
     } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
         _animSpeed = 4;
-        xa /= 2.f;
-        ya /= 2.f;
+        xa /= 4.f;
+        ya /= 4.f;
     }
 
     if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
@@ -124,7 +119,7 @@ void Player::update() {
 
         if (isMoving()) _stamina = std::max(_stamina - DODGE_STAMINA_COST, 0);
     } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
-        _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer) * _sprintMultiplier;
+        _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer);
         _dodgeTimer++;
     } else if (isDodging() && _dodgeTimer >= _maxDodgeTime) {
         _isDodging = false;
@@ -171,7 +166,7 @@ void Player::update() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    _isUsingStamina = (isSprinting && SPRINT_STAMINA_COST > 0) || isDodging();
+    _isUsingStamina = isDodging();
     if (!isUsingStamina()) {
         _stamina = std::min(_stamina + getStaminaRefreshRate(), getMaxStamina());
     }

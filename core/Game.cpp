@@ -644,7 +644,7 @@ void Game::initUI() {
 
     // keyboard
     std::shared_ptr<UIKeyboardBindingButton> sprintButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
-        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonKeyboard->setSelectionId(-1);
     _inputBindingsMenu->addElement(sprintButtonKeyboard);
@@ -687,7 +687,7 @@ void Game::initUI() {
 
     // gamepad
     std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        50.f, 12.f, 16.5f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonGamepad->setSelectionId(1);
     _inputBindingsMenu->addElement(sprintButtonGamepad);
