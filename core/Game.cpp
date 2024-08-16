@@ -1506,6 +1506,7 @@ void Game::displayStartupMessages() const {
     _cmdPrompt->processCommand("tpg");
     _cmdPrompt->processCommand("tgm");
     _cmdPrompt->processCommand("tcbm");
+    _cmdPrompt->processCommand("tas");
     /*if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
         MessageManager::displayMessage(
             "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 

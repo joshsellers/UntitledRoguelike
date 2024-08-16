@@ -837,12 +837,12 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
             sf::Vector2f tundraTemp(0.0, 0.4);
-            sf::Vector2f tundraPrec(0.1, 0.9);
+            sf::Vector2f tundraPrec(0.1, 0.6);
             
-            sf::Vector2f desertTemp(0.5, 0.6);
+            sf::Vector2f desertTemp(0.5, 0.8);
             sf::Vector2f desertPrec(0.0, 0.5);
 
-            sf::Vector2f savannaTemp(0.5, 0.6);
+            sf::Vector2f savannaTemp(0.5, 0.8);
             sf::Vector2f savannaPrec(0.5, 0.7);
 
             sf::Vector2f forestTemp(0.3, 0.6);
