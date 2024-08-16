@@ -594,7 +594,7 @@ void Game::initUI() {
         "_______________________________\n"
         "movement: WASD\n" +
         "aim: mouse\n" +
-        "sprint: shift\n" +
+        "slow-walk: shift\n" +
         "dodge: spacebar\n" +
         "shoot: left click\n" +
         "reload: R\n" +
