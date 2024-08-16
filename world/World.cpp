@@ -1154,6 +1154,7 @@ void World::resetChunks() {
         _chunks.clear();
         _currentChunk = nullptr;
         _scatterBuffer.clear();
+        _entityBuffer.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 
