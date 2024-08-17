@@ -594,7 +594,7 @@ void Game::initUI() {
         "_______________________________\n"
         "movement: WASD\n" +
         "aim: mouse\n" +
-        "sprint: shift\n" +
+        "slow-walk: shift\n" +
         "dodge: spacebar\n" +
         "shoot: left click\n" +
         "reload: R\n" +
@@ -644,7 +644,7 @@ void Game::initUI() {
 
     // keyboard
     std::shared_ptr<UIKeyboardBindingButton> sprintButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
-        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonKeyboard->setSelectionId(-1);
     _inputBindingsMenu->addElement(sprintButtonKeyboard);
@@ -687,7 +687,7 @@ void Game::initUI() {
 
     // gamepad
     std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        50.f, 12.f, 16.5f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonGamepad->setSelectionId(1);
     _inputBindingsMenu->addElement(sprintButtonGamepad);
@@ -1046,8 +1046,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _gameStarted = true;
         if (!Tutorial::isCompleted()) {
             std::string msg;
-            if (GamePad::isConnected()) msg = "Hold left bumper to sprint, press A to dodge";
-            else msg = "Hold shift to sprint, press spacebar to dodge";
+            if (GamePad::isConnected()) msg = "Press A to dodge";
+            else msg = "Press spacebar to dodge";
             MessageManager::displayMessage(msg, 15);
         }
 

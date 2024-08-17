@@ -14,7 +14,7 @@
 class InputBindingManager {
 public:
     enum class BINDABLE_ACTION : unsigned int {
-        SPRINT,
+        WALK,
         DODGE,
         RELOAD,
         SHOOT,
@@ -181,7 +181,7 @@ private:
     }
 
     inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> GAMEPAD_BINDINGS = {
-        {BINDABLE_ACTION::SPRINT, GAMEPAD_BUTTON::LEFT_BUMPER},
+        {BINDABLE_ACTION::WALK, GAMEPAD_BUTTON::LEFT_BUMPER},
         {BINDABLE_ACTION::DODGE, GAMEPAD_BUTTON::A},
         {BINDABLE_ACTION::RELOAD, GAMEPAD_BUTTON::X},
         {BINDABLE_ACTION::SHOOT, GAMEPAD_BUTTON::RIGHT_TRIGGER},
@@ -193,7 +193,7 @@ private:
     inline static std::map<BINDABLE_ACTION, GAMEPAD_BUTTON> DEFAULT_GAMEPAD_BINDINGS = GAMEPAD_BINDINGS;
 
     inline static std::map<BINDABLE_ACTION, sf::Keyboard::Key> KEYBOARD_BINDINGS = {
-        {BINDABLE_ACTION::SPRINT, sf::Keyboard::Key::LShift},
+        {BINDABLE_ACTION::WALK, sf::Keyboard::Key::LShift},
         {BINDABLE_ACTION::DODGE, sf::Keyboard::Key::Space},
         {BINDABLE_ACTION::RELOAD, sf::Keyboard::Key::R},
         {BINDABLE_ACTION::INTERACT, sf::Keyboard::Key::E},
@@ -204,7 +204,7 @@ private:
     inline static std::map<BINDABLE_ACTION, sf::Keyboard::Key> DEFAULT_KEYBOARD_BINDINGS = KEYBOARD_BINDINGS;
 
     inline static std::map<BINDABLE_ACTION, std::string> ACTION_NAMES = {
-        {BINDABLE_ACTION::SPRINT, "sprint"},
+        {BINDABLE_ACTION::WALK, "slow walk"},
         {BINDABLE_ACTION::DODGE, "dodge"},
         {BINDABLE_ACTION::RELOAD, "reload"},
         {BINDABLE_ACTION::SHOOT, "shoot"},
