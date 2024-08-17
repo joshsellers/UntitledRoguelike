@@ -740,15 +740,16 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     const double sampleRate = 0.00015 * SCALE_COEFFICIENT; // 0.0001
 
     // Terrain levels
-    const double seaLevel = 0.035;
-    const double oceanMidRange = 0.06;
-    const double oceanShallowRange = 0.09;
-    const double sandRange = 0.1;
-    const double dirtLowRange = 0.30;
-    const double dirtHighRange = 0.36;
-    const double mountainLowRange = 0.39;
-    const double mountainMidRange = 0.44;
-    const double mountainHighRange = 0.45;
+    constexpr double terrLevelSubtrahand = 0.1;
+    const double seaLevel = 0.035 - terrLevelSubtrahand;
+    const double oceanMidRange = 0.06 - terrLevelSubtrahand;
+    const double oceanShallowRange = 0.09 - terrLevelSubtrahand;
+    const double sandRange = 0.1 - terrLevelSubtrahand;
+    const double dirtLowRange = 0.30 - terrLevelSubtrahand;
+    const double dirtHighRange = 0.36 - terrLevelSubtrahand;
+    const double mountainLowRange = 0.39 - terrLevelSubtrahand;
+    const double mountainMidRange = 0.44 - terrLevelSubtrahand;
+    const double mountainHighRange = 0.45 - terrLevelSubtrahand;
 
     int chX = pos.x;
     int chY = pos.y;
