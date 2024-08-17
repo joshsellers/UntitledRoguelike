@@ -499,6 +499,8 @@ void Game::initUI() {
         "world name:", 49.5, 37, _font
     ));
     _worldNameField->setDefaultText("New World");
+    _worldNameField->setId("newworld");
+    _worldNameField->setListener(this);
     _worldNameField->setSelectionId(0);
     _newGameMenu->addElement(_worldNameField);
 
@@ -506,6 +508,8 @@ void Game::initUI() {
         "seed:", 49.5, 48, _font
     ));
     _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
+    _seedField->setId("seed");
+    _seedField->setListener(this);
     _seedField->setSelectionId(1);
     _newGameMenu->addElement(_seedField);
 
@@ -809,6 +813,9 @@ void Game::initUI() {
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
     _ui->addMenu(_commandMenu);
+
+    // Virtual keyboard
+    initVirtualKeyboard();
 }
 
 void Game::update() {
@@ -1004,6 +1011,7 @@ void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
     } else if (buttonCode == "newgame") {
+        enableGamepadInput(_newGameMenu);
         _newGameMenu->show();
         _startMenu->hide();
     } else if (buttonCode == "startnewgame") {
@@ -1031,6 +1039,8 @@ void Game::buttonPressed(std::string buttonCode) {
         else _world._newGameCooldownLength = 15000LL;
         _world.startNewGameCooldown();
 
+        _virtualKeyboardMenu_lower->hide();
+        _virtualKeyboardMenu_upper->hide();
         _newGameMenu->hide();
         _HUDMenu->show();
         _magazineMeter->hide();
@@ -1055,6 +1065,9 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
+
+        _virtualKeyboardMenu_lower->hide();
+        _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
         _bossHUDMenu->hide();
 
@@ -1279,6 +1292,45 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_stats_main") {
         _statsMenu_mainMenu->hide();
         _startMenu->show();
+    } else if (stringStartsWith(buttonCode, "textfieldarmedbygamepad:")) {
+        disableGamepadInput(_newGameMenu);
+        _virtualKeyboardMenu_lower->show();
+        _armedTextFieldId = splitString(buttonCode, ":")[1];
+    } else if (stringStartsWith(buttonCode, "virtkey:")) {
+        std::string key = splitString(buttonCode, ":")[1];
+
+        auto enterCharacter = [&](char character) {
+            std::shared_ptr<UITextField> field = nullptr;
+            if (_armedTextFieldId == _worldNameField->getId()) {
+                field = _worldNameField;
+            } else if (_armedTextFieldId == _seedField->getId()) {
+                field = _seedField;
+            }
+
+            if (field != nullptr) {
+                field->textEntered(character);
+            }
+        };
+
+        if (key == "done") {
+            _virtualKeyboardMenu_lower->hide();
+            _virtualKeyboardMenu_upper->hide();
+            enableGamepadInput(_newGameMenu);
+        } else if (key == "caps") {
+            if (_virtualKeyboardMenu_lower->isActive()) {
+                _virtualKeyboardMenu_lower->hide();
+                _virtualKeyboardMenu_upper->show();
+            } else if (_virtualKeyboardMenu_upper->isActive()) {
+                _virtualKeyboardMenu_upper->hide();
+                _virtualKeyboardMenu_lower->show();
+            }
+        } else if (key == "back") {
+            enterCharacter('\b');
+        } else if (key == "space") {
+            enterCharacter(' ');
+        } else {
+            enterCharacter(key.at(0));
+        }
     }
 }
 
@@ -1354,6 +1406,16 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         toggleInventoryMenu();
     } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
         toggleShopMenu();
+    } else if (button == GAMEPAD_BUTTON::LEFT_STICK || button == GAMEPAD_BUTTON::RIGHT_STICK) {
+        if (_virtualKeyboardMenu_lower->isActive()) {
+            _virtualKeyboardMenu_lower->hide();
+            _virtualKeyboardMenu_upper->show();
+        } else if (_virtualKeyboardMenu_upper->isActive()) {
+            _virtualKeyboardMenu_upper->hide();
+            _virtualKeyboardMenu_lower->show();
+        }
+    } else if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
+        buttonPressed("virtkey:back");
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
@@ -1541,4 +1603,82 @@ void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
         MessageManager::displayMessage("Steam overlay opened", 2, DEBUG);
         interruptPause();
     } else MessageManager::displayMessage("Steam overlay closed", 2, DEBUG);
+}
+
+void Game::disableGamepadInput(std::shared_ptr<UIMenu> menu) {
+    menu->useGamepadConfiguration = false;
+    for (auto& element : menu->getElements()) {
+        element->blockControllerInput = true;
+    }
+}
+
+void Game::enableGamepadInput(std::shared_ptr<UIMenu> menu) {
+    menu->useGamepadConfiguration = true;
+    for (auto& element : menu->getElements()) {
+        element->blockControllerInput = false;
+    }
+}
+
+void Game::initVirtualKeyboard() {
+    const std::string row0_lower = "1234567890-=\b";
+    const std::string row0_upper = "!@#$%^&*()_+\b";
+    const std::string row1_lower = " qwertyuiop[]";
+    const std::string row1_upper = " QWERTYUIOP{}";
+    const std::string row2_lower = " asdfghjkl;'€";
+    const std::string row2_upper = " ASDFGHJKL:\"€";
+    const std::string row3_lower = "§ zxcvbnm,./ ";
+    const std::string row3_upper = "§ ZXCVBNM<>? ";
+
+    const std::vector<std::string> lowerRows = {row0_lower, row1_lower, row2_lower, row3_lower};
+    const std::vector<std::string> upperRows = {row0_upper, row1_upper, row2_upper, row3_upper };
+
+    constexpr float keyboaryX = 18.f;
+    constexpr float keyboardY = 60.f;
+    const std::vector<sf::Vector2f> rowCoords = { {
+            keyboaryX, keyboardY}, {keyboaryX, keyboardY + 8.f}, {keyboaryX, keyboardY + 15.f}, {keyboaryX, keyboardY + 22.f} 
+    };
+
+    std::shared_ptr<UIButton> spaceBar = std::shared_ptr<UIButton>(new UIButton(
+        45, 93, 10, 3, "space", _font, this, "virtkey:space"
+    ));
+    spaceBar->setSelectionId(4 * 13);
+    _virtualKeyboardMenu_lower->addElement(spaceBar);
+    _virtualKeyboardMenu_upper->addElement(spaceBar);
+
+    auto initKeyboard = [&](std::shared_ptr<UIMenu> keyboard, const std::vector<std::string> rows) {
+        constexpr float keyWidth = 5.f;
+        constexpr float keyHeight = 5.f;
+        std::vector<std::vector<int>> grid;
+        for (int row = 0; row < rows.size(); row++) {
+            grid.push_back({});
+
+            const float x = rowCoords.at(row).x;
+            const float y = rowCoords.at(row).y;
+            for (int i = 0; i < rows.at(row).length(); i++) {
+                const std::string rowString = rows.at(row);
+                std::string character(1, rowString.at(i));
+
+                if (character == "\b") character = "back";
+                else if (character == "€") character = "done";
+                else if (character == "§") character = "caps";
+
+                std::shared_ptr<UIButton> keyButton = std::shared_ptr<UIButton>(new UIButton(
+                    x + keyWidth * i, y, keyWidth, keyHeight, character, _font, this, "virtkey:" + character
+                ));
+                keyButton->setSelectionId(i + row * 13);
+                grid.at(row).push_back(keyButton->getSelectionId());
+
+                keyboard->addElement(keyButton);
+            }
+        }
+        grid.push_back({ {spaceBar->getSelectionId()} });
+
+        keyboard->useGamepadConfiguration = true;
+        keyboard->defineSelectionGrid(grid);
+
+        _ui->addMenu(keyboard);
+    };
+
+    initKeyboard(_virtualKeyboardMenu_lower, lowerRows);
+    initKeyboard(_virtualKeyboardMenu_upper, upperRows);
 }
