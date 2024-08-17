@@ -28,7 +28,7 @@ void DamageParticle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
         sprite.setTextureRect(
             sf::IntRect(std::stoi(character) * TILE_SIZE, 30 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         );
-        sprite.setPosition(getPosition().x + 8 * i - (damageString.length() * 8), getPosition().y - TILE_SIZE);
+        sprite.setPosition(getPosition().x + 12 * i - (damageString.length() * 12), getPosition().y - TILE_SIZE);
         
         sprite.setColor(sf::Color(0xF50000FF));
 
