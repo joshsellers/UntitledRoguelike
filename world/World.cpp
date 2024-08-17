@@ -724,7 +724,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
-    constexpr float TERRAIN_SCALE = 0.75;//0.75;
+    constexpr float TERRAIN_SCALE = 0;//0.75;
     const float SCALE_COEFFICIENT = std::pow(10, TERRAIN_SCALE);
 
     long long startTime = 0;
@@ -736,19 +736,19 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     // Generator properties
     constexpr int octaves = 4;
     const double warpSize = 4;
-    const double warpStrength = 0.8;
-    const double sampleRate = 0.0001 * SCALE_COEFFICIENT; // 0.0001
+    const double warpStrength = 1.2;
+    const double sampleRate = 0.00015 * SCALE_COEFFICIENT; // 0.0001
 
     // Terrain levels
-    const double seaLevel = -0.2;
-    const double oceanMidRange = -0.1;
-    const double oceanShallowRange = 0;
-    const double sandRange = 0.05;
-    const double dirtLowRange = 0.3;
-    const double dirtHighRange = 0.65;
-    const double mountainLowRange = 0.7;
-    const double mountainMidRange = 0.8;
-    const double mountainHighRange = 0.7;
+    const double seaLevel = 0.035;
+    const double oceanMidRange = 0.06;
+    const double oceanShallowRange = 0.09;
+    const double sandRange = 0.1;
+    const double dirtLowRange = 0.30;
+    const double dirtHighRange = 0.36;
+    const double mountainLowRange = 0.39;
+    const double mountainMidRange = 0.44;
+    const double mountainHighRange = 0.45;
 
     int chX = pos.x;
     int chY = pos.y;
@@ -771,13 +771,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 warpSize * ((double)x * sampleRate * 2),
                 warpSize * ((double)y * sampleRate * 2), octaves
             );*/
-            double warpNoise = fractal->GenSingle2D((float)x * sampleRate * 2, (float)y * sampleRate * 2, _seed);
+            double warpNoise = fractal->GenSingle2D(warpSize * ((float)x * sampleRate * 2), warpSize * ((float)y * sampleRate * 2), _seed);
 
             /*double warpNoise2 = perlin.octave2D_11(
                 warpSize * ((double)x * sampleRate * 4),
                 warpSize * ((double)y * sampleRate * 4), octaves
             );*/
-            double warpNoise2 = fractal->GenSingle2D((float)x * sampleRate * 4, (float)y * sampleRate * 4, _seed);
+            double warpNoise2 = fractal->GenSingle2D(warpSize * ((float)x * sampleRate * 4), warpSize * ((float)y * sampleRate * 4), _seed);
 
             /*double val = perlin.octave3D_11(
                 (x)*sampleRate, (y)*sampleRate,
