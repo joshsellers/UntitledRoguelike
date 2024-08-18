@@ -52,6 +52,7 @@ private:
 	bool _isPaused = false;
 
 	bool _gameStarted = false;
+	bool _gameLoading = false;
 	
 	long long _lastCooldownUpdateTime = 0;
 	void displayEnemyWaveCountdownUpdates();
@@ -118,6 +119,8 @@ private:
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
 	sf::Text _coinMagnetCountLabel;
+
+	sf::Text _loadingStatusLabel;
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;

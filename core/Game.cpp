@@ -73,6 +73,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _coinMagnetCountLabel.setString("magnets: ");
     _coinMagnetCountLabel.setPosition(0, 225);
 
+    _loadingStatusLabel.setFont(_font);
+    _loadingStatusLabel.setCharacterSize(UIElement::getRelativeWidth(3.f));
+    _loadingStatusLabel.setString("loading...");
+    _loadingStatusLabel.setPosition(UIElement::getRelativePos(44, 50));
+
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
@@ -906,6 +911,13 @@ void Game::update() {
         }
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
+    } else if (!_isPaused && !_gameStarted && _gameLoading) {
+        // ! This needs to be _chunkBuffer when crash fix is implemented
+        if (_world._chunks.size() == 4) {
+            _gameLoading = false;
+            _gameStarted = true;
+            _HUDMenu->show();
+        }
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
@@ -947,6 +959,17 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(startMenuBg);
 
         _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+
+        if (_gameLoading) {
+            std::string loadingString = "";
+            int elipsesCount = ((_frameCounter / 15) % 4);
+            for (int i = 0; i < elipsesCount; i++) {
+                loadingString += ".";
+            }
+            _loadingStatusLabel.setString("loading" + loadingString);
+            surface.draw(_loadingStatusLabel);
+            _frameCounter++;
+        }
     }
 
     if (!_hideUI) {
@@ -1042,7 +1065,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
         _newGameMenu->hide();
-        _HUDMenu->show();
+        //_HUDMenu->show();
         _magazineMeter->hide();
 
         std::shared_ptr<DroppedItem> droppedSlimeBall 
@@ -1053,7 +1076,8 @@ void Game::buttonPressed(std::string buttonCode) {
         droppedSlimeBall->loadSprite(_world.getSpriteSheet());
         _world.addEntity(droppedSlimeBall);
 
-        _gameStarted = true;
+        //_gameStarted = true;
+        _gameLoading = true;
         if (!Tutorial::isCompleted()) {
             std::string msg;
             if (GamePad::isConnected()) msg = "Press A to dodge";
@@ -1074,6 +1098,7 @@ void Game::buttonPressed(std::string buttonCode) {
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
         _gameStarted = false;
+        _gameLoading = false;
         _isPaused = false;
         _pauseMenu->hide();
         _HUDMenu->hide();
@@ -1222,10 +1247,11 @@ void Game::buttonPressed(std::string buttonCode) {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
 
-            _HUDMenu->show();
+            //_HUDMenu->show();
             _magazineMeter->hide();
 
-            _gameStarted = true;
+            //_gameStarted = true;
+            _gameLoading = true;
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
@@ -1385,7 +1411,7 @@ void Game::mouseButtonPressed(const int mx, const int my, const int button) {
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
     _ui->mouseButtonReleased(mx, my, button);
-    if (!_inventoryMenu->isActive() && !_shopMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
+    if (!_inventoryMenu->isActive() && !_shopMenu->isActive() && _gameStarted) _player->mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {

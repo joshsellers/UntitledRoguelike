@@ -44,9 +44,9 @@ public:
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
             saveStats(out);
+            savePlayerData(out);
             saveWorldData(out);
             saveShopData(out);
-            savePlayerData(out);
             saveEntityData(out);
 
             out.close();
