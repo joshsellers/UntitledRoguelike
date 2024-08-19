@@ -12,6 +12,7 @@
 #include "../../SteamworksHeaders/steam_api.h"
 #include "Versioning.h"
 #include "../statistics/AchievementManager.h"
+#include "CrashDetector.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -88,6 +89,10 @@ void shutdown() {
     SteamAPI_Shutdown();
     SoundManager::shutdown();
     MessageManager::stop();
+    Logger::log("SHUTDOWN");
+    while (!Logger::queuesHaveFlushed()) {
+        sf::sleep(sf::milliseconds(500));
+    }
     Logger::stop();
 }
 
@@ -103,7 +108,22 @@ void steamworksSetup() {
     MessageManager::displayMessage("STEAMAPI_INITIATED: " + (std::string)(STEAMAPI_INITIATED ? "true" : "false"), 5, DEBUG);
 }
 
+void checkCrash() {
+    CrashData crashData = CrashDetector::checkForCrash();
+
+    if (crashData.probableCrash) {
+        MessageManager::displayMessage("Crash detected", 5, DEBUG);
+        if (crashData.autoSaveTimeString != "NONE" && crashData.saveFileName != "NONE") {
+            MessageManager::displayMessage("It looks like rolmi did not shut down\ncorrectly last time.", 15);
+            MessageManager::displayMessage(
+                "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
+            );
+        }
+    }
+}
+
 int main() {
+    checkCrash();
     Logger::start();
     Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();

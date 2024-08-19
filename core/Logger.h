@@ -51,6 +51,14 @@ public:
         else _deferredMessageQueue.push(message);
     }
 
+    static const std::string getLogFileName() {
+        return _logFileName;
+    }
+
+    static bool queuesHaveFlushed() {
+        return _messageQueue.empty() && _deferredMessageQueue.empty();
+    }
+
 private:
     inline static std::queue<std::string> _messageQueue;
     inline static std::queue<std::string> _deferredMessageQueue;
