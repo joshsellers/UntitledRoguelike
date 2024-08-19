@@ -640,20 +640,25 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    const int shopSpawnRate = 5000000;
-    const int grassSpawnRate = 5000;
-    const int smallTreeSpawnRate = 37500;
-    const int cactusSpawnRate = 200000;
-    const int smallSavannaTreeSpawnRate = 200000;
-    const int largeSavannaTreeSpawnRate = 250000;
-    const int smallTundraTreeSpawnRate = 300000;
-    const int fingerTreeSpawnRate = 175000;
-    const int forestSmallTreeSpawnRate = 4000;
+    constexpr float chanceCoefficient = 0.005f;
+    constexpr int shopSpawnRate = 5000000 * chanceCoefficient;
+    constexpr int grassSpawnRate = 5000 * chanceCoefficient;
+    constexpr int smallTreeSpawnRate = 37500 * chanceCoefficient;
+    constexpr int cactusSpawnRate = 200000 * chanceCoefficient;
+    constexpr int smallSavannaTreeSpawnRate = 200000 * chanceCoefficient;
+    constexpr int largeSavannaTreeSpawnRate = 250000 * chanceCoefficient;
+    constexpr int smallTundraTreeSpawnRate = 300000 * chanceCoefficient;
+    constexpr int fingerTreeSpawnRate = 175000 * chanceCoefficient;
+    constexpr int forestSmallTreeSpawnRate = 4000 * chanceCoefficient;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
-    for (int y = chY; y < chY + CHUNK_SIZE; y++) {
-        for (int x = chX; x < chX + CHUNK_SIZE; x++) {
+    for (int yTile = chY; yTile < chY + CHUNK_SIZE; yTile += TILE_SIZE) {
+        for (int xTile = chX; xTile < chX + CHUNK_SIZE; xTile += TILE_SIZE) {
+            boost::random::uniform_int_distribution tileOffset(0, TILE_SIZE - 1);
+            int x = xTile + tileOffset(gen);
+            int y = yTile + tileOffset(gen);
+
             int dX = x - chX;
             int dY = y - chY;
 
