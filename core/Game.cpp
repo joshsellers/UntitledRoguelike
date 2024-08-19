@@ -912,7 +912,7 @@ void Game::update() {
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
     } else if (!_isPaused && !_gameStarted && _gameLoading) {
-        // ! This needs to be _chunkBuffer when crash fix is implemented
+        _world.dumpChunkBuffer();
         if (_world._chunks.size() == 4) {
             _gameLoading = false;
             _gameStarted = true;
