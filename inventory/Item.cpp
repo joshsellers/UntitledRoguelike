@@ -47,7 +47,7 @@ const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false, 50
 );
-const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large handgun",
@@ -119,7 +119,7 @@ const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 
     "Heavier than a pistol round\nFor use with rifles",
     EQUIPMENT_TYPE::AMMO, 6, 0, 0, sf::Vector2f(), false, 70
 );
-const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
@@ -144,7 +144,7 @@ const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", s
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
@@ -164,7 +164,7 @@ const Item Item::_PROJECTILE_PROPANE(25, "_PROPANE_PROJECTILE", sf::IntRect(50, 
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 3, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, false, 83, true, 3, 0);
+const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, true, 83, true, 3, 0);
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
     "It's a blow torch, but it\nseems like something's broken...",
@@ -276,9 +276,9 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Increases damage multiplier juuust a little bit",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 499, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 599, true,
     [](Entity* parent) {
-        parent->increaseDamageMultiplier(0.02f);
+        parent->increaseDamageMultiplier(0.1f);
         return true;
     }
 );

@@ -214,6 +214,7 @@ private:
     void eraseChunks(int pX, int pY);
     void findCurrentChunk(int pX, int pY);
     void loadNewChunks(int pX, int pY);
+    void dumpChunkBuffer();
 
     void removeInactiveEntitiesFromSubgroups();
     long long _lastEntityRemovalTime = 0;
@@ -226,7 +227,9 @@ private:
     bool chunkContains(const Chunk& chunk, sf::Vector2f pos) const;
 
     sf::Image generateChunkTerrain(Chunk& chunk);
+    std::queue<Chunk> _chunkBuffer;
     void generateChunkScatters(Chunk& chunk);
+    bool _loadingScatters = false;
 
     sf::Font _font; // TEMP
 

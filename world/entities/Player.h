@@ -10,7 +10,7 @@ constexpr int PLAYER_WIDTH = 16;
 constexpr int PLAYER_HEIGHT = 32;
 
 constexpr bool GODMODE = false;
-constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 1;
+constexpr float BASE_PLAYER_SPEED = GODMODE ? 8 : 2;
 constexpr bool NO_MOVEMENT_RESTRICIONS = GODMODE;
 
 constexpr int INITIAL_MAX_STAMINA = 1000;
@@ -110,7 +110,7 @@ private:
 
     virtual TERRAIN_TYPE getCurrentTerrain();
 
-    float _sprintMultiplier = 2;
+    const float _slowMoveMultiplier = 0.5f;
 
     long long _lastTimeBoatBobbedUp = 0;
 

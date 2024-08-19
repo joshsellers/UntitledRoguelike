@@ -2,6 +2,7 @@
 #define _UI_TEXT_FIELD_H
 
 #include "UIElement.h"
+#include "UIButtonListener.h"
 
 class UITextField : public UIElement {
 public:
@@ -26,7 +27,13 @@ public:
     std::string getText() const;
 
     void setCharacterSize(float size);
+
+    void setId(std::string id);
+    const std::string getId() const;
+    void setListener(UIButtonListener* listener);
 private:
+    std::string _id = "";
+
     sf::Text _label;
     sf::RectangleShape _bg;
 
@@ -36,6 +43,8 @@ private:
     bool _lastSelected = false;
 
     bool _isArmed = false;
+
+    UIButtonListener* _listener = nullptr;
 };
 
 #endif

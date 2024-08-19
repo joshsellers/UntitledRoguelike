@@ -78,6 +78,8 @@ void UITextField::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (_isSelected && button == GAMEPAD_BUTTON::A) {
         _mouseDown = false;
         _isArmed = true;
+
+        if (_listener != nullptr) _listener->buttonPressed("textfieldarmedbygamepad:" + getId());
     }
 }
 
@@ -111,4 +113,16 @@ std::string UITextField::getText() const {
 void UITextField::setCharacterSize(float size) {
     _text.setCharacterSize(getRelativeWidth(size));
     _label.setCharacterSize(getRelativeWidth(size));
+}
+
+void UITextField::setId(std::string id) {
+    _id = id;
+}
+
+const std::string UITextField::getId() const {
+    return _id;
+}
+
+void UITextField::setListener(UIButtonListener* listener) {
+    _listener = listener;
 }
