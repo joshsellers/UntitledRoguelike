@@ -149,6 +149,8 @@ private:
 
 	void displayStartupMessages() const;
 
+	void startLoading();
+
 	void autoSave();
 	long long _lastAutosaveTime = 0;
 

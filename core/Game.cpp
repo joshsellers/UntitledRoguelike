@@ -14,6 +14,7 @@
 #include "InputBindings.h"
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
+#include <boost/random/uniform_int_distribution.hpp>
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1083,10 +1084,7 @@ void Game::buttonPressed(std::string buttonCode) {
         droppedSlimeBall->loadSprite(_world.getSpriteSheet());
         _world.addEntity(droppedSlimeBall);
 
-        //_gameStarted = true;
-        _gameLoading = true;
-        _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
-        _frameCounter = 0;
+        startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
             if (GamePad::isConnected()) msg = "Press A to dodge";
@@ -1259,10 +1257,7 @@ void Game::buttonPressed(std::string buttonCode) {
             //_HUDMenu->show();
             _magazineMeter->hide();
 
-            //_gameStarted = true;
-            _gameLoading = true; 
-            _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
-            _frameCounter = 0;
+            startLoading();
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
@@ -1594,6 +1589,16 @@ void Game::onPlayerDeath() {
     }
 
     _lastPlayerDeathCallTime = currentTimeMillis();
+}
+
+void Game::startLoading() {
+    _gameLoading = true;
+
+    boost::random::mt19937 gen = boost::random::mt19937();
+    gen.seed(currentTimeMillis());
+    boost::random::uniform_int_distribution<> messageDist(0, _loadingScreenMessages.size() - 1);
+    _loadingScreenMessageIndex = messageDist(gen);
+    _frameCounter = 0;
 }
 
 void Game::loadLoadingScreenMessages() {
