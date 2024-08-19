@@ -837,7 +837,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const double xOffset = 20000. / SCALE_COEFFICIENT; //20000.
             const double yOffset = 20000. / SCALE_COEFFICIENT;
             const int biomeOctaves = 2;
-            const double biomeSampleRate = 0.000007 * SCALE_COEFFICIENT; // 0.00001;
+            const double biomeSampleRate = 0.00001 * SCALE_COEFFICIENT; // 0.00001;
             /*double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);*/
 
@@ -851,16 +851,16 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
             sf::Vector2f tundraTemp(0.0, 0.4);
-            sf::Vector2f tundraPrec(0.1, 0.6);
+            sf::Vector2f tundraPrec(0.1, 0.5);
             
-            sf::Vector2f desertTemp(0.5, 0.8);
-            sf::Vector2f desertPrec(0.0, 0.5);
+            sf::Vector2f desertTemp(0.5, 0.9);
+            sf::Vector2f desertPrec(0.0, 0.4);
 
             sf::Vector2f savannaTemp(0.5, 0.8);
-            sf::Vector2f savannaPrec(0.5, 0.7);
+            sf::Vector2f savannaPrec(0.4, 0.8);
 
-            sf::Vector2f forestTemp(0.3, 0.6);
-            sf::Vector2f forestPrec(0.5, 0.9);
+            sf::Vector2f forestTemp(0.3, 0.5);
+            sf::Vector2f forestPrec(0.5, 0.8);
 
             bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
             bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
