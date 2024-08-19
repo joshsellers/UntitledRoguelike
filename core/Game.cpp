@@ -100,6 +100,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     initUI();
 
+    loadLoadingScreenMessages();
+
     displayStartupMessages();
 }
 
@@ -961,12 +963,17 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
 
         if (_gameLoading) {
-            std::string loadingString = "";
-            int elipsesCount = ((_frameCounter / 15) % 4);
+            std::string elipsesString = "";
+            int elipsesCount = ((_frameCounter / 20) % 4);
             for (int i = 0; i < elipsesCount; i++) {
-                loadingString += ".";
+                elipsesString += ".";
             }
-            _loadingStatusLabel.setString("loading" + loadingString);
+
+            if (randomInt(0, 2000) == 0) _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+
+            _loadingStatusLabel.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex) + elipsesString);
+            float labelWidth = _loadingStatusLabel.getGlobalBounds().width;
+            _loadingStatusLabel.setPosition(UIElement::getRelativeWidth(50) - labelWidth / 2, UIElement::getRelativeHeight(50));
             surface.draw(_loadingStatusLabel);
             _frameCounter++;
         }
@@ -1078,6 +1085,8 @@ void Game::buttonPressed(std::string buttonCode) {
 
         //_gameStarted = true;
         _gameLoading = true;
+        _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+        _frameCounter = 0;
         if (!Tutorial::isCompleted()) {
             std::string msg;
             if (GamePad::isConnected()) msg = "Press A to dodge";
@@ -1251,7 +1260,9 @@ void Game::buttonPressed(std::string buttonCode) {
             _magazineMeter->hide();
 
             //_gameStarted = true;
-            _gameLoading = true;
+            _gameLoading = true; 
+            _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+            _frameCounter = 0;
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
@@ -1583,6 +1594,26 @@ void Game::onPlayerDeath() {
     }
 
     _lastPlayerDeathCallTime = currentTimeMillis();
+}
+
+void Game::loadLoadingScreenMessages() {
+    const std::string path = "res/lsm.txt";
+    std::ifstream in(path);
+
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find lsm.txt", 5, WARN);
+        in.close();
+    } else {
+        std::string line;
+        while (getline(in, line)) {
+            _loadingScreenMessages.push_back(line);
+        }
+        in.close();
+    }
+
+    _loadingScreenMessages.push_back("loading");
+
+    _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
 }
 
 void Game::textEntered(sf::Uint32 character) {

@@ -121,6 +121,9 @@ private:
 	sf::Text _coinMagnetCountLabel;
 
 	sf::Text _loadingStatusLabel;
+	std::vector<std::string> _loadingScreenMessages;
+	int _loadingScreenMessageIndex = 0;
+	void loadLoadingScreenMessages();
 
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;
