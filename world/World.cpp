@@ -205,7 +205,7 @@ void World::draw(sf::RenderTexture& surface) {
         }
     }
 
-    AbilityManager::drawAbilities(_player.get(), surface);
+    if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
 }
 
 void World::spawnMobs() {
