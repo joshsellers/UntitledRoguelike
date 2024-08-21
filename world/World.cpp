@@ -34,6 +34,7 @@
 #include "entities/FleshChicken.h"
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
+#include "../inventory/abilities/AbilityManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -104,6 +105,8 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
+        AbilityManager::updateAbilities(_player.get());
+
         removeInactiveEntitiesFromSubgroups();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
@@ -201,6 +204,8 @@ void World::draw(sf::RenderTexture& surface) {
             }
         }
     }
+
+    AbilityManager::drawAbilities(_player.get(), surface);
 }
 
 void World::spawnMobs() {

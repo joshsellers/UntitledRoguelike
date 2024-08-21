@@ -1118,6 +1118,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;

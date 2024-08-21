@@ -25,6 +25,8 @@
 #include "../world/entities/FleshChicken.h"
 #include "../world/entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
+#include "../inventory/abilities/Ability.h"
+#include "../inventory/abilities/AbilityManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -85,7 +87,7 @@ private:
                         return "Player given Spencer's outfit";
                     } else if (parsedCommand.at(1) == "matmura") {
                         processCommand("give:" + std::to_string(Item::MATMURA_HELMET.getId()));
-                        processCommand("give:" + std::to_string(Item::MATMURA_CHESTPLATE.getId())); 
+                        processCommand("give:" + std::to_string(Item::MATMURA_CHESTPLATE.getId()));
                         processCommand("give:" + std::to_string(Item::MATMURA_LEGGINGS.getId()));
                         processCommand("give:" + std::to_string(Item::MATMURA_BOOTS.getId()));
                         return "Player given Matmura armor";
@@ -648,6 +650,65 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 AchievementManager::resetAchievements();
                 return "Attempted achievement reset";
+            })
+        },
+
+        {
+            "giveability",
+            Command("Give the player an ability",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    for (const auto& ability : Ability::ABILITIES) {
+                        std::string abilityName = ability->getName();
+                        boost::to_lower(abilityName);
+                        if (abilityName == parsedCommand[1]) {
+                            AbilityManager::givePlayerAbility(ability->getId());
+                            return "Player given ability \"" + parsedCommand[1] + "\"";
+                        }
+                    }
+
+                    return "No ability named " + parsedCommand[1];
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "sap",
+            Command("Set a parameter for an ability",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 4) {
+                    for (const auto& ability : Ability::ABILITIES) {
+                        std::string abilityName = ability->getName();
+                        boost::to_lower(abilityName);
+                        if (abilityName == parsedCommand[1]) {
+                            for (const auto& parameter : ability->getParameters()) {
+                                std::string parameterName = parameter.first;
+                                boost::to_lower(parameterName);
+                                if (parameterName == parsedCommand[2]) {
+                                    float value = 0.f;
+                                    try {
+                                        value = std::stof(parsedCommand[3]);
+                                        if (AbilityManager::setParameter(ability->getId(), parameterName, value)) {
+                                            return "Parameter \"" + parameterName + "\" set to " + std::to_string(value) + " for ability \"" + ability->getName() + "\"";
+                                        } else {
+                                            return "Player does not have ability \"" + ability->getName() + "\"";
+                                        }
+                                    } catch (std::exception ex) {
+                                        return ex.what();
+                                    }
+                                }
+                            }
+
+                            return "No parameter named " + parsedCommand[2] + " for ability " + parsedCommand[1];
+                        }
+                    }
+
+                    return "No ability named " + parsedCommand[1];
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

@@ -8,6 +8,8 @@
 #include <filesystem>
 #include "Versioning.h"
 #include "../statistics/StatManager.h"
+#include "../inventory/abilities/AbilityManager.h"
+#include "../inventory/abilities/Ability.h"
 
 class SaveManager {
 public:
@@ -46,6 +48,7 @@ public:
             saveStats(out);
             savePlayerData(out);
             saveWorldData(out);
+            saveAbilities(out);
             saveShopData(out);
             saveEntityData(out);
 
@@ -156,6 +159,19 @@ private:
             out << "SEENSHOPS";
             for (auto& shop : _world->_seenShops) {
                 out << ":" << std::to_string(shop.x) << "," << std::to_string(shop.y);
+            }
+            out << std::endl;
+        }
+    }
+
+    static void saveAbilities(std::ofstream& out) {
+        for (const auto& ability : Ability::ABILITIES) {
+            out << "ABILITY:"
+                << std::to_string(ability->getId())
+                << ":" << std::to_string(ability->playerHasAbility());
+
+            for (auto& parameter : ability->getParameters()) {
+                out << ":" << parameter.first << "," << std::to_string(parameter.second);
             }
             out << std::endl;
         }
@@ -342,6 +358,22 @@ private:
         } else if (header == "STATS") {
             for (int i = 0; i < data.size(); i++) {
                 StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+            }
+        } else if (header == "ABILITY") {
+            const unsigned int id = std::stoul(data[0]);
+            const bool playerHasAbility = data[1] == "1";
+            if (playerHasAbility) AbilityManager::givePlayerAbility(id);
+            if (data.size() > 2) {
+                for (int i = 2; i < data.size(); i++) {
+                    const std::vector<std::string> parameter = splitString(data[i], ",");
+                    if (parameter.size() == 2) {
+                        const std::string key = parameter[0];
+                        const float value = std::stof(parameter[1]);
+                        AbilityManager::setParameter(id, key, value);
+                    } else {
+                        MessageManager::displayMessage("Bad ability parameter data: " + std::to_string(parameter.size()), 5, WARN);
+                    }
+                }
             }
         } else if (header == "DESTROYEDPROPS") {
             for (auto& propPosData : data) {
