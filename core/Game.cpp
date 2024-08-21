@@ -973,7 +973,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
             if (randomInt(0, 2000) == 0) _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
 
             _loadingStatusLabel.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex) + elipsesString);
-            float labelWidth = _loadingStatusLabel.getGlobalBounds().width;
+            sf::Text messageWithoutElipses = _loadingStatusLabel;
+            messageWithoutElipses.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex));
+            float labelWidth = messageWithoutElipses.getGlobalBounds().width;
             _loadingStatusLabel.setPosition(UIElement::getRelativeWidth(50) - labelWidth / 2, UIElement::getRelativeHeight(50));
             surface.draw(_loadingStatusLabel);
             _frameCounter++;
