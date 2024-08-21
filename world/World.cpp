@@ -737,7 +737,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
-    constexpr float TERRAIN_SCALE = 3;//0.75;
+    constexpr float TERRAIN_SCALE = 0;//0.75;
     const float SCALE_COEFFICIENT = std::pow(10, TERRAIN_SCALE);
 
     long long startTime = 0;
