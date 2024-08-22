@@ -78,6 +78,8 @@ public:
 
 private:
     inline static AchievementManagerInstance _instance;
+
+    inline static int _wavesWithoutDamage = 0;
 };
 
 #endif

@@ -7,7 +7,7 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
         if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
             float maxRadius = ability->getParameter("radius");
             float radius = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
-            MessageManager::displayMessage(radius, 0, DEBUG);
+
             if (radius == 0) {
                 ability->setParameter("anim", 0);
                 ability->_hitEntities.clear();
