@@ -34,16 +34,13 @@
 #include "entities/FleshChicken.h"
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
+#include "../inventory/abilities/AbilityManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
     _player->setWorld(this);
 
     _entities.push_back(_player);
-
-    if (!_font.loadFromFile("res/font.ttf")) {
-        MessageManager::displayMessage("Failed to load font!", 10, WARN);
-    }
 }
 
 void World::init(unsigned int seed) {
@@ -104,6 +101,8 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
+        AbilityManager::updateAbilities(_player.get());
+
         removeInactiveEntitiesFromSubgroups();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
@@ -149,13 +148,6 @@ void World::draw(sf::RenderTexture& surface) {
             chunkoutline.setOutlineThickness(2);
             chunkoutline.setPosition(chunk.pos);
             surface.draw(chunkoutline);
-
-            sf::Text idlabel;
-            idlabel.setFont(_font);
-            idlabel.setCharacterSize(10);
-            idlabel.setString(std::to_string(chunk.id));
-            idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-            surface.draw(idlabel);
         }
     }
 
@@ -201,6 +193,8 @@ void World::draw(sf::RenderTexture& surface) {
             }
         }
     }
+
+    if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
 }
 
 void World::spawnMobs() {

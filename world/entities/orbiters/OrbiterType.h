@@ -23,6 +23,7 @@ public:
     static const OrbiterType CHEESE_SLICE;
     static const OrbiterType EYE_BALL;
     static const OrbiterType BLOOD_BALL;
+    static const OrbiterType SPIKE_BALL;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

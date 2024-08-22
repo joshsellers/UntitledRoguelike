@@ -231,8 +231,6 @@ private:
     void generateChunkScatters(Chunk& chunk);
     bool _loadingScatters = false;
 
-    sf::Font _font; // TEMP
-
     unsigned int _seed;
 
     boost::random::mt19937 gen = boost::random::mt19937();

@@ -7,6 +7,8 @@
 #include "../world/entities/Dog.h"
 #include "../core/Tutorial.h"
 #include "../statistics/StatManager.h"
+#include "abilities/AbilityManager.h"
+#include "abilities/Ability.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -505,6 +507,48 @@ const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, false
 );
 
+const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
+    "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5000, true,
+    [](Entity* parent) {
+        const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
+        if (!AbilityManager::givePlayerAbility(abilityId)) {
+            int parameterChoice = randomInt(0, 2);
+            if (parameterChoice == 2 && AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75) {
+                parameterChoice = randomInt(0, 1);
+            }
+
+            const std::string keys[3] = {"damage", "radius", "expansion rate"};
+            float increment = 0.f;
+
+            if (parameterChoice == 0) {
+                increment = 1;
+            } else if (parameterChoice == 1) {
+                increment = randomInt(5, 10);
+            } else if (parameterChoice == 2) {
+                increment = (float)randomInt(10, 50) / 100;
+            }
+
+            AbilityManager::setParameter(abilityId, keys[parameterChoice], AbilityManager::getParameter(abilityId, keys[parameterChoice]) + increment);
+
+            MessageManager::displayMessage("Increased bad vibes " + keys[parameterChoice] + " by " + trimString(std::to_string(increment)), 5);
+        }
+        return true;
+    }
+);
+
+const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0, true,
+    "Concentrated impaling", 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
+    [](Entity* parent) {
+        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SPIKE_BALL.getId(), parent));
+        spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
+        spikeBall->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(spikeBall);
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
@@ -725,7 +769,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CACTUS_FLESH.getId(),                    0},
     {Item::_PROJECTILE_BLOOD_BALL.getId(),          0},
     {Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(),    0},
-    {Item::FINGER_NAIL.getId(),                     0}
+    {Item::FINGER_NAIL.getId(),                     0},
+    {Item::BAD_VIBES_POTION.getId(),                11},
+    {Item::SPIKE_BALL.getId(),                      14}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

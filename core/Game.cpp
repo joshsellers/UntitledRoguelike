@@ -973,7 +973,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
             if (randomInt(0, 2000) == 0) _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
 
             _loadingStatusLabel.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex) + elipsesString);
-            float labelWidth = _loadingStatusLabel.getGlobalBounds().width;
+            sf::Text messageWithoutElipses = _loadingStatusLabel;
+            messageWithoutElipses.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex));
+            float labelWidth = messageWithoutElipses.getGlobalBounds().width;
             _loadingStatusLabel.setPosition(UIElement::getRelativeWidth(50) - labelWidth / 2, UIElement::getRelativeHeight(50));
             surface.draw(_loadingStatusLabel);
             _frameCounter++;
@@ -1076,13 +1078,16 @@ void Game::buttonPressed(std::string buttonCode) {
         //_HUDMenu->show();
         _magazineMeter->hide();
 
-        std::shared_ptr<DroppedItem> droppedSlimeBall 
+        constexpr size_t numStartingItems = 3;
+        const unsigned int startingItems[numStartingItems] = { Item::SLIME_BALL.getId(), Item::SPIKE_BALL.getId(), Item::BAD_VIBES_POTION.getId() };
+        const Item* startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : &Item::SLIME_BALL);
+        std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
-                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, startingItem->getId(), 1, startingItem->getTextureRect())
               );
-        droppedSlimeBall->setWorld(&_world);
-        droppedSlimeBall->loadSprite(_world.getSpriteSheet());
-        _world.addEntity(droppedSlimeBall);
+        startingItemDropped->setWorld(&_world);
+        startingItemDropped->loadSprite(_world.getSpriteSheet());
+        _world.addEntity(startingItemDropped);
 
         startLoading();
         if (!Tutorial::isCompleted()) {
@@ -1118,6 +1123,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;
@@ -1638,6 +1644,7 @@ void Game::autoSave() {
         SaveManager::saveGame(false);
         _lastAutosaveTime = currentTimeMillis();
         MessageManager::displayMessage("Autosaved", 0, DEBUG);
+        MessageManager::displayMessage(">>" + splitString(SaveManager::getCurrentSaveFileName(), ".")[0] + ">>SFN", 0, DEBUG);
     }
 }
 

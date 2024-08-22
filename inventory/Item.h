@@ -95,6 +95,8 @@ public:
     static const Item _PROJECTILE_LARGE_BLOOD_BALL;
     static const ProjectileData DATA_PROJECTILE_LARGE_BLOOD_BALL;
     static const Item FINGER_NAIL;
+    static const Item BAD_VIBES_POTION;
+    static const Item SPIKE_BALL;
 
     static std::vector<const Item*> ITEMS;
 
