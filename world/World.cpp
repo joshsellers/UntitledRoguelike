@@ -41,10 +41,6 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
     _player->setWorld(this);
 
     _entities.push_back(_player);
-
-    if (!_font.loadFromFile("res/font.ttf")) {
-        MessageManager::displayMessage("Failed to load font!", 10, WARN);
-    }
 }
 
 void World::init(unsigned int seed) {
@@ -152,13 +148,6 @@ void World::draw(sf::RenderTexture& surface) {
             chunkoutline.setOutlineThickness(2);
             chunkoutline.setPosition(chunk.pos);
             surface.draw(chunkoutline);
-
-            sf::Text idlabel;
-            idlabel.setFont(_font);
-            idlabel.setCharacterSize(10);
-            idlabel.setString(std::to_string(chunk.id));
-            idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-            surface.draw(idlabel);
         }
     }
 

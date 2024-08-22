@@ -46,7 +46,10 @@ private:
     const std::function<void(Player*, Ability*) > _update;
     const std::function<void(Player*, Ability*, sf::RenderTexture&)> _draw;
 
+    // Some of these are specific to certain abilities
     long long _lastAttackTimeMillis = 0LL;
+
+    std::vector<std::string> _hitEntities;
 };
 
 #endif

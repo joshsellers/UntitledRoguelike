@@ -1,17 +1,33 @@
 #include "Ability.h"
 #include "../../world/World.h"
 
-const Ability Ability::DAMAGE_AURA(0, "Damage Aura", 
-    { {"damage", 1.f}, {"radius", 64.f}, {"damagefreq", 1000.f} },
+const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
+    { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansionspeed", 1.f} },
     [](Player* player, Ability* ability) {
-        bool attacked = false;
-        for (auto& enemy : player->getWorld()->getEnemies()) {
-            if (enemy->isActive()) {
-                if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
+        if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
+            float maxRadius = ability->getParameter("radius");
+            float radius = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
+            if (radius == 0) {
+                ability->setParameter("anim", 0);
+                ability->_hitEntities.clear();
+            }
+
+            bool attacked = false;
+            for (auto& enemy : player->getWorld()->getEnemies()) {
+                if (enemy->isActive()) {
+                    bool alreadyHit = false;
+                    for (const auto& uid : ability->_hitEntities) {
+                        if (uid == enemy->getUID()) {
+                            alreadyHit = true;
+                            break;
+                        }
+                    }
+                    if (alreadyHit) continue;
+
                     sf::Vector2f playerCenter = player->getPosition();
                     playerCenter.x += (float)TILE_SIZE / 2;
                     playerCenter.y += (float)TILE_SIZE;
-    
+
                     const sf::FloatRect enemyHitBox = enemy->getHitBox();
                     const std::vector<sf::Vector2f> corners = {
                         {enemyHitBox.left, enemyHitBox.top},
@@ -23,9 +39,8 @@ const Ability Ability::DAMAGE_AURA(0, "Damage Aura",
                     for (const auto& corner : corners) {
                         float dx = std::abs(corner.x - playerCenter.x);
                         float dy = std::abs(corner.y - playerCenter.y);
-                        float radius = ability->getParameter("radius");
 
-                        bool hit = false;
+                        bool hit = false; 
 
                         if (dx > radius || dy > radius) continue;
                         else if (dx + dy <= radius) {
@@ -37,26 +52,44 @@ const Ability Ability::DAMAGE_AURA(0, "Damage Aura",
                         if (hit) {
                             enemy->takeDamage(ability->getParameter("damage"));
                             attacked = true;
+                            ability->_hitEntities.push_back(enemy->getUID());
                             break;
                         }
                     }
                 }
             }
+
+            if (attacked) ability->_lastAttackTimeMillis = currentTimeMillis();
         }
 
-        if (attacked) ability->_lastAttackTimeMillis = currentTimeMillis();
+        ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansionspeed"));
     },
 
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {
-        sf::CircleShape circle;
-        circle.setRadius(ability->getParameter("radius"));
-        circle.setFillColor(sf::Color(0xFF000011));
+        //sf::CircleShape circle;
+        //circle.setRadius(ability->getParameter("radius"));
+        //circle.setFillColor(sf::Color(0xFF000011));
+
+        float maxRadius = ability->getParameter("radius");
+
         sf::Vector2f playerCenter = player->getPosition();
         playerCenter.x += (float)TILE_SIZE / 2;
         playerCenter.y += (float)TILE_SIZE;
-        circle.setPosition(sf::Vector2f(playerCenter.x - circle.getRadius(), playerCenter.y - circle.getRadius()));
+        //circle.setPosition(sf::Vector2f(playerCenter.x - circle.getRadius(), playerCenter.y - circle.getRadius()));
 
-        surface.draw(circle);
+        //surface.draw(circle);
+
+        float pulseRad = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
+
+        sf::CircleShape pulse;
+        pulse.setRadius(pulseRad);
+        pulse.setFillColor(sf::Color(0xFF000011));
+        pulse.setOutlineColor(sf::Color(0xFF000033));
+        pulse.setOutlineThickness(1);
+        pulse.setOrigin(pulseRad, pulseRad);
+        pulse.setPosition(playerCenter);
+
+        surface.draw(pulse);
     }
 );
 
