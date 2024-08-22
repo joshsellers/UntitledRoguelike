@@ -60,6 +60,10 @@ const OrbiterType OrbiterType::BLOOD_BALL(4, "Blood Ball", sf::IntRect(4, 4, 1, 
     }, true
 );
 
+const OrbiterType OrbiterType::SPIKE_BALL(5, "Spike Ball", sf::IntRect(6, 37, 2, 2), 2, 64,
+    OrbiterAttackMethod::CONTACT, 500LL, 7
+);
+
 
 std::vector<const OrbiterType*> OrbiterType::ORBITER_TYPES;
 

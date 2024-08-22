@@ -2,13 +2,16 @@
 #include "../../world/World.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
-    { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansionspeed", 1.f} },
+    { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
     [](Player* player, Ability* ability) {
         if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
             float maxRadius = ability->getParameter("radius");
             float radius = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
+            MessageManager::displayMessage(radius, 0, DEBUG);
             if (radius == 0) {
                 ability->setParameter("anim", 0);
+                ability->_hitEntities.clear();
+            } else if (radius < 5) {
                 ability->_hitEntities.clear();
             }
 
@@ -62,22 +65,15 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
             if (attacked) ability->_lastAttackTimeMillis = currentTimeMillis();
         }
 
-        ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansionspeed"));
+        ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansion rate"));
     },
 
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {
-        //sf::CircleShape circle;
-        //circle.setRadius(ability->getParameter("radius"));
-        //circle.setFillColor(sf::Color(0xFF000011));
-
         float maxRadius = ability->getParameter("radius");
 
         sf::Vector2f playerCenter = player->getPosition();
         playerCenter.x += (float)TILE_SIZE / 2;
         playerCenter.y += (float)TILE_SIZE;
-        //circle.setPosition(sf::Vector2f(playerCenter.x - circle.getRadius(), playerCenter.y - circle.getRadius()));
-
-        //surface.draw(circle);
 
         float pulseRad = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
 
