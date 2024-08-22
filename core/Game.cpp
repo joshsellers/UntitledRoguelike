@@ -107,8 +107,9 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 }
 
 void Game::initUI() {
-    // Title screen background;
-    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg.png", 0, 0, 0, _font, 100.f, 100.f, false));
+    // Title screen background
+    int tsBgIndex = randomInt(0, 8);
+    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg/bg_" + std::to_string(tsBgIndex) + ".png", 0, 0, 0, _font, 100.f, 100.f, false));
     _titleScreenBackground->show();
 
 
