@@ -862,6 +862,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
+            if (flesh && _seed != 124959026) {
+                AchievementManager::unlock(FLESHY);
+            }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 
