@@ -146,7 +146,10 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
             && getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED
             && Item::ITEMS[getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) emptyAmmoMagazine(equipType);
 
-        if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) return;
+        if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) {
+            MessageManager::displayMessage("You can only equip the boat in the water silly", 5);
+            return;
+        }
         _equippedItems[(int)equipType] = index;
     }
 }

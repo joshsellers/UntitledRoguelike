@@ -57,6 +57,14 @@ bool stringStartsWith(std::string str, std::string start) {
     return str.rfind(start, 0) == 0;
 }
 
+bool stringEndsWith(std::string const& fullString, std::string const& ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
+
 std::string generateUID() {
     static std::random_device              rd;
     static std::mt19937                    gen(rd());

@@ -116,21 +116,28 @@ public:
         return messageCount;
     }
 
+    static bool isPurging() {
+        return _isPurging;
+    }
+
 private:
     inline static std::vector<std::shared_ptr<Message>> _messages;
 
     inline static bool _isHalted = false;
+    inline static bool _isPurging = false;
 
     static void manageMessages() {
         while (!_isHalted) {
             std::this_thread::sleep_for(std::chrono::milliseconds(PURGE_INTERVAL_SECONDS * 1000));
 
+            _isPurging = true;
             for (int i = 0; i < _messages.size(); i++) {
                 auto& message = _messages[i];
                 if (!message->active) {
                     _messages.erase(_messages.begin() + i);
                 }
             }
+            _isPurging = false;
         }
     }
 

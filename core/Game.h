@@ -52,6 +52,7 @@ private:
 	bool _isPaused = false;
 
 	bool _gameStarted = false;
+	bool _gameLoading = false;
 	
 	long long _lastCooldownUpdateTime = 0;
 	void displayEnemyWaveCountdownUpdates();
@@ -79,6 +80,8 @@ private:
 	std::shared_ptr<UIMenu> _bossHUDMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _statsMenu_mainMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _statsMenu_pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _virtualKeyboardMenu_lower = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _virtualKeyboardMenu_upper = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UILabel> _overallStatsLabel_mainMenu;
 	std::shared_ptr<UILabel> _overallStatsLabel_pauseMenu;
@@ -117,6 +120,11 @@ private:
 	sf::Text _currentBiomeLabel;
 	sf::Text _coinMagnetCountLabel;
 
+	sf::Text _loadingStatusLabel;
+	std::vector<std::string> _loadingScreenMessages;
+	int _loadingScreenMessageIndex = 0;
+	void loadLoadingScreenMessages();
+
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;
 	
@@ -141,9 +149,15 @@ private:
 
 	void displayStartupMessages() const;
 
-	void autoSave();
+	void startLoading();
 
+	void autoSave();
 	long long _lastAutosaveTime = 0;
+
+	void disableGamepadInput(std::shared_ptr<UIMenu> menu);
+	void enableGamepadInput(std::shared_ptr<UIMenu> menu);
+	void initVirtualKeyboard();
+	std::string _armedTextFieldId = "";
 
 	void generateStatsString(std::string& statsString, bool overall);
 

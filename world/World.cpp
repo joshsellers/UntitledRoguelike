@@ -34,16 +34,13 @@
 #include "entities/FleshChicken.h"
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
+#include "../inventory/abilities/AbilityManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
     _player->setWorld(this);
 
     _entities.push_back(_player);
-
-    if (!_font.loadFromFile("res/font.ttf")) {
-        MessageManager::displayMessage("Failed to load font!", 10, WARN);
-    }
 }
 
 void World::init(unsigned int seed) {
@@ -91,6 +88,8 @@ void World::loadChunksAroundPlayer() {
 
 void World::update() {
     if (!_isPlayerInShop) {
+        dumpChunkBuffer();
+
         if (getActiveChunkCount() == 0 && _loadingChunks.size() == 0) loadChunksAroundPlayer();
 
         if (!disableMobSpawning) {
@@ -102,6 +101,8 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
+        AbilityManager::updateAbilities(_player.get());
+
         removeInactiveEntitiesFromSubgroups();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
@@ -147,13 +148,6 @@ void World::draw(sf::RenderTexture& surface) {
             chunkoutline.setOutlineThickness(2);
             chunkoutline.setPosition(chunk.pos);
             surface.draw(chunkoutline);
-
-            sf::Text idlabel;
-            idlabel.setFont(_font);
-            idlabel.setCharacterSize(10);
-            idlabel.setString(std::to_string(chunk.id));
-            idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-            surface.draw(idlabel);
         }
     }
 
@@ -199,6 +193,8 @@ void World::draw(sf::RenderTexture& surface) {
             }
         }
     }
+
+    if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
 }
 
 void World::spawnMobs() {
@@ -363,7 +359,7 @@ int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
 }
 
 void World::purgeScatterBuffer() {
-    if (_scatterBuffer.size() != 0 && _loadingChunks.size() == 0) {
+    if (!_loadingScatters && _scatterBuffer.size() != 0 && _loadingChunks.size() == 0) {
         for (auto& entity : _scatterBuffer) {
             _entities.push_back(entity);
         }
@@ -542,6 +538,13 @@ void World::loadNewChunks(int pX, int pY) {
     }
 }
 
+void World::dumpChunkBuffer() {
+    while (!_chunkBuffer.empty()) {
+        _chunks.push_back(_chunkBuffer.front());
+        _chunkBuffer.pop();
+    }
+}
+
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
@@ -599,7 +602,7 @@ void World::buildChunk(sf::Vector2f pos) {
     chunk.texture->update(generateChunkTerrain(chunk));
     chunk.sprite.setTexture(*chunk.texture);
     chunk.sprite.setPosition(chunk.pos);
-    _chunks.push_back(chunk);
+    _chunkBuffer.push(chunk);
 
     _mutex.unlock();
 
@@ -626,6 +629,8 @@ bool World::chunkContains(const Chunk& chunk, sf::Vector2f pos) const {
 }
 
 void World::generateChunkScatters(Chunk& chunk) {
+    _loadingScatters = true;
+
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
@@ -647,8 +652,7 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND
-                && terrainType != TERRAIN_TYPE::FLESH) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
@@ -720,6 +724,8 @@ void World::generateChunkScatters(Chunk& chunk) {
             }
         }
     }
+
+    _loadingScatters = false;
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
@@ -855,6 +861,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
+            if (flesh && _seed != 124959026) {
+                AchievementManager::unlock(FLESHY);
+            }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 
@@ -978,7 +987,9 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (defer) _entityBuffer.push_back(entity);
     else _entities.push_back(entity);
 
-    if (entity->isEnemy()) _enemies.push_back(entity);
+    if (entity->isEnemy()) {
+        _enemies.push_back(entity);
+    }
 
     if (entity->isMob() && (!entity->isEnemy() || entity->isInitiallyDocile())) entity->shouldUseDormancyRules(true);
 
@@ -1151,9 +1162,12 @@ void World::reseed(const unsigned int seed) {
 
 void World::resetChunks() {
     if (_loadingChunks.size() == 0) {
+        while (!_chunkBuffer.empty()) _chunkBuffer.pop();
+
         _chunks.clear();
         _currentChunk = nullptr;
         _scatterBuffer.clear();
+        _entityBuffer.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 

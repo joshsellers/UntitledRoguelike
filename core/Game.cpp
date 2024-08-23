@@ -14,6 +14,7 @@
 #include "InputBindings.h"
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
+#include <boost/random/uniform_int_distribution.hpp>
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -73,6 +74,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _coinMagnetCountLabel.setString("magnets: ");
     _coinMagnetCountLabel.setPosition(0, 225);
 
+    _loadingStatusLabel.setFont(_font);
+    _loadingStatusLabel.setCharacterSize(UIElement::getRelativeWidth(3.f));
+    _loadingStatusLabel.setString("loading...");
+    _loadingStatusLabel.setPosition(UIElement::getRelativePos(44, 50));
+
 
     _spriteSheet->create(128, 208);
     if (!_spriteSheet->loadFromFile("res/sprite_sheet.png")) {
@@ -95,12 +101,15 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     initUI();
 
+    loadLoadingScreenMessages();
+
     displayStartupMessages();
 }
 
 void Game::initUI() {
-    // Title screen background;
-    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg.png", 0, 0, 0, _font, 100.f, 100.f, false));
+    // Title screen background
+    int tsBgIndex = randomInt(0, 8);
+    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg/bg_" + std::to_string(tsBgIndex) + ".png", 0, 0, 0, _font, 100.f, 100.f, false));
     _titleScreenBackground->show();
 
 
@@ -499,6 +508,8 @@ void Game::initUI() {
         "world name:", 49.5, 37, _font
     ));
     _worldNameField->setDefaultText("New World");
+    _worldNameField->setId("newworld");
+    _worldNameField->setListener(this);
     _worldNameField->setSelectionId(0);
     _newGameMenu->addElement(_worldNameField);
 
@@ -506,6 +517,8 @@ void Game::initUI() {
         "seed:", 49.5, 48, _font
     ));
     _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
+    _seedField->setId("seed");
+    _seedField->setListener(this);
     _seedField->setSelectionId(1);
     _newGameMenu->addElement(_seedField);
 
@@ -594,7 +607,7 @@ void Game::initUI() {
         "_______________________________\n"
         "movement: WASD\n" +
         "aim: mouse\n" +
-        "sprint: shift\n" +
+        "slow-walk: shift\n" +
         "dodge: spacebar\n" +
         "shoot: left click\n" +
         "reload: R\n" +
@@ -644,7 +657,7 @@ void Game::initUI() {
 
     // keyboard
     std::shared_ptr<UIKeyboardBindingButton> sprintButtonKeyboard = std::shared_ptr<UIKeyboardBindingButton>(new UIKeyboardBindingButton(
-        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        18.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonKeyboard->setSelectionId(-1);
     _inputBindingsMenu->addElement(sprintButtonKeyboard);
@@ -687,7 +700,7 @@ void Game::initUI() {
 
     // gamepad
     std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SPRINT
+        50.f, 12.f, 16.5f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
     sprintButtonGamepad->setSelectionId(1);
     _inputBindingsMenu->addElement(sprintButtonGamepad);
@@ -809,6 +822,9 @@ void Game::initUI() {
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
     _ui->addMenu(_commandMenu);
+
+    // Virtual keyboard
+    initVirtualKeyboard();
 }
 
 void Game::update() {
@@ -899,6 +915,13 @@ void Game::update() {
         }
     } else if (_isPaused && _gameStarted) {
         _world.incrementEnemySpawnCooldownTimeWhilePaused();
+    } else if (!_isPaused && !_gameStarted && _gameLoading) {
+        _world.dumpChunkBuffer();
+        if (_world._chunks.size() == 4) {
+            _gameLoading = false;
+            _gameStarted = true;
+            _HUDMenu->show();
+        }
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
 }
@@ -940,6 +963,24 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(startMenuBg);
 
         _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+
+        if (_gameLoading) {
+            std::string elipsesString = "";
+            int elipsesCount = ((_frameCounter / 20) % 4);
+            for (int i = 0; i < elipsesCount; i++) {
+                elipsesString += ".";
+            }
+
+            if (randomInt(0, 2000) == 0) _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+
+            _loadingStatusLabel.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex) + elipsesString);
+            sf::Text messageWithoutElipses = _loadingStatusLabel;
+            messageWithoutElipses.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex));
+            float labelWidth = messageWithoutElipses.getGlobalBounds().width;
+            _loadingStatusLabel.setPosition(UIElement::getRelativeWidth(50) - labelWidth / 2, UIElement::getRelativeHeight(50));
+            surface.draw(_loadingStatusLabel);
+            _frameCounter++;
+        }
     }
 
     if (!_hideUI) {
@@ -1004,6 +1045,7 @@ void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
     } else if (buttonCode == "newgame") {
+        enableGamepadInput(_newGameMenu);
         _newGameMenu->show();
         _startMenu->hide();
     } else if (buttonCode == "startnewgame") {
@@ -1031,23 +1073,28 @@ void Game::buttonPressed(std::string buttonCode) {
         else _world._newGameCooldownLength = 15000LL;
         _world.startNewGameCooldown();
 
+        _virtualKeyboardMenu_lower->hide();
+        _virtualKeyboardMenu_upper->hide();
         _newGameMenu->hide();
-        _HUDMenu->show();
+        //_HUDMenu->show();
         _magazineMeter->hide();
 
-        std::shared_ptr<DroppedItem> droppedSlimeBall 
+        constexpr size_t numStartingItems = 3;
+        const unsigned int startingItems[numStartingItems] = { Item::SLIME_BALL.getId(), Item::SPIKE_BALL.getId(), Item::BAD_VIBES_POTION.getId() };
+        const Item* startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : &Item::SLIME_BALL);
+        std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
-                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, startingItem->getId(), 1, startingItem->getTextureRect())
               );
-        droppedSlimeBall->setWorld(&_world);
-        droppedSlimeBall->loadSprite(_world.getSpriteSheet());
-        _world.addEntity(droppedSlimeBall);
+        startingItemDropped->setWorld(&_world);
+        startingItemDropped->loadSprite(_world.getSpriteSheet());
+        _world.addEntity(startingItemDropped);
 
-        _gameStarted = true;
+        startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
-            if (GamePad::isConnected()) msg = "Hold left bumper to sprint, press A to dodge";
-            else msg = "Hold shift to sprint, press spacebar to dodge";
+            if (GamePad::isConnected()) msg = "Press A to dodge";
+            else msg = "Press spacebar to dodge";
             MessageManager::displayMessage(msg, 15);
         }
 
@@ -1055,12 +1102,16 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
+
+        _virtualKeyboardMenu_lower->hide();
+        _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
         _bossHUDMenu->hide();
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
         _gameStarted = false;
+        _gameLoading = false;
         _isPaused = false;
         _pauseMenu->hide();
         _HUDMenu->hide();
@@ -1073,6 +1124,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;
@@ -1209,10 +1261,10 @@ void Game::buttonPressed(std::string buttonCode) {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
 
-            _HUDMenu->show();
+            //_HUDMenu->show();
             _magazineMeter->hide();
 
-            _gameStarted = true;
+            startLoading();
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
@@ -1246,6 +1298,10 @@ void Game::buttonPressed(std::string buttonCode) {
 
         _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
+
+        if (VSYNC_ENABLED) {
+            MessageManager::displayMessage("WARNING:\nThere may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+        }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
         _inputBindingsMenu->show();
@@ -1279,6 +1335,45 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_stats_main") {
         _statsMenu_mainMenu->hide();
         _startMenu->show();
+    } else if (stringStartsWith(buttonCode, "textfieldarmedbygamepad:")) {
+        disableGamepadInput(_newGameMenu);
+        _virtualKeyboardMenu_lower->show();
+        _armedTextFieldId = splitString(buttonCode, ":")[1];
+    } else if (stringStartsWith(buttonCode, "virtkey:")) {
+        std::string key = splitString(buttonCode, ":")[1];
+
+        auto enterCharacter = [&](char character) {
+            std::shared_ptr<UITextField> field = nullptr;
+            if (_armedTextFieldId == _worldNameField->getId()) {
+                field = _worldNameField;
+            } else if (_armedTextFieldId == _seedField->getId()) {
+                field = _seedField;
+            }
+
+            if (field != nullptr) {
+                field->textEntered(character);
+            }
+        };
+
+        if (key == "done") {
+            _virtualKeyboardMenu_lower->hide();
+            _virtualKeyboardMenu_upper->hide();
+            enableGamepadInput(_newGameMenu);
+        } else if (key == "caps") {
+            if (_virtualKeyboardMenu_lower->isActive()) {
+                _virtualKeyboardMenu_lower->hide();
+                _virtualKeyboardMenu_upper->show();
+            } else if (_virtualKeyboardMenu_upper->isActive()) {
+                _virtualKeyboardMenu_upper->hide();
+                _virtualKeyboardMenu_lower->show();
+            }
+        } else if (key == "back") {
+            enterCharacter('\b');
+        } else if (key == "space") {
+            enterCharacter(' ');
+        } else {
+            enterCharacter(key.at(0));
+        }
     }
 }
 
@@ -1333,7 +1428,7 @@ void Game::mouseButtonPressed(const int mx, const int my, const int button) {
 
 void Game::mouseButtonReleased(const int mx, const int my, const int button) {
     _ui->mouseButtonReleased(mx, my, button);
-    if (!_inventoryMenu->isActive() && !_shopMenu->isActive()) _player->mouseButtonReleased(mx, my, button);
+    if (!_inventoryMenu->isActive() && !_shopMenu->isActive() && _gameStarted) _player->mouseButtonReleased(mx, my, button);
 }
 
 void Game::mouseMoved(const int mx, const int my) {
@@ -1354,6 +1449,16 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         toggleInventoryMenu();
     } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
         toggleShopMenu();
+    } else if (button == GAMEPAD_BUTTON::LEFT_STICK || button == GAMEPAD_BUTTON::RIGHT_STICK) {
+        if (_virtualKeyboardMenu_lower->isActive()) {
+            _virtualKeyboardMenu_lower->hide();
+            _virtualKeyboardMenu_upper->show();
+        } else if (_virtualKeyboardMenu_upper->isActive()) {
+            _virtualKeyboardMenu_upper->hide();
+            _virtualKeyboardMenu_lower->show();
+        }
+    } else if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
+        buttonPressed("virtkey:back");
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
@@ -1497,6 +1602,36 @@ void Game::onPlayerDeath() {
     _lastPlayerDeathCallTime = currentTimeMillis();
 }
 
+void Game::startLoading() {
+    _gameLoading = true;
+
+    boost::random::mt19937 gen = boost::random::mt19937();
+    gen.seed(currentTimeMillis());
+    boost::random::uniform_int_distribution<> messageDist(0, _loadingScreenMessages.size() - 1);
+    _loadingScreenMessageIndex = messageDist(gen);
+    _frameCounter = 0;
+}
+
+void Game::loadLoadingScreenMessages() {
+    const std::string path = "res/lsm.txt";
+    std::ifstream in(path);
+
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find lsm.txt", 5, WARN);
+        in.close();
+    } else {
+        std::string line;
+        while (getline(in, line)) {
+            _loadingScreenMessages.push_back(line);
+        }
+        in.close();
+    }
+
+    _loadingScreenMessages.push_back("loading");
+
+    _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+}
+
 void Game::textEntered(sf::Uint32 character) {
     _ui->textEntered(character);
 }
@@ -1514,6 +1649,7 @@ void Game::autoSave() {
         SaveManager::saveGame(false);
         _lastAutosaveTime = currentTimeMillis();
         MessageManager::displayMessage("Autosaved", 0, DEBUG);
+        MessageManager::displayMessage(">>" + splitString(SaveManager::getCurrentSaveFileName(), ".")[0] + ">>SFN", 0, DEBUG);
     }
 }
 
@@ -1541,4 +1677,82 @@ void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
         MessageManager::displayMessage("Steam overlay opened", 2, DEBUG);
         interruptPause();
     } else MessageManager::displayMessage("Steam overlay closed", 2, DEBUG);
+}
+
+void Game::disableGamepadInput(std::shared_ptr<UIMenu> menu) {
+    menu->useGamepadConfiguration = false;
+    for (auto& element : menu->getElements()) {
+        element->blockControllerInput = true;
+    }
+}
+
+void Game::enableGamepadInput(std::shared_ptr<UIMenu> menu) {
+    menu->useGamepadConfiguration = true;
+    for (auto& element : menu->getElements()) {
+        element->blockControllerInput = false;
+    }
+}
+
+void Game::initVirtualKeyboard() {
+    const std::string row0_lower = "1234567890-=\b";
+    const std::string row0_upper = "!@#$%^&*()_+\b";
+    const std::string row1_lower = " qwertyuiop[]";
+    const std::string row1_upper = " QWERTYUIOP{}";
+    const std::string row2_lower = " asdfghjkl;'€";
+    const std::string row2_upper = " ASDFGHJKL:\"€";
+    const std::string row3_lower = "§ zxcvbnm,./ ";
+    const std::string row3_upper = "§ ZXCVBNM<>? ";
+
+    const std::vector<std::string> lowerRows = {row0_lower, row1_lower, row2_lower, row3_lower};
+    const std::vector<std::string> upperRows = {row0_upper, row1_upper, row2_upper, row3_upper };
+
+    constexpr float keyboaryX = 18.f;
+    constexpr float keyboardY = 60.f;
+    const std::vector<sf::Vector2f> rowCoords = { {
+            keyboaryX, keyboardY}, {keyboaryX, keyboardY + 8.f}, {keyboaryX, keyboardY + 15.f}, {keyboaryX, keyboardY + 22.f} 
+    };
+
+    std::shared_ptr<UIButton> spaceBar = std::shared_ptr<UIButton>(new UIButton(
+        45, 93, 10, 3, "space", _font, this, "virtkey:space"
+    ));
+    spaceBar->setSelectionId(4 * 13);
+    _virtualKeyboardMenu_lower->addElement(spaceBar);
+    _virtualKeyboardMenu_upper->addElement(spaceBar);
+
+    auto initKeyboard = [&](std::shared_ptr<UIMenu> keyboard, const std::vector<std::string> rows) {
+        constexpr float keyWidth = 5.f;
+        constexpr float keyHeight = 5.f;
+        std::vector<std::vector<int>> grid;
+        for (int row = 0; row < rows.size(); row++) {
+            grid.push_back({});
+
+            const float x = rowCoords.at(row).x;
+            const float y = rowCoords.at(row).y;
+            for (int i = 0; i < rows.at(row).length(); i++) {
+                const std::string rowString = rows.at(row);
+                std::string character(1, rowString.at(i));
+
+                if (character == "\b") character = "back";
+                else if (character == "€") character = "done";
+                else if (character == "§") character = "caps";
+
+                std::shared_ptr<UIButton> keyButton = std::shared_ptr<UIButton>(new UIButton(
+                    x + keyWidth * i, y, keyWidth, keyHeight, character, _font, this, "virtkey:" + character
+                ));
+                keyButton->setSelectionId(i + row * 13);
+                grid.at(row).push_back(keyButton->getSelectionId());
+
+                keyboard->addElement(keyButton);
+            }
+        }
+        grid.push_back({ {spaceBar->getSelectionId()} });
+
+        keyboard->useGamepadConfiguration = true;
+        keyboard->defineSelectionGrid(grid);
+
+        _ui->addMenu(keyboard);
+    };
+
+    initKeyboard(_virtualKeyboardMenu_lower, lowerRows);
+    initKeyboard(_virtualKeyboardMenu_upper, upperRows);
 }

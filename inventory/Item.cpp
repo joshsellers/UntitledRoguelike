@@ -7,6 +7,8 @@
 #include "../world/entities/Dog.h"
 #include "../core/Tutorial.h"
 #include "../statistics/StatManager.h"
+#include "abilities/AbilityManager.h"
+#include "abilities/Ability.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -47,7 +49,7 @@ const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
     EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false, 50
 );
-const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large handgun",
@@ -84,7 +86,7 @@ const Item Item::JORTS(12, "Jorts", sf::IntRect(16, 26, 1, 1), false, 0, false,
 );
 
 const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26, 1, 1), false, 0, false,
-    "These help you go a little faster",
+    "Some new kicks",
     EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 150
 );
 
@@ -119,7 +121,7 @@ const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 
     "Heavier than a pistol round\nFor use with rifles",
     EQUIPMENT_TYPE::AMMO, 6, 0, 0, sf::Vector2f(), false, 70
 );
-const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
@@ -144,7 +146,7 @@ const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", s
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true);
+const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true, true);
 
 const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
@@ -164,7 +166,7 @@ const Item Item::_PROJECTILE_PROPANE(25, "_PROPANE_PROJECTILE", sf::IntRect(50, 
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 3, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, false, 83, true, 3, 0);
+const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.getId(), 10, sf::IntRect(0, 0, 16, 16), true, true, 83, true, 3, 0);
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
     "It's a blow torch, but it\nseems like something's broken...",
@@ -276,9 +278,9 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Increases damage multiplier juuust a little bit",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 499, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 599, true,
     [](Entity* parent) {
-        parent->increaseDamageMultiplier(0.02f);
+        parent->increaseDamageMultiplier(0.1f);
         return true;
     }
 );
@@ -474,9 +476,16 @@ const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1)
     }
 );
 
-const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, false,
-    "Prickly pieces\n\nSell it to the shopkeep for some pennies",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35, false
+const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, true,
+    "Prickly pieces\n\nHeals 6 HP",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35, false,
+    [](Entity* parent) {
+        if (parent->getHitPoints() < parent->getMaxHitPoints()) {
+            parent->heal(6);
+            return true;
+        }
+        return false;
+    }
 );
 
 const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(5, 4, 1, 1), false, 0, false,
@@ -496,6 +505,48 @@ const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LA
 const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
     "Smells weird\n\nSell it to the shopkeep for a pretty penny",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, false
+);
+
+const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
+    "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5000, true,
+    [](Entity* parent) {
+        const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
+        if (!AbilityManager::givePlayerAbility(abilityId)) {
+            int parameterChoice = randomInt(0, 2);
+            if (parameterChoice == 2 && AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75) {
+                parameterChoice = randomInt(0, 1);
+            }
+
+            const std::string keys[3] = {"damage", "radius", "expansion rate"};
+            float increment = 0.f;
+
+            if (parameterChoice == 0) {
+                increment = 1;
+            } else if (parameterChoice == 1) {
+                increment = randomInt(5, 10);
+            } else if (parameterChoice == 2) {
+                increment = (float)randomInt(10, 50) / 100;
+            }
+
+            AbilityManager::setParameter(abilityId, keys[parameterChoice], AbilityManager::getParameter(abilityId, keys[parameterChoice]) + increment);
+
+            MessageManager::displayMessage("Increased bad vibes " + keys[parameterChoice] + " by " + trimString(std::to_string(increment)), 5);
+        }
+        return true;
+    }
+);
+
+const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0, true,
+    "Concentrated impaling", 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
+    [](Entity* parent) {
+        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SPIKE_BALL.getId(), parent));
+        spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
+        spikeBall->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(spikeBall);
+        return true;
+    }
 );
 
 std::vector<const Item*> Item::ITEMS;
@@ -718,7 +769,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CACTUS_FLESH.getId(),                    0},
     {Item::_PROJECTILE_BLOOD_BALL.getId(),          0},
     {Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(),    0},
-    {Item::FINGER_NAIL.getId(),                     0}
+    {Item::FINGER_NAIL.getId(),                     0},
+    {Item::BAD_VIBES_POTION.getId(),                11},
+    {Item::SPIKE_BALL.getId(),                      14}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

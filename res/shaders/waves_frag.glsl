@@ -22,7 +22,7 @@ void main(void)
         
         float reducedOffset = wavesNoiseTexCol.x / 70;
 
-   	    col = texture2D(texture,  gl_TexCoord[0].xy + vec2(reducedOffset, reducedOffset));
+   	col = texture2D(texture,  gl_TexCoord[0].xy + vec2(reducedOffset, reducedOffset));
         
         
         if (!(col.b > col.r && col.b > col.g)) col = colHere;
