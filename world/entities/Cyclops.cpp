@@ -75,7 +75,7 @@ void Cyclops::update() {
         getWorld()->getPlayer()->knockBack(4, getMovingDir());
     }
 
-    _desiredDist = std::max(1.f, _desiredDist - 0.05f);
+    _desiredDist = std::max(1.f, _desiredDist - 0.12f);
 }
 
 void Cyclops::draw(sf::RenderTexture& surface) {
