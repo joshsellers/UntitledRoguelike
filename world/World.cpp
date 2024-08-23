@@ -987,7 +987,13 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (defer) _entityBuffer.push_back(entity);
     else _entities.push_back(entity);
 
-    if (entity->isEnemy()) _enemies.push_back(entity);
+    if (entity->isEnemy()) {
+        float playerDamageMultiplier = _player->getDamageMultiplier();
+        entity->setMaxHitPoints(entity->getMaxHitPoints() + (entity->getMaxHitPoints() * (playerDamageMultiplier / 2)));
+        entity->heal(entity->getMaxHitPoints());
+
+        _enemies.push_back(entity);
+    }
 
     if (entity->isMob() && (!entity->isEnemy() || entity->isInitiallyDocile())) entity->shouldUseDormancyRules(true);
 
