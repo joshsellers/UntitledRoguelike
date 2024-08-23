@@ -79,9 +79,9 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
 
         sf::CircleShape pulse;
         pulse.setRadius(pulseRad);
-        pulse.setFillColor(sf::Color(0xFF000011));
+        pulse.setFillColor(sf::Color(0xFF000000));
         pulse.setOutlineColor(sf::Color(0xFF000033));
-        pulse.setOutlineThickness(1);
+        pulse.setOutlineThickness(2);
         pulse.setOrigin(pulseRad, pulseRad);
         pulse.setPosition(playerCenter);
 
