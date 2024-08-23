@@ -186,7 +186,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SLIME_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);
@@ -213,7 +213,7 @@ const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), fals
     "Give it a toss and see where it lands",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2500, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::BOWLING_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::BOWLING_BALL.getId(), parent));
         bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
         bowlingBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(bowlingBall);
@@ -458,7 +458,7 @@ const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false,
     "Equip it and it will cry for you",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, false,
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::EYE_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::EYE_BALL.getId(), parent));
         eye->loadSprite(parent->getWorld()->getSpriteSheet());
         eye->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(eye);
@@ -541,7 +541,7 @@ const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0
     "Concentrated impaling", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SPIKE_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SPIKE_BALL.getId(), parent));
         spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         spikeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(spikeBall);
