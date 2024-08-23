@@ -652,8 +652,7 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND
-                && terrainType != TERRAIN_TYPE::FLESH) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
