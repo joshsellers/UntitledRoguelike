@@ -1001,9 +1001,9 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     else _entities.push_back(entity);
 
     if (entity->isEnemy()) {
-        float playerDamageMultiplier = _player->getDamageMultiplier();
+        /*float playerDamageMultiplier = _player->getDamageMultiplier();
         entity->setMaxHitPoints(entity->getMaxHitPoints() + (entity->getMaxHitPoints() * (playerDamageMultiplier / 2)) + (((float)getCurrentWaveNumber() / 4)));
-        entity->heal(entity->getMaxHitPoints());
+        entity->heal(entity->getMaxHitPoints());*/
 
         _enemies.push_back(entity);
     }

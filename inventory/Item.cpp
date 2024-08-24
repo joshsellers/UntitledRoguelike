@@ -514,8 +514,17 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
         const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
         if (!AbilityManager::givePlayerAbility(abilityId)) {
             int parameterChoice = randomInt(0, 2);
-            if (parameterChoice == 2 && AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75) {
+            bool maxedExpRate = AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75;
+            if (parameterChoice == 2 && maxedExpRate) {
                 parameterChoice = randomInt(0, 1);
+            }
+            
+            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 175) {
+                parameterChoice = randomInt(0, 1);
+                if (parameterChoice == 1 && !maxedExpRate) parameterChoice = 2;
+                else if (maxedExpRate) {
+                    parameterChoice = 0;
+                }
             }
 
             const std::string keys[3] = {"damage", "radius", "expansion rate"};

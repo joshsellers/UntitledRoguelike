@@ -221,6 +221,7 @@ private:
     static void saveEntityData(std::ofstream& out) {
         for (auto& entity : _world->getEntities()) {
             if (entity->isActive() && entity->getSaveId() != NO_SAVE && entity->getSaveId() != PLAYER) {
+                if (entity->getSaveData() == "NOSAVE") continue;
                 out << "ENTITY:"
                     << std::to_string((int)entity->getSaveId())
                     << ":" << entity->getUID()

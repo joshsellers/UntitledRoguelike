@@ -54,7 +54,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
 };
 
-constexpr int CHEESE_BOSS_CHANCE = 150;
+constexpr int CHEESE_BOSS_CHANCE = 18;
 const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
