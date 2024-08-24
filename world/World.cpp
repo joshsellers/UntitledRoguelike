@@ -329,6 +329,13 @@ void World::spawnEnemies() {
                             case MOB_TYPE::FLESH_CHICKEN:
                                 mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::CHEESE_BOSS:
+                            {
+                                mob = std::shared_ptr<CheeseBoss>(new CheeseBoss(sf::Vector2f(xi, yi)));
+                                Boss* boss = dynamic_cast<Boss*>(mob.get());
+                                boss->deactivateBossMode();
+                                break;
+                            }
                             default:
                                 return;
                         }
@@ -354,8 +361,14 @@ void World::spawnEnemies() {
 }
 
 int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
-    boost::random::uniform_int_distribution<> randMobType(0, mobSpawnData.mobData.size()-1);
-    return randMobType(_mobGen);
+    std::vector<int> availableMobTypes;
+    for (int i = 0; i < mobSpawnData.mobData.size(); i++) {
+        if (mobSpawnData.mobData.at(i).waveNumber <= getCurrentWaveNumber()) {
+            availableMobTypes.push_back(i);
+        }
+    }
+    boost::random::uniform_int_distribution<> randMobType(0, availableMobTypes.size() - 1);
+    return availableMobTypes[randMobType(_mobGen)];
 }
 
 void World::purgeScatterBuffer() {

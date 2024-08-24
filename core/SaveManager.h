@@ -79,7 +79,7 @@ public:
                     std::string fullHeader = data[0] + ":";
                     load(data[0], splitString(splitString(line, fullHeader)[1], ":"));
                 } catch (std::exception ex) {
-                    MessageManager::displayMessage("Error loading save file: " + (std::string)ex.what(), 5, ERR);
+                    MessageManager::displayMessage("Error loading save file: " + (std::string)ex.what() + "\nLine was: \n" + line, 5, ERR);
                     loadedSuccessfully = false;
                 }
             }
