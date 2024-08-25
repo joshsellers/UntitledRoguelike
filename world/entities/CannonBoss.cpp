@@ -103,7 +103,8 @@ void CannonBoss::subUpdate() {
         else if (_movingDir == DOWN) _movingDir = LEFT;
     }
 
-    move(xa, ya);
+    if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
+    else move(xa, ya);
 
     _sprite.setPosition(getPosition());
 

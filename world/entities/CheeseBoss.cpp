@@ -79,7 +79,8 @@ void CheeseBoss::subUpdate() {
         else if (_movingDir == RIGHT) _movingDir = LEFT;
     }
 
-    move(xa, ya);
+    if (_spawnedWithEnemies) hoardMove(xa, ya, true, 64);
+    else move(xa, ya);
     
     _sprite.setPosition(getPosition());
 
