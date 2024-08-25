@@ -108,9 +108,27 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
 void Game::initUI() {
     // Title screen background
-    int tsBgIndex = randomInt(0, 8);
-    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg/bg_" + std::to_string(tsBgIndex) + ".png", 0, 0, 0, _font, 100.f, 100.f, false));
-    _titleScreenBackground->show();
+    std::vector<std::string> bgPaths;
+    if (std::filesystem::is_directory("res/waterbg")) {
+        for (const auto& entry : std::filesystem::directory_iterator("res/waterbg")) {
+            std::string pathStr = entry.path().string();
+            replaceAll(pathStr, "\\", "/");
+            if (stringEndsWith(pathStr, ".png")) {
+                bgPaths.push_back(pathStr);
+            }
+        }
+        if (bgPaths.size() > 0) {
+            int tsBgIndex = randomInt(0, bgPaths.size() - 1);
+            _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:" + bgPaths.at(tsBgIndex), 0, 0, 0, _font, 100.f, 100.f, false));
+            _titleScreenBackground->show();
+        } else {
+            MessageManager::displayMessage("No background images found", 5, DEBUG);
+            _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("", 0, 0, 0, _font, 100.f, 100.f, false));
+        }
+    } else {
+        MessageManager::displayMessage("Could not find res/waterbg", 5, WARN);
+        _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("", 0, 0, 0, _font, 100.f, 100.f, false));
+    }
 
 
     // Load game menu
