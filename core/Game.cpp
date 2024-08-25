@@ -14,6 +14,7 @@
 #include "InputBindings.h"
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
+#include <boost/random/uniform_int_distribution.hpp>
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -106,8 +107,9 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 }
 
 void Game::initUI() {
-    // Title screen background;
-    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg.png", 0, 0, 0, _font, 100.f, 100.f, false));
+    // Title screen background
+    int tsBgIndex = randomInt(0, 8);
+    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg/bg_" + std::to_string(tsBgIndex) + ".png", 0, 0, 0, _font, 100.f, 100.f, false));
     _titleScreenBackground->show();
 
 
@@ -972,7 +974,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
             if (randomInt(0, 2000) == 0) _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
 
             _loadingStatusLabel.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex) + elipsesString);
-            float labelWidth = _loadingStatusLabel.getGlobalBounds().width;
+            sf::Text messageWithoutElipses = _loadingStatusLabel;
+            messageWithoutElipses.setString(_loadingScreenMessages.at(_loadingScreenMessageIndex));
+            float labelWidth = messageWithoutElipses.getGlobalBounds().width;
             _loadingStatusLabel.setPosition(UIElement::getRelativeWidth(50) - labelWidth / 2, UIElement::getRelativeHeight(50));
             surface.draw(_loadingStatusLabel);
             _frameCounter++;
@@ -1075,18 +1079,18 @@ void Game::buttonPressed(std::string buttonCode) {
         //_HUDMenu->show();
         _magazineMeter->hide();
 
-        std::shared_ptr<DroppedItem> droppedSlimeBall 
+        constexpr size_t numStartingItems = 3;
+        const unsigned int startingItems[numStartingItems] = { Item::SLIME_BALL.getId(), Item::SPIKE_BALL.getId(), Item::BAD_VIBES_POTION.getId() };
+        const Item* startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : &Item::SLIME_BALL);
+        std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
-                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+                sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, startingItem->getId(), 1, startingItem->getTextureRect())
               );
-        droppedSlimeBall->setWorld(&_world);
-        droppedSlimeBall->loadSprite(_world.getSpriteSheet());
-        _world.addEntity(droppedSlimeBall);
+        startingItemDropped->setWorld(&_world);
+        startingItemDropped->loadSprite(_world.getSpriteSheet());
+        _world.addEntity(startingItemDropped);
 
-        //_gameStarted = true;
-        _gameLoading = true;
-        _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
-        _frameCounter = 0;
+        startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
             if (GamePad::isConnected()) msg = "Press A to dodge";
@@ -1120,6 +1124,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("addhp:100");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;
@@ -1259,10 +1264,7 @@ void Game::buttonPressed(std::string buttonCode) {
             //_HUDMenu->show();
             _magazineMeter->hide();
 
-            //_gameStarted = true;
-            _gameLoading = true; 
-            _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
-            _frameCounter = 0;
+            startLoading();
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
@@ -1296,6 +1298,10 @@ void Game::buttonPressed(std::string buttonCode) {
 
         _vsyncToggleButton_pauseMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
+
+        if (VSYNC_ENABLED) {
+            MessageManager::displayMessage("WARNING:\nThere may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+        }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
         _inputBindingsMenu->show();
@@ -1596,6 +1602,16 @@ void Game::onPlayerDeath() {
     _lastPlayerDeathCallTime = currentTimeMillis();
 }
 
+void Game::startLoading() {
+    _gameLoading = true;
+
+    boost::random::mt19937 gen = boost::random::mt19937();
+    gen.seed(currentTimeMillis());
+    boost::random::uniform_int_distribution<> messageDist(0, _loadingScreenMessages.size() - 1);
+    _loadingScreenMessageIndex = messageDist(gen);
+    _frameCounter = 0;
+}
+
 void Game::loadLoadingScreenMessages() {
     const std::string path = "res/lsm.txt";
     std::ifstream in(path);
@@ -1639,6 +1655,7 @@ void Game::autoSave() {
         SaveManager::saveGame(false);
         _lastAutosaveTime = currentTimeMillis();
         MessageManager::displayMessage("Autosaved", 0, DEBUG);
+        MessageManager::displayMessage(">>" + splitString(SaveManager::getCurrentSaveFileName(), ".")[0] + ">>SFN", 0, DEBUG);
     }
 }
 

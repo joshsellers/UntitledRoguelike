@@ -7,6 +7,8 @@
 #include "../world/entities/Dog.h"
 #include "../core/Tutorial.h"
 #include "../statistics/StatManager.h"
+#include "abilities/AbilityManager.h"
+#include "abilities/Ability.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -184,7 +186,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SLIME_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);
@@ -211,7 +213,7 @@ const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), fals
     "Give it a toss and see where it lands",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2500, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::BOWLING_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::BOWLING_BALL.getId(), parent));
         bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
         bowlingBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(bowlingBall);
@@ -456,7 +458,7 @@ const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false,
     "Equip it and it will cry for you",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, false,
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::EYE_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::EYE_BALL.getId(), parent));
         eye->loadSprite(parent->getWorld()->getSpriteSheet());
         eye->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(eye);
@@ -503,6 +505,57 @@ const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LA
 const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
     "Smells weird\n\nSell it to the shopkeep for a pretty penny",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, false
+);
+
+const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
+    "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5000, true,
+    [](Entity* parent) {
+        const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
+        if (!AbilityManager::givePlayerAbility(abilityId)) {
+            int parameterChoice = randomInt(0, 2);
+            bool maxedExpRate = AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75;
+            if (parameterChoice == 2 && maxedExpRate) {
+                parameterChoice = randomInt(0, 1);
+            }
+            
+            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 175) {
+                parameterChoice = randomInt(0, 1);
+                if (parameterChoice == 1 && !maxedExpRate) parameterChoice = 2;
+                else if (maxedExpRate) {
+                    parameterChoice = 0;
+                }
+            }
+
+            const std::string keys[3] = {"damage", "radius", "expansion rate"};
+            float increment = 0.f;
+
+            if (parameterChoice == 0) {
+                increment = 1;
+            } else if (parameterChoice == 1) {
+                increment = randomInt(5, 10);
+            } else if (parameterChoice == 2) {
+                increment = (float)randomInt(10, 50) / 100;
+            }
+
+            AbilityManager::setParameter(abilityId, keys[parameterChoice], AbilityManager::getParameter(abilityId, keys[parameterChoice]) + increment);
+
+            MessageManager::displayMessage("Increased bad vibes " + keys[parameterChoice] + " by " + trimString(std::to_string(increment)), 5);
+        }
+        return true;
+    }
+);
+
+const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0, true,
+    "Concentrated impaling", 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
+    [](Entity* parent) {
+        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SPIKE_BALL.getId(), parent));
+        spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
+        spikeBall->setWorld(parent->getWorld());
+        parent->getWorld()->addEntity(spikeBall);
+        return true;
+    }
 );
 
 std::vector<const Item*> Item::ITEMS;
@@ -725,7 +778,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::CACTUS_FLESH.getId(),                    0},
     {Item::_PROJECTILE_BLOOD_BALL.getId(),          0},
     {Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(),    0},
-    {Item::FINGER_NAIL.getId(),                     0}
+    {Item::FINGER_NAIL.getId(),                     0},
+    {Item::BAD_VIBES_POTION.getId(),                11},
+    {Item::SPIKE_BALL.getId(),                      14}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

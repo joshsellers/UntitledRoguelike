@@ -18,7 +18,7 @@ Turtle::Turtle(sf::Vector2f pos) :
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    _canPickUpItems = true;
+    _canPickUpItems = false;
     _isMob = true;
 
     sf::Vector2f feetPos = getPosition();

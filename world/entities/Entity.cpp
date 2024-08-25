@@ -562,7 +562,10 @@ int& Entity::getMaxHitPointsRef() {
 
 void Entity::takeDamage(int damage) {
     if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint" && getEntityType() != "barberext" && getEntityType() != "barberint") {
-        std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(getPosition(), damage));
+        sf::Vector2f pos = getPosition();
+        if (_isProp) pos.x += (float)(_spriteWidth * TILE_SIZE) / 2;
+
+        std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(pos, damage));
         damageParticle->setWorld(getWorld());
         damageParticle->loadSprite(getWorld()->getSpriteSheet());
         getWorld()->addEntity(damageParticle);

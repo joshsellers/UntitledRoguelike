@@ -30,7 +30,7 @@ void ShaderManager::compileShaders() {
 void ShaderManager::configureShaders() {
     // waves_frag
     getShader("waves_frag")->setUniform("texture", sf::Shader::CurrentTexture);
-    getShader("waves_frag")->setUniform("resolution", sf::Glsl::Vec2(CHUNK_SIZE, CHUNK_SIZE));
+    //getShader("waves_frag")->setUniform("resolution", sf::Glsl::Vec2(CHUNK_SIZE, CHUNK_SIZE));
 
     const siv::PerlinNoise perlin{ (siv::PerlinNoise::seed_type)currentTimeMillis() };
     sf::Image* wavesNoiseImage = new sf::Image;

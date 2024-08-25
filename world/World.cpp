@@ -35,16 +35,13 @@
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
 #include "FastNoise/FastNoise.h"
+#include "../inventory/abilities/AbilityManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
     _player->setWorld(this);
 
     _entities.push_back(_player);
-
-    if (!_font.loadFromFile("res/font.ttf")) {
-        MessageManager::displayMessage("Failed to load font!", 10, WARN);
-    }
 }
 
 void World::init(unsigned int seed) {
@@ -105,6 +102,8 @@ void World::update() {
         purgeEntityBuffer();
 
         updateEntities();
+        AbilityManager::updateAbilities(_player.get());
+
         removeInactiveEntitiesFromSubgroups();
 
         int pX = ((int)_player->getPosition().x + PLAYER_WIDTH / 2);
@@ -150,13 +149,6 @@ void World::draw(sf::RenderTexture& surface) {
             chunkoutline.setOutlineThickness(2);
             chunkoutline.setPosition(chunk.pos);
             surface.draw(chunkoutline);
-
-            sf::Text idlabel;
-            idlabel.setFont(_font);
-            idlabel.setCharacterSize(10);
-            idlabel.setString(std::to_string(chunk.id));
-            idlabel.setPosition(chunk.pos.x, chunk.pos.y - 4);
-            surface.draw(idlabel);
         }
     }
 
@@ -202,6 +194,8 @@ void World::draw(sf::RenderTexture& surface) {
             }
         }
     }
+
+    if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
 }
 
 void World::spawnMobs() {
@@ -336,6 +330,13 @@ void World::spawnEnemies() {
                             case MOB_TYPE::FLESH_CHICKEN:
                                 mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::CHEESE_BOSS:
+                            {
+                                mob = std::shared_ptr<CheeseBoss>(new CheeseBoss(sf::Vector2f(xi, yi)));
+                                Boss* boss = dynamic_cast<Boss*>(mob.get());
+                                boss->deactivateBossMode();
+                                break;
+                            }
                             default:
                                 return;
                         }
@@ -361,8 +362,14 @@ void World::spawnEnemies() {
 }
 
 int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
-    boost::random::uniform_int_distribution<> randMobType(0, mobSpawnData.mobData.size()-1);
-    return randMobType(_mobGen);
+    std::vector<int> availableMobTypes;
+    for (int i = 0; i < mobSpawnData.mobData.size(); i++) {
+        if (mobSpawnData.mobData.at(i).waveNumber <= getCurrentWaveNumber()) {
+            availableMobTypes.push_back(i);
+        }
+    }
+    boost::random::uniform_int_distribution<> randMobType(0, availableMobTypes.size() - 1);
+    return availableMobTypes[randMobType(_mobGen)];
 }
 
 void World::purgeScatterBuffer() {
@@ -659,8 +666,7 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND
-                && terrainType != TERRAIN_TYPE::FLESH) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
@@ -890,6 +896,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
+            if (flesh && _seed != 124959026) {
+                AchievementManager::unlock(FLESHY);
+            }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 
@@ -1013,7 +1022,13 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (defer) _entityBuffer.push_back(entity);
     else _entities.push_back(entity);
 
-    if (entity->isEnemy()) _enemies.push_back(entity);
+    if (entity->isEnemy()) {
+        /*float playerDamageMultiplier = _player->getDamageMultiplier();
+        entity->setMaxHitPoints(entity->getMaxHitPoints() + (entity->getMaxHitPoints() * (playerDamageMultiplier / 2)) + (((float)getCurrentWaveNumber() / 4)));
+        entity->heal(entity->getMaxHitPoints());*/
+
+        _enemies.push_back(entity);
+    }
 
     if (entity->isMob() && (!entity->isEnemy() || entity->isInitiallyDocile())) entity->shouldUseDormancyRules(true);
 
