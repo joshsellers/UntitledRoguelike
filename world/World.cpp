@@ -743,7 +743,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
-    constexpr float TERRAIN_SCALE = 0;//0.75;
+    constexpr float TERRAIN_SCALE = 0;
     const float SCALE_COEFFICIENT = std::pow(10, TERRAIN_SCALE);
 
     long long startTime = 0;
@@ -765,10 +765,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     const double oceanShallowRange = 0.09 - terrLevelSubtrahand;
     const double sandRange = 0.1 - terrLevelSubtrahand;
     const double dirtLowRange = 0.30 - terrLevelSubtrahand;
-    const double dirtHighRange = 0.36 - terrLevelSubtrahand;
-    const double mountainLowRange = 0.39 - terrLevelSubtrahand;
-    const double mountainMidRange = 0.44 - terrLevelSubtrahand;
-    const double mountainHighRange = 0.45 - terrLevelSubtrahand;
+    const double dirtHighRange = 0.40 - terrLevelSubtrahand;
+    const double mountainLowRange = 0.43 - terrLevelSubtrahand;
+    const double mountainMidRange = 0.46 - terrLevelSubtrahand;
+    const double mountainHighRange = 0.48 - terrLevelSubtrahand;
 
     int chX = pos.x;
     int chY = pos.y;
@@ -843,7 +843,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const double xOffset = 20000. / SCALE_COEFFICIENT; //20000.
             const double yOffset = 20000. / SCALE_COEFFICIENT;
             const int biomeOctaves = 2;
-            const double biomeSampleRate = 0.0000135 * SCALE_COEFFICIENT; // 0.00001;
+            const double biomeSampleRate = 0.00002 * SCALE_COEFFICIENT; // 0.00001;
             /*double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);*/
 
@@ -856,17 +856,17 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             temperatureNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
             precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
-            sf::Vector2f tundraTemp(0.0, 0.4);
-            sf::Vector2f tundraPrec(0.1, 0.5);
+            sf::Vector2f tundraTemp(0.0, 0.5);
+            sf::Vector2f tundraPrec(0.05, 0.5);
             
-            sf::Vector2f desertTemp(0.5, 0.9);
-            sf::Vector2f desertPrec(0.0, 0.4);
+            sf::Vector2f desertTemp(0.6, 0.9);
+            sf::Vector2f desertPrec(0.0, 0.5);
 
-            sf::Vector2f savannaTemp(0.5, 0.7);
-            sf::Vector2f savannaPrec(0.4, 0.7);
+            sf::Vector2f savannaTemp(0.3, 0.6);
+            sf::Vector2f savannaPrec(0.5, 0.8);
 
-            sf::Vector2f forestTemp(0.3, 0.5);
-            sf::Vector2f forestPrec(0.5, 0.7);
+            sf::Vector2f forestTemp(0.1, 0.6);
+            sf::Vector2f forestPrec(0.4, 0.8);
 
             bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
             bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
@@ -892,7 +892,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             rareBiomePrec += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
             sf::Vector2f fleshTemp(0.0005, 0.3);
-            sf::Vector2f fleshPrec(0.04, 0.7);
+            sf::Vector2f fleshPrec(0.04, 0.5);
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
