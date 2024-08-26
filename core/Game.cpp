@@ -15,6 +15,7 @@
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
 #include <boost/random/uniform_int_distribution.hpp>
+#include "SoundManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -104,6 +105,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     loadLoadingScreenMessages();
 
     displayStartupMessages();
+
+    SoundManager::playSong("mainmenu");
 }
 
 void Game::initUI() {
@@ -1117,6 +1120,8 @@ void Game::buttonPressed(std::string buttonCode) {
         }
 
         _lastAutosaveTime = currentTimeMillis();
+
+        startGameplayMusic();
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
@@ -1286,6 +1291,8 @@ void Game::buttonPressed(std::string buttonCode) {
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
+
+            startGameplayMusic();
         } else {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
@@ -1702,6 +1709,10 @@ void Game::disableGamepadInput(std::shared_ptr<UIMenu> menu) {
     for (auto& element : menu->getElements()) {
         element->blockControllerInput = true;
     }
+}
+
+void Game::startGameplayMusic() const {
+    SoundManager::playSong("cooldown_0");
 }
 
 void Game::enableGamepadInput(std::shared_ptr<UIMenu> menu) {

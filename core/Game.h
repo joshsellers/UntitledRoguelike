@@ -154,6 +154,8 @@ private:
 	void autoSave();
 	long long _lastAutosaveTime = 0;
 
+	void startGameplayMusic() const;
+
 	void disableGamepadInput(std::shared_ptr<UIMenu> menu);
 	void enableGamepadInput(std::shared_ptr<UIMenu> menu);
 	void initVirtualKeyboard();
