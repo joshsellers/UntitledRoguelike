@@ -35,6 +35,7 @@
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
 #include "../inventory/abilities/AbilityManager.h"
+#include "../core/music/MusicManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -561,8 +562,10 @@ void World::dumpChunkBuffer() {
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
+        MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
     } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
         _cooldownActive = false;
+        MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
     } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
 }
 

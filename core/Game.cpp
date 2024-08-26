@@ -15,7 +15,7 @@
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
 #include <boost/random/uniform_int_distribution.hpp>
-#include "SoundManager.h"
+#include "music/MusicManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -105,8 +105,6 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     loadLoadingScreenMessages();
 
     displayStartupMessages();
-
-    SoundManager::playSong("mainmenu");
 }
 
 void Game::initUI() {
@@ -942,6 +940,10 @@ void Game::update() {
             _gameLoading = false;
             _gameStarted = true;
             _HUDMenu->show();
+            
+            MUSIC_SITUTAION situation = MUSIC_SITUTAION::WAVE;
+            if (_world.onEnemySpawnCooldown()) situation = MUSIC_SITUTAION::COOLDOWN;
+            MusicManager::setSituation(situation);
         }
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
@@ -1120,8 +1122,6 @@ void Game::buttonPressed(std::string buttonCode) {
         }
 
         _lastAutosaveTime = currentTimeMillis();
-
-        startGameplayMusic();
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
         _startMenu->show();
@@ -1129,6 +1129,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
+        MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+
         _bossHUDMenu->hide();
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
@@ -1291,8 +1293,6 @@ void Game::buttonPressed(std::string buttonCode) {
             Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
-
-            startGameplayMusic();
         } else {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
@@ -1709,10 +1709,6 @@ void Game::disableGamepadInput(std::shared_ptr<UIMenu> menu) {
     for (auto& element : menu->getElements()) {
         element->blockControllerInput = true;
     }
-}
-
-void Game::startGameplayMusic() const {
-    SoundManager::playSong("cooldown_0");
 }
 
 void Game::enableGamepadInput(std::shared_ptr<UIMenu> menu) {

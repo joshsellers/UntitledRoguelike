@@ -66,6 +66,8 @@ public:
     static void shutdown() {
         soloud.deinit();
     }
+
+    friend class MusicManager;
 private:
     inline static SoLoud::Soloud soloud;
 
