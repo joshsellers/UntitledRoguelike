@@ -36,6 +36,7 @@
 #include "../statistics/AchievementManager.h"
 #include "../inventory/abilities/AbilityManager.h"
 #include "../core/music/MusicManager.h"
+#include "entities/LogMonster.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -337,6 +338,9 @@ void World::spawnEnemies() {
                                 boss->deactivateBossMode();
                                 break;
                             }
+                            case MOB_TYPE::LOG_MONSTER:
+                                mob = std::shared_ptr<LogMonster>(new LogMonster(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }

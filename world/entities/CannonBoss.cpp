@@ -118,7 +118,7 @@ void CannonBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    const long long contactDamageRateMillis = 500LL;
+    constexpr long long contactDamageRateMillis = 500LL;
     if (getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())
         && currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis) {

@@ -18,7 +18,8 @@ enum class MOB_TYPE : int {
     CYCLOPS,
     FLESH_CHICKEN,
     CHEESE_BOSS,
-    CANNON_BOSS
+    CANNON_BOSS,
+    LOG_MONSTER
 };
 
 struct MobSpawnData {

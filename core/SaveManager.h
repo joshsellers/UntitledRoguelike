@@ -595,6 +595,9 @@ private:
                 case CANNON_BOSS:
                     entity = std::shared_ptr<CannonBoss>(new CannonBoss(pos));
                     break;
+                case LOG_MONSTER:
+                    entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {
