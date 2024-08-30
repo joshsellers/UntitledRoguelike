@@ -425,8 +425,8 @@ FodyWeavers.xsd
 
 *.dll
 *.sln
-*.vcxproj
-*.vcxproj.filters
+# *.vcxproj
+# *.vcxproj.filters
 *.rle
 .env
 *.lib

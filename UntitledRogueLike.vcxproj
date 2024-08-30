@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="inventory\abilities\AbilityManager.cpp" />
+    <ClCompile Include="inventory\abilities\Ability.cpp" />
+    <ClCompile Include="core\music\MusicManager.cpp" />
+    <ClCompile Include="world\entities\LogMonster.cpp" />
+    <ClCompile Include="statistics\AchievementManager.cpp" />
+    <ClCompile Include="world\entities\CannonBoss.cpp" />
+    <ClCompile Include="world\entities\FleshChicken.cpp" />
+    <ClCompile Include="statistics\StatManager.cpp" />
+    <ClCompile Include="world\entities\Boss.cpp" />
+    <ClCompile Include="world\entities\CheeseBoss.cpp" />
+    <ClCompile Include="ui\UIGamepadBindingButton.cpp" />
+    <ClCompile Include="ui\UIKeyboardBindingButton.cpp" />
+    <ClCompile Include="world\entities\Cyclops.cpp" />
+    <ClCompile Include="inventory\hair\Hairstyle.cpp" />
+    <ClCompile Include="world\entities\HairyEntity.cpp" />
+    <ClCompile Include="world\entities\BarberChair.cpp" />
+    <ClCompile Include="world\entities\BarberCounter.cpp" />
+    <ClCompile Include="world\entities\BarberInterior.cpp" />
+    <ClCompile Include="core\Game.cpp" />
+    <ClCompile Include="core\Globals.cpp" />
+    <ClCompile Include="core\main.cpp" />
+    <ClCompile Include="core\Util.cpp" />
+    <ClCompile Include="core\ShaderManager.cpp" />
+    <ClCompile Include="core\Versioning.cpp" />
+    <ClCompile Include="world\entities\FingerTree.cpp" />
+    <ClCompile Include="soloud\audiosource\monotone\soloud_monotone.cpp" />
+    <ClCompile Include="soloud\audiosource\noise\soloud_noise.cpp" />
+    <ClCompile Include="soloud\audiosource\openmpt\soloud_openmpt.cpp" />
+    <ClCompile Include="soloud\audiosource\openmpt\soloud_openmpt_dll.c" />
+    <ClCompile Include="soloud\audiosource\sfxr\soloud_sfxr.cpp" />
+    <ClCompile Include="soloud\audiosource\speech\darray.cpp" />
+    <ClCompile Include="soloud\audiosource\speech\klatt.cpp" />
+    <ClCompile Include="soloud\audiosource\speech\resonator.cpp" />
+    <ClCompile Include="soloud\audiosource\speech\soloud_speech.cpp" />
+    <ClCompile Include="soloud\audiosource\speech\tts.cpp" />
+    <ClCompile Include="soloud\audiosource\vic\soloud_vic.cpp" />
+    <ClCompile Include="soloud\audiosource\vizsn\soloud_vizsn.cpp" />
+    <ClCompile Include="soloud\audiosource\wav\dr_impl.cpp" />
+    <ClCompile Include="soloud\audiosource\wav\soloud_wav.cpp" />
+    <ClCompile Include="soloud\audiosource\wav\soloud_wavstream.cpp" />
+    <ClCompile Include="soloud\audiosource\wav\stb_vorbis.c" />
+    <ClCompile Include="soloud\backend\alsa\soloud_alsa.cpp" />
+    <ClCompile Include="soloud\backend\coreaudio\soloud_coreaudio.cpp" />
+    <ClCompile Include="soloud\backend\jack\soloud_jack.cpp" />
+    <ClCompile Include="soloud\backend\miniaudio\soloud_miniaudio.cpp" />
+    <ClCompile Include="soloud\backend\nosound\soloud_nosound.cpp" />
+    <ClCompile Include="soloud\backend\null\soloud_null.cpp" />
+    <ClCompile Include="soloud\backend\openal\soloud_openal.cpp" />
+    <ClCompile Include="soloud\backend\openal\soloud_openal_dll.c" />
+    <ClCompile Include="soloud\backend\opensles\soloud_opensles.cpp" />
+    <ClCompile Include="soloud\backend\oss\soloud_oss.cpp" />
+    <ClCompile Include="soloud\backend\portaudio\soloud_portaudio.cpp" />
+    <ClCompile Include="soloud\backend\portaudio\soloud_portaudio_dll.c" />
+    <ClCompile Include="soloud\backend\sdl2_static\soloud_sdl2_static.cpp" />
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl1.cpp" />
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl1_dll.c" />
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl2.cpp" />
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl2_dll.c" />
+    <ClCompile Include="soloud\backend\sdl_static\soloud_sdl_static.cpp" />
+    <ClCompile Include="soloud\backend\vita_homebrew\soloud_vita_homebrew.cpp" />
+    <ClCompile Include="soloud\backend\wasapi\soloud_wasapi.cpp" />
+    <ClCompile Include="soloud\backend\winmm\soloud_winmm.cpp" />
+    <ClCompile Include="soloud\backend\xaudio2\soloud_xaudio2.cpp" />
+    <ClCompile Include="soloud\core\soloud.cpp" />
+    <ClCompile Include="soloud\core\soloud_audiosource.cpp" />
+    <ClCompile Include="soloud\core\soloud_bus.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_3d.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_basicops.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_faderops.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_filterops.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_getters.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_setters.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_voicegroup.cpp" />
+    <ClCompile Include="soloud\core\soloud_core_voiceops.cpp" />
+    <ClCompile Include="soloud\core\soloud_fader.cpp" />
+    <ClCompile Include="soloud\core\soloud_fft.cpp" />
+    <ClCompile Include="soloud\core\soloud_fft_lut.cpp" />
+    <ClCompile Include="soloud\core\soloud_file.cpp" />
+    <ClCompile Include="soloud\core\soloud_filter.cpp" />
+    <ClCompile Include="soloud\core\soloud_misc.cpp" />
+    <ClCompile Include="soloud\core\soloud_queue.cpp" />
+    <ClCompile Include="soloud\core\soloud_thread.cpp" />
+    <ClCompile Include="soloud\filter\soloud_bassboostfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_biquadresonantfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_dcremovalfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_echofilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_fftfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_flangerfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_freeverbfilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_lofifilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_robotizefilter.cpp" />
+    <ClCompile Include="soloud\filter\soloud_waveshaperfilter.cpp" />
+    <ClCompile Include="world\entities\BarberExterior.cpp" />
+    <ClCompile Include="world\entities\Shark.cpp" />
+    <ClCompile Include="ui\UILabel.cpp" />
+    <ClCompile Include="world\entities\Skeleton.cpp" />
+    <ClCompile Include="world\entities\Dog.cpp" />
+    <ClCompile Include="inventory\Inventory.cpp" />
+    <ClCompile Include="inventory\Item.cpp" />
+    <ClCompile Include="inventory\ShopManager.cpp" />
+    <ClCompile Include="ui\UIAttributeMeter.cpp" />
+    <ClCompile Include="ui\UIButton.cpp" />
+    <ClCompile Include="ui\UICommandPrompt.cpp" />
+    <ClCompile Include="ui\UIElement.cpp" />
+    <ClCompile Include="ui\UIHandler.cpp" />
+    <ClCompile Include="ui\UIInventoryInterface.cpp" />
+    <ClCompile Include="ui\UIMenu.cpp" />
+    <ClCompile Include="ui\UIMessageDisplay.cpp" />
+    <ClCompile Include="ui\UIShopInterface.cpp" />
+    <ClCompile Include="ui\UITextField.cpp" />
+    <ClCompile Include="world\entities\Cactoid.cpp" />
+    <ClCompile Include="world\entities\Cactus.cpp" />
+    <ClCompile Include="world\entities\DamageParticle.cpp" />
+    <ClCompile Include="world\entities\DroppedItem.cpp" />
+    <ClCompile Include="world\entities\Entity.cpp" />
+    <ClCompile Include="world\entities\Frog.cpp" />
+    <ClCompile Include="world\entities\LargeSavannaTree.cpp" />
+    <ClCompile Include="world\entities\orbiters\Orbiter.cpp" />
+    <ClCompile Include="world\entities\orbiters\OrbiterType.cpp" />
+    <ClCompile Include="world\entities\Penguin.cpp" />
+    <ClCompile Include="world\entities\PlantMan.cpp" />
+    <ClCompile Include="world\entities\Player.cpp" />
+    <ClCompile Include="world\entities\projectiles\Projectile.cpp" />
+    <ClCompile Include="world\entities\ShopArrow.cpp" />
+    <ClCompile Include="world\entities\ShopCounter.cpp" />
+    <ClCompile Include="world\entities\ShopExterior.cpp" />
+    <ClCompile Include="world\entities\ShopInterior.cpp" />
+    <ClCompile Include="world\entities\ShopKeep.cpp" />
+    <ClCompile Include="world\entities\SmallSavannaTree.cpp" />
+    <ClCompile Include="world\entities\SmallTree.cpp" />
+    <ClCompile Include="world\entities\SmallTundraTree.cpp" />
+    <ClCompile Include="world\entities\SnowMan.cpp" />
+    <ClCompile Include="world\entities\TallGrass.cpp" />
+    <ClCompile Include="world\entities\Turtle.cpp" />
+    <ClCompile Include="world\entities\Yeti.cpp" />
+    <ClCompile Include="world\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\music\MusicSituation.h" />
+    <ClInclude Include="inventory\abilities\AbilityManager.h" />
+    <ClInclude Include="inventory\abilities\Ability.h" />
+    <ClInclude Include="core\CrashDetector.h" />
+    <ClInclude Include="core\music\MusicManager.h" />
+    <ClInclude Include="world\entities\LogMonster.h" />
+    <ClInclude Include="statistics\AchievementManager.h" />
+    <ClInclude Include="world\entities\CannonBoss.h" />
+    <ClInclude Include="world\entities\FleshChicken.h" />
+    <ClInclude Include="inventory\WeaponAnimationConfig.h" />
+    <ClInclude Include="statistics\Statistic.h" />
+    <ClInclude Include="statistics\StatManager.h" />
+    <ClInclude Include="world\entities\Boss.h" />
+    <ClInclude Include="core\Logger.h" />
+    <ClInclude Include="world\entities\CheeseBoss.h" />
+    <ClInclude Include="core\InputBindings.h" />
+    <ClInclude Include="ui\UIGamepadBindingButton.h" />
+    <ClInclude Include="ui\UIKeyboardBindingButton.h" />
+    <ClInclude Include="world\entities\Cyclops.h" />
+    <ClInclude Include="inventory\hair\Hairstyle.h" />
+    <ClInclude Include="inventory\hair\HairType.h" />
+    <ClInclude Include="world\entities\HairyEntity.h" />
+    <ClInclude Include="world\entities\BarberChair.h" />
+    <ClInclude Include="world\entities\BarberCounter.h" />
+    <ClInclude Include="world\entities\BarberInterior.h" />
+    <ClInclude Include="world\entities\FingerTree.h" />
+    <ClInclude Include="world\entities\BarberExterior.h" />
+    <ClInclude Include="core\Game.h" />
+    <ClInclude Include="core\gamepad\GamePad.h" />
+    <ClInclude Include="core\gamepad\GamePadButtons.h" />
+    <ClInclude Include="core\gamepad\GamePadListener.h" />
+    <ClInclude Include="core\Globals.h" />
+    <ClInclude Include="core\MessageManager.h" />
+    <ClInclude Include="core\SaveManager.h" />
+    <ClInclude Include="core\SoundManager.h" />
+    <ClInclude Include="core\Tutorial.h" />
+    <ClInclude Include="core\Util.h" />
+    <ClInclude Include="core\Versioning.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="core\ShaderManager.h" />
+    <ClInclude Include="soloud\audiosource\speech\darray.h" />
+    <ClInclude Include="soloud\audiosource\speech\klatt.h" />
+    <ClInclude Include="soloud\audiosource\speech\resonator.h" />
+    <ClInclude Include="soloud\audiosource\speech\tts.h" />
+    <ClInclude Include="soloud\audiosource\wav\dr_flac.h" />
+    <ClInclude Include="soloud\audiosource\wav\dr_mp3.h" />
+    <ClInclude Include="soloud\audiosource\wav\dr_wav.h" />
+    <ClInclude Include="soloud\audiosource\wav\stb_vorbis.h" />
+    <ClInclude Include="soloud\backend\miniaudio\miniaudio.h" />
+    <ClInclude Include="world\entities\Shark.h" />
+    <ClInclude Include="ui\UILabel.h" />
+    <ClInclude Include="world\entities\Skeleton.h" />
+    <ClInclude Include="world\entities\Dog.h" />
+    <ClInclude Include="inventory\EquipmentType.h" />
+    <ClInclude Include="inventory\Inventory.h" />
+    <ClInclude Include="inventory\Item.h" />
+    <ClInclude Include="inventory\ShopManager.h" />
+    <ClInclude Include="ui\UIAttributeMeter.h" />
+    <ClInclude Include="ui\UIButton.h" />
+    <ClInclude Include="ui\UIButtonListener.h" />
+    <ClInclude Include="ui\UICommandPrompt.h" />
+    <ClInclude Include="ui\UIElement.h" />
+    <ClInclude Include="ui\UIHandler.h" />
+    <ClInclude Include="ui\UIInventoryInterface.h" />
+    <ClInclude Include="ui\UIMenu.h" />
+    <ClInclude Include="ui\UIMessageDisplay.h" />
+    <ClInclude Include="ui\UIShopInterface.h" />
+    <ClInclude Include="ui\UITextField.h" />
+    <ClInclude Include="world\Chunk.h" />
+    <ClInclude Include="world\entities\Cactoid.h" />
+    <ClInclude Include="world\entities\Cactus.h" />
+    <ClInclude Include="world\entities\DamageParticle.h" />
+    <ClInclude Include="world\entities\DroppedItem.h" />
+    <ClInclude Include="world\entities\Entity.h" />
+    <ClInclude Include="world\entities\EntityTypeId.h" />
+    <ClInclude Include="world\entities\Frog.h" />
+    <ClInclude Include="world\entities\LargeSavannaTree.h" />
+    <ClInclude Include="world\entities\orbiters\Orbiter.h" />
+    <ClInclude Include="world\entities\orbiters\OrbiterType.h" />
+    <ClInclude Include="world\entities\Penguin.h" />
+    <ClInclude Include="world\entities\PlantMan.h" />
+    <ClInclude Include="world\entities\Player.h" />
+    <ClInclude Include="world\entities\projectiles\Projectile.h" />
+    <ClInclude Include="world\entities\projectiles\ProjectileData.h" />
+    <ClInclude Include="world\entities\ShopArrow.h" />
+    <ClInclude Include="world\entities\ShopCounter.h" />
+    <ClInclude Include="world\entities\ShopExterior.h" />
+    <ClInclude Include="world\entities\ShopInterior.h" />
+    <ClInclude Include="world\entities\ShopKeep.h" />
+    <ClInclude Include="world\entities\SmallSavannaTree.h" />
+    <ClInclude Include="world\entities\SmallTree.h" />
+    <ClInclude Include="world\entities\SmallTundraTree.h" />
+    <ClInclude Include="world\entities\SnowMan.h" />
+    <ClInclude Include="world\entities\TallGrass.h" />
+    <ClInclude Include="world\entities\Turtle.h" />
+    <ClInclude Include="world\entities\Yeti.h" />
+    <ClInclude Include="world\MobSpawnData.h" />
+    <ClInclude Include="world\ParticleSystem.h" />
+    <ClInclude Include="world\PerlinNoise.hpp" />
+    <ClInclude Include="world\TerrainColor.h" />
+    <ClInclude Include="world\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UntitledRogueLike.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="soloud\audiosource\speech\Elements.def" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{801444DE-0CD7-4A59-BE62-2FEBBE8A8422}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>rolmi</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\joshs\LocalDocuments\SFML-2.5.1\include;C:\local\boost_1_81_0;C:\Users\joshs\LocalDocuments\soloud20200207\include;C:\Users\joshs\LocalDocuments\FastNoise2-v0.10.0-alpha-Win64-MSVC\FastNoise2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\joshs\LocalDocuments\SFML-2.5.1\lib;C:\local\boost_1_81_0\libs;UntitledRogueLike;C:\Users\joshs\LocalDocuments\FastNoise2-v0.10.0-alpha-Win64-MSVC\FastNoise2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;Xinput9_1_0.lib;steam_api64.lib;FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>del "$(IntDir)Versioning.obj"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
