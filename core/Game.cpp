@@ -1325,7 +1325,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
 
         if (VSYNC_ENABLED) {
-            MessageManager::displayMessage("WARNING:\nThere may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+            MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
         }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
