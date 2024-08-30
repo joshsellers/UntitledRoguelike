@@ -38,6 +38,7 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../core/music/MusicManager.h"
 #include "entities/LogMonster.h"
+#include "TerrainGenParameters.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -750,7 +751,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 }
 
 sf::Image World::generateChunkTerrain(Chunk& chunk) {
-    constexpr float TERRAIN_SCALE = 0;
+    const float TERRAIN_SCALE = TerrainGenInitializer::getParameters()->terrainScale;
     const float SCALE_COEFFICIENT = std::pow(10, TERRAIN_SCALE);
 
     long long startTime = 0;
@@ -760,22 +761,21 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
     sf::Vector2f pos = chunk.pos;
 
     // Generator properties
-    constexpr int octaves = 4;
-    const double warpSize = 4;
-    const double warpStrength = 1.2;
-    const double sampleRate = 0.00015 * SCALE_COEFFICIENT; // 0.0001
+    const int octaves = TerrainGenInitializer::getParameters()->octaves;
+    const double warpSize = TerrainGenInitializer::getParameters()->warpSize;
+    const double warpStrength = TerrainGenInitializer::getParameters()->warpStrength;
+    const double sampleRate = TerrainGenInitializer::getParameters()->sampleRate * SCALE_COEFFICIENT;
 
     // Terrain levels
-    constexpr double terrLevelSubtrahand = 0.1;
-    const double seaLevel = 0.035 - terrLevelSubtrahand;
-    const double oceanMidRange = 0.06 - terrLevelSubtrahand;
-    const double oceanShallowRange = 0.09 - terrLevelSubtrahand;
-    const double sandRange = 0.1 - terrLevelSubtrahand;
-    const double dirtLowRange = 0.30 - terrLevelSubtrahand;
-    const double dirtHighRange = 0.40 - terrLevelSubtrahand;
-    const double mountainLowRange = 0.43 - terrLevelSubtrahand;
-    const double mountainMidRange = 0.46 - terrLevelSubtrahand;
-    const double mountainHighRange = 0.48 - terrLevelSubtrahand;
+    const double seaLevel = TerrainGenInitializer::getParameters()->seaLevel;
+    const double oceanMidRange = TerrainGenInitializer::getParameters()->oceanMidRange;
+    const double oceanShallowRange = TerrainGenInitializer::getParameters()->oceanShallowRange;
+    const double sandRange = TerrainGenInitializer::getParameters()->sandRange;
+    const double dirtLowRange = TerrainGenInitializer::getParameters()->dirtLowRange;
+    const double dirtHighRange = TerrainGenInitializer::getParameters()->dirtHighRange;
+    const double mountainLowRange = TerrainGenInitializer::getParameters()->mountainLowRange;
+    const double mountainMidRange = TerrainGenInitializer::getParameters()->mountainMidRange;
+    const double mountainHighRange = TerrainGenInitializer::getParameters()->mountainHighRange;
 
     int chX = pos.x;
     int chY = pos.y;
@@ -847,10 +847,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             // biomes
-            const double xOffset = 20000. / SCALE_COEFFICIENT; //20000.
-            const double yOffset = 20000. / SCALE_COEFFICIENT;
-            const int biomeOctaves = 2;
-            const double biomeSampleRate = 0.00002 * SCALE_COEFFICIENT; // 0.00001;
+            const double xOffset = TerrainGenInitializer::getParameters()->biomeXOffset / SCALE_COEFFICIENT;
+            const double yOffset = TerrainGenInitializer::getParameters()->biomeYOffset / SCALE_COEFFICIENT;
+            const int biomeOctaves = TerrainGenInitializer::getParameters()->biomeOctaves;
+            const double biomeSampleRate = TerrainGenInitializer::getParameters()->biomeSampleRate * SCALE_COEFFICIENT;;
             /*double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
             double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);*/
 
@@ -859,21 +859,21 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             temperatureNoise = norm_0_1(temperatureNoise, -1, 1);
             precipitationNoise = norm_0_1(precipitationNoise, -1, 1);
 
-            constexpr float biomeEdgeMixing = 125.f;
+            const float biomeEdgeMixing = TerrainGenInitializer::getParameters()->biomeEdgeMixing;
             temperatureNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
             precipitationNoise += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
-            sf::Vector2f tundraTemp(0.0, 0.5);
-            sf::Vector2f tundraPrec(0.05, 0.5);
+            const sf::Vector2f tundraTemp = TerrainGenInitializer::getParameters()->tundraTemp;
+            const sf::Vector2f tundraPrec = TerrainGenInitializer::getParameters()->tundraPrec;
             
-            sf::Vector2f desertTemp(0.6, 0.9);
-            sf::Vector2f desertPrec(0.0, 0.5);
+            const sf::Vector2f desertTemp = TerrainGenInitializer::getParameters()->desertTemp;
+            const sf::Vector2f desertPrec = TerrainGenInitializer::getParameters()->desertPrec;
 
-            sf::Vector2f savannaTemp(0.3, 0.6);
-            sf::Vector2f savannaPrec(0.5, 0.8);
+            const sf::Vector2f savannaTemp = TerrainGenInitializer::getParameters()->savannaTemp;
+            const sf::Vector2f savannaPrec = TerrainGenInitializer::getParameters()->savannaPrec;
 
-            sf::Vector2f forestTemp(0.1, 0.6);
-            sf::Vector2f forestPrec(0.4, 0.8);
+            const sf::Vector2f forestTemp = TerrainGenInitializer::getParameters()->forestTemp;
+            const sf::Vector2f forestPrec = TerrainGenInitializer::getParameters()->forestPrec;
 
             bool tundra = temperatureNoise > tundraTemp.x && temperatureNoise < tundraTemp.y && precipitationNoise > tundraPrec.x && precipitationNoise < tundraPrec.y;
             bool desert = temperatureNoise > desertTemp.x && temperatureNoise < desertTemp.y && precipitationNoise > desertPrec.x && precipitationNoise < desertPrec.y;
@@ -898,8 +898,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             rareBiomeTemp += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
             rareBiomePrec += ((float)randomInt(-(int)biomeEdgeMixing, (int)biomeEdgeMixing)) / 100000.;
 
-            sf::Vector2f fleshTemp(0.0005, 0.3);
-            sf::Vector2f fleshPrec(0.04, 0.5);
+            const sf::Vector2f fleshTemp = TerrainGenInitializer::getParameters()->fleshTemp;
+            const sf::Vector2f fleshPrec = TerrainGenInitializer::getParameters()->fleshPrec;
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;

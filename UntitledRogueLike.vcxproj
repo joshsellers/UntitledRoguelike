@@ -257,6 +257,7 @@
     <ClInclude Include="world\ParticleSystem.h" />
     <ClInclude Include="world\PerlinNoise.hpp" />
     <ClInclude Include="world\TerrainColor.h" />
+    <ClInclude Include="world\TerrainGenParameters.h" />
     <ClInclude Include="world\World.h" />
   </ItemGroup>
   <ItemGroup>
