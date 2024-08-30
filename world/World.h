@@ -60,7 +60,8 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 2, 8, 0),
-        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50)
+        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
+        MobSpawnData(MOB_TYPE::LOG_MONSTER, 5, 1, 1, 26)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -76,7 +77,8 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 4, 10, 0),
-        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50)
+        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
+        MobSpawnData(MOB_TYPE::LOG_MONSTER, 5, 1, 1, 26)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
@@ -88,7 +90,8 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
         MobSpawnData(MOB_TYPE::SKELETON, 2, 3, 6, 0),
         MobSpawnData(MOB_TYPE::PLANT_MAN, 0, 5, 10, 0),
-        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50)
+        MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
+        MobSpawnData(MOB_TYPE::LOG_MONSTER, 5, 1, 1, 26)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
