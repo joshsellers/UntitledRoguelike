@@ -27,6 +27,7 @@
 #include "../statistics/AchievementManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "../inventory/abilities/AbilityManager.h"
+#include "../world/entities/LogMonster.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -268,6 +269,8 @@ private:
                             entity = std::shared_ptr<FleshChicken>(new FleshChicken(pos));
                         } else if (entityName == "cannonboss") {
                             entity = std::shared_ptr<CannonBoss>(new CannonBoss(pos));
+                        } else if (entityName == "logmonster") {
+                            entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

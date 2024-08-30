@@ -13,6 +13,7 @@
 #include "Versioning.h"
 #include "../statistics/AchievementManager.h"
 #include "CrashDetector.h"
+#include "music/MusicManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -87,6 +88,7 @@ void checkLocalLowExists() {
 
 void shutdown() {
     SteamAPI_Shutdown();
+    MusicManager::shutdown();
     SoundManager::shutdown();
     MessageManager::stop();
     Logger::log("SHUTDOWN");
@@ -132,6 +134,8 @@ int main() {
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
     StatManager::loadOverallStats();
+    MusicManager::start();
+    MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
 
     steamworksSetup();
     AchievementManager::start();

@@ -21,10 +21,14 @@ public:
 
     void update();
 
+    void deactivateBossMode();
+
 protected:
     virtual void subUpdate() = 0;
     virtual void onStateChange(const BossState previousState, const BossState newState) = 0;
     virtual void runCurrentState() = 0;
+
+    bool _spawnedWithEnemies = false;
 
     std::vector<BossState> _bossStates;
     const int _numBossStates;

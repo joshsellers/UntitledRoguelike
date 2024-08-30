@@ -79,7 +79,7 @@ public:
                     std::string fullHeader = data[0] + ":";
                     load(data[0], splitString(splitString(line, fullHeader)[1], ":"));
                 } catch (std::exception ex) {
-                    MessageManager::displayMessage("Error loading save file: " + (std::string)ex.what(), 5, ERR);
+                    MessageManager::displayMessage("Error loading save file: " + (std::string)ex.what() + "\nLine was: \n" + line, 5, ERR);
                     loadedSuccessfully = false;
                 }
             }
@@ -221,6 +221,7 @@ private:
     static void saveEntityData(std::ofstream& out) {
         for (auto& entity : _world->getEntities()) {
             if (entity->isActive() && entity->getSaveId() != NO_SAVE && entity->getSaveId() != PLAYER) {
+                if (entity->getSaveData() == "NOSAVE") continue;
                 out << "ENTITY:"
                     << std::to_string((int)entity->getSaveId())
                     << ":" << entity->getUID()
@@ -593,6 +594,9 @@ private:
                     break;
                 case CANNON_BOSS:
                     entity = std::shared_ptr<CannonBoss>(new CannonBoss(pos));
+                    break;
+                case LOG_MONSTER:
+                    entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
                     break;
             }
 

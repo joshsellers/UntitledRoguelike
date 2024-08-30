@@ -186,7 +186,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SLIME_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);
@@ -213,7 +213,7 @@ const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), fals
     "Give it a toss and see where it lands",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2500, true, 
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::BOWLING_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::BOWLING_BALL.getId(), parent));
         bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
         bowlingBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(bowlingBall);
@@ -458,7 +458,7 @@ const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false,
     "Equip it and it will cry for you",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, false,
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::EYE_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::EYE_BALL.getId(), parent));
         eye->loadSprite(parent->getWorld()->getSpriteSheet());
         eye->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(eye);
@@ -514,8 +514,17 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
         const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
         if (!AbilityManager::givePlayerAbility(abilityId)) {
             int parameterChoice = randomInt(0, 2);
-            if (parameterChoice == 2 && AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75) {
+            bool maxedExpRate = AbilityManager::getParameter(abilityId, "expansion rate") >= 4.75;
+            if (parameterChoice == 2 && maxedExpRate) {
                 parameterChoice = randomInt(0, 1);
+            }
+            
+            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 175) {
+                parameterChoice = randomInt(0, 1);
+                if (parameterChoice == 1 && !maxedExpRate) parameterChoice = 2;
+                else if (maxedExpRate) {
+                    parameterChoice = 0;
+                }
             }
 
             const std::string keys[3] = {"damage", "radius", "expansion rate"};
@@ -541,13 +550,20 @@ const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0
     "Concentrated impaling", 
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
     [](Entity* parent) {
-        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(180, OrbiterType::SPIKE_BALL.getId(), parent));
+        std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SPIKE_BALL.getId(), parent));
         spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         spikeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(spikeBall);
         return true;
     }
 );
+
+const Item Item::_PROJECTILE_THORN(68, "_THORN_PROJECTILE", sf::IntRect(1, 13, 1, 1), false, 0, false, 
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_THORN(Item::_PROJECTILE_THORN.getId(), 3.f, sf::IntRect(0, 0, 16, 16), true);
 
 std::vector<const Item*> Item::ITEMS;
 
@@ -771,7 +787,8 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(),    0},
     {Item::FINGER_NAIL.getId(),                     0},
     {Item::BAD_VIBES_POTION.getId(),                11},
-    {Item::SPIKE_BALL.getId(),                      14}
+    {Item::SPIKE_BALL.getId(),                      14},
+    {Item::_PROJECTILE_THORN.getId(),               0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

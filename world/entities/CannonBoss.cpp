@@ -103,7 +103,8 @@ void CannonBoss::subUpdate() {
         else if (_movingDir == DOWN) _movingDir = LEFT;
     }
 
-    move(xa, ya);
+    if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
+    else move(xa, ya);
 
     _sprite.setPosition(getPosition());
 
@@ -117,7 +118,7 @@ void CannonBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    const long long contactDamageRateMillis = 500LL;
+    constexpr long long contactDamageRateMillis = 500LL;
     if (getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())
         && currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis) {

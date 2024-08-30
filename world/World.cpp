@@ -35,6 +35,8 @@
 #include "entities/CannonBoss.h"
 #include "../statistics/AchievementManager.h"
 #include "../inventory/abilities/AbilityManager.h"
+#include "../core/music/MusicManager.h"
+#include "entities/LogMonster.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -329,6 +331,16 @@ void World::spawnEnemies() {
                             case MOB_TYPE::FLESH_CHICKEN:
                                 mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::CHEESE_BOSS:
+                            {
+                                mob = std::shared_ptr<CheeseBoss>(new CheeseBoss(sf::Vector2f(xi, yi)));
+                                Boss* boss = dynamic_cast<Boss*>(mob.get());
+                                boss->deactivateBossMode();
+                                break;
+                            }
+                            case MOB_TYPE::LOG_MONSTER:
+                                mob = std::shared_ptr<LogMonster>(new LogMonster(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }
@@ -354,8 +366,14 @@ void World::spawnEnemies() {
 }
 
 int World::getRandMobType(const BiomeMobSpawnData& mobSpawnData) {
-    boost::random::uniform_int_distribution<> randMobType(0, mobSpawnData.mobData.size()-1);
-    return randMobType(_mobGen);
+    std::vector<int> availableMobTypes;
+    for (int i = 0; i < mobSpawnData.mobData.size(); i++) {
+        if (mobSpawnData.mobData.at(i).waveNumber <= getCurrentWaveNumber()) {
+            availableMobTypes.push_back(i);
+        }
+    }
+    boost::random::uniform_int_distribution<> randMobType(0, availableMobTypes.size() - 1);
+    return availableMobTypes[randMobType(_mobGen)];
 }
 
 void World::purgeScatterBuffer() {
@@ -548,8 +566,10 @@ void World::dumpChunkBuffer() {
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
+        MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
     } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
         _cooldownActive = false;
+        MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
     } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
 }
 
@@ -657,8 +677,7 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND
-                && terrainType != TERRAIN_TYPE::FLESH) {
+            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
@@ -867,6 +886,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
             if (_seed == 124959026) flesh = true;
+            if (flesh && _seed != 124959026) {
+                AchievementManager::unlock(FLESHY);
+            }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
 
@@ -990,7 +1012,13 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (defer) _entityBuffer.push_back(entity);
     else _entities.push_back(entity);
 
-    if (entity->isEnemy()) _enemies.push_back(entity);
+    if (entity->isEnemy()) {
+        /*float playerDamageMultiplier = _player->getDamageMultiplier();
+        entity->setMaxHitPoints(entity->getMaxHitPoints() + (entity->getMaxHitPoints() * (playerDamageMultiplier / 2)) + (((float)getCurrentWaveNumber() / 4)));
+        entity->heal(entity->getMaxHitPoints());*/
+
+        _enemies.push_back(entity);
+    }
 
     if (entity->isMob() && (!entity->isEnemy() || entity->isInitiallyDocile())) entity->shouldUseDormancyRules(true);
 

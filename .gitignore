@@ -424,9 +424,9 @@ MigrationBackup/
 FodyWeavers.xsd
 
 *.dll
-*.sln
-*.vcxproj
-*.vcxproj.filters
+# *.sln
+# *.vcxproj
+# *.vcxproj.filters
 *.rle
 .env
 *.lib

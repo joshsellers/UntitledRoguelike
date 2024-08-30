@@ -1,6 +1,7 @@
 #include "AchievementManager.h"
 #include "../core/MessageManager.h"
 #include "StatManager.h"
+#include "../core/Tutorial.h"
 
 void AchievementManagerInstance::start() {
     if (!STEAMAPI_INITIATED) return;
@@ -10,7 +11,6 @@ void AchievementManagerInstance::start() {
 void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
     if (!STEAMAPI_INITIATED || !_achievementsReady) return;
     else if (isUnlocked(achievement)) {
-        MessageManager::displayMessage("Achievement " + AchievementManager::achievementNames.at(achievement) + " already unlocked", 1, DEBUG);
         return;
     }
 
@@ -82,11 +82,27 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
         && StatManager::getStatThisSave(ITEMS_PURCHASED) >= 1000 && StatManager::getStatThisSave(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
+    } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
+        unlock(TENACIOUS);
     } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
         unlock(TRIAL_AND_ERROR);
     } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
         unlock(EXTERMINATOR);
     } else if (stat == SHOTS_FIRED && valueThisSave == 1000) {
         unlock(TRIGGER_HAPPY);
+    } else if (stat == DAMAGE_TAKEN) {
+        _wavesWithoutDamage = 0;
+        _tookDamageThisWave = true;
+    } else if (stat == WAVES_CLEARED) {
+        if (!_tookDamageThisWave) {
+            _wavesWithoutDamage++;
+        }
+        _tookDamageThisWave = false;
+
+        if (_wavesWithoutDamage == 5) {
+            unlock(SLIPPERY);
+        } else if (_wavesWithoutDamage == 10) {
+            unlock(UNTOUCHABLE);
+        }
     }
 }

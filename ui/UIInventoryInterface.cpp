@@ -127,7 +127,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         float scrollDelta = (_originalY - _y);
 
         scrollBar.setSize(sf::Vector2f(
-            getRelativeWidth(1.f), getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f)))
+            getRelativeWidth(1.f), getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 1.f)))
         );
 
         float relY = getRelativeHeight(scrollDelta);
@@ -363,7 +363,7 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
             float scrollDelta = (_originalY - _y);
 
             scrollBar.width = getRelativeWidth(1.f);
-            scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f));
+            scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 1.f));
 
             float relY = getRelativeHeight(scrollDelta);
             float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));
@@ -442,7 +442,7 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
         float scrollDelta = (_originalY - _y);
 
         scrollBar.width = getRelativeWidth(1.f);
-        scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 2.f));
+        scrollBar.height = getRelativeHeight(std::max(scrollBarMinHeight, (91.f * ((getRelativeHeight(100) - getRelativeHeight(headerPadding)) / allItemsHeight)) / 1.f));
 
         float relY = getRelativeHeight(scrollDelta);
         float yToDeltaHeightRatio = relY / (allItemsHeight - (getRelativeHeight(100) - getRelativeHeight(headerPadding)));

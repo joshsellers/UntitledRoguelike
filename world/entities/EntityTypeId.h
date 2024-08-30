@@ -20,7 +20,8 @@ enum ENTITY_SAVE_ID {
     CYCLOPS,
     CHEESE_BOSS,
     FLESH_CHICKEN,
-    CANNON_BOSS
+    CANNON_BOSS,
+    LOG_MONSTER
 };
 
 #endif
