@@ -303,7 +303,7 @@ void World::spawnEnemies() {
                     if (_cooldownActive || _maxEnemiesReached) continue;
 
                     boost::random::uniform_int_distribution<> randPackAmount(mobData.minPackSize, mobData.maxPackSize);
-                    int packAmount = randPackAmount(_enemyGen);
+                    int packAmount = randPackAmount(_enemyGen) + (1 * (PLAYER_SCORE / 100.f));
 
                     boost::random::uniform_int_distribution<> randXi(x - PACK_SPREAD, x + PACK_SPREAD);
                     boost::random::uniform_int_distribution<> randYi(y - PACK_SPREAD, y + PACK_SPREAD);
