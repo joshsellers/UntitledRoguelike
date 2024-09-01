@@ -331,13 +331,13 @@ void World::spawnEnemies() {
                             case MOB_TYPE::FLESH_CHICKEN:
                                 mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
-                            case MOB_TYPE::CHEESE_BOSS:
+                            /*case MOB_TYPE::CHEESE_BOSS:
                             {
                                 mob = std::shared_ptr<CheeseBoss>(new CheeseBoss(sf::Vector2f(xi, yi)));
                                 Boss* boss = dynamic_cast<Boss*>(mob.get());
                                 boss->deactivateBossMode();
                                 break;
-                            }
+                            }*/
                             case MOB_TYPE::LOG_MONSTER:
                                 mob = std::shared_ptr<LogMonster>(new LogMonster(sf::Vector2f(xi, yi)));
                                 break;

@@ -35,14 +35,14 @@ void DroppedItem::update() {
 
         if (_itemId == Item::PENNY.getId()) moveTowardPlayer();
 
-        for (auto& entity : getWorld()->getCollectorMobs()) {
+        /*for (auto& entity : getWorld()->getCollectorMobs()) {
             if (entity->canPickUpItems() && entity->isActive() && 
                 entity->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
                 entity->getInventory().addItem(_itemId, _amount);
                 _isActive = false;
                 return;
             }
-        }
+        }*/
     }
 
     _animCounter++;

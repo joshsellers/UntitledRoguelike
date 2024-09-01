@@ -83,14 +83,16 @@ void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, flo
 }
 
 const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist) {
+    minDist *= minDist;
+
     sf::Vector2f steer(0, 0);
     int count = 0;
     for (auto& entity : _world->getEnemies()) {
-        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isActive() && !entity->compare(this) 
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;
-            float dist = sqrt(dx * dx + dy * dy);
+            float dist = dx * dx + dy * dy;
 
             if (dist > 0 && dist < minDist) {
                 count++;
@@ -139,15 +141,17 @@ const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly
 }
 
 const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
+    visionRange *= visionRange;
+
     sf::Vector2f sum(0, 0);
     int count = 0;
 
     for (auto& entity : _world->getEnemies()) {
-        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isActive() && !entity->compare(this)
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;
-            float dist = sqrt(dx * dx + dy * dy);
+            float dist = dx * dx + dy * dy;
 
             if (dist < visionRange) {
                 count++;
@@ -186,15 +190,17 @@ const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
 }
 
 const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly, float visionRange) {
+    visionRange *= visionRange;
+
     sf::Vector2f sum(0, 0);
     int count = 0;
 
     for (auto& entity : _world->getEnemies()) {
-        if (entity->isMob() && entity->isEnemy() && entity->isActive() && !entity->compare(this) && !entity->compare(_world->getPlayer().get())
+        if (entity->isActive() && !entity->compare(this)
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;
             float dy = getPosition().y - entity->getPosition().y;
-            float dist = sqrt(dx * dx + dy * dy);
+            float dist = dx * dx + dy * dy;
 
             if (dist < visionRange) {
                 count++;

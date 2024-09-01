@@ -79,8 +79,8 @@ void LogMonster::runCurrentState() {
         }
         case TARGETED_FIRE:
         {
-            float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
-            float desiredDist = 128.f;
+            float dist = std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2);
+            float desiredDist = 128.f * 128.f;
             float distanceRatio = desiredDist / dist;
 
             goalPos = sf::Vector2f((1.f - distanceRatio) * playerPos.x + distanceRatio * cLoc.x, (1.f - distanceRatio) * playerPos.y + distanceRatio * cLoc.y);
