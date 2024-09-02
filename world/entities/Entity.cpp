@@ -43,9 +43,12 @@ void Entity::move(float xa, float ya) {
 void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, float visionRange) {
     sf::Vector2f acceleration(xa, ya);
 
-    acceleration += separate(acceleration, sameTypeOnly, minDist);
-    acceleration += align(sameTypeOnly, visionRange);
-    acceleration += cohesion(acceleration, sameTypeOnly, visionRange);
+    sf::Vector2f visionSum(0, 0);
+    int visionCount = 0;
+
+    acceleration += separate(acceleration, sameTypeOnly, minDist, visionRange, visionCount, visionSum);
+    acceleration += align(sameTypeOnly, visionCount, visionSum);
+    acceleration += cohesion(acceleration, sameTypeOnly, visionCount, visionSum);
 
     acceleration.x *= 0.4f;
     acceleration.y *= 0.4f;
@@ -82,7 +85,7 @@ void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, flo
     }
 }
 
-const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist) {
+const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist, float visionRange, int& visionCount, sf::Vector2f& visionSum) {
     minDist *= minDist;
 
     sf::Vector2f steer(0, 0);
@@ -112,6 +115,11 @@ const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly
 
                 steer += diff;
             }
+
+            if (dist < visionRange) {
+                visionCount++;
+                visionSum += entity->getVelocity();
+            }
         }
     }
 
@@ -140,41 +148,22 @@ const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly
     return steer;
 }
 
-const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
-    visionRange *= visionRange;
+const sf::Vector2f Entity::align(bool sameTypeOnly, int& visionCount, sf::Vector2f& visionSum) {
+    if (visionCount > 0) {
+        visionSum.x /= (float)visionCount;
+        visionSum.y /= (float)visionCount;
 
-    sf::Vector2f sum(0, 0);
-    int count = 0;
-
-    for (auto& entity : _world->getEnemies()) {
-        if (entity->isActive() && !entity->compare(this)
-            && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
-            float dx = getPosition().x - entity->getPosition().x;
-            float dy = getPosition().y - entity->getPosition().y;
-            float dist = dx * dx + dy * dy;
-
-            if (dist < visionRange) {
-                count++;
-                sum += entity->getVelocity();
-            }
-        }
-    }
-
-    if (count > 0) {
-        sum.x /= (float)count;
-        sum.y /= (float)count;
-
-        float sumMagnitude = sqrt(sum.x * sum.x + sum.y * sum.y);
+        float sumMagnitude = sqrt(visionSum.x * visionSum.x + visionSum.y * visionSum.y);
         if (sumMagnitude > 0) {
-            sum.x /= sumMagnitude;
-            sum.y /= sumMagnitude;
+            visionSum.x /= sumMagnitude;
+            visionSum.y /= sumMagnitude;
         }
         
-        sum.x *= _baseSpeed;
-        sum.y *= _baseSpeed;
+        visionSum.x *= _baseSpeed;
+        visionSum.y *= _baseSpeed;
 
         sf::Vector2f steer(0, 0);
-        steer = sum - _velocity;
+        steer = visionSum - _velocity;
 
         float size = sqrt(steer.x * steer.x + steer.y * steer.y);
         float max = 0.5f;
@@ -189,33 +178,14 @@ const sf::Vector2f Entity::align(bool sameTypeOnly, float visionRange) {
     }
 }
 
-const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly, float visionRange) {
-    visionRange *= visionRange;
-
-    sf::Vector2f sum(0, 0);
-    int count = 0;
-
-    for (auto& entity : _world->getEnemies()) {
-        if (entity->isActive() && !entity->compare(this)
-            && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
-            float dx = getPosition().x - entity->getPosition().x;
-            float dy = getPosition().y - entity->getPosition().y;
-            float dist = dx * dx + dy * dy;
-
-            if (dist < visionRange) {
-                count++;
-                sum += entity->getPosition();
-            }
-        }
-    }
-
-    if (count > 0) {
-        sum.x /= (float) count;
-        sum.y /= (float) count;
+const sf::Vector2f Entity::cohesion(sf::Vector2f acceleration, bool sameTypeOnly, int& visionCount, sf::Vector2f& visionSum) {
+    if (visionCount > 0) {
+        visionSum.x /= (float)visionCount;
+        visionSum.y /= (float)visionCount;
 
         // seek
         sf::Vector2f desired(0, 0);
-        desired -= sum;
+        desired -= visionSum;
 
         float magnitude = sqrt(desired.x * desired.x + desired.y * desired.y);
 
