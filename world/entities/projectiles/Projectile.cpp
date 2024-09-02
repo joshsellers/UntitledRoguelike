@@ -97,8 +97,8 @@ void Projectile::update() {
         }
     }
 
-    _pos.x = _velocityComponents.x * _currentTime + _originalPos.x;
-    _pos.y = _velocityComponents.y * _currentTime + _originalPos.y;
+    _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
+    _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
 
     _sprite.setPosition(_pos);
 

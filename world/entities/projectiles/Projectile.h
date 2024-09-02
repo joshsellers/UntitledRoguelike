@@ -32,7 +32,7 @@ private:
     long long _spawnTime;
     long long _lifeTime;
 
-    float _currentTime = 0;
+    int _currentTime = 0;
 
     const ProjectileData _data;
 
