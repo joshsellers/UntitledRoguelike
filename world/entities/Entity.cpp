@@ -5,6 +5,7 @@
 #include "projectiles/Projectile.h"
 #include "../../core/SoundManager.h"
 #include "../../statistics/StatManager.h"
+#include "projectiles/ProjectilePoolManager.h"
 
 Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp), _saveId(saveId) {
@@ -335,14 +336,7 @@ void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, 
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
     sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2, centerPoint.y);
 
-    std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-        spawnPos, this, angle, projData.baseVelocity, projData
-    ));
-    proj->onlyDamagePlayer = onlyDamagePlayer;
-    proj->loadSprite(getWorld()->getSpriteSheet());
-    proj->setWorld(getWorld());
-    proj->_displayOnTop = displayProjectileOnTop;
-    getWorld()->addEntity(proj);
+    ProjectilePoolManager::addProjectile(spawnPos, this, angle, projData.baseVelocity, projData, onlyDamagePlayer);
 
     if (soundName != "NONE") SoundManager::playSound(soundName);
 }

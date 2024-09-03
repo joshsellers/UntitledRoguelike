@@ -37,6 +37,7 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../core/music/MusicManager.h"
 #include "entities/LogMonster.h"
+#include "entities/projectiles/ProjectilePoolManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -102,6 +103,7 @@ void World::update() {
         purgeScatterBuffer();
         purgeEntityBuffer();
 
+        ProjectilePoolManager::update();
         updateEntities();
         AbilityManager::updateAbilities(_player.get());
 
@@ -195,6 +197,8 @@ void World::draw(sf::RenderTexture& surface) {
             }
         }
     }
+
+    ProjectilePoolManager::draw(surface);
 
     if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
 }
@@ -331,13 +335,13 @@ void World::spawnEnemies() {
                             case MOB_TYPE::FLESH_CHICKEN:
                                 mob = std::shared_ptr<FleshChicken>(new FleshChicken(sf::Vector2f(xi, yi)));
                                 break;
-                            /*case MOB_TYPE::CHEESE_BOSS:
+                            case MOB_TYPE::CHEESE_BOSS:
                             {
                                 mob = std::shared_ptr<CheeseBoss>(new CheeseBoss(sf::Vector2f(xi, yi)));
                                 Boss* boss = dynamic_cast<Boss*>(mob.get());
                                 boss->deactivateBossMode();
                                 break;
-                            }*/
+                            }
                             case MOB_TYPE::LOG_MONSTER:
                                 mob = std::shared_ptr<LogMonster>(new LogMonster(sf::Vector2f(xi, yi)));
                                 break;
@@ -1004,6 +1008,11 @@ unsigned int World::getSeed() {
 }
 
 void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
+    if (entity->getSaveId() == PROJECTILE) {
+        MessageManager::displayMessage("Tried to spawn projectile via addEntity", 5, DEBUG);
+        return;
+    }
+
     if (defer) _entityBuffer.push_back(entity);
     else _entities.push_back(entity);
 

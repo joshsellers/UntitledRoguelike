@@ -5,7 +5,7 @@
 #include "../../World.h"
 #include "../projectiles/Projectile.h"
 #include "../../../core/SoundManager.h"
-
+#include "../projectiles/ProjectilePoolManager.h"
 
 Orbiter::Orbiter(float angle, const unsigned int orbiterTypeId, Entity* parent) : _orbiterTypeId(orbiterTypeId), _angle(angle), 
 Entity(ORBITER, parent->getPosition(), OrbiterType::ORBITER_TYPES.at(orbiterTypeId)->getOrbitSpeed(), 16, 16, false) {
@@ -133,13 +133,9 @@ void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData,
     sf::Vector2f spawnPos(centerPoint.x - 8, centerPoint.y);
 
     bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT && _orbiterType->getAttackMethod() != OrbiterAttackMethod::CUSTOM;
-    std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-        spawnPos, this, angle, projData.baseVelocity, projData, _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId() || _orbiterType->onlyHitPlayer()
-        , 0, addParentVelocity
-    ));
-    proj->loadSprite(getWorld()->getSpriteSheet());
-    proj->setWorld(getWorld());
-    getWorld()->addEntity(proj);
+    
+    ProjectilePoolManager::addProjectile(spawnPos, this, angle, projData.baseVelocity, projData, 
+        _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId() || _orbiterType->onlyHitPlayer(), 0, addParentVelocity);
 
     if (soundName != "NONE") SoundManager::playSound(soundName);
 }
