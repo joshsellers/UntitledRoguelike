@@ -91,7 +91,7 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
 );
 
 const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true, 
-    "Something something an apple a day",
+    "Something something an apple a day\n\nRestores 5 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 40, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
@@ -197,7 +197,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
 );
 
 const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
-    "Kinda mushy but it makes me feel good",
+    "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 65, true, 
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
@@ -243,17 +243,17 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
 );
 
 const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), true, 32, true,
-    "Increases max HP by 5 and makes you feel good",
+    "Increases max HP by 5 and makes you feel good\n\nRestores 50 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 4750, true, 
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
-        parent->heal(parent->getMaxHitPoints());
+        parent->heal(50);
         return true;
     }
 );
 
 const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), true, 16, true,
-    "Increases max HP by 2 and makes you feel a little better",
+    "Increases max HP by 2 and makes you feel a little better\n\nRestores 8 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1199, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 2);
