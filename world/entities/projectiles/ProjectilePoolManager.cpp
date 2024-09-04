@@ -1,5 +1,6 @@
 #include "ProjectilePoolManager.h"
 #include "../../../core/MessageManager.h"
+#include "../../../core/Viewport.h"
 
 void ProjectilePoolManager::init() {
     for (int i = 0; i < MAX_PROJECTILES; i++) {
@@ -24,8 +25,9 @@ void ProjectilePoolManager::update() {
 }
 
 void ProjectilePoolManager::draw(sf::RenderTexture& surface) {
+    const sf::FloatRect cameraBounds = Viewport::getBounds();
     for (auto& projectile : _pool) {
-        if (projectile->isActive()) {
+        if (projectile->isActive() && projectile->getHitBox().intersects(cameraBounds)) {
             projectile->draw(surface);
         }
     }

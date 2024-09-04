@@ -16,11 +16,15 @@
 #include "../ui/UIGamepadBindingButton.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include "music/MusicManager.h"
+#include "Viewport.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
     _camera = camera;
     _window = window;
+
+    Viewport::setCamera(camera);
+    Viewport::setWindow(window);
 
     if (!_font.loadFromFile("res/font.ttf")) {
         MessageManager::displayMessage("Failed to load font!", 10, WARN);

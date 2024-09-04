@@ -734,6 +734,9 @@
     <ClInclude Include="world\entities\projectiles\ProjectilePoolManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="core\Viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UntitledRogueLike.rc">

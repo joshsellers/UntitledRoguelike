@@ -34,4 +34,11 @@ void DamageParticle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 
         _sprites.push_back(sprite);
     }
+
+    // Fixes damage particles being invisible with frustum culling
+    _sprite.setTexture(*spriteSheet);
+    _sprite.setTextureRect(
+        sf::IntRect(0, 0, damageString.length() * 12, TILE_SIZE)
+    );
+    _sprite.setPosition(getPosition().x - (damageString.length() * 12), getPosition().y - TILE_SIZE);
 }

@@ -38,6 +38,7 @@
 #include "../core/music/MusicManager.h"
 #include "entities/LogMonster.h"
 #include "entities/projectiles/ProjectilePoolManager.h"
+#include "../core/Viewport.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -155,8 +156,9 @@ void World::draw(sf::RenderTexture& surface) {
         }
     }
 
+    sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
-        if (!entity->isDormant() && !_isPlayerInShop
+        if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
             || (_isPlayerInShop && entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 

@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\music\MusicSituation.h" />
+    <ClInclude Include="core\Viewport.h" />
     <ClInclude Include="inventory\abilities\AbilityManager.h" />
     <ClInclude Include="inventory\abilities\Ability.h" />
     <ClInclude Include="core\CrashDetector.h" />
