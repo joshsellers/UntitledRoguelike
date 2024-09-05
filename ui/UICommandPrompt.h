@@ -28,6 +28,7 @@
 #include "../inventory/abilities/Ability.h"
 #include "../inventory/abilities/AbilityManager.h"
 #include "../world/entities/LogMonster.h"
+#include "../core/Viewport.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -712,6 +713,15 @@ private:
                 } else {
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
+            })
+        },
+
+        {
+            "toggleculling",
+            Command("Toggle frustum culling",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                Viewport::setCullingEnabled(!Viewport::isCullingEnabled());
+                return (Viewport::isCullingEnabled() ? "Enabled" : "Disabled") + (std::string)" culling";
             })
         }
     };

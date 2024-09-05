@@ -22,6 +22,7 @@
     <ClCompile Include="inventory\abilities\AbilityManager.cpp" />
     <ClCompile Include="inventory\abilities\Ability.cpp" />
     <ClCompile Include="core\music\MusicManager.cpp" />
+    <ClCompile Include="world\entities\projectiles\ProjectilePoolManager.cpp" />
     <ClCompile Include="world\entities\LogMonster.cpp" />
     <ClCompile Include="statistics\AchievementManager.cpp" />
     <ClCompile Include="world\entities\CannonBoss.cpp" />
@@ -158,10 +159,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\music\MusicSituation.h" />
+    <ClInclude Include="core\Viewport.h" />
     <ClInclude Include="inventory\abilities\AbilityManager.h" />
     <ClInclude Include="inventory\abilities\Ability.h" />
     <ClInclude Include="core\CrashDetector.h" />
     <ClInclude Include="core\music\MusicManager.h" />
+    <ClInclude Include="world\entities\projectiles\ProjectilePoolManager.h" />
     <ClInclude Include="world\entities\LogMonster.h" />
     <ClInclude Include="statistics\AchievementManager.h" />
     <ClInclude Include="world\entities\CannonBoss.h" />

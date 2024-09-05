@@ -11,16 +11,16 @@ struct ProjectileData {
         isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed), dropOnExpire(dropOnExpire) {
     }
 
-    const unsigned int itemId;
-    const float baseVelocity;
-    const sf::IntRect hitBox;
-    const bool rotateSprite;
-    const bool onlyHitEnemies;
-    const long long lifeTime;
-    const bool isAnimated;
-    const int animationFrames;
-    const int animationSpeed;
-    const bool dropOnExpire; 
+    unsigned int itemId;
+    float baseVelocity;
+    sf::IntRect hitBox;
+    bool rotateSprite;
+    bool onlyHitEnemies;
+    long long lifeTime;
+    bool isAnimated;
+    int animationFrames;
+    int animationSpeed;
+    bool dropOnExpire; 
 };
 
-#endif // !_PROJECTILE_DATA_H
+#endif 

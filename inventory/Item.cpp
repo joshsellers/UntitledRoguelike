@@ -9,6 +9,7 @@
 #include "../statistics/StatManager.h"
 #include "abilities/AbilityManager.h"
 #include "abilities/Ability.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -602,13 +603,8 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
 
         float angle = (float)((std::atan2(y, x)));
 
-        std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-            spawnPos, parent, angle, projData.baseVelocity, projData, false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage()
-        ));
-        proj->passThroughCount = passThroughCount;
-        proj->loadSprite(parent->getWorld()->getSpriteSheet());
-        proj->setWorld(parent->getWorld());
-        parent->getWorld()->addEntity(proj);
+        ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
+            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount);
 
         parent->decrementMagazine();
 

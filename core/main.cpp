@@ -14,6 +14,7 @@
 #include "../statistics/AchievementManager.h"
 #include "CrashDetector.h"
 #include "music/MusicManager.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -88,6 +89,7 @@ void checkLocalLowExists() {
 
 void shutdown() {
     SteamAPI_Shutdown();
+    ProjectilePoolManager::shutdown();
     MusicManager::shutdown();
     SoundManager::shutdown();
     MessageManager::stop();
@@ -136,6 +138,7 @@ int main() {
     StatManager::loadOverallStats();
     MusicManager::start();
     MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+    ProjectilePoolManager::init();
 
     steamworksSetup();
     AchievementManager::start();
