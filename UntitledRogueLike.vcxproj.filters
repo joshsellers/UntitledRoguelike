@@ -728,6 +728,9 @@
     <ClInclude Include="world\entities\LogMonster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="world\MobSpawnConfigs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UntitledRogueLike.rc">

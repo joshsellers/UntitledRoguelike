@@ -37,6 +37,7 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../core/music/MusicManager.h"
 #include "entities/LogMonster.h"
+#include "MobSpawnConfigs.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;

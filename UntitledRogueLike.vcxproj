@@ -253,6 +253,7 @@
     <ClInclude Include="world\entities\TallGrass.h" />
     <ClInclude Include="world\entities\Turtle.h" />
     <ClInclude Include="world\entities\Yeti.h" />
+    <ClInclude Include="world\MobSpawnConfigs.h" />
     <ClInclude Include="world\MobSpawnData.h" />
     <ClInclude Include="world\ParticleSystem.h" />
     <ClInclude Include="world\PerlinNoise.hpp" />
