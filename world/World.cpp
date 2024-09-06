@@ -205,9 +205,10 @@ void World::draw(sf::RenderTexture& surface) {
         }
     }
 
-    ProjectilePoolManager::draw(surface);
-
-    if (!playerIsInShop()) AbilityManager::drawAbilities(_player.get(), surface);
+    if (!playerIsInShop()) {
+        ProjectilePoolManager::draw(surface);
+        AbilityManager::drawAbilities(_player.get(), surface);
+    }
 }
 
 void World::spawnMobs() {
