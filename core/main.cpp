@@ -15,6 +15,7 @@
 #include "CrashDetector.h"
 #include "music/MusicManager.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../world/TerrainGenParameters.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -139,6 +140,10 @@ int main() {
     MusicManager::start();
     MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
     ProjectilePoolManager::init();
+
+    if (!TerrainGenInitializer::loadParameters()) {
+        MessageManager::displayMessage("Terrain generation parameters did not load", 5, WARN);
+    }
 
     steamworksSetup();
     AchievementManager::start();

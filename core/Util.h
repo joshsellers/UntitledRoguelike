@@ -12,6 +12,8 @@ long long currentTimeMillis();
 
 long long currentTimeNano();
 
+float norm_0_1(float x, float min, float max);
+
 std::string trimString(std::string str);
 
 std::vector<std::string> splitString(std::string str, std::string delimiter);

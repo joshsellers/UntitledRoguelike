@@ -30,6 +30,10 @@ long long currentTimeNano() {
     return nano.count();
 }
 
+float norm_0_1(float x, float min, float max) {
+    return (x - min) / (max - min);
+}
+
 std::string trimString(std::string str) {
     if (str.find(".") != std::string::npos) {
         for (std::string::size_type s = str.length() - 1; s > 0; --s) {

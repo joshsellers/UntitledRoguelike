@@ -752,6 +752,9 @@
     <ClInclude Include="world\entities\TulipMonster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="world\TerrainGenParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UntitledRogueLike.rc">

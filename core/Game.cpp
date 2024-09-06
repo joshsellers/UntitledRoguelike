@@ -1666,11 +1666,7 @@ void Game::textEntered(sf::Uint32 character) {
 }
 
 void Game::displayStartupMessages() const {
-    /*if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
-        MessageManager::displayMessage(
-            "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
-            10);
-    }*/
+
 }
 
 void Game::autoSave() {
