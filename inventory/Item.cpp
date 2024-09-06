@@ -813,7 +813,8 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::SPIKE_BALL.getId(),                      14},
     {Item::_PROJECTILE_THORN.getId(),               0},
     {Item::_PROJECTILE_ROCK.getId(),                0},
-    {Item::_PROJECTILE_POLLEN.getId(),              0}
+    {Item::_PROJECTILE_POLLEN.getId(),              0},
+    {Item::HEALING_MIST.getId(),                    90}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
