@@ -18,23 +18,24 @@ public:
 
     int passThroughCount = 1;
 
+    friend class ProjectilePoolManager;
 private:
     Entity* _parent;
 
-    const sf::Vector2f _originalPos;
+    sf::Vector2f _originalPos;
 
     float _directionAngle;
     float _velocity;
     sf::Vector2f _velocityComponents;
 
-    const unsigned int _itemId;
+    unsigned int _itemId;
 
     long long _spawnTime;
     long long _lifeTime;
 
-    float _currentTime = 0;
+    int _currentTime = 0;
 
-    const ProjectileData _data;
+    ProjectileData _data;
 
     int _animationTime = 0;
 
@@ -42,6 +43,8 @@ private:
 
     int _entitiesPassedThrough = 0;
     std::vector<std::string> _hitEntities;
+
+    void reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false, int damageBoost = 0, bool addParentVelocity = true, int passThroughCount = 1);
 };
 
 #endif 

@@ -15,11 +15,16 @@
 #include "../ui/UIKeyboardBindingButton.h"
 #include "../ui/UIGamepadBindingButton.h"
 #include <boost/random/uniform_int_distribution.hpp>
+#include "music/MusicManager.h"
+#include "Viewport.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
     _camera = camera;
     _window = window;
+
+    Viewport::setCamera(camera);
+    Viewport::setWindow(window);
 
     if (!_font.loadFromFile("res/font.ttf")) {
         MessageManager::displayMessage("Failed to load font!", 10, WARN);
@@ -108,9 +113,27 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
 void Game::initUI() {
     // Title screen background
-    int tsBgIndex = randomInt(0, 8);
-    _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:res/waterbg/bg_" + std::to_string(tsBgIndex) + ".png", 0, 0, 0, _font, 100.f, 100.f, false));
-    _titleScreenBackground->show();
+    std::vector<std::string> bgPaths;
+    if (std::filesystem::is_directory("res/waterbg")) {
+        for (const auto& entry : std::filesystem::directory_iterator("res/waterbg")) {
+            std::string pathStr = entry.path().string();
+            replaceAll(pathStr, "\\", "/");
+            if (stringEndsWith(pathStr, ".png")) {
+                bgPaths.push_back(pathStr);
+            }
+        }
+        if (bgPaths.size() > 0) {
+            int tsBgIndex = randomInt(0, bgPaths.size() - 1);
+            _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("IMAGE:" + bgPaths.at(tsBgIndex), 0, 0, 0, _font, 100.f, 100.f, false));
+            _titleScreenBackground->show();
+        } else {
+            MessageManager::displayMessage("No background images found", 5, DEBUG);
+            _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("", 0, 0, 0, _font, 100.f, 100.f, false));
+        }
+    } else {
+        MessageManager::displayMessage("Could not find res/waterbg", 5, WARN);
+        _titleScreenBackground = std::shared_ptr<UILabel>(new UILabel("", 0, 0, 0, _font, 100.f, 100.f, false));
+    }
 
 
     // Load game menu
@@ -921,6 +944,10 @@ void Game::update() {
             _gameLoading = false;
             _gameStarted = true;
             _HUDMenu->show();
+            
+            MUSIC_SITUTAION situation = MUSIC_SITUTAION::WAVE;
+            if (_world.onEnemySpawnCooldown()) situation = MUSIC_SITUTAION::COOLDOWN;
+            MusicManager::setSituation(situation);
         }
     }
     _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
@@ -1106,6 +1133,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
+        MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+
         _bossHUDMenu->hide();
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
@@ -1300,7 +1329,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
 
         if (VSYNC_ENABLED) {
-            MessageManager::displayMessage("WARNING:\nThere may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+            MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
         }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
@@ -1637,11 +1666,7 @@ void Game::textEntered(sf::Uint32 character) {
 }
 
 void Game::displayStartupMessages() const {
-    /*if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
-        MessageManager::displayMessage(
-            "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
-            10);
-    }*/
+
 }
 
 void Game::autoSave() {

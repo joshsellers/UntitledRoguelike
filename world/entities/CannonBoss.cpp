@@ -7,7 +7,7 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
     {
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
         BossState(BEHAVIOR_STATE::RING_OF_BLOOD, 11000LL, 12000LL),
-        BossState(BEHAVIOR_STATE::TARGETED_FIRE, 2000LL, 4000LL),
+        //BossState(BEHAVIOR_STATE::TARGETED_FIRE, 2000LL, 4000LL),
         BossState(BEHAVIOR_STATE::BLASTING, 4000LL, 6000LL)
     })
 {
@@ -103,7 +103,8 @@ void CannonBoss::subUpdate() {
         else if (_movingDir == DOWN) _movingDir = LEFT;
     }
 
-    move(xa, ya);
+    if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
+    else move(xa, ya);
 
     _sprite.setPosition(getPosition());
 
@@ -117,7 +118,7 @@ void CannonBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    const long long contactDamageRateMillis = 500LL;
+    constexpr long long contactDamageRateMillis = 500LL;
     if (getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())
         && currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis) {

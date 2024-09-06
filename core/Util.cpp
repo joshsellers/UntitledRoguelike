@@ -30,6 +30,10 @@ long long currentTimeNano() {
     return nano.count();
 }
 
+float norm_0_1(float x, float min, float max) {
+    return (x - min) / (max - min);
+}
+
 std::string trimString(std::string str) {
     if (str.find(".") != std::string::npos) {
         for (std::string::size_type s = str.length() - 1; s > 0; --s) {
@@ -51,6 +55,16 @@ std::vector<std::string> splitString(std::string str, std::string delimiter) {
     parsedString.push_back(str);
 
     return parsedString;
+}
+
+void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if (from.empty())
+        return;
+    size_t start_pos = 0;
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
 }
 
 bool stringStartsWith(std::string str, std::string start) {

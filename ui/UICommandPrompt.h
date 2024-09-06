@@ -27,6 +27,10 @@
 #include "../statistics/AchievementManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "../inventory/abilities/AbilityManager.h"
+#include "../world/entities/LogMonster.h"
+#include "../core/Viewport.h"
+#include "../world/entities/BoulderBeast.h"
+#include "../world/entities/TulipMonster.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -268,6 +272,12 @@ private:
                             entity = std::shared_ptr<FleshChicken>(new FleshChicken(pos));
                         } else if (entityName == "cannonboss") {
                             entity = std::shared_ptr<CannonBoss>(new CannonBoss(pos));
+                        } else if (entityName == "logmonster") {
+                            entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
+                        } else if (entityName == "boulderbeast") {
+                            entity = std::shared_ptr<BoulderBeast>(new BoulderBeast(pos));
+                        } else if (entityName == "tulipmonster") {
+                            entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
@@ -709,6 +719,15 @@ private:
                 } else {
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
+            })
+        },
+
+        {
+            "toggleculling",
+            Command("Toggle frustum culling",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                Viewport::setCullingEnabled(!Viewport::isCullingEnabled());
+                return (Viewport::isCullingEnabled() ? "Enabled" : "Disabled") + (std::string)" culling";
             })
         }
     };

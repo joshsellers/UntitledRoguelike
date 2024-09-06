@@ -89,6 +89,22 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
     }
 );
 
+const Ability Ability::HEALILNG_MIST(1, "Healthy Stench",
+    { {"amt", 5.f}, {"freq", 5000.f}, {"duration", 2.f * 60.f * 1000.f}, {"elapsed", 0.f} },
+    [](Player* player, Ability* ability) {
+        if (currentTimeMillis() - ability->_lastHealTimeMillis >= ability->getParameter("freq")) {
+            player->heal(player->getMaxHitPoints() * (ability->getParameter("amt") / 100.f));
+            ability->_lastHealTimeMillis = currentTimeMillis();
+            ability->setParameter("elapsed", ability->getParameter("elapsed") + ability->getParameter("freq"));
+            if (ability->getParameter("elapsed") >= ability->getParameter("duration")) {
+                ability->reset();
+            }
+        }
+    },
+
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

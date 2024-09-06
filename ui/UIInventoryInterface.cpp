@@ -476,6 +476,7 @@ void UIInventoryInterface::hide() {
     _gamepadSelectedItemIndex = -1;
     //_gamepadShowTooltip = false;
     _y = _originalY;
+    setFilter(FILTER_TYPE::NONE);
 }
 
 void UIInventoryInterface::setFilter(FILTER_TYPE filter) {

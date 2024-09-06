@@ -16,18 +16,24 @@ enum class MOB_TYPE : int {
     YETI,
     SKELETON,
     CYCLOPS,
-    FLESH_CHICKEN
+    FLESH_CHICKEN,
+    CHEESE_BOSS,
+    CANNON_BOSS,
+    LOG_MONSTER,
+    BOULDER_BEAST,
+    TULIP_MONSTER
 };
 
 struct MobSpawnData {
-    MobSpawnData(const MOB_TYPE mobType, const int spawnChance, const int minPackSize, const int maxPackSize)
-        : mobType(mobType), spawnChance(spawnChance), minPackSize(minPackSize), maxPackSize(maxPackSize)
+    MobSpawnData(const MOB_TYPE mobType, const int spawnChance, const int minPackSize, const int maxPackSize, const int waveNumber)
+        : mobType(mobType), spawnChance(spawnChance), minPackSize(minPackSize), maxPackSize(maxPackSize), waveNumber(waveNumber)
     {}
     
     const MOB_TYPE mobType;
     const int spawnChance;
     const int minPackSize;
     const int maxPackSize;
+    const int waveNumber;
 };
 
 struct BiomeMobSpawnData {

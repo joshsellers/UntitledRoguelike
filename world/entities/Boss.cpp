@@ -20,6 +20,11 @@ void Boss::update() {
     if (currentTimeMillis() - _lastStateChangeTime >= _currentStateLength) changeState();
 }
 
+void Boss::deactivateBossMode() {
+    _spawnedWithEnemies = true;
+    _isBoss = false;
+}
+
 void Boss::changeState() {
     const BossState previousState = _currentState;
 
@@ -44,6 +49,10 @@ void Boss::damage(int damage) {
             getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
         }
 
-        getWorld()->bossDefeated();
+        if (!_spawnedWithEnemies) getWorld()->bossDefeated();
     }
+}
+
+std::string Boss::getSaveData() const {
+    return _spawnedWithEnemies ? "1" : "0";
 }

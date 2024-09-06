@@ -13,6 +13,9 @@
 #include "Versioning.h"
 #include "../statistics/AchievementManager.h"
 #include "CrashDetector.h"
+#include "music/MusicManager.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../world/TerrainGenParameters.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -87,6 +90,8 @@ void checkLocalLowExists() {
 
 void shutdown() {
     SteamAPI_Shutdown();
+    ProjectilePoolManager::shutdown();
+    MusicManager::shutdown();
     SoundManager::shutdown();
     MessageManager::stop();
     Logger::log("SHUTDOWN");
@@ -132,6 +137,13 @@ int main() {
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
     StatManager::loadOverallStats();
+    MusicManager::start();
+    MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+    ProjectilePoolManager::init();
+
+    if (!TerrainGenInitializer::loadParameters()) {
+        MessageManager::displayMessage("Terrain generation parameters did not load", 5, WARN);
+    }
 
     steamworksSetup();
     AchievementManager::start();
