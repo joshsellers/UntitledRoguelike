@@ -40,6 +40,8 @@
 #include "MobSpawnConfigs.h"
 #include "entities/projectiles/ProjectilePoolManager.h"
 #include "../core/Viewport.h"
+#include "entities/BoulderBeast.h"
+#include "entities/TulipMonster.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -347,6 +349,12 @@ void World::spawnEnemies() {
                             }
                             case MOB_TYPE::LOG_MONSTER:
                                 mob = std::shared_ptr<LogMonster>(new LogMonster(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BOULDER_BEAST:
+                                mob = std::shared_ptr<BoulderBeast>(new BoulderBeast(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::TULIP_MONSTER:
+                                mob = std::shared_ptr<TulipMonster>(new TulipMonster(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

@@ -99,6 +99,10 @@ public:
     static const Item SPIKE_BALL;
     static const Item _PROJECTILE_THORN;
     static const ProjectileData DATA_PROJECTILE_THORN;
+    static const Item _PROJECTILE_ROCK;
+    static const ProjectileData DATA_PROJECTILE_ROCK;
+    static const Item _PROJECTILE_POLLEN;
+    static const ProjectileData DATA_PROJECTILE_POLLEN;
 
     static std::vector<const Item*> ITEMS;
 

@@ -598,6 +598,12 @@ private:
                 case LOG_MONSTER:
                     entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
                     break;
+                case BOULDER_BEAST:
+                    entity = std::shared_ptr<BoulderBeast>(new BoulderBeast(pos));
+                    break;
+                case TULIP_MONSTER:
+                    entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

@@ -1,18 +1,17 @@
-#include "LogMonster.h"
-
+#include "BoulderBeast.h"
+#include "../../core/Util.h"
 #include "../World.h"
 
-LogMonster::LogMonster(sf::Vector2f pos) : Boss(LOG_MONSTER, pos, 2.5, TILE_SIZE * 2, TILE_SIZE * 3,
+BoulderBeast::BoulderBeast(sf::Vector2f pos) : Boss(BOULDER_BEAST, pos, 2.5, TILE_SIZE * 3, TILE_SIZE * 3,
     {
         BossState(BEHAVIOR_STATE::CHASE, 4000LL, 8000LL),
         BossState(BEHAVIOR_STATE::TARGETED_FIRE, 5000LL, 12000LL)
-    }) 
-{
-    setMaxHitPoints(100);
+    }) {
+    setMaxHitPoints(110);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 2) / 2;
-    _hitBoxYOffset = TILE_SIZE;
+    _hitBoxYOffset = TILE_SIZE / 2;
     _hitBox.width = TILE_SIZE * 2;
     _hitBox.height = TILE_SIZE * 2;
 
@@ -21,18 +20,28 @@ LogMonster::LogMonster(sf::Vector2f pos) : Boss(LOG_MONSTER, pos, 2.5, TILE_SIZE
 
     _canPickUpItems = false;
 
-    _entityType = "logmonster";
+    _entityType = "boulderbeast";
 
     srand(currentTimeNano());
     const int hasPennyChance = 5;
     unsigned int pennyAmount = randomInt(0, 505);
     if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
-    getInventory().addItem(Item::WOOD.getId(), 1);
 
     deactivateBossMode();
 }
 
-void LogMonster::subUpdate() {
+void BoulderBeast::draw(sf::RenderTexture& surface) {
+    int xOffset = getMovingDir() * TILE_SIZE * 3;
+    int yOffset = ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 3;
+
+    _sprite.setTextureRect(sf::IntRect(
+        1296 + xOffset, 832 + yOffset, TILE_SIZE * 3, TILE_SIZE * 3
+    ));
+
+    surface.draw(_sprite);
+}
+
+void BoulderBeast::subUpdate() {
     _numSteps++;
 
     constexpr long long contactDamageRateMillis = 300LL;
@@ -44,18 +53,7 @@ void LogMonster::subUpdate() {
     }
 }
 
-void LogMonster::draw(sf::RenderTexture& surface) {
-    int xOffset = getMovingDir() == UP ? TILE_SIZE * 2 : 0;
-    int yOffset = ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 3;
-
-    _sprite.setTextureRect(sf::IntRect(
-        1232 + xOffset, 832 + yOffset, TILE_SIZE * 2, TILE_SIZE * 3
-    ));
-
-    surface.draw(_sprite);
-}
-
-void LogMonster::onStateChange(const BossState previousState, const BossState newState) {
+void BoulderBeast::onStateChange(const BossState previousState, const BossState newState) {
     switch (newState.stateId) {
         case BEHAVIOR_STATE::CHASE:
             _baseSpeed = 3.5f;
@@ -66,7 +64,7 @@ void LogMonster::onStateChange(const BossState previousState, const BossState ne
     }
 }
 
-void LogMonster::runCurrentState() {
+void BoulderBeast::runCurrentState() {
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 3);
     sf::Vector2f goalPos(cLoc);
@@ -86,7 +84,19 @@ void LogMonster::runCurrentState() {
             goalPos = sf::Vector2f((1.f - distanceRatio) * playerPos.x + distanceRatio * cLoc.x, (1.f - distanceRatio) * playerPos.y + distanceRatio * cLoc.y);
 
             if (currentTimeMillis() - _lastFireTimeMillis >= _fireRateMillis) {
-                fireTargetedProjectile(playerPos, Item::DATA_PROJECTILE_THORN, "NONE", true);
+                if (!_fireDiagonal) {
+                    fireTargetedProjectile(0.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(90.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(180.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(270.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    _fireDiagonal = true;
+                } else {
+                    fireTargetedProjectile(45.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(135.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(225.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(315.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    _fireDiagonal = false;
+                }
                 _lastFireTimeMillis = currentTimeMillis();
             }
             break;
@@ -118,9 +128,9 @@ void LogMonster::runCurrentState() {
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 }
 
-void LogMonster::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+void BoulderBeast::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(1232, 832, TILE_SIZE * 2, TILE_SIZE * 3));
+    _sprite.setTextureRect(sf::IntRect(1296, 832, TILE_SIZE * 3, TILE_SIZE * 3));
     _sprite.setPosition(getPosition());
-    _sprite.setOrigin((float)TILE_SIZE, 0);
+    _sprite.setOrigin((float)TILE_SIZE * 3.f / 2.f, 0);
 }

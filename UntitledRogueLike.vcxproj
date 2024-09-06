@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="world\entities\TulipMonster.cpp" />
+    <ClCompile Include="world\entities\BoulderBeast.cpp" />
     <ClCompile Include="inventory\abilities\AbilityManager.cpp" />
     <ClCompile Include="inventory\abilities\Ability.cpp" />
     <ClCompile Include="core\music\MusicManager.cpp" />
@@ -158,6 +160,8 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="world\entities\TulipMonster.h" />
+    <ClInclude Include="world\entities\BoulderBeast.h" />
     <ClInclude Include="core\music\MusicSituation.h" />
     <ClInclude Include="core\Viewport.h" />
     <ClInclude Include="inventory\abilities\AbilityManager.h" />

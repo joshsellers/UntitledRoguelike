@@ -566,6 +566,20 @@ const Item Item::_PROJECTILE_THORN(68, "_THORN_PROJECTILE", sf::IntRect(1, 13, 1
 
 const ProjectileData Item::DATA_PROJECTILE_THORN(Item::_PROJECTILE_THORN.getId(), 3.f, sf::IntRect(0, 0, 16, 16), true);
 
+const Item Item::_PROJECTILE_ROCK(69, "_ROCK_PROJECTILE", sf::IntRect(93, 52, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_ROCK(Item::_PROJECTILE_ROCK.getId(), 3.f, sf::IntRect(3, 3, 10, 10), false);
+
+const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 2.f, sf::IntRect(2, 2, 12, 12), false);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
@@ -784,7 +798,9 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::FINGER_NAIL.getId(),                     0},
     {Item::BAD_VIBES_POTION.getId(),                11},
     {Item::SPIKE_BALL.getId(),                      14},
-    {Item::_PROJECTILE_THORN.getId(),               0}
+    {Item::_PROJECTILE_THORN.getId(),               0},
+    {Item::_PROJECTILE_ROCK.getId(),                0},
+    {Item::_PROJECTILE_POLLEN.getId(),              0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
