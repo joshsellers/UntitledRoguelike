@@ -782,8 +782,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     std::vector<TERRAIN_TYPE> data(CHUNK_SIZE * CHUNK_SIZE);
 
-    //const siv::PerlinNoise perlin{ (siv::PerlinNoise::seed_type)_seed };
-
     const auto perlin = FastNoise::New<FastNoise::Perlin>();
     const auto fractal = FastNoise::New<FastNoise::FractalFBm>();
     fractal->SetSource(perlin);
@@ -794,22 +792,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
     for (int y = chY; y < chY + CHUNK_SIZE; y++) {
         for (int x = chX; x < chX + CHUNK_SIZE; x++) {
-            /*double warpNoise = perlin.octave2D_11(
-                warpSize * ((double)x * sampleRate * 2),
-                warpSize * ((double)y * sampleRate * 2), octaves
-            );*/
             double warpNoise = fractal->GenSingle2D(warpSize * ((float)x * sampleRate * 2), warpSize * ((float)y * sampleRate * 2), _seed);
 
-            /*double warpNoise2 = perlin.octave2D_11(
-                warpSize * ((double)x * sampleRate * 4),
-                warpSize * ((double)y * sampleRate * 4), octaves
-            );*/
             double warpNoise2 = fractal->GenSingle2D(warpSize * ((float)x * sampleRate * 4), warpSize * ((float)y * sampleRate * 4), _seed);
 
-            /*double val = perlin.octave3D_11(
-                (x)*sampleRate, (y)*sampleRate,
-                warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, octaves
-            );*/
             double val = fractal->GenSingle3D((x)*sampleRate, (y)*sampleRate, warpStrength * warpNoise * (warpStrength / 2) * warpNoise2, _seed);
 
             sf::Uint32 rgb = 0x00;
@@ -851,8 +837,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const double yOffset = TerrainGenInitializer::getParameters()->biomeYOffset / SCALE_COEFFICIENT;
             const int biomeOctaves = TerrainGenInitializer::getParameters()->biomeOctaves;
             const double biomeSampleRate = TerrainGenInitializer::getParameters()->biomeSampleRate * SCALE_COEFFICIENT;;
-            /*double temperatureNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 10, biomeOctaves);
-            double precipitationNoise = perlin.normalizedOctave3D_01((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, 40, biomeOctaves);*/
 
             double temperatureNoise = perlin->GenSingle2D((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, _seed + 10);
             double precipitationNoise = perlin->GenSingle2D((x + xOffset) * biomeSampleRate, (y + yOffset) * biomeSampleRate, _seed + 40);
@@ -887,8 +871,6 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
 
             // rare biomes 
             const double rareBiomeSampleRate = biomeSampleRate / 2;
-            /*double rareBiomeTemp = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 8);
-            double rareBiomePrec = perlin.noise3D_01((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, 34);*/
 
             double rareBiomeTemp = perlin->GenSingle2D((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, _seed + 8);
             double rareBiomePrec = perlin->GenSingle2D((x + xOffset) * rareBiomeSampleRate, (y + yOffset) * rareBiomeSampleRate, _seed + 34);
