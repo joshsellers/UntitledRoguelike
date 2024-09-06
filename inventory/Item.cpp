@@ -580,13 +580,13 @@ const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40
 
 const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 2.f, sf::IntRect(2, 2, 12, 12), false);
 
-const Item Item::HEALING_MIST(71, "Healing Mist", sf::IntRect(2, 13, 1, 1), true, 16, true,
-    "Once activated, heals 1% of your\nmax HP every 15 seconds for 2 minutes\n\nActivate by equipping",
+const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
+    "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 999999, true,
     [](Entity* parent) {
         const unsigned int id = Ability::HEALILNG_MIST.getId();
         if (!AbilityManager::givePlayerAbility(id)) {
-            MessageManager::displayMessage("Healing Mist has already been activated\nWait until the effect ends to use another", 5);
+            MessageManager::displayMessage("Healthy Stench has already been activated\nWait until the effect ends to use another", 5);
             return false;
         }
         return true;

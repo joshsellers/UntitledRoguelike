@@ -89,7 +89,7 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
     }
 );
 
-const Ability Ability::HEALILNG_MIST(1, "Healing Mist",
+const Ability Ability::HEALILNG_MIST(1, "Healthy Stench",
     { {"amt", 5.f}, {"freq", 5000.f}, {"duration", 2.f * 60.f * 1000.f}, {"elapsed", 0.f} },
     [](Player* player, Ability* ability) {
         if (currentTimeMillis() - ability->_lastHealTimeMillis >= ability->getParameter("freq")) {
