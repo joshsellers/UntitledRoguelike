@@ -178,7 +178,7 @@ const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, P
     }, 500, true, 20, 2750
 );
 
-const Item Item::_PROJECTILE_SLIME_BALL(27, "_SLIMEBALL_PROJECTILE", sf::IntRect(7, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_SLIME_BALL(27, "_SLIMEBALL_PROJECTILE", sf::IntRect(13, 7, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false);
 const ProjectileData Item::DATA_PROJECTILE_SLIME_BALL(Item::_PROJECTILE_SLIME_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, true);
@@ -489,7 +489,7 @@ const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true
     }
 );
 
-const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(5, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(11, 7, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 12, 0, 0, sf::Vector2f(), false
 );
@@ -579,6 +579,19 @@ const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40
 );
 
 const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 2.f, sf::IntRect(2, 2, 12, 12), false);
+
+const Item Item::HEALING_MIST(71, "Healing Mist", sf::IntRect(2, 13, 1, 1), true, 16, true,
+    "Once activated, heals 1% of your\nmax HP every 15 seconds for 2 minutes\n\nActivate by equipping",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 999999, true,
+    [](Entity* parent) {
+        const unsigned int id = Ability::HEALILNG_MIST.getId();
+        if (!AbilityManager::givePlayerAbility(id)) {
+            MessageManager::displayMessage("Healing Mist has already been activated\nWait until the effect ends to use another", 5);
+            return false;
+        }
+        return true;
+    }
+);
 
 std::vector<const Item*> Item::ITEMS;
 

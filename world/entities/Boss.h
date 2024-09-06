@@ -23,6 +23,8 @@ public:
 
     void deactivateBossMode();
 
+    virtual std::string getSaveData() const;
+
 protected:
     virtual void subUpdate() = 0;
     virtual void onStateChange(const BossState previousState, const BossState newState) = 0;

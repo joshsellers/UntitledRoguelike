@@ -103,6 +103,7 @@ public:
     static const ProjectileData DATA_PROJECTILE_ROCK;
     static const Item _PROJECTILE_POLLEN;
     static const ProjectileData DATA_PROJECTILE_POLLEN;
+    static const Item HEALING_MIST;
 
     static std::vector<const Item*> ITEMS;
 
