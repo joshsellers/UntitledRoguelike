@@ -109,8 +109,8 @@ void World::update() {
         purgeScatterBuffer();
         purgeEntityBuffer();
 
-        ProjectilePoolManager::update();
         updateEntities();
+        ProjectilePoolManager::update();
         AbilityManager::updateAbilities(_player.get());
 
         removeInactiveEntitiesFromSubgroups();

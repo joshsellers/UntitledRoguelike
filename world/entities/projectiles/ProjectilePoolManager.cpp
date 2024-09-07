@@ -54,3 +54,9 @@ void ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* parent, floa
         lastProjectile->reset(pos, parent, directionAngle, velocity, data, onlyHitPlayer, damageBoost, addParentVelocity, passThroughCount);
     }
 }
+
+void ProjectilePoolManager::removeAll() {
+    for (auto& projectile : _pool) {
+        projectile->deactivate();
+    }
+}

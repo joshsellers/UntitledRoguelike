@@ -17,6 +17,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "music/MusicManager.h"
 #include "Viewport.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1148,11 +1149,12 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->unlock();
         _cmdPrompt->processCommand("killall");
         _cmdPrompt->processCommand("clear inventory");
-        _cmdPrompt->processCommand("respawn");
         _cmdPrompt->processCommand("setmaxhp:100");
         _cmdPrompt->processCommand("addhp:100");
+        _cmdPrompt->processCommand("respawn");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
@@ -1183,6 +1185,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_isReloading = false;
         _player->_damageMultiplier = 1.f;
         _player->_maxStamina = INITIAL_MAX_STAMINA;
+        _player->_stamina = INITIAL_MAX_STAMINA;
         _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
         _player->_coinMagnetCount = 0;
 

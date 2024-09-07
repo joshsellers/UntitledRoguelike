@@ -436,7 +436,7 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
     }, 1, false, 0, 500
 );
 
-const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 16, true,
+const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 999, true,
     "Nummy\nHeals 20 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 500, false,
     [](Entity* parent) {
@@ -510,7 +510,7 @@ const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 
 
 const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
     "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 9000, true,
     [](Entity* parent) {
         const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
         if (!AbilityManager::givePlayerAbility(abilityId)) {

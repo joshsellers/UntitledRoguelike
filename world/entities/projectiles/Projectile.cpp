@@ -50,7 +50,7 @@ void Projectile::update() {
 
     if (onlyDamagePlayer) {
         if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
-            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage()/* * _parent->getDamageMultiplier()*/);
+            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
             _isActive = false;
             return;
         }
