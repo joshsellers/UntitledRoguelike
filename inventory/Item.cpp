@@ -520,7 +520,7 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
                 parameterChoice = randomInt(0, 1);
             }
             
-            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 175) {
+            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 140) {
                 parameterChoice = randomInt(0, 1);
                 if (parameterChoice == 1 && !maxedExpRate) parameterChoice = 2;
                 else if (maxedExpRate) {
@@ -578,7 +578,7 @@ const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 2.f, sf::IntRect(2, 2, 12, 12), false);
+const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 3.f, sf::IntRect(2, 2, 12, 12), false);
 
 const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
     "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
