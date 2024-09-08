@@ -79,6 +79,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _coinMagnetCountLabel.setCharacterSize(24);
     _coinMagnetCountLabel.setString("magnets: ");
     _coinMagnetCountLabel.setPosition(0, 225);
+    
+    _hardModeEnabledLabel.setFont(_font);
+    _hardModeEnabledLabel.setCharacterSize(24);
+    _hardModeEnabledLabel.setString("hardmode: ");
+    _hardModeEnabledLabel.setPosition(0, 250);
 
     _loadingStatusLabel.setFont(_font);
     _loadingStatusLabel.setCharacterSize(UIElement::getRelativeWidth(3.f));
@@ -557,6 +562,12 @@ void Game::initUI() {
     ));
     newGameBackButton->setSelectionId(3);
     _newGameMenu->addElement(newGameBackButton);
+
+    _hardModeToggleButton = std::shared_ptr<UIButton>(new UIButton(
+        44, 72, 11, 3, "hard mode: off", _font, this, "hardmode"
+    ));
+    _hardModeToggleButton->setSelectionId(4);
+    if (Tutorial::isCompleted()) _newGameMenu->addElement(_hardModeToggleButton);
     
     _newGameMenu->useGamepadConfiguration = true;
     _newGameMenu->defineSelectionGrid(
@@ -564,7 +575,8 @@ void Game::initUI() {
             {_worldNameField->getSelectionId()},
             {_seedField->getSelectionId()},
             {startGameButton->getSelectionId()},
-            {newGameBackButton->getSelectionId()}
+            {newGameBackButton->getSelectionId()},
+            {_hardModeToggleButton->getSelectionId()}
         }
     );
     _ui->addMenu(_newGameMenu);
@@ -1065,6 +1077,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _coinMagnetCountLabel.setString("magnets: " + std::to_string(_player->getCoinMagnetCount()));
         surface.draw(_coinMagnetCountLabel);
 
+        _hardModeEnabledLabel.setString("hardmode: " + (std::string)(HARD_MODE_ENABLED ? "1" : "0"));
+        surface.draw(_hardModeEnabledLabel);
+
         _frameCounter++;
     }
 }
@@ -1140,6 +1155,9 @@ void Game::buttonPressed(std::string buttonCode) {
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
+        HARD_MODE_ENABLED = false;
+        _hardModeToggleButton->setLabelText("hard mode: off");
+
         _gameStarted = false;
         _gameLoading = false;
         _isPaused = false;
@@ -1406,6 +1424,9 @@ void Game::buttonPressed(std::string buttonCode) {
         } else {
             enterCharacter(key.at(0));
         }
+    } else if (buttonCode == "hardmode") {
+        HARD_MODE_ENABLED = !HARD_MODE_ENABLED;
+        _hardModeToggleButton->setLabelText(HARD_MODE_ENABLED ? "hard mode: on" : "hard mode: off");
     }
 }
 
@@ -1576,6 +1597,8 @@ void Game::onPlayerDeath() {
         } else {
             int playerPennyIndex = _player->getInventory().findItem(Item::PENNY.getId());
             if (playerPennyIndex != NO_ITEM) _player->getInventory().removeItem(Item::PENNY.getId(), _player->getInventory().getItemAmountAt(playerPennyIndex));
+
+            HARD_MODE_ENABLED = false;
 
             _cmdPrompt->unlock();
             _cmdPrompt->processCommand("removedroppeditems");

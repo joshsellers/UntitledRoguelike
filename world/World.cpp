@@ -372,6 +372,7 @@ void World::spawnEnemies() {
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
+                            if (HARD_MODE_ENABLED) _maxActiveEnemies *= 2;
                             PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_player->getMaxHitPoints() / 100.f));
                             _waveCounter++;
                             break;
