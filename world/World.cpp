@@ -1104,7 +1104,7 @@ void World::setMaxActiveEnemies(int maxActiveEnemies) {
 }
 
 void World::incrementEnemySpawnCooldownTimeWhilePaused() {
-    if (onEnemySpawnCooldown()) _cooldownStartTime += 16LL;
+    if (onEnemySpawnCooldown()) _cooldownStartTime += cooldownClock.restart().asMilliseconds();
 }
 
 unsigned int World::getCurrentWaveNumber() const {
@@ -1185,6 +1185,8 @@ void World::spawnBoss(int currentWaveNumber) {
         boss->loadSprite(getSpriteSheet());
         boss->setWorld(this);
         addEntity(boss);
+
+        cooldownClock.restart();
     }
 }
 
@@ -1259,6 +1261,8 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         barberChair->setWorld(this);
         addEntity(barberChair);
     }
+
+    cooldownClock.restart();
 }
 
 void World::exitBuilding() {

@@ -64,6 +64,8 @@ public:
     void setMaxActiveEnemies(int maxActiveEnemies);
     void incrementEnemySpawnCooldownTimeWhilePaused();
 
+    sf::Clock cooldownClock;
+
     unsigned int getCurrentWaveNumber() const;
 
     std::shared_ptr<Player> getPlayer() const;

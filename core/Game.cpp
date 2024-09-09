@@ -1515,6 +1515,7 @@ void Game::togglePauseMenu() {
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 
+    if (_isPaused) _world.cooldownClock.restart();
 }
 
 void Game::toggleInventoryMenu() {
