@@ -2,6 +2,7 @@
 #define _PROJECTILE_DATA_H
 
 #include <SFML/Graphics/Rect.hpp>
+#include "ProjectileDataManager.h"
 
 struct ProjectileData {
     ProjectileData(const unsigned int itemId, const float baseVelocity, const sf::IntRect hitBox, const bool rotateSprite, const bool onlyHitEnemies = false,
@@ -9,6 +10,8 @@ struct ProjectileData {
         const bool isAnimated = false, const int animationFrames = 0, const int animationSpeed = 0, const bool dropOnExpire = false) :
         itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite), onlyHitEnemies(onlyHitEnemies), lifeTime(lifeTime),
         isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed), dropOnExpire(dropOnExpire) {
+
+        ProjectileDataManager::addData(*this);
     }
 
     unsigned int itemId;

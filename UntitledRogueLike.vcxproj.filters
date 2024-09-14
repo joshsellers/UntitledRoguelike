@@ -432,6 +432,12 @@
     <ClCompile Include="world\entities\TulipMonster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod\ModManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -753,6 +759,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\TerrainGenParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\ModManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

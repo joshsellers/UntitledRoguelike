@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="mod\ModManager.cpp" />
+    <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp" />
     <ClCompile Include="world\entities\TulipMonster.cpp" />
     <ClCompile Include="world\entities\BoulderBeast.cpp" />
     <ClCompile Include="inventory\abilities\AbilityManager.cpp" />
@@ -160,6 +162,8 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mod\ModManager.h" />
+    <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h" />
     <ClInclude Include="world\entities\TulipMonster.h" />
     <ClInclude Include="world\entities\BoulderBeast.h" />
     <ClInclude Include="core\music\MusicSituation.h" />

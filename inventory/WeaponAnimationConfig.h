@@ -6,9 +6,9 @@ struct WeaponAnimationConfig {
     itemId(itemId), ticksPerFrame(ticksPerFrame), frameCount(frameCount)
     {}
 
-    const unsigned int itemId;
-    const unsigned int ticksPerFrame;
-    const unsigned int frameCount;
+    unsigned int itemId;
+    unsigned int ticksPerFrame;
+    unsigned int frameCount;
 };
 
 #endif
