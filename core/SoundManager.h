@@ -45,6 +45,19 @@ public:
 
     static void loadSounds() {
         soloud.init();
+        
+        const std::string dirName = "res/sounds";
+        std::vector<std::string> soundFiles;
+        for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+            if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+            else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "wav") continue;
+            soundFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+        }
+
+        for (const auto& soundFile : soundFiles) {
+            std::string soundName = splitString(soundFile, ".")[0];
+            soundNames.push_back(soundName);
+        }
 
         for (int i = 0; i < soundNames.size(); i++) {
             std::string filePath = "res/sounds/" + soundNames[i] + ".wav";
@@ -72,9 +85,7 @@ private:
     inline static SoLoud::Soloud soloud;
 
     inline static std::map<std::string, SoLoud::Wav> sounds;
-    inline static std::vector<std::string> soundNames = {
-        "revolver", "slip", "ar", "laser_pistol", "blowtorch", "coinpickup", "railgun", "chainsaw"
-    };
+    inline static std::vector<std::string> soundNames;
 
     inline static std::map<std::string, SoLoud::Wav> music;
     inline static std::vector<std::string> musicNames = {

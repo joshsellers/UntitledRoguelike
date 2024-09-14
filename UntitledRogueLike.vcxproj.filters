@@ -438,6 +438,9 @@
     <ClCompile Include="mod\ModManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mod\Interpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -765,6 +768,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mod\ModManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\Interpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\Instructions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

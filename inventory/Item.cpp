@@ -10,6 +10,8 @@
 #include "abilities/AbilityManager.h"
 #include "abilities/Ability.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../mod/Interpreter.h"
+#include "../mod/ModManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -738,9 +740,9 @@ const bool Item::isBuyable() const {
 * should be removed from the inventory upon use.
 */
 bool Item::use(Entity* parent) const {
-    //if (_isCustomItem && _functionName != "NONE") {
-    //    return /*Interpreter::interpret(ModManger::getFunction(_functionName))*/
-    //} else -->
+    if (_isCustomItem && _functionName != "NONE") {
+        return Interpreter::interpret(ModManager::getFunction(_functionName), parent);
+    }
     return _use(parent);
 }
 

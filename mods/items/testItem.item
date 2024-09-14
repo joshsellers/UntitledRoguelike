@@ -1,0 +1,10 @@
+name = "TestItem"
+textureRect = 3, 0, 1, 1
+isStackable = true
+stackLimit = 99
+description = "A test item\nFor testing"
+value = 456
+isBuyable = true
+unlockWaveNumber = 4
+functionName = "testfunction"
+isConsumable = true

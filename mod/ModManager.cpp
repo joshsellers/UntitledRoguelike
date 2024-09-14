@@ -8,6 +8,12 @@
 #include "../inventory/Item.h"
 
 void ModManager::loadAll() {
+    const std::string dirName = "mods";
+    if (!std::filesystem::is_directory(dirName + "/")) {
+        std::filesystem::create_directory(dirName);
+        MessageManager::displayMessage("Created mods directory", 5, DEBUG);
+    }
+
     loadFunctions();
     loadItems();
     loadProjectiles();
@@ -15,6 +21,11 @@ void ModManager::loadAll() {
 
 void ModManager::loadFunctions() {
     const std::string dirName = "mods/functions";
+    if (!std::filesystem::is_directory(dirName + "/")) {
+        std::filesystem::create_directory(dirName);
+        MessageManager::displayMessage("Created mods/functions directory", 5, DEBUG);
+    }
+
     std::vector<std::string> functionFiles;
     for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
         if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
@@ -42,6 +53,11 @@ void ModManager::loadFunctions() {
 
 void ModManager::loadItems() {
     const std::string dirName = "mods/items";
+    if (!std::filesystem::is_directory(dirName + "/")) {
+        std::filesystem::create_directory(dirName);
+        MessageManager::displayMessage("Created mods/items directory", 5, DEBUG);
+    }
+
     std::vector<std::string> itemFiles;
     for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
         if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
@@ -79,7 +95,7 @@ void ModManager::loadItem(std::ifstream& in) {
         {"BOAT",          EQUIPMENT_TYPE::BOAT}
     };
 
-    unsigned int itemId = Item::ITEMS.size() - 1;
+    unsigned int itemId = Item::ITEMS.size();
     std::string name = "";
     sf::IntRect textureRect;
     bool isStackable = false;
@@ -103,10 +119,104 @@ void ModManager::loadItem(std::ifstream& in) {
     bool isAnimated = false;
     unsigned int ticksPerFrame = 0;
     unsigned int frameCount = 0;
+    std::string ammoItemName = "";
 
     std::string line;
     while (getline(in, line)) {
-        
+        const std::vector<std::string> tokens = tokenize(line);
+
+        if (tokens.size() > 2 && tokens.at(1) == "=") {
+            if (tokens.at(0) == "name") {
+                std::string strName = tokens.at(2);
+                replaceAll(strName, "\"", "");
+                name = strName;
+            } else if (tokens.at(0) == "textureRect") {
+                if (tokens.size() != 9) {
+                    MessageManager::displayMessage("Bad texture rect data for item: \"" + name + "\"", 5, ERR);
+                    continue;
+                }
+                sf::Vector2i coords;
+                coords.x = std::stoi(tokens.at(2));
+                coords.y = std::stoi(tokens.at(4));
+                int width = std::stoi(tokens.at(6));
+                int height = std::stoi(tokens.at(8));
+
+                textureRect.left = coords.x;
+                textureRect.top = coords.y;
+                textureRect.width = width;
+                textureRect.height = height;
+            } else if (tokens.at(0) == "isStackable") {
+                isStackable = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "stackLimit") {
+                stackLimit = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "isConsumable") {
+                isConsumable = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "description") {
+                std::string strDesc = tokens.at(2);
+                replaceAll(strDesc, "\"", "");
+                replaceAll(strDesc, "\\n", "\n");
+                description = strDesc;
+            } else if (tokens.at(0) == "equipmentType") {
+                std::string strEquipType = tokens.at(2);
+                if (equipNames.find(strEquipType) == equipNames.end()) {
+                    MessageManager::displayMessage("Invalid equipment type for item \"" + name + "\": \"" + strEquipType + "\"", 5, ERR);
+                } else {
+                    equipType = equipNames.at(strEquipType);
+                }
+            } else if (tokens.at(0) == "damage") {
+                damage = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "hitBoxPos") {
+                hitBoxPos = std::stof(tokens.at(2));
+            } else if (tokens.at(0) == "hitBoxSize") {
+                hitBoxSize = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "barrelPos") {
+                if (tokens.size() != 5) {
+                    MessageManager::displayMessage("Bad barrel pos data for item: \"" + name + "\"", 5, ERR);
+                    continue;
+                }
+                barrelPos.x = std::stof(tokens.at(2));
+                barrelPos.y = std::stof(tokens.at(4));
+            } else if (tokens.at(0) == "isGun") {
+                isGun = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "value") {
+                value = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "isBuyable") {
+                isBuyable = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "functionName") {
+                std::string funcNameStr = tokens.at(2);
+                replaceAll(funcNameStr, "\"", "");
+                functionName = funcNameStr;
+            } else if (tokens.at(0) == "magazineSize") {
+                magazineSize = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "isAutomatic") {
+                isAutomatic = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "fireRate") {
+                fireRateMillis = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "reloadTime") {
+                reloadTimeMillis = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "unlockWaveNumber") {
+                unlockWaveNumber = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "isAnimated") {
+                isAnimated = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "ticksPerFrame") {
+                ticksPerFrame = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "frameCount") {
+                frameCount = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "ammoName") {
+                std::string ammoNameStr = tokens.at(2);
+                replaceAll(ammoNameStr, "\"", "");
+                ammoItemName = ammoNameStr;
+            }
+        }
+    }
+
+    if (isGun && ammoItemName != "") {
+        for (const auto& item : Item::ITEMS) {
+            if (item->getName() == ammoItemName) {
+                stackLimit = item->getId();
+                break;
+            }
+        }
     }
 
     Item item(itemId, name, textureRect, isStackable, stackLimit, isConsumable,
@@ -115,24 +225,116 @@ void ModManager::loadItem(std::ifstream& in) {
         isGun,
         value,
         isBuyable,
-        [](Entity* parent) { /*return Interpreter::interpret(ModManger::getFunction(functionName))*/return false; },
+        [](Entity* parent) { return false; },
         magazineSize,
         isAutomatic,
         fireRateMillis,
         reloadTimeMillis, true, functionName);
 
-    //Item::ITEMS.push_back(&item);
     _loadedItems.push_back(item);
     Item::ITEMS.push_back(&_loadedItems.at(_loadedItems.size() - 1));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 
     if (isAnimated) {
-        Item::ANIMATION_CONFIGS[itemId] = WeaponAnimationConfig{ itemId, ticksPerFrame, frameCount };
+        Item::ANIMATION_CONFIGS[itemId] = WeaponAnimationConfig(itemId, ticksPerFrame, frameCount);
     }
 }
 
 void ModManager::loadProjectiles() {
+    const std::string dirName = "mods/projectiles";
+    if (!std::filesystem::is_directory(dirName + "/")) {
+        std::filesystem::create_directory(dirName);
+        MessageManager::displayMessage("Created mods/projectiles directory", 5, DEBUG);
+    }
+
+    std::vector<std::string> projFiles;
+    for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+        if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+        else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "projectile") continue;
+        projFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+    }
+
+    for (std::string file : projFiles) {
+        std::ifstream in(dirName + "/" + file);
+
+        if (in.good()) {
+            try {
+                loadProjectile(in);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage("Error loading " + file + ": \n" + ex.what(), 5, ERR);
+            }
+        }
+        in.close();
+    }
+}
+
+void ModManager::loadProjectile(std::ifstream& in) {
+    std::string itemName = "";
+    float baseVelocity = 0;
+    sf::IntRect hitBox;
+    bool rotateSprite = false;
+    bool onlyHitEnemies = true;
+    long long lifeTime = 0;
+    bool isAnimated = false;
+    int animationFrames = 0;
+    int animationSpeed = 0;
+    bool dropOnExpire = false;
+
+    std::string line;
+    while (getline(in, line)) {
+        const std::vector<std::string> tokens = tokenize(line);
+
+        if (tokens.size() > 2 && tokens.at(1) == "=") {
+            if (tokens.at(0) == "itemName") {
+                std::string strName = tokens.at(2);
+                replaceAll(strName, "\"", "");
+                itemName = strName;
+            } else if (tokens.at(0) == "hitBox") {
+                if (tokens.size() != 9) {
+                    MessageManager::displayMessage("Bad hitbox data for projectile: \"" + itemName + "\"", 5, ERR);
+                    continue;
+                }
+                sf::Vector2i coords;
+                coords.x = std::stoi(tokens.at(2));
+                coords.y = std::stoi(tokens.at(4));
+                int width = std::stoi(tokens.at(6));
+                int height = std::stoi(tokens.at(8));
+
+                hitBox.left = coords.x;
+                hitBox.top = coords.y;
+                hitBox.width = width;
+                hitBox.height = height;
+            } else if (tokens.at(0) == "velocity") {
+                baseVelocity = std::stof(tokens.at(2));
+            } else if (tokens.at(0) == "rotate") {
+                rotateSprite = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "onlyHitEnemies") {
+                onlyHitEnemies = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "lifeTime") {
+                lifeTime = std::stoll(tokens.at(2));
+            } else if (tokens.at(0) == "isAnimated") {
+                isAnimated = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "frameCount") {
+                animationFrames = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "animationSpeed") {
+                animationSpeed = std::stoi(tokens.at(2));
+            } else if (tokens.at(0) == "dropOnDespawn") {
+                dropOnExpire = tokens.at(2) == "1";
+            }
+        }
+    }
+
+    unsigned int itemId = 0;
+
+    for (const auto& item : Item::ITEMS) {
+        if (item->getName() == itemName) {
+            itemId = item->getId();
+            break;
+        }
+    }
+
+    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire);
 }
 
 std::vector<int> ModManager::getFunction(std::string functionName) {
@@ -141,4 +343,93 @@ std::vector<int> ModManager::getFunction(std::string functionName) {
         return { 0x01, 0xFF, 0x00, 0x00, 0x00, 0x1F };
     }
     return _functions.at(functionName);
+}
+
+std::vector<std::string> ModManager::tokenize(std::string inScript) {
+    std::string script = "";
+    bool replaceSpaces = false;
+    for (auto symbol : inScript) {
+        if (replaceSpaces && symbol == ' ') {
+            script += "RPLSPC";
+        } else if (replaceSpaces && symbol != '"') {
+            for (int i = 4; i < _operators.size(); i++) {
+                if (symbol == _operators.at(i).at(0)) {
+                    script += "RPL" + std::to_string(i);
+                    break;
+                }
+            }
+        }
+
+        if (symbol != ' ' || !replaceSpaces) {
+            bool isOperator = false;
+            for (int i = 4; i < _operators.size(); i++) {
+                if (symbol == _operators.at(i).at(0)) {
+                    isOperator = true;
+                    break;
+                }
+            }
+            if (!isOperator || !replaceSpaces) {
+                script += std::string(1, symbol);
+            }
+        }
+        if (symbol == '"') replaceSpaces = !replaceSpaces;
+    }
+
+    std::vector<std::string> tokens;
+
+    std::vector<std::string> bareTokens = splitString(script, " ");
+    for (std::string& bareToken : bareTokens) {
+        replaceAll(bareToken, "RPLSPC", " ");
+    }
+
+    for (std::string bareToken : bareTokens) {
+        std::vector<std::string> operatorTokens = splitOperators(bareToken);
+        for (std::string token : operatorTokens) {
+            if (token != "")
+                tokens.push_back(token);
+        }
+    }
+
+    for (std::string& token : tokens) {
+        for (int i = 4; i < _operators.size(); i++) {
+            replaceAll(token, "RPL" + std::to_string(i), _operators.at(i));
+        }
+
+        if (!stringStartsWith(token, "\"")) {
+            replaceAll(token, "true", "1");
+            replaceAll(token, "false", "0");
+        }
+    }
+
+    return tokens;
+}
+
+std::vector<std::string> ModManager::splitOperators(std::string bareToken) {
+    std::vector<std::string> operatorExpressionTokens;
+    for (std::string operatorString : _operators) {
+        if (bareToken.find(operatorString) != std::string::npos) {
+            std::vector<std::string> tokens = splitString(bareToken, operatorString);
+            std::vector<std::string> previousTokens = splitOperators(tokens.at(0));
+            for (std::string previousToken : previousTokens) {
+                operatorExpressionTokens.push_back(previousToken);
+            }
+
+            std::vector<std::string> additionalExpressions;
+            for (int i = 1; i < tokens.size(); i++) {
+                additionalExpressions.push_back(operatorString);
+                for (std::string subToken : splitOperators(tokens.at(i))) {
+                    additionalExpressions.push_back(subToken);
+                }
+            }
+
+            for (std::string expression : additionalExpressions) {
+                operatorExpressionTokens.push_back(expression);
+            }
+
+            return operatorExpressionTokens;
+        }
+    }
+
+    operatorExpressionTokens.push_back(bareToken);
+    return operatorExpressionTokens;
 }

@@ -14,6 +14,11 @@ struct ProjectileData {
         ProjectileDataManager::addData(*this);
     }
 
+    ProjectileData()
+        : itemId(0), baseVelocity(0), hitBox(sf::IntRect()), rotateSprite(false), onlyHitEnemies(true), lifeTime(0),
+          isAnimated(false), animationFrames(0), animationSpeed(0), dropOnExpire(false)
+    { }
+
     unsigned int itemId;
     float baseVelocity;
     sf::IntRect hitBox;

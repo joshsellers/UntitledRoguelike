@@ -7,7 +7,7 @@ void ProjectileDataManager::addData(ProjectileData data) {
 }
 
 ProjectileData ProjectileDataManager::getData(unsigned int itemId) {
-    ProjectileData data{0, 0, sf::IntRect(), false, false, 0, false, 0, 0, false};
+    ProjectileData data;
 
     for (ProjectileData target : _projectileData) {
         if (target.itemId == itemId) {
@@ -19,14 +19,12 @@ ProjectileData ProjectileDataManager::getData(unsigned int itemId) {
 }
 
 ProjectileData ProjectileDataManager::getData(std::string itemName) {
-    ProjectileData data{ 0, 0, sf::IntRect(), false, false, 0, false, 0, 0, false };
+    ProjectileData data;
 
     for (const auto& item : Item::ITEMS) {
         if (item->getName() == itemName) {
             unsigned int itemId = item->getId();
-            for (ProjectileData target : _projectileData) {
-                if (target.itemId == itemId) return target;
-            }
+            return getData(itemId);
         }
     }
     return data;

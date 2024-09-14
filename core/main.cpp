@@ -16,6 +16,7 @@
 #include "music/MusicManager.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../world/TerrainGenParameters.h"
+#include "../mod/ModManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -132,6 +133,7 @@ int main() {
     Logger::start();
     Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();
+    ModManager::loadAll();
     InputBindingManager::init();
     SoundManager::loadSounds();
     ShaderManager::compileShaders();

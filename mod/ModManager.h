@@ -19,6 +19,7 @@ private:
     static void loadItems();
     static void loadItem(std::ifstream& in);
     static void loadProjectiles();
+    static void loadProjectile(std::ifstream& in);
 
     // Push to this once an item is created, then push address of just created item off _loadedItems and into Item::ITEMS
     // Might need to add bool parameter to Item that, when false, does not push the item onto Item::ITEMS
@@ -28,6 +29,10 @@ private:
     // Strings are pointers too though so that's a problem 
     // Seems like it might be fine? We'll see
     static inline std::vector<Item> _loadedItems;
+
+    static std::vector<std::string> tokenize(std::string line);
+    static std::vector<std::string> splitOperators(std::string bareToken);
+    static inline const std::vector<std::string> _operators = { "!=", "==", ">=", "<=", "+", "-", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!", "%" };
 };
 
 #endif

@@ -1,0 +1,3 @@
+currentHp = getPlayerHp();
+setPlayerHp(currentHp - 5);
+displayMessage("Damaged player", 5);
