@@ -226,7 +226,7 @@ void ModManager::loadItem(std::ifstream& in) {
         }
     }
 
-    Item item(itemId, name, textureRect, isStackable, stackLimit, isConsumable,
+    Item::ITEMS.push_back(std::shared_ptr<Item>(new Item(itemId, name, textureRect, isStackable, stackLimit, isConsumable,
         description, equipType, damage, hitBoxPos, hitBoxSize,
         barrelPos,
         isGun,
@@ -236,10 +236,7 @@ void ModManager::loadItem(std::ifstream& in) {
         magazineSize,
         isAutomatic,
         fireRateMillis,
-        reloadTimeMillis, true, functionName);
-
-    _loadedItems.push_back(item);
-    Item::ITEMS.push_back(&_loadedItems.at(_loadedItems.size() - 1));
+        reloadTimeMillis, true, functionName)));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 
@@ -336,18 +333,18 @@ void ModManager::loadProjectile(std::ifstream& in) {
 
     unsigned int itemId = 0;
 
+    bool foundItem = false;
     for (const auto& item : Item::ITEMS) {
-        bool foundItem = false;
         if (item->getName() == itemName) {
             itemId = item->getId();
             foundItem = true;
             break;
         }
+    }
 
-        if (!foundItem) {
-            MessageManager::displayMessage("Did not find projectile item \"" + itemName + "\"", 5, ERR);
-            return;
-        }
+    if (!foundItem) {
+        MessageManager::displayMessage("Did not find projectile item \"" + itemName + "\"", 5, ERR);
+        return;
     }
 
     ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire);

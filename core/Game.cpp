@@ -1109,7 +1109,7 @@ void Game::buttonPressed(std::string buttonCode) {
 
         constexpr size_t numStartingItems = 3;
         const unsigned int startingItems[numStartingItems] = { Item::SLIME_BALL.getId(), Item::SPIKE_BALL.getId(), Item::BAD_VIBES_POTION.getId() };
-        const Item* startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : &Item::SLIME_BALL);
+        std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::SLIME_BALL.getId()]);
         std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
                 sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, startingItem->getId(), 1, startingItem->getTextureRect())

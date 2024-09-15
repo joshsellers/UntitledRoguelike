@@ -65,7 +65,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     int mousedOverItemIndex = -1;
     int filteredIndex = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
 
         const EQUIPMENT_TYPE itemType = item->getEquipmentType();
         if (!isItemCorrectType(itemType)) continue;
@@ -164,7 +164,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     try {
         if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0
             && _gamepadUnfilteredSelectedItemIndex < (int)_source.getCurrentSize())) {
-            const Item* item = Item::ITEMS[
+            std::shared_ptr<const Item> item = Item::ITEMS[
                 _source.getItemIdAt(
                     (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
                     _gamepadUnfilteredSelectedItemIndex :
@@ -232,7 +232,7 @@ bool UIInventoryInterface::isItemCorrectType(EQUIPMENT_TYPE type) {
 }
 
 void UIInventoryInterface::useItem(int index) {
-    const Item* item = Item::ITEMS[_source.getItemIdAt(index)];
+    std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(index)];
 
     if (item->isConsumable()) {
         if (item->use(_source.getParent())) _source.removeItemAt(index, 1);
@@ -346,7 +346,7 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
     if (button == sf::Mouse::Left) {
         int totalDisplayedItems = 0;
         for (int i = 0; i < _source.getCurrentSize(); i++) {
-            const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+            std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
             if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
         }
 
@@ -424,7 +424,7 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 
     int totalDisplayedItems = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
         if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
     }
 

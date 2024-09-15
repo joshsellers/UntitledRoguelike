@@ -1,0 +1,2 @@
+playSound("ar");
+player.fireProjectile("Test Ammo", 1);

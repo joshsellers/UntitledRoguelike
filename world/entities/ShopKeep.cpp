@@ -65,7 +65,7 @@ void ShopKeep::initInventory() {
     // Give ammo for each gun if we don't have any already
     std::vector<unsigned int> ammoNeeded;
     for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[getInventory().getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
         if (item->isGun()) {
             bool hasAmmo = false;
             for (int j = 0; j < getInventory().getCurrentSize(); j++) {
@@ -88,7 +88,7 @@ void ShopKeep::initInventory() {
     //
 
     for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[getInventory().getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
         if (item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_HEAD
             || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_BODY
             || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_LEGS

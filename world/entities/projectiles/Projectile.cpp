@@ -114,7 +114,7 @@ void Projectile::update() {
 
 void Projectile::draw(sf::RenderTexture& surface) {
     if (_data.isAnimated) {
-        const Item* item = Item::ITEMS[_itemId];
+        std::shared_ptr<const Item> item = Item::ITEMS[_itemId];
         sf::IntRect projRect = item->getTextureRect();
 
         int yOffset = ((((_animationTime) >> _data.animationSpeed) & (_data.animationFrames - 1))) * 16;
@@ -132,7 +132,7 @@ void Projectile::draw(sf::RenderTexture& surface) {
 }
 
 void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
-    const Item* item = Item::ITEMS[_itemId];
+    std::shared_ptr<const Item> item = Item::ITEMS[_itemId];
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
