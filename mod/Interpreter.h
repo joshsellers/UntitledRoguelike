@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../world/entities/Entity.h"
+#include "../core/MessageManager.h"
 
 class Interpreter {
 public:
@@ -20,8 +21,12 @@ private:
     }
 
     static float pop() {
-        assert(_stackSize > 0);
-        return _stack[--_stackSize];
+        if (_stackSize > 0) {
+            return _stack[--_stackSize];
+        } else {
+            MessageManager::displayMessage("Stack underflow", 5, WARN);
+            return 0;
+        }
     }
 
     static inline int _strStackSize;
@@ -33,8 +38,12 @@ private:
     }
 
     static std::string strPop() {
-        assert(_strStackSize > 0);
-        return _strStack[--_strStackSize];
+        if (_strStackSize > 0) {
+            return _strStack[--_strStackSize];
+        } else {
+            MessageManager::displayMessage("String stack underflow", 5, WARN);
+            return "";
+        }
     }
 
     static inline int _callStackSize;
@@ -45,8 +54,12 @@ private:
     }
 
     static int callStackPop() {
-        assert(_callStackSize > 0);
-        return _callStack[--_callStackSize];
+        if (_callStackSize > 0) {
+            return _callStack[--_callStackSize];
+        } else {
+            MessageManager::displayMessage("Call stack underflow", 5, WARN);
+            return -1;
+        }
     }
 
     static inline const int MAX_VARIABLES = 256;

@@ -34,6 +34,7 @@ enum class INSTRUCTION {
     NUMPRNTLN = 0x1D,
     MOD = 0x1E,
     RET = 0x1F,
+
     CALL = 0x20,
     POP = 0x21,
     RAND = 0x22,
@@ -47,7 +48,10 @@ enum class INSTRUCTION {
     DMSGWARN = 0x2A,
     DMSGERR = 0x2B,
     PLAYSOUND = 0x2C,
-    PLSHOOT = 0x2D
+    PLSHOOT = 0x2D,
+    PLGIVEITEM = 0x2E,
+    PLHASITEM = 0x2F,
+    PLWEAPONLOADED = 0x30
 };
 
 #endif

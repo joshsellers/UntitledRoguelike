@@ -294,6 +294,61 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 MessageManager::displayMessage("player.fireProjectile() requires a string parameter", 5, ERR);
             }
             i++;
+        } else if (inst == INSTRUCTION::PLGIVEITEM) {
+            if (_strStackSize > 0) {
+                if (entity != nullptr) {
+                    const std::string itemName = strPop();
+                    const int amount = pop();
+
+                    bool foundItem = false;
+                    for (const auto& item : Item::ITEMS) {
+                        if (item->getName() == itemName) {
+                            entity->getInventory().addItem(item->getId(), amount);
+                            foundItem = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundItem) MessageManager::displayMessage("No item named \"" + itemName + "\"", 5, WARN);
+                }
+            } else {
+                MessageManager::displayMessage("player.giveItem() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLHASITEM) {
+            if (_strStackSize > 0) {
+                if (entity != nullptr) {
+                    const std::string itemName = strPop();
+
+                    int itemId = 0;
+                    bool foundItem = false;
+                    for (const auto& item : Item::ITEMS) {
+                        if (item->getName() == itemName) {
+                            itemId = item->getId();
+                            foundItem = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundItem) MessageManager::displayMessage("No item named \"" + itemName + "\"", 5, WARN);
+
+                    if (entity->getInventory().hasItem(itemId)) {
+                        push(1);
+                    } else {
+                        push(0);
+                    }
+                }
+            } else {
+                MessageManager::displayMessage("player.hasItem() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLWEAPONLOADED) {
+            if (entity != nullptr) {
+                if (entity->getMagazineContents() > 0) {
+                    push(1);
+                } else push(0);
+            }
+            i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);
             i++;
