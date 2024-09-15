@@ -45,7 +45,9 @@ enum class INSTRUCTION {
     GPLMAXHP = 0x28,
     DMSGDEBUG = 0x29,
     DMSGWARN = 0x2A,
-    DMSGERR = 0x2B
+    DMSGERR = 0x2B,
+    PLAYSOUND = 0x2C,
+    PLSHOOT = 0x2D
 };
 
 #endif

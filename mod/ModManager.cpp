@@ -206,16 +206,23 @@ void ModManager::loadItem(std::ifstream& in) {
                 std::string ammoNameStr = tokens.at(2);
                 replaceAll(ammoNameStr, "\"", "");
                 ammoItemName = ammoNameStr;
+            } else {
+                MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
         }
     }
 
     if (isGun && ammoItemName != "") {
+        bool foundAmmo = false;
         for (const auto& item : Item::ITEMS) {
             if (item->getName() == ammoItemName) {
                 stackLimit = item->getId();
+                foundAmmo = true;
                 break;
             }
+        }
+        if (!foundAmmo) {
+            MessageManager::displayMessage("Did not find ammo item \"" + ammoItemName + "\" for item \"" + name + "\"", 5, WARN);
         }
     }
 
@@ -321,6 +328,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 animationSpeed = std::stoi(tokens.at(2));
             } else if (tokens.at(0) == "dropOnDespawn") {
                 dropOnExpire = tokens.at(2) == "1";
+            } else {
+                MessageManager::displayMessage("Unrecognized projectile parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
         }
     }
@@ -328,9 +337,16 @@ void ModManager::loadProjectile(std::ifstream& in) {
     unsigned int itemId = 0;
 
     for (const auto& item : Item::ITEMS) {
+        bool foundItem = false;
         if (item->getName() == itemName) {
             itemId = item->getId();
+            foundItem = true;
             break;
+        }
+
+        if (!foundItem) {
+            MessageManager::displayMessage("Did not find projectile item \"" + itemName + "\"", 5, ERR);
+            return;
         }
     }
 

@@ -10,6 +10,10 @@
 class SoundManager {
 public:
     static void playSound(std::string soundName) {
+        if (sounds.find(soundName) == sounds.end()) {
+            MessageManager::displayMessage("No sound named \"" + soundName + "\"", 5, ERR);
+            return;
+        }
         soloud.play(sounds[soundName]);
     }
 

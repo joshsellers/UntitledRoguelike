@@ -4,6 +4,7 @@
 #include "ModManager.h"
 #include "../core/Util.h"
 #include "../core/MessageManager.h"
+#include "../core/SoundManager.h"
 
 int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
     int i = 0;
@@ -97,6 +98,16 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 i = callStackPop();
             }
         } else if (inst == INSTRUCTION::RET) {
+            for (int j = i + 1; j < bytecode.size(); j++) {
+                INSTRUCTION subInst = (INSTRUCTION)bytecode.at(j);
+
+                if (subInst == INSTRUCTION::LIT) j += 4;
+                else if (subInst == INSTRUCTION::STR) skipStringLit(j, bytecode);
+                else if (subInst == INSTRUCTION::WHILE || subInst == INSTRUCTION::IF) callStackPush(-1);
+                else if (subInst == INSTRUCTION::ENDIF) {
+                    callStackPop();
+                }
+            }
             return pop();
         } else if (inst == INSTRUCTION::ASSIGN) {
             int regAddr = (int)pop();
@@ -262,6 +273,25 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
         } else if (inst == INSTRUCTION::GPLMAXHP) {
             if (entity != nullptr) {
                 push(entity->getMaxHitPoints());
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLAYSOUND) {
+            if (_strStackSize > 0) {
+                std::string soundName = strPop();
+                SoundManager::playSound(soundName);
+            } else {
+                MessageManager::displayMessage("playSound() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLSHOOT) {
+            if (_strStackSize > 0) {
+                std::string projItemName = strPop();
+                int passThroughCount = pop();
+                if (entity != nullptr) {
+                    Item::fireTargetedProjectile(entity, ProjectileDataManager::getData(projItemName), "NONE", passThroughCount);
+                }
+            } else {
+                MessageManager::displayMessage("player.fireProjectile() requires a string parameter", 5, ERR);
             }
             i++;
         } else {
