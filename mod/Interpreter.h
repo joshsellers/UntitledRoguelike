@@ -9,18 +9,21 @@
 
 class Interpreter {
 public:
-    static int interpret(std::vector<int> bytecode, Entity* entity);
+    int interpret(std::vector<int> bytecode, Entity* entity);
 private:
     static inline const int MAX_STACK = 128;
-    static inline int _stackSize;
-    static inline float _stack[MAX_STACK];
+    int _stackSize = 0;
+    float _stack[MAX_STACK];
 
-    static void push(float value) {
-        assert(_stackSize < MAX_STACK);
-        _stack[_stackSize++] = value;
+    void push(float value) {
+        if (_stackSize < MAX_STACK) {
+            _stack[_stackSize++] = value;
+        } else {
+            MessageManager::displayMessage("Stack overflow", 5, WARN);
+        }
     }
 
-    static float pop() {
+    float pop() {
         if (_stackSize > 0) {
             return _stack[--_stackSize];
         } else {
@@ -29,15 +32,18 @@ private:
         }
     }
 
-    static inline int _strStackSize;
-    static inline std::string _strStack[MAX_STACK];
+    int _strStackSize = 0;
+    std::string _strStack[MAX_STACK];
 
-    static void strPush(std::string value) {
-        assert(_strStackSize < MAX_STACK);
-        _strStack[_strStackSize++] = value;
+    void strPush(std::string value) {
+        if (_strStackSize < MAX_STACK) {
+            _strStack[_strStackSize++] = value;
+        } else {
+            MessageManager::displayMessage("String stack overflow", 5, WARN);
+        }
     }
 
-    static std::string strPop() {
+    std::string strPop() {
         if (_strStackSize > 0) {
             return _strStack[--_strStackSize];
         } else {
@@ -46,14 +52,17 @@ private:
         }
     }
 
-    static inline int _callStackSize;
-    static inline int _callStack[MAX_STACK];
-    static void callStackPush(int value) {
-        assert(_callStackSize < MAX_STACK);
-        _callStack[_callStackSize++] = value;
+    int _callStackSize = 0;
+    int _callStack[MAX_STACK];
+    void callStackPush(int value) {
+        if (_callStackSize < MAX_STACK) {
+            _callStack[_callStackSize++] = value;
+        } else {
+            MessageManager::displayMessage("Call stack overflow", 5, WARN);
+        }
     }
 
-    static int callStackPop() {
+    int callStackPop() {
         if (_callStackSize > 0) {
             return _callStack[--_callStackSize];
         } else {
@@ -63,11 +72,11 @@ private:
     }
 
     static inline const int MAX_VARIABLES = 256;
-    static inline float _register[MAX_VARIABLES];
-    static inline std::string _strRegister[MAX_VARIABLES];
+    float _register[MAX_VARIABLES];
+    std::string _strRegister[MAX_VARIABLES];
 
 
-    static void skipStringLit(int& index, std::vector<int> bytecode);
+    void skipStringLit(int& index, std::vector<int> bytecode);
 };
 
 #endif

@@ -757,7 +757,8 @@ const bool Item::isBuyable() const {
 */
 bool Item::use(Entity* parent) const {
     if (_isCustomItem && _functionName != "NONE") {
-        return Interpreter::interpret(ModManager::getFunction(_functionName), parent);
+        Interpreter interpreter;
+        return interpreter.interpret(ModManager::getFunction(_functionName), parent);
     }
     return _use(parent);
 }
