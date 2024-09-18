@@ -279,7 +279,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     sf::IntRect hitBox;
     bool rotateSprite = false;
     bool onlyHitEnemies = true;
-    long long lifeTime = 0;
+    long long lifeTime = 500;
     bool isAnimated = false;
     int animationFrames = 0;
     int animationSpeed = 0;
