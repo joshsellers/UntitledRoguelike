@@ -1,6 +1,5 @@
 #ifndef _INTERPRETER_H
 #define _INTERPRETER_H
-#include <cassert>
 #include <vector>
 #include <string>
 
