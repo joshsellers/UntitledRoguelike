@@ -66,7 +66,7 @@ private:
     inline static bool _isHalted = false;
     inline static bool _isWriting = false;
 
-    inline static const std::string _logFileName = "rolmi.log";
+    inline static const std::string _logFileName = "pennylooter.log";
     inline static std::ofstream _outStream;
 
     static void run() {

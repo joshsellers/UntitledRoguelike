@@ -84,7 +84,7 @@ void checkLocalLowExists() {
         return;
     }
     if (!std::filesystem::is_directory(localLowPath + "\\")) {
-        std::filesystem::create_directory(localLowPath);
+        std::filesystem::create_directories(localLowPath);
         MessageManager::displayMessage("Created LocalLow directory", 5, DEBUG);
     }
 }
@@ -120,7 +120,7 @@ void checkCrash() {
     if (crashData.probableCrash) {
         MessageManager::displayMessage("Crash detected", 5, DEBUG);
         if (crashData.autoSaveTimeString != "NONE" && crashData.saveFileName != "NONE") {
-            MessageManager::displayMessage("It looks like rolmi did not shut down\ncorrectly last time.", 15);
+            MessageManager::displayMessage("It looks like pennylooter did not shut down\ncorrectly last time.", 15);
             MessageManager::displayMessage(
                 "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
             );
