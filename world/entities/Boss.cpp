@@ -52,3 +52,7 @@ void Boss::damage(int damage) {
         if (!_spawnedWithEnemies) getWorld()->bossDefeated();
     }
 }
+
+std::string Boss::getSaveData() const {
+    return _spawnedWithEnemies ? "1" : "0";
+}

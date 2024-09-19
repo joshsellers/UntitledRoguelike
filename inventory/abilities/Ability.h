@@ -10,6 +10,7 @@
 class Ability {
 public:
     static const Ability DAMAGE_AURA;
+    static const Ability HEALILNG_MIST;
 
     static std::vector<Ability*> ABILITIES;
 
@@ -47,9 +48,14 @@ private:
     const std::function<void(Player*, Ability*, sf::RenderTexture&)> _draw;
 
     // Some of these are specific to certain abilities
+    // DAMAGE_AURA
     long long _lastAttackTimeMillis = 0LL;
 
     std::vector<std::string> _hitEntities;
+    //
+    // HEALING_MIST
+    long long _lastHealTimeMillis = 0LL;
+    //
 };
 
 #endif

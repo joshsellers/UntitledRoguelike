@@ -35,14 +35,14 @@ void DroppedItem::update() {
 
         if (_itemId == Item::PENNY.getId()) moveTowardPlayer();
 
-        for (auto& entity : getWorld()->getCollectorMobs()) {
+        /*for (auto& entity : getWorld()->getCollectorMobs()) {
             if (entity->canPickUpItems() && entity->isActive() && 
                 entity->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
                 entity->getInventory().addItem(_itemId, _amount);
                 _isActive = false;
                 return;
             }
-        }
+        }*/
     }
 
     _animCounter++;
@@ -99,7 +99,7 @@ void DroppedItem::moveTowardPlayer() {
         float dy = playerPos.y - currentPos.y;
         float distSquared = (dx * dx) + (dy * dy);
 
-        const float minDistanceSquared = 250.f * 250.f;
+        constexpr float minDistanceSquared = 250.f * 250.f;
 
         if (distSquared <= minDistanceSquared) {
             const float attractionSpeed = 1000.f * (1 / (distSquared / getWorld()->getPlayer()->getCoinMagnetCount()));

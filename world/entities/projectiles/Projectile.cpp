@@ -8,22 +8,26 @@ constexpr long long LIFETIME = 5000LL;
 Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, int damageBoost, bool addParentVelocity) :
     Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data), _damageBoost(damageBoost),
     _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer) {
+    if (parent != nullptr) {
+        sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
 
-    sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
+        _velocityComponents.x = _velocity * std::cos(directionAngle) + (addParentVelocity ? shooterVelocity.x : 0);
+        _velocityComponents.y = _velocity * std::sin(directionAngle) + (addParentVelocity ? shooterVelocity.y : 0);
 
-    _velocityComponents.x = _velocity * std::cos(directionAngle) + (addParentVelocity ? shooterVelocity.x : 0);
-    _velocityComponents.y = _velocity * std::sin(directionAngle) + (addParentVelocity ? shooterVelocity.y : 0);
+        _lifeTime = data.lifeTime;
+        _spawnTime = currentTimeMillis();
 
-    _lifeTime = data.lifeTime;
-    _spawnTime = currentTimeMillis();
+        //setMaxHitPoints(1000000);
+        //heal(getMaxHitPoints());
 
-    //setMaxHitPoints(1000000);
-    //heal(getMaxHitPoints());
-
-    _hitBoxXOffset = _data.hitBox.left;
-    _hitBoxYOffset = _data.hitBox.top;
-    _hitBox.width = _data.hitBox.width;
-    _hitBox.height = _data.hitBox.height;
+        _hitBoxXOffset = _data.hitBox.left;
+        _hitBoxYOffset = _data.hitBox.top;
+        _hitBox.width = _data.hitBox.width;
+        _hitBox.height = _data.hitBox.height;
+    } else {
+        _lifeTime = 0;
+        _spawnTime = 0;
+    }
 }
 
 void Projectile::update() {
@@ -46,7 +50,7 @@ void Projectile::update() {
 
     if (onlyDamagePlayer) {
         if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
-            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage()/* * _parent->getDamageMultiplier()*/);
+            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
             _isActive = false;
             return;
         }
@@ -97,8 +101,8 @@ void Projectile::update() {
         }
     }
 
-    _pos.x = _velocityComponents.x * _currentTime + _originalPos.x;
-    _pos.y = _velocityComponents.y * _currentTime + _originalPos.y;
+    _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
+    _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
 
     _sprite.setPosition(_pos);
 
@@ -133,6 +137,7 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
     if (_data.rotateSprite) _sprite.setRotation(_directionAngle * (180.f / PI));
+    else _sprite.setRotation(0);
 
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
@@ -152,4 +157,45 @@ std::string Projectile::getSaveData() const {
             + ":" + std::to_string(_data.animationSpeed)
             + ":" + (onlyDamagePlayer ? "1" : "0");
     } else return "NOSAVE";
+}
+
+void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
+    bool onlyHitPlayer, int damageBoost, bool addParentVelocity, int passThroughCount) {
+    _originalPos = pos;
+    _parent = parent;
+    _directionAngle = directionAngle;
+    _velocity = velocity;
+    _damageBoost = damageBoost;
+    _itemId = data.itemId;
+    this->onlyDamagePlayer = onlyHitPlayer;
+    _data = data;
+
+    _pos = pos;
+    sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
+
+    _velocityComponents.x = _velocity * std::cos(directionAngle) + (addParentVelocity ? shooterVelocity.x : 0);
+    _velocityComponents.y = _velocity * std::sin(directionAngle) + (addParentVelocity ? shooterVelocity.y : 0);
+
+    _lifeTime = data.lifeTime;
+    _spawnTime = currentTimeMillis();
+
+    loadSprite(getWorld()->getSpriteSheet());
+    _sprite.setPosition(_pos);
+    //setMaxHitPoints(1000000);
+    //heal(getMaxHitPoints());
+
+    _hitBoxXOffset = _data.hitBox.left;
+    _hitBoxYOffset = _data.hitBox.top;
+    _hitBox.width = _data.hitBox.width;
+    _hitBox.height = _data.hitBox.height; 
+    _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
+    _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
+
+    this->passThroughCount = passThroughCount;
+    _animationTime = 0;
+    _entitiesPassedThrough = 0;
+    _hitEntities.clear();
+    _currentTime = 0;
+
+    _isActive = true;
 }

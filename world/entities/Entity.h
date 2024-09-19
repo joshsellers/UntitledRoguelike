@@ -219,8 +219,8 @@ private:
 
     int _maxHitPoints = 0;
 
-    const sf::Vector2f separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist);
-    const sf::Vector2f align(bool sameTypeOnly, float visionRange);
-    const sf::Vector2f cohesion(sf::Vector2f acceleration, bool sameTypeOnly, float visionRange);
+    const sf::Vector2f separate(sf::Vector2f acceleration, bool sameTypeOnly, float minDist, float visionRange, int& visionCount, sf::Vector2f& visionSum);
+    const sf::Vector2f align(bool sameTypeOnly, int& visionCount, sf::Vector2f& visionSum);
+    const sf::Vector2f cohesion(sf::Vector2f acceleration, bool sameTypeOnly, int& visionCount, sf::Vector2f& visionSum);
 };
 #endif // !_ENTITY_H

@@ -588,6 +588,10 @@ private:
                     break;
                 case CHEESE_BOSS:
                     entity = std::shared_ptr<CheeseBoss>(new CheeseBoss(pos));
+                    if (data[4] == "1") {
+                        Boss* boss = dynamic_cast<Boss*>(entity.get());
+                        boss->deactivateBossMode();
+                    }
                     break;
                 case FLESH_CHICKEN:
                     entity = std::shared_ptr<FleshChicken>(new FleshChicken(pos));
@@ -597,6 +601,12 @@ private:
                     break;
                 case LOG_MONSTER:
                     entity = std::shared_ptr<LogMonster>(new LogMonster(pos));
+                    break;
+                case BOULDER_BEAST:
+                    entity = std::shared_ptr<BoulderBeast>(new BoulderBeast(pos));
+                    break;
+                case TULIP_MONSTER:
+                    entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
                     break;
             }
 

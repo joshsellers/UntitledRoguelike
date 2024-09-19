@@ -9,6 +9,7 @@
 #include "../statistics/StatManager.h"
 #include "abilities/AbilityManager.h"
 #include "abilities/Ability.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -91,7 +92,7 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
 );
 
 const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true, 
-    "Something something an apple a day",
+    "Something something an apple a day\n\nRestores 5 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 40, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
@@ -177,7 +178,7 @@ const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, P
     }, 500, true, 20, 2750
 );
 
-const Item Item::_PROJECTILE_SLIME_BALL(27, "_SLIMEBALL_PROJECTILE", sf::IntRect(7, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_SLIME_BALL(27, "_SLIMEBALL_PROJECTILE", sf::IntRect(13, 7, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false);
 const ProjectileData Item::DATA_PROJECTILE_SLIME_BALL(Item::_PROJECTILE_SLIME_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, true);
@@ -197,7 +198,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
 );
 
 const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
-    "Kinda mushy but it makes me feel good",
+    "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 65, true, 
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
@@ -243,17 +244,17 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
 );
 
 const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), true, 32, true,
-    "Increases max HP by 5 and makes you feel good",
+    "Increases max HP by 5 and makes you feel good\n\nRestores 50 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 4750, true, 
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
-        parent->heal(parent->getMaxHitPoints());
+        parent->heal(50);
         return true;
     }
 );
 
 const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), true, 16, true,
-    "Increases max HP by 2 and makes you feel a little better",
+    "Increases max HP by 2 and makes you feel a little better\n\nRestores 8 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1199, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 2);
@@ -435,7 +436,7 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
     }, 1, false, 0, 500
 );
 
-const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 16, true,
+const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 999, true,
     "Nummy\nHeals 20 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 500, false,
     [](Entity* parent) {
@@ -488,7 +489,7 @@ const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true
     }
 );
 
-const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(5, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_BLOOD_BALL(63, "_BLOOD_BALL_PROJECTILE", sf::IntRect(11, 7, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 12, 0, 0, sf::Vector2f(), false
 );
@@ -509,7 +510,7 @@ const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 
 
 const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
     "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 9000, true,
     [](Entity* parent) {
         const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
         if (!AbilityManager::givePlayerAbility(abilityId)) {
@@ -519,7 +520,7 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
                 parameterChoice = randomInt(0, 1);
             }
             
-            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 175) {
+            if (parameterChoice == 1 && AbilityManager::getParameter(abilityId, "radius") >= 140) {
                 parameterChoice = randomInt(0, 1);
                 if (parameterChoice == 1 && !maxedExpRate) parameterChoice = 2;
                 else if (maxedExpRate) {
@@ -565,6 +566,33 @@ const Item Item::_PROJECTILE_THORN(68, "_THORN_PROJECTILE", sf::IntRect(1, 13, 1
 
 const ProjectileData Item::DATA_PROJECTILE_THORN(Item::_PROJECTILE_THORN.getId(), 3.f, sf::IntRect(0, 0, 16, 16), true);
 
+const Item Item::_PROJECTILE_ROCK(69, "_ROCK_PROJECTILE", sf::IntRect(93, 52, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_ROCK(Item::_PROJECTILE_ROCK.getId(), 3.f, sf::IntRect(3, 3, 10, 10), false);
+
+const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40, 1, 1), false, 0, false,
+    "This item should not be obtainable",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
+);
+
+const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 3.f, sf::IntRect(2, 2, 12, 12), false);
+
+const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
+    "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 999999, true,
+    [](Entity* parent) {
+        const unsigned int id = Ability::HEALILNG_MIST.getId();
+        if (!AbilityManager::givePlayerAbility(id)) {
+            MessageManager::displayMessage("Healthy Stench has already been activated\nWait until the effect ends to use another", 5);
+            return false;
+        }
+        return true;
+    }
+);
+
 std::vector<const Item*> Item::ITEMS;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
@@ -602,13 +630,8 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
 
         float angle = (float)((std::atan2(y, x)));
 
-        std::shared_ptr<Projectile> proj = std::shared_ptr<Projectile>(new Projectile(
-            spawnPos, parent, angle, projData.baseVelocity, projData, false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage()
-        ));
-        proj->passThroughCount = passThroughCount;
-        proj->loadSprite(parent->getWorld()->getSpriteSheet());
-        proj->setWorld(parent->getWorld());
-        parent->getWorld()->addEntity(proj);
+        ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
+            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount);
 
         parent->decrementMagazine();
 
@@ -738,8 +761,8 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::RED_TEE_SHIRT.getId(),                   6},
     {Item::OVERALLS.getId(),                        6},
     {Item::BOOTS.getId(),                           6},
-    {Item::RIFLE_ROUND.getId(),                     16},
-    {Item::ASSAULT_RIFLE.getId(),                   16},
+    {Item::RIFLE_ROUND.getId(),                     17},
+    {Item::ASSAULT_RIFLE.getId(),                   17},
     {Item::PENNY.getId(),                           0},
     {Item::LIGHT_LASER_CHARGE.getId(),              18},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
@@ -788,7 +811,10 @@ const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::FINGER_NAIL.getId(),                     0},
     {Item::BAD_VIBES_POTION.getId(),                11},
     {Item::SPIKE_BALL.getId(),                      14},
-    {Item::_PROJECTILE_THORN.getId(),               0}
+    {Item::_PROJECTILE_THORN.getId(),               0},
+    {Item::_PROJECTILE_ROCK.getId(),                0},
+    {Item::_PROJECTILE_POLLEN.getId(),              0},
+    {Item::HEALING_MIST.getId(),                    90}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

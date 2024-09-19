@@ -14,6 +14,8 @@
 #include "../statistics/AchievementManager.h"
 #include "CrashDetector.h"
 #include "music/MusicManager.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../world/TerrainGenParameters.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -81,13 +83,14 @@ void checkLocalLowExists() {
         return;
     }
     if (!std::filesystem::is_directory(localLowPath + "\\")) {
-        std::filesystem::create_directory(localLowPath);
+        std::filesystem::create_directories(localLowPath);
         MessageManager::displayMessage("Created LocalLow directory", 5, DEBUG);
     }
 }
 
 void shutdown() {
     SteamAPI_Shutdown();
+    ProjectilePoolManager::shutdown();
     MusicManager::shutdown();
     SoundManager::shutdown();
     MessageManager::stop();
@@ -116,7 +119,7 @@ void checkCrash() {
     if (crashData.probableCrash) {
         MessageManager::displayMessage("Crash detected", 5, DEBUG);
         if (crashData.autoSaveTimeString != "NONE" && crashData.saveFileName != "NONE") {
-            MessageManager::displayMessage("It looks like rolmi did not shut down\ncorrectly last time.", 15);
+            MessageManager::displayMessage("It looks like pennylooter did not shut down\ncorrectly last time.", 15);
             MessageManager::displayMessage(
                 "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
             );
@@ -136,6 +139,11 @@ int main() {
     StatManager::loadOverallStats();
     MusicManager::start();
     MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+    ProjectilePoolManager::init();
+
+    if (!TerrainGenInitializer::loadParameters()) {
+        MessageManager::displayMessage("Terrain generation parameters did not load", 5, WARN);
+    }
 
     steamworksSetup();
     AchievementManager::start();

@@ -16,11 +16,16 @@
 #include "../ui/UIGamepadBindingButton.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include "music/MusicManager.h"
+#include "Viewport.h"
+#include "../world/entities/projectiles/ProjectilePoolManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
     _camera = camera;
     _window = window;
+
+    Viewport::setCamera(camera);
+    Viewport::setWindow(window);
 
     if (!_font.loadFromFile("res/font.ttf")) {
         MessageManager::displayMessage("Failed to load font!", 10, WARN);
@@ -425,7 +430,7 @@ void Game::initUI() {
     //_startMenu->addElement(titleLabel);
 
     std::shared_ptr<UILabel> logoImage = std::shared_ptr<UILabel>(new UILabel(
-        "IMAGE:res/logo.png", 29.5f, -18.f, 1.f, _font, 40.f, 40.f
+        "IMAGE:res/logo.png", 25.0f, -18.f, 1.f, _font, 50.f, 50.f
     ));
     _startMenu->addElement(logoImage);
 
@@ -1144,11 +1149,12 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->unlock();
         _cmdPrompt->processCommand("killall");
         _cmdPrompt->processCommand("clear inventory");
-        _cmdPrompt->processCommand("respawn");
         _cmdPrompt->processCommand("setmaxhp:100");
         _cmdPrompt->processCommand("addhp:100");
+        _cmdPrompt->processCommand("respawn");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
         StatManager::resetStatsForThisSave();
 
@@ -1179,6 +1185,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_isReloading = false;
         _player->_damageMultiplier = 1.f;
         _player->_maxStamina = INITIAL_MAX_STAMINA;
+        _player->_stamina = INITIAL_MAX_STAMINA;
         _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
         _player->_coinMagnetCount = 0;
 
@@ -1325,7 +1332,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
 
         if (VSYNC_ENABLED) {
-            MessageManager::displayMessage("WARNING:\nThere may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+            MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
         }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
@@ -1662,11 +1669,7 @@ void Game::textEntered(sf::Uint32 character) {
 }
 
 void Game::displayStartupMessages() const {
-    /*if (DEBUG_MODE && UPCOMING_FEATURES_ENABLED && DIAGONAL_MOVEMENT_ENABLED) {
-        MessageManager::displayMessage(
-            "Diagonal movement is enabled in this build\nIt's a little buggy, especially on a gamepad\n\nTo disable it, press F10, type \"tdm\", then press enter", 
-            10);
-    }*/
+
 }
 
 void Game::autoSave() {
