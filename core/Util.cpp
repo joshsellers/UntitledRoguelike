@@ -120,7 +120,7 @@ std::string getLocalLowPath() {
         pathStr =
             std::regex_replace(
                 temp, std::regex("Roaming"),
-                "LocalLow\\Rolmi"
+                "LocalLow\\jsell\\Pennylooter"
             );
         free(buf);
     } else {
