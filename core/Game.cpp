@@ -435,7 +435,7 @@ void Game::initUI() {
     //_startMenu->addElement(titleLabel);
 
     std::shared_ptr<UILabel> logoImage = std::shared_ptr<UILabel>(new UILabel(
-        "IMAGE:res/logo.png", 29.5f, -18.f, 1.f, _font, 40.f, 40.f
+        "IMAGE:res/logo.png", 25.0f, -18.f, 1.f, _font, 50.f, 50.f
     ));
     _startMenu->addElement(logoImage);
 
