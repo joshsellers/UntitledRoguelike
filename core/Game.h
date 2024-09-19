@@ -17,7 +17,7 @@
 #include "../../SteamworksHeaders/steam_api.h"
 
 
-const std::string GAME_NAME = "rolmi";
+const std::string GAME_NAME = "pennylooter";
 
 class Game : public UIButtonListener, public GamePadListener {
 public:
