@@ -672,16 +672,15 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr float chanceCoefficient = 0.005f;
-    constexpr int shopSpawnRate = 5000000 * chanceCoefficient;
-    constexpr int grassSpawnRate = 5000 * chanceCoefficient;
-    constexpr int smallTreeSpawnRate = 37500 * chanceCoefficient;
-    constexpr int cactusSpawnRate = 200000 * chanceCoefficient;
-    constexpr int smallSavannaTreeSpawnRate = 200000 * chanceCoefficient;
-    constexpr int largeSavannaTreeSpawnRate = 250000 * chanceCoefficient;
-    constexpr int smallTundraTreeSpawnRate = 300000 * chanceCoefficient;
-    constexpr int fingerTreeSpawnRate = 175000 * chanceCoefficient;
-    constexpr int forestSmallTreeSpawnRate = 4000 * chanceCoefficient;
+    constexpr int shopSpawnRate = 25000;
+    constexpr int grassSpawnRate = 25;
+    constexpr int smallTreeSpawnRate = 187;
+    constexpr int cactusSpawnRate = 1000;
+    constexpr int smallSavannaTreeSpawnRate = 1000;
+    constexpr int largeSavannaTreeSpawnRate = 1250;
+    constexpr int smallTundraTreeSpawnRate = 1500;
+    constexpr int fingerTreeSpawnRate = 875;
+    constexpr int forestSmallTreeSpawnRate = 20;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
