@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="mod\Interpreter.cpp" />
     <ClCompile Include="mod\ModManager.cpp" />
+    <ClCompile Include="inventory\effect\PlayerVisualEffectManager.cpp" />
     <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp" />
     <ClCompile Include="world\entities\TulipMonster.cpp" />
     <ClCompile Include="world\entities\BoulderBeast.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="mod\Instructions.h" />
     <ClInclude Include="mod\Interpreter.h" />
     <ClInclude Include="mod\ModManager.h" />
+    <ClInclude Include="inventory\effect\PlayerVisualEffectManager.h" />
     <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h" />
     <ClInclude Include="world\entities\TulipMonster.h" />
     <ClInclude Include="world\entities\BoulderBeast.h" />

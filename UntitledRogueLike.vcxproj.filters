@@ -441,6 +441,9 @@
     <ClCompile Include="mod\Interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inventory\effect\PlayerVisualEffectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -777,6 +780,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mod\Instructions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inventory\effect\PlayerVisualEffectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
