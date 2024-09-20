@@ -105,7 +105,7 @@ public:
     static const ProjectileData DATA_PROJECTILE_POLLEN;
     static const Item HEALING_MIST;
 
-    static std::vector<const Item*> ITEMS;
+    static std::vector<std::shared_ptr<Item>> ITEMS;
 
     static void fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName = "NONE", int passThroughCount = 1);
 
@@ -115,7 +115,15 @@ public:
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
-        const unsigned int reloadTimeMilliseconds = 0);
+        const unsigned int reloadTimeMilliseconds = 0, const bool isCustomItem = false, const std::string functionName = "NONE");
+
+    static void createItem(const unsigned int id, const std::string name, const sf::IntRect textureRect,
+        const bool isStackable, const unsigned int stackLimit, const bool isConsumable,
+        const std::string description, EQUIPMENT_TYPE equipType, const int damage,
+        const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
+        const std::function<bool(Entity*)> use = [](Entity* parent) { return false; },
+        const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
+        const unsigned int reloadTimeMilliseconds = 0, const bool isCustomItem = false, const std::string functionName = "NONE");
 
     unsigned int getId() const;
     std::string getName() const;
@@ -156,9 +164,12 @@ public:
 
     static void checkForIncompleteItemConfigs();
 
+    friend class ModManager;
 private:
-    static const std::map<unsigned int, unsigned int> ITEM_UNLOCK_WAVE_NUMBERS;
-    static const std::map<unsigned int, WeaponAnimationConfig> ANIMATION_CONFIGS;
+    //static std::vector<Item> _builtInItems;
+
+    static std::map<unsigned int, unsigned int> ITEM_UNLOCK_WAVE_NUMBERS;
+    static std::map<unsigned int, WeaponAnimationConfig> ANIMATION_CONFIGS;
 
     const unsigned int _id;
     const std::string _name;
@@ -186,6 +197,8 @@ private:
     const bool _isBuyable;
 
     const std::function<bool(Entity*)> _use;
+    const bool _isCustomItem;
+    const std::string _functionName;
 
     const EQUIPMENT_TYPE _equipType;
 };

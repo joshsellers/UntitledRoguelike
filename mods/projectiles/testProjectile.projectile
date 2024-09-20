@@ -1,0 +1,4 @@
+itemName = "Test Ammo"
+velocity = 10
+lifeTime = 1000
+hitBox = 4, 4, 4, 4

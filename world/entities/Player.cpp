@@ -27,7 +27,7 @@ void Player::update() {
     if (isInBoat() && !isSwimming()) getInventory().deEquip(EQUIPMENT_TYPE::BOAT);
 
     if (_isReloading) {
-        const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+        std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
         if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
             _isReloading = false;
             _magazineContents = _magContentsFilled;
@@ -292,7 +292,7 @@ void Player::drawTool(sf::RenderTexture& surface) {
         sf::RectangleShape meleeHitBoxDisplay;
         sf::RectangleShape barrelDisplay;
         if (!_gamePaused) {
-            const Item* equippedTool = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+            std::shared_ptr<const Item> equippedTool = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
             sf::IntRect itemTextureRect =
                 equippedTool->getTextureRect();
             int spriteX = itemTextureRect.left + TILE_SIZE;
@@ -596,7 +596,7 @@ void Player::decrementMagazine() {
     if (_magazineContents != 0) {
         _magazineContents--;
         if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED) {
-            const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+            std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
             _magContentsPercentage = ((float)_magazineContents / (float)weapon->getMagazineSize()) * 100.f;
         }
     }
@@ -782,8 +782,8 @@ bool Player::reloadWeapon() {
             );
 
             if (getMagazineContents() == 0 && !isReloading()) {
-                const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
-                const Item* ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
+                std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+                std::shared_ptr<const Item> ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
                 const unsigned int removeAmount = std::min(
                     (unsigned int)weapon->getMagazineSize(), getInventory().getItemAmountAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO))
                 );

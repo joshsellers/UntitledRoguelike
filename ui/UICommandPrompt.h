@@ -96,7 +96,7 @@ private:
                         processCommand("give:" + std::to_string(Item::MATMURA_BOOTS.getId()));
                         return "Player given Matmura armor";
                     } else if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
-                        const Item* item = nullptr;
+                        std::shared_ptr<const Item> item = nullptr;
                         for (int i = 0; i < Item::ITEMS.size(); i++) {
                             std::string itemName = Item::ITEMS[i]->getName();
                             boost::to_lower(itemName);

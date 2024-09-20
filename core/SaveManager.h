@@ -421,6 +421,7 @@ private:
             for (int i = 0; i < data.size(); i++) {
                 std::vector<std::string> parsedData = splitString(data[i], ",");
                 unsigned int itemId = std::stoi(parsedData[0]);
+                if (itemId >= Item::ITEMS.size()) continue;
                 unsigned int amount = std::stoi(parsedData[1]);
                 bool isEquipped = parsedData[2] == "1";
                 if (isEquipped) equippedItemIds.push_back(itemId);

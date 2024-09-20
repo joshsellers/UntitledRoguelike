@@ -10,6 +10,8 @@
 #include "abilities/AbilityManager.h"
 #include "abilities/Ability.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../mod/Interpreter.h"
+#include "../mod/ModManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -593,13 +595,16 @@ const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), tr
     }
 );
 
-std::vector<const Item*> Item::ITEMS;
+std::vector<std::shared_ptr<Item>> Item::ITEMS;
+
+//std::vector<Item> Item::_builtInItems;
 
 Item::Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
     const unsigned int stackLimit, const bool isConsumable,
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
     const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
-    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds) :
+    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds,
+    const bool isCustomItem, const std::string functionName) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
             textureRect.left << SPRITE_SHEET_SHIFT, 
@@ -611,12 +616,28 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isConsumable(isConsumable), _use(use), _description(description), 
     _equipType(equipType), _damage(damage), _hitBoxSize(hitBoxSize), _hitBoxPos(hitBoxPos), _barrelPos(barrelPos),
     _isGun(isGun), _magazineSize(magazineSize), _isAutomatic(isAutomatic), _fireRateMilliseconds(fireRateMilliseconds),
-    _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable) {
+    _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable), _isCustomItem(isCustomItem), _functionName(functionName) {
 
-    for (auto& item : Item::ITEMS) {
+    for (const auto& item : ITEMS) {
         if (item->getId() == id) MessageManager::displayMessage("Duplicate item ID: " + std::to_string(id) + "\nCulprits:\n" + item->getName() + "\n" + name, 5, WARN);
     }
-    ITEMS.push_back(this);
+    if (!isCustomItem) {
+        createItem(id, name, textureRect, isStackable, stackLimit, isConsumable,
+            description, equipType, damage, hitBoxPos, hitBoxSize, barrelPos, isGun, value, isBuyable, use, magazineSize, isAutomatic, fireRateMilliseconds,
+            reloadTimeMilliseconds, isCustomItem, functionName);
+    }
+}
+
+void Item::createItem(const unsigned int id, const std::string name, const sf::IntRect textureRect, const bool isStackable,
+    const unsigned int stackLimit, const bool isConsumable,
+    std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
+    const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
+    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds,
+    const bool isCustomItem, const std::string functionName) {
+    std::shared_ptr<Item> itemPtr = std::shared_ptr<Item>(new Item(id, name, textureRect, isStackable, stackLimit, isConsumable, 
+        description, equipType, damage, hitBoxPos, hitBoxSize, barrelPos, isGun, value, isBuyable, use, magazineSize, isAutomatic, fireRateMilliseconds,
+        reloadTimeMilliseconds, true, functionName));
+    ITEMS.push_back(itemPtr);
 }
 
 void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
@@ -735,6 +756,10 @@ const bool Item::isBuyable() const {
 * should be removed from the inventory upon use.
 */
 bool Item::use(Entity* parent) const {
+    if (_isCustomItem && _functionName != "NONE") {
+        Interpreter interpreter;
+        return interpreter.interpret(ModManager::getFunction(_functionName), parent);
+    }
     return _use(parent);
 }
 
@@ -742,7 +767,7 @@ EQUIPMENT_TYPE Item::getEquipmentType() const {
     return _equipType;
 }
 
-const std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
+std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::TOP_HAT.getId(),                         8},
     {Item::TUX_VEST.getId(),                        8},
     {Item::TUX_PANTS.getId(),                       8},
@@ -825,7 +850,7 @@ unsigned int Item::getRequiredWave() const {
     return ITEM_UNLOCK_WAVE_NUMBERS.at(getId());
 }
 
-const std::map<unsigned int, WeaponAnimationConfig> Item::ANIMATION_CONFIGS = {
+std::map<unsigned int, WeaponAnimationConfig> Item::ANIMATION_CONFIGS = {
     {Item::CHAINSAW.getId(), {Item::CHAINSAW.getId(), 4, 2}}
 };
 

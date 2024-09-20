@@ -1,0 +1,12 @@
+name = "Test Gun"
+textureRect = 8, 4, 1, 1
+equipmentType = TOOL
+barrelPos = 4, 1
+isGun = true
+ammoName = "Test Ammo"
+magazineSize = 500
+isAutomatic = true
+reloadTime = 500
+isBuyable = false
+fireRate = 100
+functionName = "fireTestGun"
