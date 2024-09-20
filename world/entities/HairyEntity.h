@@ -21,6 +21,8 @@ public:
 
     void initHairSprites(std::shared_ptr<sf::Texture> spriteSheet);
 
+    MOVING_DIRECTION getFacingDir() const;
+
 protected:
     MOVING_DIRECTION _facingDir = (MOVING_DIRECTION)_movingDir;
 

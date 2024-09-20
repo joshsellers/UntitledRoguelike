@@ -1,0 +1,4 @@
+name = "_PROJECTILE_THIRD_EYE"
+description = "This item should not be obtainable."
+damage = 5
+textureRect = 11, 7, 1, 1

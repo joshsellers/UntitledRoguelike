@@ -1,6 +1,7 @@
 #include "ProjectileDataManager.h"
 #include "ProjectileData.h"
 #include "../../../inventory/Item.h"
+#include "../../../core/MessageManager.h"
 
 void ProjectileDataManager::addData(ProjectileData data) {
     _projectileData.push_back(data);
@@ -27,5 +28,8 @@ ProjectileData ProjectileDataManager::getData(std::string itemName) {
             return getData(itemId);
         }
     }
+
+
+    MessageManager::displayMessage("Did not find a projectile type named \"" + itemName + "\"", 5, WARN);
     return data;
 }

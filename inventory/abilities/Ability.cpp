@@ -1,5 +1,6 @@
 #include "Ability.h"
 #include "../../world/World.h"
+#include "../../world/entities/projectiles/ProjectilePoolManager.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
@@ -105,6 +106,42 @@ const Ability Ability::HEALILNG_MIST(1, "Healthy Stench",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::THIRD_EYE(2, "Third Eye",
+    { {"damage", 1.f}, {"fire rate", 500.f} },
+    [](Player* player, Ability* ability) {
+        // Needs to fire only when enemies are nearby, need to convert angle to radians, fix spawnPos
+
+        const float fireRate = ability->getParameter("fire rate");
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate) {
+            MOVING_DIRECTION plFacingDir = player->getFacingDir();
+            float fireAngle = 0.f;
+            switch (plFacingDir) {
+                case UP:
+                    fireAngle = 0.f;
+                    break;
+                case DOWN:
+                    fireAngle = 180.f;
+                    break;
+                case LEFT:
+                    fireAngle = 270.f;
+                    break;
+                case RIGHT:
+                    fireAngle = 90.f;
+                    break;
+            }
+
+            sf::Vector2f spawnPos;
+            spawnPos.x = player->getPosition().x + (float)TILE_SIZE / 2;
+            spawnPos.y = player->getPosition().y + (float)TILE_SIZE / 2;
+
+            fireTargetedProjectile(fireAngle, ProjectileDataManager::getData("_PROJECTILE_THIRD_EYE"), spawnPos, player, ability->getParameter("damage"));
+            ability->_lastFireTimeMillis = currentTimeMillis();
+        }
+    },
+
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
@@ -112,6 +149,14 @@ Ability::Ability(const unsigned int id, const std::string name, std::map<std::st
 _id(id), _name(name), _parameters(parameters), _update(update), _draw(draw), _parameterDefaults(_parameters)
 {
     ABILITIES.push_back(this);
+}
+
+void Ability::fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost) {
+    const sf::Vector2f centerPoint(projSpawnPoint.x, projSpawnPoint.y);
+    sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
+
+    ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
+        false, damageBoost, true);
 }
 
 const unsigned int Ability::getId() const {

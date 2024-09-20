@@ -45,3 +45,7 @@ void HairyEntity::initHairSprites(std::shared_ptr<sf::Texture> spriteSheet) {
         hairSprite.setTexture(*spriteSheet);
     }
 }
+
+MOVING_DIRECTION HairyEntity::getFacingDir() const {
+    return _facingDir;
+}

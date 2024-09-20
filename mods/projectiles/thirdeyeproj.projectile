@@ -1,0 +1,4 @@
+itemName = "_PROJECTILE_THIRD_EYE"
+velocity = 5
+lifeTime = 750
+hitBox = 4, 4, 4, 4
