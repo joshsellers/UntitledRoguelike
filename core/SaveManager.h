@@ -49,6 +49,7 @@ public:
             savePlayerData(out);
             saveWorldData(out);
             saveAbilities(out);
+            saveEffects(out);
             saveShopData(out);
             saveEntityData(out);
 
@@ -172,6 +173,16 @@ private:
 
             for (auto& parameter : ability->getParameters()) {
                 out << ":" << parameter.first << "," << std::to_string(parameter.second);
+            }
+            out << std::endl;
+        }
+    }
+
+    static void saveEffects(std::ofstream& out) {
+        if (PlayerVisualEffectManager::getPlayerEffects().size() > 0) {
+            out << "EFFECTS";
+            for (const unsigned int effectId : PlayerVisualEffectManager::getPlayerEffects()) {
+                out << ":" << std::to_string(effectId);
             }
             out << std::endl;
         }
@@ -373,6 +384,16 @@ private:
                         AbilityManager::setParameter(id, key, value);
                     } else {
                         MessageManager::displayMessage("Bad ability parameter data: " + std::to_string(parameter.size()), 5, WARN);
+                    }
+                }
+            }
+        } else if (header == "EFFECTS") {
+            for (int i = 0; i < data.size(); i++) {
+                const unsigned int effectId = std::stoul(data[i]);
+                for (const auto& effect : PlayerVisualEffectManager::_effectTypes) {
+                    if (effect.id == effectId) {
+                        PlayerVisualEffectManager::addEffectToPlayer(effect.name);
+                        break;
                     }
                 }
             }

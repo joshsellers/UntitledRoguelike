@@ -5,6 +5,9 @@
 #include "../core/Util.h"
 #include "../core/MessageManager.h"
 #include "../core/SoundManager.h"
+#include "../inventory/effect/PlayerVisualEffectManager.h"
+#include "../inventory/abilities/AbilityManager.h"
+#include "../inventory/abilities/Ability.h"
 
 int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
     int i = 0;
@@ -347,6 +350,103 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 if (entity->getMagazineContents() > 0) {
                     push(1);
                 } else push(0);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLADDEFFECT) {
+            if (_strStackSize > 0) {
+                const std::string effectName = strPop();
+
+                PlayerVisualEffectManager::addEffectToPlayer(effectName);
+            } else {
+                MessageManager::displayMessage("player.addEffect() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLADDABILITY) {
+            if (_strStackSize > 0) {
+                const std::string abilityName = strPop();
+
+                bool foundAbility = false;
+                for (const auto& ability : Ability::ABILITIES) {
+                    if (ability->getName() == abilityName) {
+                        const unsigned int abilityId = ability->getId();
+                        AbilityManager::givePlayerAbility(abilityId);
+                        foundAbility = true;
+                        break;
+                    }
+                }
+
+                if (!foundAbility) MessageManager::displayMessage("No ability named \"" + abilityName + "\"", 5, WARN);
+            } else {
+                MessageManager::displayMessage("player.addAbility() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLSETABILITYPARAM) {
+            if (_strStackSize > 1) {
+                const float paramValue = pop();
+                const std::string paramName = strPop();
+                const std::string abilityName = strPop();
+
+                bool foundAbility = false;
+                for (const auto& ability : Ability::ABILITIES) {
+                    if (ability->getName() == abilityName) {
+                        const unsigned int abilityId = ability->getId();
+                        AbilityManager::setParameter(abilityId, paramName, paramValue);
+                        foundAbility = true;
+                        break;
+                    }
+                }
+
+                if (!foundAbility) MessageManager::displayMessage("No ability named \"" + abilityName + "\"", 5, WARN);
+            } else {
+                MessageManager::displayMessage("player.setAbilityParameter() requires two string parameters", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLGETABILITYPARAM) {
+            if (_strStackSize > 1) {
+                const std::string paramName = strPop();
+                const std::string abilityName = strPop();
+
+                bool foundAbility = false;
+                for (const auto& ability : Ability::ABILITIES) {
+                    if (ability->getName() == abilityName) {
+                        const unsigned int abilityId = ability->getId();
+                        push(AbilityManager::getParameter(abilityId, paramName));
+                        foundAbility = true;
+                        break;
+                    }
+                }
+
+                if (!foundAbility) MessageManager::displayMessage("No ability named \"" + abilityName + "\"", 5, WARN);
+            } else {
+                MessageManager::displayMessage("player.getAbilityParameter() requires two string parameters", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLHASABILITY) {
+            if (_strStackSize > 0) {
+                const std::string abilityName = strPop();
+
+                bool foundAbility = false;
+                for (const auto& ability : Ability::ABILITIES) {
+                    if (ability->getName() == abilityName) {
+                        const unsigned int abilityId = ability->getId();
+                        push(AbilityManager::playerHasAbility(abilityId));
+                        foundAbility = true;
+                        break;
+                    }
+                }
+
+                if (!foundAbility) MessageManager::displayMessage("No ability named \"" + abilityName + "\"", 5, WARN);
+            } else {
+                MessageManager::displayMessage("player.hasAbility() requires a string parameter", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLHASEFFECT) {
+            if (_strStackSize > 0) {
+                const std::string effectName = strPop();
+
+                push(PlayerVisualEffectManager::playerHasEffect(effectName));
+            } else {
+                MessageManager::displayMessage("player.hasEffect() requires a string parameter", 5, ERR);
             }
             i++;
         } else {

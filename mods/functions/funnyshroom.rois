@@ -1,0 +1,12 @@
+alreadyHas = player.hasEffect("Third Eye");
+
+if: alreadyHas {
+    displayMessage("You can't eat any more of these", 5);
+    return false;
+}
+
+if: alreadyHas == false {
+    player.addEffect("Third Eye");
+    player.addAbility("Third Eye");
+    return true;
+}

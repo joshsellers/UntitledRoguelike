@@ -1,6 +1,0 @@
-weaponLoaded = player.weaponIsLoaded();
-
-if: weaponLoaded {
-    playSound("ar");
-    player.fireProjectile("Test Ammo", 1);
-}

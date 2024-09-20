@@ -45,6 +45,23 @@ std::vector<unsigned int> PlayerVisualEffectManager::getPlayerEffects() {
     return _playerEffects;
 }
 
+bool PlayerVisualEffectManager::playerHasEffect(std::string effectName) {
+    for (auto& effectType : _effectTypes) {
+        if (effectType.name == effectName) {
+            for (unsigned int& playerEffectId : _playerEffects) {
+                if (effectType.id == playerEffectId) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void PlayerVisualEffectManager::clearPlayerEffects() {
+    _playerEffects.clear();
+}
+
 void PlayerVisualEffectManager::addEffectType(PlayerVisualEffect effect) {
     _effectTypes.push_back(effect);
 }

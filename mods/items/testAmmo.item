@@ -1,7 +1,0 @@
-name = "Test Ammo"
-isStackable = true
-stackLimit = 9999
-textureRect = 11, 7, 1, 1
-damage = 10
-equipmentType = AMMO
-isBuyable = false

@@ -11,11 +11,15 @@ public:
 
     static void addEffectToPlayer(std::string effectName);
     static std::vector<unsigned int> getPlayerEffects();
+    static bool playerHasEffect(std::string effectName);
+    static void clearPlayerEffects();
 
     static void addEffectType(PlayerVisualEffect effect);
     static unsigned int getEffectCount();
 
     static void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
+    friend class SaveManager;
 private:
     static inline std::vector<PlayerVisualEffect> _effectTypes;
     static inline std::vector<unsigned int> _playerEffects;

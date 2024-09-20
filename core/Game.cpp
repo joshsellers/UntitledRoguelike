@@ -1156,6 +1156,7 @@ void Game::buttonPressed(std::string buttonCode) {
         
         ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
+        PlayerVisualEffectManager::clearPlayerEffects();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;
