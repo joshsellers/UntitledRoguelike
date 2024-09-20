@@ -755,6 +755,9 @@
     <ClInclude Include="world\TerrainGenParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inventory\effect\PlayerVisualEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UntitledRogueLike.rc">

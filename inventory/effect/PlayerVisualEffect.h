@@ -1,0 +1,5 @@
+#ifndef _PLAYER_VISUAL_EFFECT_H
+#define _PLAYER_VISUAL_EFFECT_H
+
+
+#endif
