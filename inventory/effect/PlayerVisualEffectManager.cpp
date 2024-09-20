@@ -1,7 +1,27 @@
 #include "PlayerVisualEffectManager.h"
 #include "../../core/MessageManager.h"
 
-void PlayerVisualEffectManager::drawEffects(Player* player, sf::RenderTexture surface) {
+void PlayerVisualEffectManager::drawEffects(Player* player, sf::RenderTexture& surface) {
+    if (!player->isDodging() || !player->isMoving()) {
+        for (const unsigned int effectId : _playerEffects) {
+            const PlayerVisualEffect& effect = _effectTypes.at(effectId);
+
+            sf::Vector2f playerPos = player->getPosition();
+
+            constexpr int spriteHeight = 3;
+            int yOffset = player->isMoving() || player->isSwimming() ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+
+            sf::IntRect effectTextureRect(effect.texturePos.x, effect.texturePos.y, spriteHeight * TILE_SIZE, (player->isSwimming() ? TILE_SIZE * 2 : spriteHeight * TILE_SIZE));
+            int spriteY = effectTextureRect.top;
+
+            _sprite.setTextureRect(sf::IntRect(
+                effectTextureRect.left + TILE_SIZE * 3 * player->_facingDir, spriteY + yOffset, TILE_SIZE * 3, TILE_SIZE * spriteHeight)
+            );
+
+            _sprite.setPosition(sf::Vector2f(player->getSprite().getPosition().x - TILE_SIZE, player->getSprite().getPosition().y - TILE_SIZE));
+            surface.draw(_sprite);
+        }
+    }
 }
 
 void PlayerVisualEffectManager::addEffectToPlayer(std::string effectName) {
@@ -27,4 +47,12 @@ std::vector<unsigned int> PlayerVisualEffectManager::getPlayerEffects() {
 
 void PlayerVisualEffectManager::addEffectType(PlayerVisualEffect effect) {
     _effectTypes.push_back(effect);
+}
+
+unsigned int PlayerVisualEffectManager::getEffectCount() {
+    return _effectTypes.size();
+}
+
+void PlayerVisualEffectManager::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+    _sprite.setTexture(*spriteSheet);
 }

@@ -31,6 +31,7 @@
 #include "../core/Viewport.h"
 #include "../world/entities/BoulderBeast.h"
 #include "../world/entities/TulipMonster.h"
+#include "../inventory/effect/PlayerVisualEffectManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -728,6 +729,20 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 Viewport::setCullingEnabled(!Viewport::isCullingEnabled());
                 return (Viewport::isCullingEnabled() ? "Enabled" : "Disabled") + (std::string)" culling";
+            })
+        },
+
+        {
+            "addeffect",
+            Command("Add an effect to the player",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    const std::string effectName = parsedCommand[1];
+                    PlayerVisualEffectManager::addEffectToPlayer(effectName);
+                    return "Player given effect \"" + effectName + "\"";
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

@@ -76,6 +76,7 @@ public:
     friend class RemotePlayer;
     friend class World;
     friend class SaveManager;
+    friend class PlayerVisualEffectManager;
 protected:
     virtual void damage(int damage);
 

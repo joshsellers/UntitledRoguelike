@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../core/MessageManager.h"
 #include "../inventory/Item.h"
+#include "../inventory/effect/PlayerVisualEffectManager.h"
 
 void ModManager::loadAll() {
     const std::string dirName = "mods";
@@ -17,6 +18,7 @@ void ModManager::loadAll() {
     loadFunctions();
     loadItems();
     loadProjectiles();
+    loadPlayerVisualEffects();
 }
 
 void ModManager::loadFunctions() {
@@ -348,6 +350,64 @@ void ModManager::loadProjectile(std::ifstream& in) {
     }
 
     ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire);
+}
+
+void ModManager::loadPlayerVisualEffects() {
+    const std::string dirName = "mods/effects";
+    if (!std::filesystem::is_directory(dirName + "/")) {
+        std::filesystem::create_directory(dirName);
+        MessageManager::displayMessage("Created mods/effects directory", 5, DEBUG);
+    }
+
+    std::vector<std::string> projFiles;
+    for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+        if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+        else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "effect") continue;
+        projFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+    }
+
+    for (std::string file : projFiles) {
+        std::ifstream in(dirName + "/" + file);
+
+        if (in.good()) {
+            try {
+                loadPlayerVisualEffect(in);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage("Error loading " + file + ": \n" + ex.what(), 5, ERR);
+            }
+        }
+        in.close();
+    }
+}
+
+void ModManager::loadPlayerVisualEffect(std::ifstream& in) {
+    std::string name = "";
+    unsigned int id = PlayerVisualEffectManager::getEffectCount();
+    sf::Vector2i textPos(0, 0);
+
+    std::string line;
+    while (getline(in, line)) {
+        const std::vector<std::string> tokens = tokenize(line);
+
+        if (tokens.size() > 2 && tokens.at(1) == "=") {
+            if (tokens.at(0) == "name") {
+                std::string strName = tokens.at(2);
+                replaceAll(strName, "\"", "");
+                name = strName;
+            } else if (tokens.at(0) == "textureCoords") {
+                if (tokens.size() != 5) {
+                    MessageManager::displayMessage("Bad texture coordinates for effect: \"" + name + "\"", 5, ERR);
+                    continue;
+                }
+                textPos.x = std::stoi(tokens.at(2)) << SPRITE_SHEET_SHIFT;
+                textPos.y = std::stoi(tokens.at(4)) << SPRITE_SHEET_SHIFT;
+            } else {
+                MessageManager::displayMessage("Unrecognized effect parameter: \"" + tokens.at(0) + "\"", 5, WARN);
+            }
+        }
+    }
+
+    PlayerVisualEffectManager::addEffectType({name, id, textPos});
 }
 
 std::vector<int> ModManager::getFunction(std::string functionName) {

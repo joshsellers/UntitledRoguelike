@@ -3,6 +3,7 @@
 #include "../World.h"
 #include "../../core/InputBindings.h"
 #include "../../statistics/StatManager.h"
+#include "../../inventory/effect/PlayerVisualEffectManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -214,10 +215,12 @@ void Player::draw(sf::RenderTexture& surface) {
             drawTool(surface);
 
             surface.draw(_sprite);
+            PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
         } else if (_facingDir == DOWN || _facingDir == RIGHT) {
             surface.draw(_sprite);
+            PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
             drawTool(surface);
@@ -825,6 +828,8 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _toolSprite.setTexture(*spriteSheet);
 
     initHairSprites(spriteSheet);
+
+    PlayerVisualEffectManager::loadSprite(spriteSheet);
 }
 
 void Player::toggleVisible() {

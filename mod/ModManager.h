@@ -21,6 +21,9 @@ private:
     static void loadProjectiles();
     static void loadProjectile(std::ifstream& in);
 
+    static void loadPlayerVisualEffects();
+    static void loadPlayerVisualEffect(std::ifstream& in);
+
     static std::vector<std::string> tokenize(std::string line);
     static std::vector<std::string> splitOperators(std::string bareToken);
     static inline const std::vector<std::string> _operators = { "!=", "==", ">=", "<=", "+", "-", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!", "%" };
