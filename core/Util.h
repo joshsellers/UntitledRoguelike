@@ -23,6 +23,9 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
 bool stringStartsWith(std::string str, std::string start);
 bool stringEndsWith(std::string const& fullString, std::string const& ending);
 
+float degToRads(float angle);
+float radsToDeg(float angle);
+
 std::string generateUID();
 
 std::string getLocalLowPath();

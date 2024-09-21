@@ -9,10 +9,10 @@
 #include "../inventory/effect/PlayerVisualEffectManager.h"
 
 void ModManager::loadAll() {
-    const std::string dirName = "mods";
+    const std::string dirName = "data";
     if (!std::filesystem::is_directory(dirName + "/")) {
         std::filesystem::create_directory(dirName);
-        MessageManager::displayMessage("Created mods directory", 5, DEBUG);
+        MessageManager::displayMessage("Created data directory", 5, DEBUG);
     }
 
     loadFunctions();
@@ -22,10 +22,10 @@ void ModManager::loadAll() {
 }
 
 void ModManager::loadFunctions() {
-    const std::string dirName = "mods/functions";
+    const std::string dirName = "data/functions";
     if (!std::filesystem::is_directory(dirName + "/")) {
         std::filesystem::create_directory(dirName);
-        MessageManager::displayMessage("Created mods/functions directory", 5, DEBUG);
+        MessageManager::displayMessage("Created data/functions directory", 5, DEBUG);
     }
 
     std::vector<std::string> functionFiles;
@@ -54,10 +54,10 @@ void ModManager::loadFunctions() {
 }
 
 void ModManager::loadItems() {
-    const std::string dirName = "mods/items";
+    const std::string dirName = "data/items";
     if (!std::filesystem::is_directory(dirName + "/")) {
         std::filesystem::create_directory(dirName);
-        MessageManager::displayMessage("Created mods/items directory", 5, DEBUG);
+        MessageManager::displayMessage("Created data/items directory", 5, DEBUG);
     }
 
     std::vector<std::string> itemFiles;
@@ -248,10 +248,10 @@ void ModManager::loadItem(std::ifstream& in) {
 }
 
 void ModManager::loadProjectiles() {
-    const std::string dirName = "mods/projectiles";
+    const std::string dirName = "data/projectiles";
     if (!std::filesystem::is_directory(dirName + "/")) {
         std::filesystem::create_directory(dirName);
-        MessageManager::displayMessage("Created mods/projectiles directory", 5, DEBUG);
+        MessageManager::displayMessage("Created data/projectiles directory", 5, DEBUG);
     }
 
     std::vector<std::string> projFiles;
@@ -353,10 +353,10 @@ void ModManager::loadProjectile(std::ifstream& in) {
 }
 
 void ModManager::loadPlayerVisualEffects() {
-    const std::string dirName = "mods/effects";
+    const std::string dirName = "data/effects";
     if (!std::filesystem::is_directory(dirName + "/")) {
         std::filesystem::create_directory(dirName);
-        MessageManager::displayMessage("Created mods/effects directory", 5, DEBUG);
+        MessageManager::displayMessage("Created data/effects directory", 5, DEBUG);
     }
 
     std::vector<std::string> projFiles;

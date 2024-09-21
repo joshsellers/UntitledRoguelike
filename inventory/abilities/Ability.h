@@ -37,7 +37,7 @@ public:
     void draw(Player* player, Ability* ability, sf::RenderTexture& surface);
 
 private:
-    static void fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost = 0);
+    static void fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost = 0, bool addParentVelocity = false);
 
     const unsigned int _id;
     const std::string _name;

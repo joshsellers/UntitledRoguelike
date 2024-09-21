@@ -4,6 +4,8 @@
 #include "../../core/InputBindings.h"
 #include "../../statistics/StatManager.h"
 #include "../../inventory/effect/PlayerVisualEffectManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -211,8 +213,55 @@ void Player::draw(sf::RenderTexture& surface) {
             terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
         );
 
+        bool noToolAim = false;
+        MOVING_DIRECTION noToolFaceDir = getMovingDir();
+        if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == NOTHING_EQUIPPED && AbilityManager::playerHasAbility(Ability::THIRD_EYE.getId())) {
+            sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
+            sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+
+            sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
+
+            double x = (double)(mPos.x - center.x);
+            double y = (double)(mPos.y - center.y);
+
+            float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+
+            if (GamePad::isConnected()) {
+                angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
+                if (GamePad::isRightStickDeadZoned()) {
+                    switch (_movingDir) {
+                        case UP:
+                            angle = 0.f;
+                            break;
+                        case DOWN:
+                            angle = 180.f;
+                            break;
+                        case LEFT:
+                            angle = 270.f;
+                            break;
+                        case RIGHT:
+                            angle = 90.f;
+                            break;
+                    }
+                }
+            }
+
+            if (angle >= -45.f && angle < 45.f)
+                _facingDir = UP;
+            else if (angle >= 45.f && angle < 135.f)
+                _facingDir = RIGHT;
+            else if (angle >= 135.f && angle < 225.f)
+                _facingDir = DOWN;
+            else if (angle >= 225.f || angle < -45.f)
+                _facingDir = LEFT;
+
+            noToolAim = true;
+        }
+        noToolFaceDir = _facingDir;
+
         if (_facingDir == UP || _facingDir == LEFT) {
             drawTool(surface);
+            if (noToolAim) _facingDir = noToolFaceDir;
 
             surface.draw(_sprite);
             PlayerVisualEffectManager::drawEffects(this, surface);
@@ -224,7 +273,9 @@ void Player::draw(sf::RenderTexture& surface) {
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
             drawTool(surface);
+            if (noToolAim) _facingDir = noToolFaceDir;
         }
+
 
         if (isInBoat()) {
             _boatSprite.setTextureRect(sf::IntRect(

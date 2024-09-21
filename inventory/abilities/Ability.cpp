@@ -109,33 +109,46 @@ const Ability Ability::HEALILNG_MIST(1, "Healthy Stench",
 const Ability Ability::THIRD_EYE(2, "Third Eye",
     { {"damage", 1.f}, {"fire rate", 500.f} },
     [](Player* player, Ability* ability) {
-        // Needs to fire only when enemies are nearby, need to convert angle to radians, fix spawnPos
-
         const float fireRate = ability->getParameter("fire rate");
-        if (currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate) {
-            MOVING_DIRECTION plFacingDir = player->getFacingDir();
-            float fireAngle = 0.f;
-            switch (plFacingDir) {
-                case UP:
-                    fireAngle = 0.f;
+        if (!player->isDodging() && !player->isSwimming() && !player->isInBoat() && currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate) {
+            for (const auto& enemy : player->getWorld()->getEnemies()) {
+                constexpr float maxDistSquared = 300.f * 300.f;
+                float distSquared = std::pow(player->getPosition().x - enemy->getPosition().x, 2) + std::pow(player->getPosition().y - enemy->getPosition().y, 2);
+
+                if (distSquared <= maxDistSquared) {
+                    MOVING_DIRECTION plFacingDir = player->getFacingDir();
+                    float fireAngle = 0.f;
+                    float xOffset = 0.f;
+                    float yOffset = 0.f;
+                    switch (plFacingDir) {
+                        case UP:
+                            fireAngle = 270.f;
+                            yOffset = -8.f;
+                            break;
+                        case DOWN:
+                            fireAngle = 90.f;
+                            break;
+                        case LEFT:
+                            fireAngle = 180.f;
+                            xOffset = -6.f;
+                            yOffset = -2.f;
+                            break;
+                        case RIGHT:
+                            fireAngle = 0.f;
+                            xOffset = 6.f;
+                            yOffset = -2.f;
+                            break;
+                    }
+
+                    sf::Vector2f spawnPos;
+                    spawnPos.x = player->getPosition().x + xOffset;
+                    spawnPos.y = player->getPosition().y + (float)TILE_SIZE / 2 + yOffset;
+
+                    fireTargetedProjectile(degToRads(fireAngle), ProjectileDataManager::getData("_PROJECTILE_THIRD_EYE"), spawnPos, player, ability->getParameter("damage"));
+                    ability->_lastFireTimeMillis = currentTimeMillis();
                     break;
-                case DOWN:
-                    fireAngle = 180.f;
-                    break;
-                case LEFT:
-                    fireAngle = 270.f;
-                    break;
-                case RIGHT:
-                    fireAngle = 90.f;
-                    break;
+                }
             }
-
-            sf::Vector2f spawnPos;
-            spawnPos.x = player->getPosition().x + (float)TILE_SIZE / 2;
-            spawnPos.y = player->getPosition().y + (float)TILE_SIZE / 2;
-
-            fireTargetedProjectile(fireAngle, ProjectileDataManager::getData("_PROJECTILE_THIRD_EYE"), spawnPos, player, ability->getParameter("damage"));
-            ability->_lastFireTimeMillis = currentTimeMillis();
         }
     },
 
@@ -151,12 +164,12 @@ _id(id), _name(name), _parameters(parameters), _update(update), _draw(draw), _pa
     ABILITIES.push_back(this);
 }
 
-void Ability::fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost) {
+void Ability::fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost, bool addParentVelocity) {
     const sf::Vector2f centerPoint(projSpawnPoint.x, projSpawnPoint.y);
     sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
 
     ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
-        false, damageBoost, true);
+        false, damageBoost, addParentVelocity);
 }
 
 const unsigned int Ability::getId() const {
