@@ -122,6 +122,7 @@ void ModManager::loadItem(std::ifstream& in) {
     unsigned int ticksPerFrame = 0;
     unsigned int frameCount = 0;
     std::string ammoItemName = "";
+    bool isStartingItem = false;
 
     std::string line;
     while (getline(in, line)) {
@@ -208,6 +209,8 @@ void ModManager::loadItem(std::ifstream& in) {
                 std::string ammoNameStr = tokens.at(2);
                 replaceAll(ammoNameStr, "\"", "");
                 ammoItemName = ammoNameStr;
+            } else if (tokens.at(0) == "isStartingItem") {
+                isStartingItem = tokens.at(2) == "1";
             } else {
                 MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -238,7 +241,7 @@ void ModManager::loadItem(std::ifstream& in) {
         magazineSize,
         isAutomatic,
         fireRateMillis,
-        reloadTimeMillis, true, functionName)));
+        reloadTimeMillis, isStartingItem, true, functionName)));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 

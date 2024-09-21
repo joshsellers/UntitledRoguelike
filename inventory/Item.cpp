@@ -196,7 +196,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
 
         if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::EQUIP_SLIMEBALL);
         return true;
-    }
+    }, 0, false, 0, 0, true
 );
 
 const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
@@ -546,7 +546,7 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
             MessageManager::displayMessage("Increased bad vibes " + keys[parameterChoice] + " by " + trimString(std::to_string(increment)), 5);
         }
         return true;
-    }
+    }, 0, false, 0, 0, true
 );
 
 const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0, true,
@@ -558,7 +558,7 @@ const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0
         spikeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(spikeBall);
         return true;
-    }
+    }, 0, false, 0, 0, true
 );
 
 const Item Item::_PROJECTILE_THORN(68, "_THORN_PROJECTILE", sf::IntRect(1, 13, 1, 1), false, 0, false, 
@@ -603,7 +603,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     const unsigned int stackLimit, const bool isConsumable,
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
     const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
-    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds,
+    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds, const bool isStartingItem,
     const bool isCustomItem, const std::string functionName) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
@@ -616,7 +616,8 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     _isConsumable(isConsumable), _use(use), _description(description), 
     _equipType(equipType), _damage(damage), _hitBoxSize(hitBoxSize), _hitBoxPos(hitBoxPos), _barrelPos(barrelPos),
     _isGun(isGun), _magazineSize(magazineSize), _isAutomatic(isAutomatic), _fireRateMilliseconds(fireRateMilliseconds),
-    _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable), _isCustomItem(isCustomItem), _functionName(functionName) {
+    _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable), _isCustomItem(isCustomItem), _functionName(functionName),
+    _isStartingItem(isStartingItem) {
 
     for (const auto& item : ITEMS) {
         if (item->getId() == id) MessageManager::displayMessage("Duplicate item ID: " + std::to_string(id) + "\nCulprits:\n" + item->getName() + "\n" + name, 5, WARN);
@@ -624,7 +625,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     if (!isCustomItem) {
         createItem(id, name, textureRect, isStackable, stackLimit, isConsumable,
             description, equipType, damage, hitBoxPos, hitBoxSize, barrelPos, isGun, value, isBuyable, use, magazineSize, isAutomatic, fireRateMilliseconds,
-            reloadTimeMilliseconds, isCustomItem, functionName);
+            reloadTimeMilliseconds, isStartingItem, isCustomItem, functionName);
     }
 }
 
@@ -632,11 +633,11 @@ void Item::createItem(const unsigned int id, const std::string name, const sf::I
     const unsigned int stackLimit, const bool isConsumable,
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
     const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
-    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds,
+    const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds, const bool isStartingItem,
     const bool isCustomItem, const std::string functionName) {
     std::shared_ptr<Item> itemPtr = std::shared_ptr<Item>(new Item(id, name, textureRect, isStackable, stackLimit, isConsumable, 
         description, equipType, damage, hitBoxPos, hitBoxSize, barrelPos, isGun, value, isBuyable, use, magazineSize, isAutomatic, fireRateMilliseconds,
-        reloadTimeMilliseconds, true, functionName));
+        reloadTimeMilliseconds, isStartingItem, true, functionName));
     ITEMS.push_back(itemPtr);
 }
 
@@ -848,6 +849,10 @@ bool Item::isUnlocked(unsigned int waveNumber) const {
 
 unsigned int Item::getRequiredWave() const {
     return ITEM_UNLOCK_WAVE_NUMBERS.at(getId());
+}
+
+bool Item::isStartingItem() const {
+    return _isStartingItem;
 }
 
 std::map<unsigned int, WeaponAnimationConfig> Item::ANIMATION_CONFIGS = {

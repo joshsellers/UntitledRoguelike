@@ -115,7 +115,7 @@ public:
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
-        const unsigned int reloadTimeMilliseconds = 0, const bool isCustomItem = false, const std::string functionName = "NONE");
+        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE");
 
     static void createItem(const unsigned int id, const std::string name, const sf::IntRect textureRect,
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable,
@@ -123,7 +123,7 @@ public:
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; },
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
-        const unsigned int reloadTimeMilliseconds = 0, const bool isCustomItem = false, const std::string functionName = "NONE");
+        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE");
 
     unsigned int getId() const;
     std::string getName() const;
@@ -158,6 +158,8 @@ public:
 
     bool isUnlocked(unsigned int waveNumber) const;
     unsigned int getRequiredWave() const;
+
+    bool isStartingItem() const;
 
     bool isAnimated() const;
     WeaponAnimationConfig getAnimationConfig() const;
@@ -195,6 +197,8 @@ private:
 
     const int _value;
     const bool _isBuyable;
+
+    const bool _isStartingItem;
 
     const std::function<bool(Entity*)> _use;
     const bool _isCustomItem;

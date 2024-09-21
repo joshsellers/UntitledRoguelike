@@ -8,3 +8,4 @@ value = 699
 isBuyable = true
 unlockWaveNumber = 5
 functionName = "funnyshroom"
+isStartingItem = true
