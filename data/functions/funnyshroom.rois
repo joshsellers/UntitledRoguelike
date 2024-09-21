@@ -1,8 +1,22 @@
 alreadyHas = player.hasEffect("Third Eye");
 
 if: alreadyHas {
-    displayMessage("You can't eat any more of these", 5);
-    return false;
+    parameterChoice = random(0, 1);
+    if: parameterChoice == 0 {
+        oldDamage = player.getAbilityParameter("Third Eye", "damage");
+        player.setAbilityParameter("Third Eye", "damage", oldDamage + 1);
+
+        displayMessage("Increased third eye damage", 5);
+    }
+
+    if: parameterChoice == 1 {
+        oldFireRate = player.getAbilityParameter("Third Eye", "fire rate");
+        player.setAbilityParameter("Third Eye", "fire rate", oldFireRate - 10);
+
+        displayMessage("Increased third eye fire rate", 5);
+    }
+
+    return true;
 }
 
 if: alreadyHas == false {

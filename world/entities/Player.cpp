@@ -215,47 +215,50 @@ void Player::draw(sf::RenderTexture& surface) {
 
         bool noToolAim = false;
         MOVING_DIRECTION noToolFaceDir = getMovingDir();
-        if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == NOTHING_EQUIPPED && AbilityManager::playerHasAbility(Ability::THIRD_EYE.getId())) {
-            sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
-            sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+        if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == NOTHING_EQUIPPED && AbilityManager::playerHasAbility(Ability::THIRD_EYE.getId())) {
+            if (!_gamePaused) {
+                sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
+                sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
 
-            sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
+                sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
 
-            double x = (double)(mPos.x - center.x);
-            double y = (double)(mPos.y - center.y);
+                double x = (double)(mPos.x - center.x);
+                double y = (double)(mPos.y - center.y);
 
-            float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+                float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
 
-            if (GamePad::isConnected()) {
-                angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
-                if (GamePad::isRightStickDeadZoned()) {
-                    switch (_movingDir) {
-                        case UP:
-                            angle = 0.f;
-                            break;
-                        case DOWN:
-                            angle = 180.f;
-                            break;
-                        case LEFT:
-                            angle = 270.f;
-                            break;
-                        case RIGHT:
-                            angle = 90.f;
-                            break;
+                if (GamePad::isConnected()) {
+                    angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
+                    if (GamePad::isRightStickDeadZoned()) {
+                        switch (_movingDir) {
+                            case UP:
+                                angle = 0.f;
+                                break;
+                            case DOWN:
+                                angle = 180.f;
+                                break;
+                            case LEFT:
+                                angle = 270.f;
+                                break;
+                            case RIGHT:
+                                angle = 90.f;
+                                break;
+                        }
                     }
                 }
+
+                if (angle >= -45.f && angle < 45.f)
+                    _facingDir = UP;
+                else if (angle >= 45.f && angle < 135.f)
+                    _facingDir = RIGHT;
+                else if (angle >= 135.f && angle < 225.f)
+                    _facingDir = DOWN;
+                else if (angle >= 225.f || angle < -45.f)
+                    _facingDir = LEFT;
+
             }
-
-            if (angle >= -45.f && angle < 45.f)
-                _facingDir = UP;
-            else if (angle >= 45.f && angle < 135.f)
-                _facingDir = RIGHT;
-            else if (angle >= 135.f && angle < 225.f)
-                _facingDir = DOWN;
-            else if (angle >= 225.f || angle < -45.f)
-                _facingDir = LEFT;
-
             noToolAim = true;
+
         }
         noToolFaceDir = _facingDir;
 
