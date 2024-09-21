@@ -112,6 +112,7 @@ const Ability Ability::THIRD_EYE(2, "Third Eye",
         const float fireRate = ability->getParameter("fire rate");
         if (!player->isDodging() && !player->isSwimming() && !player->isInBoat() && currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate) {
             for (const auto& enemy : player->getWorld()->getEnemies()) {
+                if (enemy->isInitiallyDocile() && !enemy->isHostile()) continue;
                 constexpr float maxDistSquared = 300.f * 300.f;
                 float distSquared = std::pow(player->getPosition().x - enemy->getPosition().x, 2) + std::pow(player->getPosition().y - enemy->getPosition().y, 2);
 
