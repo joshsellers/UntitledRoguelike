@@ -44,6 +44,7 @@
 #include "entities/BoulderBeast.h"
 #include "entities/TulipMonster.h"
 #include "TerrainGenParameters.h"
+#include "entities/TreeBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1173,6 +1174,9 @@ void World::spawnBoss(int currentWaveNumber) {
 
     std::shared_ptr<Entity> boss = nullptr;
     switch (currentWaveNumber) {
+        case 8:
+            boss = std::shared_ptr<TreeBoss>(new TreeBoss(spawnPos));
+            break;
         case 16:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
             break;

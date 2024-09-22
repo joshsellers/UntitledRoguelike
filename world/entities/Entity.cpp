@@ -322,19 +322,21 @@ void Entity::swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator,
     }
 }
 
-void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, bool displayProjectileOnTop) {
+void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
+    bool displayProjectileOnTop, sf::Vector2f centerOffset) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
-    double x = (double)(targetPos.x - centerPoint.x);
-    double y = (double)(targetPos.y - centerPoint.y);
+    double x = (double)(targetPos.x - centerPoint.x + centerOffset.x);
+    double y = (double)(targetPos.y - centerPoint.y + centerOffset.y);
 
     float angle = (float)((std::atan2(y, x)));
-    fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop);
+    fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset);
 }
 
-void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, bool displayProjectileOnTop) {
+void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
+    bool displayProjectileOnTop, sf::Vector2f centerOffset) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
-    sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2, centerPoint.y);
+    sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2 + centerOffset.x, centerPoint.y + centerOffset.y);
 
     ProjectilePoolManager::addProjectile(spawnPos, this, angle, projData.baseVelocity, projData, onlyDamagePlayer);
 

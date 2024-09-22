@@ -4,6 +4,7 @@
 #include "../../../core/MessageManager.h"
 
 void ProjectileDataManager::addData(ProjectileData data) {
+    if (data.itemId == 0) return;
     _projectileData.push_back(data);
 }
 

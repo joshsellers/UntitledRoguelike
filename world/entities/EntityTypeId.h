@@ -23,7 +23,8 @@ enum ENTITY_SAVE_ID {
     CANNON_BOSS,
     LOG_MONSTER,
     BOULDER_BEAST,
-    TULIP_MONSTER
+    TULIP_MONSTER,
+    TREE_BOSS
 };
 
 #endif

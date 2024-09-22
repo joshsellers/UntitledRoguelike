@@ -630,6 +630,9 @@ private:
                 case TULIP_MONSTER:
                     entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
                     break;
+                case TREE_BOSS:
+                    entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {
