@@ -1,0 +1,4 @@
+name = "_PROJECTILE_TREEBOSS_LOG"
+description = "This item should not be obtainable"
+damage = 10
+textureRect = 4, 13, 1, 1
