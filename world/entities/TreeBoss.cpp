@@ -23,7 +23,7 @@ TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TI
     _canPickUpItems = false;
 
     _entityType = "treeboss";
-    _displayName = "";
+    _displayName = "Phillip McTree";
 
     srand(currentTimeNano());
     const unsigned int pennyAmount = randomInt(15000, 20000);
