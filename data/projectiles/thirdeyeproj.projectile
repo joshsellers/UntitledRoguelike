@@ -1,4 +1,4 @@
 itemName = "_PROJECTILE_THIRD_EYE"
 velocity = 3.75
 lifeTime = 750
-hitBox = 4, 4, 6, 4
+hitBox = 2, 2, 12, 12
