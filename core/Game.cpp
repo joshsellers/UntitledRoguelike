@@ -842,6 +842,39 @@ void Game::initUI() {
     );
     _ui->addMenu(_statsMenu_mainMenu);
 
+   
+    // Death screen
+    std::shared_ptr<UILabel> youDiedLabel = std::shared_ptr<UILabel>(new UILabel(
+        "you died :(", 50.f, 3.f, 3.f, _font
+    ));
+    _deathMenu->addElement(youDiedLabel);
+
+    _waveReachedLabel = std::shared_ptr<UILabel>(new UILabel(
+        "you made it to wave ", 49.5f, 9.f, 1.25f, _font
+    ));
+    _deathMenu->addElement(_waveReachedLabel);
+
+    _statsLabel_deathMenu = std::shared_ptr<UILabel>(new UILabel(
+        "", 36.f, 18.f, 1.f, _font
+    ));
+    _deathMenu->addElement(_statsLabel_deathMenu);
+
+    std::shared_ptr<UIButton> mainMenuButton_deathMenu = std::shared_ptr<UIButton>(new UIButton(
+        45.f, 87.f, 9.f, 3.f, "main menu", _font, this, "death_mm"
+    ));
+    mainMenuButton_deathMenu->setSelectionId(0);
+    _deathMenu->addElement(mainMenuButton_deathMenu);
+
+    _deathMenu->useGamepadConfiguration = true;
+    _deathMenu->defineSelectionGrid(
+        {
+            {mainMenuButton_deathMenu->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_deathMenu);
+    //
+
+
     // Command prompt menu
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
@@ -990,7 +1023,16 @@ void Game::drawUI(sf::RenderTexture& surface) {
         startMenuBg.setSize(sf::Vector2f(surface.getSize().x, surface.getSize().y));
         surface.draw(startMenuBg);
 
-        _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+        if (!_deathMenu->isActive()) _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+        else {
+            sf::RectangleShape deathStatsBg;
+            deathStatsBg.setFillColor(sf::Color(0x333337FF));
+            deathStatsBg.setOutlineColor(sf::Color(0x3C3C40FF));
+            deathStatsBg.setOutlineThickness(UIElement::getRelativeWidth(1.f));
+            deathStatsBg.setPosition(UIElement::getRelativePos(34.f, 16.f));
+            deathStatsBg.setSize(UIElement::getRelativePos(32.f, 65.f));
+            surface.draw(deathStatsBg);
+        }
 
         if (_gameLoading) {
             std::string elipsesString = "";
@@ -1413,6 +1455,9 @@ void Game::buttonPressed(std::string buttonCode) {
         } else {
             enterCharacter(key.at(0));
         }
+    } else if (buttonCode == "death_mm") {
+        _deathMenu->hide();
+        buttonPressed("mainmenu");
     }
 }
 
@@ -1573,14 +1618,24 @@ void Game::onPlayerDeath() {
     constexpr long long deathCallCooldown = 1000LL;
     if (currentTimeMillis() - _lastPlayerDeathCallTime > deathCallCooldown) {
         bool tutorialComplete = Tutorial::isCompleted();
-        MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
 
         StatManager::increaseStat(TIMES_DIED, 1.f);
 
         if (tutorialComplete) {
             SaveManager::deleteSaveFile();
-            buttonPressed("mainmenu");
+            _bossHUDMenu->hide();
+            _HUDMenu->hide();
+            if (_inventoryMenu->isActive()) toggleInventoryMenu();
+            if (_shopMenu->isActive()) toggleShopMenu();
+            _gameStarted = false;
+
+            _waveReachedLabel->setText("you made it to wave " + std::to_string(_world._currentWaveNumber));
+            std::string statsText = "Stats:\n\n\n";
+            generateStatsString(statsText, false, false);
+            _statsLabel_deathMenu->setText(statsText);
+            _deathMenu->show();
         } else {
+            MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
             int playerPennyIndex = _player->getInventory().findItem(Item::PENNY.getId());
             if (playerPennyIndex != NO_ITEM) _player->getInventory().removeItem(Item::PENNY.getId(), _player->getInventory().getItemAmountAt(playerPennyIndex));
 
@@ -1688,7 +1743,7 @@ void Game::autoSave() {
     }
 }
 
-void Game::generateStatsString(std::string& statsString, bool overall) {
+void Game::generateStatsString(std::string& statsString, bool overall, bool useUnderscores) {
     for (int i = 0; i < StatManager::NUM_STATS; i++) {
         const std::string statName = STAT_NAMES[(STATISTIC)i];
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
@@ -1703,7 +1758,7 @@ void Game::generateStatsString(std::string& statsString, bool overall) {
         }
         const std::string statString = unit != "" ? trimString(std::to_string(statValue)) : std::to_string((int)statValue);
 
-        statsString += statName + ":  " + statString + unit + "\n_______________\n";
+        statsString += statName + ":  " + statString + unit + (useUnderscores ? "\n_______________\n" : "\n\n");
     }
 }
 

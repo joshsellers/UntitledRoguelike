@@ -82,10 +82,14 @@ private:
 	std::shared_ptr<UIMenu> _statsMenu_pauseMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _virtualKeyboardMenu_lower = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _virtualKeyboardMenu_upper = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _deathMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UILabel> _overallStatsLabel_mainMenu;
 	std::shared_ptr<UILabel> _overallStatsLabel_pauseMenu;
 	std::shared_ptr<UILabel> _currentSaveStatsLabel;
+
+	std::shared_ptr<UILabel> _statsLabel_deathMenu;
+	std::shared_ptr<UILabel> _waveReachedLabel;
 
 	std::shared_ptr<UIAttributeMeter> _bossHPMeter;
 
@@ -159,7 +163,7 @@ private:
 	void initVirtualKeyboard();
 	std::string _armedTextFieldId = "";
 
-	void generateStatsString(std::string& statsString, bool overall);
+	void generateStatsString(std::string& statsString, bool overall, bool useUnderscores = true);
 
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };

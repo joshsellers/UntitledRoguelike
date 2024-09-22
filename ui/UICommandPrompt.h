@@ -744,6 +744,15 @@ private:
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "killplayer",
+            Command("Kill the player",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->getPlayer()->takeDamage(_world->getPlayer()->getHitPoints());
+                return "";
+            })
         }
     };
 };
