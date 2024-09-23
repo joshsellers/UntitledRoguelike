@@ -1180,7 +1180,7 @@ void World::spawnBoss(int currentWaveNumber) {
         case 16:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
             break;
-        case 32:
+        case 24:
             boss = std::shared_ptr<CannonBoss>(new CannonBoss(spawnPos));
             break;
     }
