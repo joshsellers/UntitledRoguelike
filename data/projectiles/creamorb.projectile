@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_CREAM_ORB"
+velocity = 2.0
+lifeTime = 10000
+onlyHitEnemies = false
+hitBox = 0, 0, 16, 16

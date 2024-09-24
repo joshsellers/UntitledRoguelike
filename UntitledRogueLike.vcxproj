@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="world\entities\CreamDrop.cpp" />
+    <ClCompile Include="world\entities\CreamDropper.cpp" />
+    <ClCompile Include="world\entities\CreamBoss.cpp" />
     <ClCompile Include="mod\Interpreter.cpp" />
     <ClCompile Include="mod\ModManager.cpp" />
     <ClCompile Include="inventory\effect\PlayerVisualEffectManager.cpp" />
@@ -165,6 +168,9 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="world\entities\CreamDrop.h" />
+    <ClInclude Include="world\entities\CreamDropper.h" />
+    <ClInclude Include="world\entities\CreamBoss.h" />
     <ClInclude Include="inventory\effect\PlayerVisualEffect.h" />
     <ClInclude Include="mod\Instructions.h" />
     <ClInclude Include="mod\Interpreter.h" />

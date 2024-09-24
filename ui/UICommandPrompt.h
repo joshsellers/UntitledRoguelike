@@ -33,6 +33,7 @@
 #include "../world/entities/TulipMonster.h"
 #include "../inventory/effect/PlayerVisualEffectManager.h"
 #include "../world/entities/TreeBoss.h"
+#include "../world/entities/CreamBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -282,6 +283,8 @@ private:
                             entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
                         } else if (entityName == "treeboss") {
                             entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
+                        } else if (entityName == "creamboss") {
+                            entity = std::shared_ptr<CreamBoss>(new CreamBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

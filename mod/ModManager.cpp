@@ -289,6 +289,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     int animationFrames = 0;
     int animationSpeed = 0;
     bool dropOnExpire = false;
+    bool noCollide = false;
 
     std::string line;
     while (getline(in, line)) {
@@ -330,6 +331,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 animationSpeed = std::stoi(tokens.at(2));
             } else if (tokens.at(0) == "dropOnDespawn") {
                 dropOnExpire = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "noCollide") {
+                noCollide = tokens.at(2) == "1";
             } else {
                 MessageManager::displayMessage("Unrecognized projectile parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -352,7 +355,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
         return;
     }
 
-    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire);
+    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide);
 }
 
 void ModManager::loadPlayerVisualEffects() {

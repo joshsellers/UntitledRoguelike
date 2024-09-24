@@ -48,54 +48,56 @@ void Projectile::update() {
         return;
     }
 
-    if (onlyDamagePlayer) {
-        if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
-            _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
-            _isActive = false;
-            return;
-        }
-    } else if (_parent->getEntityType() != "player") {
-        for (auto& entity : getWorld()->getEntities()) {
-            if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-                && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
-                && entity->getEntityType() != _parent->getEntityType()) {
-                if (entity->getHitBox().intersects(_hitBox)) {
-                    entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
-                    _entitiesPassedThrough++;
-                    if (_entitiesPassedThrough >= passThroughCount) {
-                        _isActive = false;
-                        return;
+    if (!_data.noCollide) {
+        if (onlyDamagePlayer) {
+            if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
+                _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
+                _isActive = false;
+                return;
+            }
+        } else if (_parent->getEntityType() != "player") {
+            for (auto& entity : getWorld()->getEntities()) {
+                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
+                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+                    && entity->getEntityType() != _parent->getEntityType()) {
+                    if (entity->getHitBox().intersects(_hitBox)) {
+                        entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
+                        _entitiesPassedThrough++;
+                        if (_entitiesPassedThrough >= passThroughCount) {
+                            _isActive = false;
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-        }
-    } else {
-        for (auto& entity : getWorld()->getEntities()) {
-            if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-                && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
-                && entity->getEntityType() != _parent->getEntityType()) {
-                if (entity->getHitBox().intersects(_hitBox)) {
-                    bool alreadyHitThisEntity = false;
-                    for (const std::string& uid : _hitEntities) {
-                        if (uid == entity->getUID()) {
-                            alreadyHitThisEntity = true;
-                            break;
+        } else {
+            for (auto& entity : getWorld()->getEntities()) {
+                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
+                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+                    && entity->getEntityType() != _parent->getEntityType()) {
+                    if (entity->getHitBox().intersects(_hitBox)) {
+                        bool alreadyHitThisEntity = false;
+                        for (const std::string& uid : _hitEntities) {
+                            if (uid == entity->getUID()) {
+                                alreadyHitThisEntity = true;
+                                break;
+                            }
                         }
-                    }
-                    if (alreadyHitThisEntity) continue;
+                        if (alreadyHitThisEntity) continue;
 
-                    int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier();
-                    entity->takeDamage(damage);
-                    StatManager::increaseStat(DAMAGE_DEALT, damage);
+                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier();
+                        entity->takeDamage(damage);
+                        StatManager::increaseStat(DAMAGE_DEALT, damage);
 
-                    _entitiesPassedThrough++;
-                    _hitEntities.push_back(entity->getUID());
-                    if (_entitiesPassedThrough >= passThroughCount) {
-                        _isActive = false;
-                        return;
+                        _entitiesPassedThrough++;
+                        _hitEntities.push_back(entity->getUID());
+                        if (_entitiesPassedThrough >= passThroughCount) {
+                            _isActive = false;
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }

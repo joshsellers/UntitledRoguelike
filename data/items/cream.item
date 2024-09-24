@@ -1,0 +1,4 @@
+name = "_PROJECTILE_CREAM"
+description = "This item should not be obtainable"
+textureRect = 59, 104, 1, 1
+damage = 10

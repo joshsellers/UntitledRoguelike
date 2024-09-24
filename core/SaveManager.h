@@ -633,6 +633,9 @@ private:
                 case TREE_BOSS:
                     entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
                     break;
+                case CREAM_BOSS:
+                    entity = std::shared_ptr<CreamBoss>(new CreamBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

@@ -153,6 +153,10 @@ float Orbiter::getAngle() const {
     return _angle;
 }
 
+void Orbiter::setDistance(float distance) {
+    _distance = distance;
+}
+
 float Orbiter::getDistance() const {
     return _distance;
 }

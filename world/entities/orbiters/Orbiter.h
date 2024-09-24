@@ -18,6 +18,7 @@ public:
     const unsigned int getOrbiterTypeId() const;
 
     float getAngle() const;
+    void setDistance(float distance);
     float getDistance() const;
     float getSpeed() const;
 

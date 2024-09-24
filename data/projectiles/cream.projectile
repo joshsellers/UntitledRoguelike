@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_CREAM"
+velocity = 2.75
+lifeTime = 5000
+onlyHitEnemies = false
+hitBox = 4, 4, 8, 8
