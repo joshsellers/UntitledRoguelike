@@ -10,7 +10,7 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE *
         BossState(BEHAVIOR_STATE::RAPID_FIRE, 4500LL, 6000LL)
     }) 
 {
-    setMaxHitPoints(750);
+    setMaxHitPoints(1000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 5) / 2;

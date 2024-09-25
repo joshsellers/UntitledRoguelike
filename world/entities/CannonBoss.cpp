@@ -11,7 +11,7 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
         BossState(BEHAVIOR_STATE::BLASTING, 4000LL, 6000LL)
     })
 {
-    setMaxHitPoints(1750);
+    setMaxHitPoints(2200);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 6) / 2;

@@ -11,7 +11,7 @@ CreamBoss::CreamBoss(sf::Vector2f pos) : Boss(CREAM_BOSS, pos, 1, TILE_SIZE * 8,
         BossState(BEHAVIOR_STATE::CREAM_RING_IN, 8000LL, 8000LL),
         BossState(BEHAVIOR_STATE::CREAM_RING_OUT, 8000LL, 8000LL)
     }) {
-    setMaxHitPoints(3000);
+    setMaxHitPoints(4500);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 8) / 2;
