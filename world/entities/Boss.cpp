@@ -23,6 +23,7 @@ void Boss::update() {
 void Boss::deactivateBossMode() {
     _spawnedWithEnemies = true;
     _isBoss = false;
+    _isMiniboss = true;
 }
 
 void Boss::changeState() {

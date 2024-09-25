@@ -385,6 +385,10 @@ bool Entity::isBoss() const {
     return _isBoss;
 }
 
+bool Entity::isMiniBoss() const {
+    return _isMiniboss;
+}
+
 bool Entity::isOrbiter() const {
     return _isOrbiter;
 }

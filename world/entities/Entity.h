@@ -45,6 +45,7 @@ public:
     bool isProp() const;
     bool isEnemy() const;
     bool isBoss() const;
+    bool isMiniBoss() const;
     bool isOrbiter() const;
     bool canPickUpItems() const;
     
@@ -165,6 +166,7 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _isBoss = false;
+    bool _isMiniboss = false;
     bool _isOrbiter = false;
     bool _canPickUpItems = false;
     bool _usesDormancyRules = false;

@@ -48,7 +48,7 @@ void BoulderBeast::subUpdate() {
     if (currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis 
         && getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
-        getWorld()->getPlayer()->takeDamage(5);
+        getWorld()->getPlayer()->takeDamage(12);
         _lastContactDamageTimeMillis = currentTimeMillis();
     }
 }
