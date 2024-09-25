@@ -236,7 +236,7 @@ const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL
 
 const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
     "Increases max HP by 25\nIncreases max stamina by 100\nIncreases damage multiplier by .25",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35000, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
         parent->setMaxStamina(parent->getMaxStamina() + 100);
@@ -247,7 +247,7 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
 
 const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), true, 32, true,
     "Increases max HP by 5 and makes you feel good\n\nRestores 50 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 4750, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5999, true, 
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
         parent->heal(50);
@@ -281,7 +281,7 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Increases damage multiplier juuust a little bit",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 599, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 899, true,
     [](Entity* parent) {
         parent->increaseDamageMultiplier(0.1f);
         return true;
@@ -584,7 +584,7 @@ const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId
 
 const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
     "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 999999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1999999, true,
     [](Entity* parent) {
         const unsigned int id = Ability::HEALILNG_MIST.getId();
         if (!AbilityManager::givePlayerAbility(id)) {

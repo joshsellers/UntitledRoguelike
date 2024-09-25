@@ -26,7 +26,7 @@ void CreamDrop::update() {
         }
 
         if (_sprite.getGlobalBounds().intersects(getWorld()->getPlayer()->getHitBox())) {
-            getWorld()->getPlayer()->takeDamage(20);
+            getWorld()->getPlayer()->takeDamage(50);
         }
 
         deactivate();
