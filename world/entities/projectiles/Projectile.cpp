@@ -86,7 +86,7 @@ void Projectile::update() {
                         }
                         if (alreadyHitThisEntity) continue;
 
-                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier();
+                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
                         entity->takeDamage(damage);
                         StatManager::increaseStat(DAMAGE_DEALT, damage);
 

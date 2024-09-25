@@ -290,6 +290,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     int animationSpeed = 0;
     bool dropOnExpire = false;
     bool noCollide = false;
+    bool useDamageMultiplier = true;
 
     std::string line;
     while (getline(in, line)) {
@@ -333,6 +334,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 dropOnExpire = tokens.at(2) == "1";
             } else if (tokens.at(0) == "noCollide") {
                 noCollide = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "useDamageMultiplier") {
+                useDamageMultiplier = tokens.at(2) == "1";
             } else {
                 MessageManager::displayMessage("Unrecognized projectile parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -355,7 +358,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
         return;
     }
 
-    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide);
+    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide, useDamageMultiplier);
 }
 
 void ModManager::loadPlayerVisualEffects() {
