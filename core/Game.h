@@ -98,6 +98,8 @@ private:
 	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
 	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;
 
+	std::shared_ptr<UIButton> _hardModeToggleButton;
+
 	std::shared_ptr<UITextField> _worldNameField;
 	std::shared_ptr<UITextField> _seedField;
 	std::shared_ptr<UITextField> _steamNameField;
@@ -123,6 +125,7 @@ private:
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
 	sf::Text _coinMagnetCountLabel;
+	sf::Text _hardModeEnabledLabel;
 
 	sf::Text _loadingStatusLabel;
 	std::vector<std::string> _loadingScreenMessages;

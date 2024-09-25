@@ -45,6 +45,7 @@ public:
             out << "GAMEVERSION:" << VERSION << std::endl;
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
+            if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
             saveStats(out);
             savePlayerData(out);
             saveWorldData(out);
@@ -365,6 +366,8 @@ private:
             _world->_currentWaveNumber = std::stoi(data[8]);
 
             _world->init(seed);
+        } else if (header == "HARD") {
+            HARD_MODE_ENABLED = true;
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {

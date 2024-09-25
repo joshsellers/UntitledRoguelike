@@ -686,6 +686,8 @@ void Player::knockBack(float amt, MOVING_DIRECTION dir) {
 }
 
 void Player::damage(int damage) {
+    if (HARD_MODE_ENABLED) damage *= 2;
+
     if (isDodging() && isMoving()) return;
 
     if (!isDodging() && !freeMove) {

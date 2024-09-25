@@ -17,6 +17,8 @@ extern bool VSYNC_ENABLED;
 extern bool AUTOSAVE_ENABLED;
 extern long long AUTOSAVE_INTERVAL_SECONDS;
 
+extern bool HARD_MODE_ENABLED;
+
 extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 
 extern bool STEAMAPI_INITIATED;

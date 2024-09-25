@@ -16,6 +16,8 @@ bool VSYNC_ENABLED = false;
 bool AUTOSAVE_ENABLED = true;
 long long AUTOSAVE_INTERVAL_SECONDS = 30;
 
+bool HARD_MODE_ENABLED = false;
+
 bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
 
 bool STEAMAPI_INITIATED = false;
