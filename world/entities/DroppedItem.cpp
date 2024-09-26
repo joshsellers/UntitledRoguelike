@@ -4,7 +4,7 @@
 #include "../../core/Tutorial.h"
 #include "../../statistics/StatManager.h"
 
-DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect) :
+DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect, bool droppedByPlayer) :
     _itemId(itemId), _amount(amount), _textureRect(textureRect), _minY(pos.y - _hoverDist), _originalY(pos.y),
     Entity(DROPPED_ITEM, pos, 1, textureRect.width, textureRect.height, false) {
 
@@ -16,6 +16,10 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
     _dormancyTimeout = 60 * 5 * 60;
 
     _entityType = "droppeditem";
+
+    if (!HARD_MODE_ENABLED && !droppedByPlayer && _itemId == Item::PENNY.getId()) {
+        _amount = _amount + ((float)_amount * 0.75f);
+    }
 }
 
 void DroppedItem::update() {

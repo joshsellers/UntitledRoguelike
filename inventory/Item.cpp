@@ -50,7 +50,7 @@ const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
 
 const Item Item::BULLET_455(7, "Pistol Round", sf::IntRect(22, 3, 1, 1), true, 9999, false,
     "A centrefire black powder cartridge\nFor use with revolvers and\nother handguns",
-    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false, 50
+    EQUIPMENT_TYPE::AMMO, 10, 0, 0, sf::Vector2f(), false, 15
 );
 const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6, 8, 4, 4), true, true);
 
@@ -236,7 +236,7 @@ const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL
 
 const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
     "Increases max HP by 25\nIncreases max stamina by 100\nIncreases damage multiplier by .25",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 39000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 30000, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
         parent->setMaxStamina(parent->getMaxStamina() + 100);
@@ -281,7 +281,7 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Increases damage multiplier juuust a little bit",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1900, true,
     [](Entity* parent) {
         parent->increaseDamageMultiplier(0.1f);
         return true;
@@ -424,7 +424,7 @@ const ProjectileData Item::DATA_PROJECTILE_CHEESE_SLICE(Item::_PROJECTILE_CHEESE
 
 const Item Item::ARROW(56, "Arrow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 48 >> SPRITE_SHEET_SHIFT, 1, 1), true, 9999, false,
     "The shopkeep made this himself!\nNo warranty",
-    EQUIPMENT_TYPE::AMMO, 5, 0, 0, sf::Vector2f(), false, 8
+    EQUIPMENT_TYPE::AMMO, 5, 0, 0, sf::Vector2f(), false, 4
 );
 
 const ProjectileData Item::DATA_PROJECTILE_ARROW(Item::ARROW.getId(), 3.75f, sf::IntRect(4, 4, 12, 12), true, true, 1000LL, false, 0, 0, true);
@@ -503,7 +503,7 @@ const Item Item::_PROJECTILE_LARGE_BLOOD_BALL(64, "_LARGE_BLOOD_BALL_PROJECTILE"
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(), 4.0f, sf::IntRect(0, 0, 16, 16), false);
+const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(), 2.75f, sf::IntRect(0, 0, 16, 16), false);
 
 const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
     "Smells weird\n\nSell it to the shopkeep for a pretty penny",

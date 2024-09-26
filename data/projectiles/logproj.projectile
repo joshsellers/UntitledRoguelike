@@ -1,5 +1,5 @@
 itemName = "_PROJECTILE_TREEBOSS_LOG"
-velocity = 3.0
+velocity = 2.0
 lifeTime = 5000
 hitBox = 0, 0, 16, 16
 rotate = true

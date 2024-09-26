@@ -104,7 +104,7 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
 
     sf::Vector2f pos(px, py);
     std::shared_ptr<DroppedItem> droppedItem = std::shared_ptr<DroppedItem>(
-        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect())
+        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), true)
     );
     droppedItem->setWorld(_parent->getWorld());
     droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());

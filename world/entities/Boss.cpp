@@ -47,7 +47,11 @@ void Boss::damage(int damage) {
     if (_hitPoints <= 0) {
         _isActive = false;
         for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+            if (getInventory().getItemIdAt(i) == Item::PENNY.getId()) {
+                getWorld()->getPlayer()->getInventory().addItem(Item::PENNY.getId(), getInventory().getItemAmountAt(i));
+            } else {
+                getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+            }
         }
 
         if (!_spawnedWithEnemies) getWorld()->bossDefeated();

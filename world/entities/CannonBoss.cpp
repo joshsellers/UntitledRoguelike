@@ -8,7 +8,7 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
         BossState(BEHAVIOR_STATE::RING_OF_BLOOD, 11000LL, 12000LL),
         //BossState(BEHAVIOR_STATE::TARGETED_FIRE, 2000LL, 4000LL),
-        BossState(BEHAVIOR_STATE::BLASTING, 4000LL, 6000LL)
+        BossState(BEHAVIOR_STATE::BLASTING, 3000LL, 5000LL)
     })
 {
     setMaxHitPoints(4000);

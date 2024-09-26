@@ -1053,14 +1053,18 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (entity->canPickUpItems()) _collectorMobs.push_back(entity);
 
     if (entity->isBoss()) {
-        if (HARD_MODE_ENABLED) {
+        if (HARD_MODE_ENABLED && entity->getSaveId() != TREE_BOSS) {
             entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 2.5f));
+            entity->heal(entity->getMaxHitPoints());
+        } else if (!HARD_MODE_ENABLED) {
+            entity->setMaxHitPoints(entity->getMaxHitPoints() - ((float)entity->getMaxHitPoints() * 0.25f));
             entity->heal(entity->getMaxHitPoints());
         }
 
         _bossIsActive = true;
         _currentBoss = entity;
     } else if (HARD_MODE_ENABLED && entity->isMiniBoss()) {
+        entity->heal(-entity->getMaxHitPoints());
         entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 1.50f));
         entity->heal(entity->getMaxHitPoints());
     }

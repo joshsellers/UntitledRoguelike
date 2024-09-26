@@ -1185,7 +1185,7 @@ void Game::buttonPressed(std::string buttonCode) {
         startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
-            if (GamePad::isConnected()) msg = "Press A to dodge";
+            if (GamePad::isConnected()) msg = "Press the left bumper to dodge";
             else msg = "Press spacebar to dodge";
             MessageManager::displayMessage(msg, 15);
         }

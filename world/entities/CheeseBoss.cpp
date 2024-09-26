@@ -27,7 +27,7 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE *
     _displayName = "William Cheesequake";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(10000, 12000);
+    unsigned int pennyAmount = randomInt(20000, 30000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     unsigned int cheeseAmount = randomInt(10, 16);

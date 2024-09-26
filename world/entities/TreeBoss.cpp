@@ -4,12 +4,12 @@
 
 TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 5,
     {
-        BossState(BEHAVIOR_STATE::CHASE, 3000LL, 8000LL),
+        BossState(BEHAVIOR_STATE::CHASE, 2000LL, 2500LL),
         BossState(BEHAVIOR_STATE::SHOOT_LOGS_0, 5000LL, 5000LL),
         BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 5000LL, 5000LL)
     }) 
 {
-    setMaxHitPoints(750);
+    setMaxHitPoints(300);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 3) / 2;
@@ -132,7 +132,7 @@ void TreeBoss::runCurrentState() {
         case SHOOT_LOGS_0:
         {
             if (currentTimeMillis() - _lastFireTimeMillis >= _fireRateMillis) {
-                float angle = 0.f;
+                float angle = 45.f / 2.f;
                 int firePoints = 360 / 45;
                 for (int i = 0; i < firePoints; i++) {
                     angle += (float)i * 45.f;

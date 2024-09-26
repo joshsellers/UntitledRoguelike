@@ -25,7 +25,7 @@ private:
 
     long long _lastContactDamageTimeMillis = 0LL;
 
-    const long long _fireRateMillis = 250LL;
+    const long long _fireRateMillis = 450LL;
     long long _lastFireTimeMillis = 0LL;
 };
 

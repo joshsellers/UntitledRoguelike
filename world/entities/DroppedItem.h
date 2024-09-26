@@ -5,7 +5,7 @@
 
 class DroppedItem : public Entity {
 public:
-    DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect);
+    DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect, bool droppedByPlayer = false);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -16,7 +16,7 @@ public:
 
 private:
     const unsigned int _itemId;
-    const unsigned int _amount;
+    unsigned int _amount;
     const sf::IntRect _textureRect;
 
     const float _hoverDist = 5.f;
