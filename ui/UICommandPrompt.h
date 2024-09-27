@@ -759,6 +759,15 @@ private:
                 _world->getPlayer()->takeDamage(_world->getPlayer()->getHitPoints());
                 return "";
             })
+        },
+
+        {
+            "tbu",
+            Command("Toggle save file backups",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                BACKUP_ENABLED = !BACKUP_ENABLED;
+                return (BACKUP_ENABLED ? "Enabled" : "Disabled") + (std::string)" save backups";
+            })
         }
     };
 };

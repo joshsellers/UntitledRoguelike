@@ -26,6 +26,15 @@ public:
     }
 
     static void saveGame(bool displaySuccessfulSaveMessage = true) {
+        if (BACKUP_ENABLED) {
+            std::string prevSaveFileName = _currentSaveFileName;
+            _currentSaveFileName = "BACKUP_" + prevSaveFileName;
+            BACKUP_ENABLED = false;
+            saveGame(false);
+            BACKUP_ENABLED = true;
+            _currentSaveFileName = prevSaveFileName;
+        }
+
         if (_currentSaveFileName == "NONE") {
             MessageManager::displayMessage("Saving game while _currentSaveFileName is \"NONE\"", 5, WARN);
             _currentSaveFileName += ".save";
