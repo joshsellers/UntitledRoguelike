@@ -508,7 +508,7 @@ private:
                 {
                     unsigned int itemId = std::stoul(data[4]);
                     unsigned int amount = std::stoul(data[5]);
-                    entity = std::shared_ptr<DroppedItem>(new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect()));
+                    entity = std::shared_ptr<DroppedItem>(new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), true));
                     break;
                 }
                 case PROJECTILE:
