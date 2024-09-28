@@ -10,7 +10,7 @@ struct ProjectileData {
         const bool isAnimated = false, const int animationFrames = 0, const int animationSpeed = 0, const bool dropOnExpire = false, const bool noCollide = false,
         const bool useDamageMultiplier = true) :
         itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite), onlyHitEnemies(onlyHitEnemies), lifeTime(lifeTime),
-        isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed), dropOnExpire(dropOnExpire), noCollide(noCollide),
+        isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed), dropOnExpire(false), noCollide(noCollide),
         useDamageMultiplier(useDamageMultiplier)
     {
 

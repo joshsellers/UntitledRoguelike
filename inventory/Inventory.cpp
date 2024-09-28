@@ -194,8 +194,8 @@ Entity* Inventory::getParent() const {
 
 void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
     if (getEquippedItemId(equipType) != NOTHING_EQUIPPED && Item::ITEMS[getEquippedItemId(equipType)]->isGun()) {
-        std::shared_ptr<const Item> weapon = Item::ITEMS[getEquippedItemId(equipType)];
-        addItem(weapon->getAmmoId(), _parent->getMagazineContents());
+        //std::shared_ptr<const Item> weapon = Item::ITEMS[getEquippedItemId(equipType)];
+        //addItem(weapon->getAmmoId(), _parent->getMagazineContents());
         _parent->emptyMagazine();
     }
 }

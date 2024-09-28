@@ -52,7 +52,8 @@ void ShopKeep::initInventory() {
             }
         }
 
-        if (stringStartsWith(Item::ITEMS[itemId]->getName(), "_") 
+        if (Item::ITEMS[itemId]->getEquipmentType() == EQUIPMENT_TYPE::AMMO
+            || stringStartsWith(Item::ITEMS[itemId]->getName(), "_") 
             || !Item::ITEMS[itemId]->isBuyable() 
             || !Item::ITEMS[itemId]->isUnlocked(getWorld()->getCurrentWaveNumber())) continue;
 
@@ -63,7 +64,7 @@ void ShopKeep::initInventory() {
     }
 
     // Give ammo for each gun if we don't have any already
-    std::vector<unsigned int> ammoNeeded;
+    /*std::vector<unsigned int> ammoNeeded;
     for (int i = 0; i < getInventory().getCurrentSize(); i++) {
         std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
         if (item->isGun()) {
@@ -84,7 +85,7 @@ void ShopKeep::initInventory() {
     for (unsigned int ammoId : ammoNeeded) {
         int ammoCount = randomInt((5 + 100) * 5, (100 + 100) * 5);
         getInventory().addItem(ammoId, ammoCount);
-    }
+    }*/
     //
 
     for (int i = 0; i < getInventory().getCurrentSize(); i++) {

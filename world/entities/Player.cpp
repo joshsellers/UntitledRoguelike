@@ -834,26 +834,25 @@ void Player::startReloadingWeapon() {
 bool Player::reloadWeapon() {
     if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-        if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
+        /*if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
             getInventory().equip(
                 getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
                 EQUIPMENT_TYPE::AMMO
-            );
+            );*/
 
             if (getMagazineContents() == 0 && !isReloading()) {
                 std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
-                std::shared_ptr<const Item> ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
-                const unsigned int removeAmount = std::min(
-                    (unsigned int)weapon->getMagazineSize(), getInventory().getItemAmountAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO))
-                );
-                getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
+                std::shared_ptr<const Item> ammo = Item::ITEMS[weapon->getAmmoId()];
+                const unsigned int removeAmount = 
+                    (unsigned int)weapon->getMagazineSize();
+                //getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;
 
                 return true;
             }
-        }
+        //}
     }
     return false;
 }

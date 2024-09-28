@@ -297,19 +297,19 @@ void Game::initUI() {
     ));
     filterAmmoButton->pressWhenSelected = true;
     filterAmmoButton->setSelectionId(3);
-    _inventoryMenu->addElement(filterAmmoButton);
+    //_inventoryMenu->addElement(filterAmmoButton);
 
     std::shared_ptr<UIButton> filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 34, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
+        26, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
     ));
     filterMiscButton->pressWhenSelected = true;
-    filterMiscButton->setSelectionId(4);
+    filterMiscButton->setSelectionId(3);
     _inventoryMenu->addElement(filterMiscButton);
     
     _inventoryMenu->useGamepadConfiguration = true;
     _inventoryMenu->defineSelectionGrid(
         {
-            {0, 1, 2, 3, 4}
+            {0, 1, 2, 3}
         }
     );
 
@@ -349,13 +349,13 @@ void Game::initUI() {
     ));
     shop_filterAmmoButton->pressWhenSelected = true;
     shop_filterAmmoButton->setSelectionId(3);
-    _shopMenu->addElement(shop_filterAmmoButton);
+    //_shopMenu->addElement(shop_filterAmmoButton);
 
     std::shared_ptr<UIButton> shop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 54, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
+        26, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
     ));
     shop_filterMiscButton->pressWhenSelected = true;
-    shop_filterMiscButton->setSelectionId(4);
+    shop_filterMiscButton->setSelectionId(3);
     _shopMenu->addElement(shop_filterMiscButton);
 
     _shopMenu->addElement(buyInterface);
@@ -391,19 +391,19 @@ void Game::initUI() {
     ));
     sellshop_filterAmmoButton->pressWhenSelected = true;
     sellshop_filterAmmoButton->setSelectionId(3);
-    _shopMenu->addElement(sellshop_filterAmmoButton);
+    //_shopMenu->addElement(sellshop_filterAmmoButton);
 
     std::shared_ptr<UIButton> sellshop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        71 - 2.25, 54, 5, 3, "misc", _font, sellInterface.get(), "filter_misc"
+        71 - 2.25, 48, 5, 3, "misc", _font, sellInterface.get(), "filter_misc"
     ));
     sellshop_filterMiscButton->pressWhenSelected = true;
-    sellshop_filterMiscButton->setSelectionId(4);
+    sellshop_filterMiscButton->setSelectionId(3);
     _shopMenu->addElement(sellshop_filterMiscButton);
 
     _shopMenu->useGamepadConfiguration = true;
     _shopMenu->defineSelectionGrid(
         {
-            {0, 1, 2, 3, 4}
+            {0, 1, 2, 3}
         }
     );
 
@@ -938,9 +938,9 @@ void Game::update() {
 
             _magazineMeter->show();
             if (ammoIndex != NOTHING_EQUIPPED && _player->getInventory().getItemIdAt(ammoIndex) == Item::ITEMS[equippedTool]->getAmmoId()) {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":" + std::to_string(ammoCount)));
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
             } else {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":0"));
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
             }
         } else {
             _magazineMeter->hide();
