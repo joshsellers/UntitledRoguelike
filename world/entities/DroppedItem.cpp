@@ -17,9 +17,9 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
     _entityType = "droppeditem";
 
-    if (!HARD_MODE_ENABLED && !droppedByPlayer && _itemId == Item::PENNY.getId()) {
+    /*if (!HARD_MODE_ENABLED && !droppedByPlayer && _itemId == Item::PENNY.getId()) {
         _amount = _amount + ((float)_amount * 0.75f);
-    }
+    }*/
 }
 
 void DroppedItem::update() {

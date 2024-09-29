@@ -23,9 +23,8 @@ BoulderBeast::BoulderBeast(sf::Vector2f pos) : Boss(BOULDER_BEAST, pos, 2.5, TIL
     _entityType = "boulderbeast";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 5;
-    unsigned int pennyAmount = randomInt(0, 505);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     deactivateBossMode();
 }

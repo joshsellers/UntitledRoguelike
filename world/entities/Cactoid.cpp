@@ -20,9 +20,8 @@ Entity(CACTOID, pos, 3.5, 2, 2, false) {
     _isInitiallyDocile = true;
 
     srand(currentTimeNano());
-    const int hasPennyChance = 10;
-    unsigned int pennyAmount = randomInt(0, 510);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     constexpr int hasFleshChance = 20;
     const unsigned int fleshAmount = randomInt(0, hasFleshChance + 5);

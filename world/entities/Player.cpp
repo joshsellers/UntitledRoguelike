@@ -840,7 +840,8 @@ bool Player::reloadWeapon() {
                 EQUIPMENT_TYPE::AMMO
             );*/
 
-            if (getMagazineContents() == 0 && !isReloading()) {
+            if (/*getMagazineContents() == 0 && */!isReloading()) {
+                _magazineContents = 0;
                 std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
                 std::shared_ptr<const Item> ammo = Item::ITEMS[weapon->getAmmoId()];
                 const unsigned int removeAmount = 

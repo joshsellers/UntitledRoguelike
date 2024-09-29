@@ -47,7 +47,8 @@ void Boss::damage(int damage) {
     if (_hitPoints <= 0) {
         _isActive = false;
         for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-            if (getInventory().getItemIdAt(i) == Item::PENNY.getId()) {
+            if (getInventory().getItemIdAt(i) == Item::PENNY.getId() && !_spawnedWithEnemies) {
+                MessageManager::displayMessage("You defeated " + getDisplayName() + "\n\nYou won " + std::to_string(getInventory().getItemAmountAt(i)) + " pennies!\n\nCongrats", 10);
                 getWorld()->getPlayer()->getInventory().addItem(Item::PENNY.getId(), getInventory().getItemAmountAt(i));
             } else {
                 getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));

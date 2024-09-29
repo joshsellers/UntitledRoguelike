@@ -6,10 +6,10 @@
 
 CreamBoss::CreamBoss(sf::Vector2f pos) : Boss(CREAM_BOSS, pos, 1, TILE_SIZE * 8, TILE_SIZE * 6,
     {
-        BossState(BEHAVIOR_STATE::REST, 1000LL, 200LL),
+        BossState(BEHAVIOR_STATE::REST, 1000LL, 2000LL),
         BossState(BEHAVIOR_STATE::CREAM_DROP, 11000LL, 12000LL),
         BossState(BEHAVIOR_STATE::CREAM_RING_IN, 8000LL, 8000LL),
-        BossState(BEHAVIOR_STATE::CREAM_RING_OUT, 8000LL, 8000LL)
+        //BossState(BEHAVIOR_STATE::CREAM_RING_OUT, 8000LL, 8000LL)
     }) {
     setMaxHitPoints(10000);
     heal(getMaxHitPoints());
@@ -28,7 +28,7 @@ CreamBoss::CreamBoss(sf::Vector2f pos) : Boss(CREAM_BOSS, pos, 1, TILE_SIZE * 8,
     _displayName = "Mr. Cream";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(150000, 175000);
+    unsigned int pennyAmount = randomInt(1500, 1750);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     _animSpeed = 1;

@@ -26,7 +26,7 @@ TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TI
     _displayName = "Phillip McTree";
 
     srand(currentTimeNano());
-    const unsigned int pennyAmount = randomInt(15000, 20000);
+    const unsigned int pennyAmount = randomInt(150, 200);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     _animSpeed = 1;

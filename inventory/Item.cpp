@@ -15,32 +15,32 @@
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
-    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false, 210
+    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false, 5
 ); 
 
 const Item Item::TUX_VEST(1, "Tuxedo Vest", sf::IntRect(0, 26, 1, 1), false, 0, false,
     "A tuxedo vest\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 210
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 5
 );
 
 const Item Item::TUX_PANTS(2, "Tuxedo Pants", sf::IntRect(4, 26, 1, 1), false, 0, false,
     "Tuxedo pants, for a tuxedo\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 200
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 5
 );
 
 const Item Item::DRESS_SHOES(3, "Dress Shoes", sf::IntRect(8, 26, 1, 1), false, 0, false,
     "Some nice shoes\nFor festive occasions",
-    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 140
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 5
 );
 
 const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, false,
     "A nice hat to keep the\nsun out of your eyes",
-    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false, 90
+    EQUIPMENT_TYPE::CLOTHING_HEAD, 0, 0, 0, sf::Vector2f(), false, 3
 );
 
 const Item Item::AXE(5, "Axe", sf::IntRect(18, 4, 1, 1), false, 0, false,
     "A large, formidible axe\nGood for cutting down trees, but not much else",
-    EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 50
+    EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 6
 );
 
 const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
@@ -56,7 +56,7 @@ const ProjectileData Item::DATA_B455(Item::BULLET_455.getId(), 5, sf::IntRect(6,
 
 const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULLET_455.getId(), false,
     "A large handgun",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 6), true, 2000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 6), true, 20, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_B455, "revolver");
         return false;
@@ -71,7 +71,7 @@ const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 100000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 1000, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_POD, "slip");
         return false;
@@ -80,22 +80,22 @@ const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), fals
 
 const Item Item::WIFE_BEATER(11, "Tank Top", sf::IntRect(12, 26, 1, 1), false, 0, false,
     "It's dirty",
-    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 80
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 1
 );
 
 const Item Item::JORTS(12, "Jorts", sf::IntRect(16, 26, 1, 1), false, 0, false,
     "Don't wear these",
-    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 120
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 1
 );
 
 const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26, 1, 1), false, 0, false,
     "Some new kicks",
-    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 150
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 1
 );
 
-const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true, 
+const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 16, true, 
     "Something something an apple a day\n\nRestores 5 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 40, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
             parent->heal(5);
@@ -107,17 +107,17 @@ const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 32, true,
 
 const Item Item::RED_TEE_SHIRT(15, "Red T-Shirt", sf::IntRect(24, 26, 1, 1), false, 0, false, 
     "Might be comfy",
-    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 120
+    EQUIPMENT_TYPE::CLOTHING_BODY, 0, 0, 0, sf::Vector2f(), false, 2
 );
 
 const Item Item::OVERALLS(16, "Overalls", sf::IntRect(28, 26, 1, 1), false, 0, false,
     "For when you're overall the bullshit",
-    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 200
+    EQUIPMENT_TYPE::CLOTHING_LEGS, 0, 0, 0, sf::Vector2f(), false, 2
 );
 
 const Item Item::BOOTS(17, "Boots", sf::IntRect(32, 26, 1, 1), false, 0, false,
     "If I can't wear my cowboy boots, I ain't goin",
-    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 190
+    EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 2
 );
 
 const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 9999, false,
@@ -128,7 +128,7 @@ const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::In
 
 const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 15000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 200, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_RIFLE_ROUND, "ar");
         return false;
@@ -153,7 +153,7 @@ const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_
 
 const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
-    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 7000, true,
+    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 80, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -173,7 +173,7 @@ const ProjectileData Item::DATA_PROJECTILE_PROPANE(Item::_PROJECTILE_PROPANE.get
 
 const Item Item::BLOW_TORCH(26, "Blow Torch", sf::IntRect(50, 0, 1, 1), false, PROPANE.getId(), false,
     "It's a blow torch, but it\nseems like something's broken...",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(12, 12), true, 10000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(12, 12), true, 120, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_PROPANE, "blowtorch");
         return false;
@@ -187,7 +187,7 @@ const ProjectileData Item::DATA_PROJECTILE_SLIME_BALL(Item::_PROJECTILE_SLIME_BA
 
 const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0, true, 
     "A ball of slime that\nwill orbit around you and fire\npieces of itself at enemies", 
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 250, true, 
     [](Entity* parent) {
         std::shared_ptr<Orbiter> slimeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SLIME_BALL.getId(), parent));
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -199,9 +199,9 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     }, 0, false, 0, 0, true
 );
 
-const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
+const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 10, true,
     "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 65, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true, 
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
             parent->heal(10);
@@ -214,7 +214,7 @@ const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 32, true,
 
 const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), false, 0, true,
     "Give it a toss and see where it lands",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 2500, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25, true, 
     [](Entity* parent) {
         std::shared_ptr<Orbiter> bowlingBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::BOWLING_BALL.getId(), parent));
         bowlingBall->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -226,7 +226,7 @@ const Item Item::BOWLING_BALL(30, "Bowling Ball", sf::IntRect(4, 10, 1, 1), fals
 
 const Item Item::WOOD(31, "Wood", sf::IntRect(6, 10, 1, 1), true, 99, false, 
     "Sturdy\nSell it to the shop keep for some pennies",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0.f, 0, sf::Vector2f(), false, 35, false
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0.f, 0, sf::Vector2f(), false, 1, false
 );
 
 const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(32, 21, 1, 1), false, 0, false,
@@ -235,44 +235,44 @@ const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(3
 const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, false);
 
 const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
-    "Increases max HP by 25\nIncreases max stamina by 100\nIncreases damage multiplier by .25",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 30000, true,
+    "Increases max HP by 5\nIncreases max stamina by 100\nIncreases damage multiplier by .25",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 350, true,
     [](Entity* parent) {
-        parent->setMaxHitPoints(parent->getMaxHitPoints() + 25);
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
         parent->setMaxStamina(parent->getMaxStamina() + 100);
         parent->increaseDamageMultiplier(0.25f);
         return true;
     }
 );
 
-const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), true, 32, true,
-    "Increases max HP by 5 and makes you feel good\n\nRestores 50 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5999, true, 
+const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), false, 0, true,
+    "Increases max HP by 10 and makes you feel good\n\nRestores 50 HP",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 120, true, 
     [](Entity* parent) {
-        parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 10);
         parent->heal(50);
         return true;
     }
 );
 
-const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), true, 16, true,
-    "Increases max HP by 2 and makes you feel a little better\n\nRestores 8 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1199, true,
+const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), false, 0, true,
+    "Increases max HP by 5 and makes you feel a little better\n\nRestores 20 HP",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true,
     [](Entity* parent) {
-        parent->setMaxHitPoints(parent->getMaxHitPoints() + 2);
-        parent->heal(8);
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
+        parent->heal(20);
         return true;
     }
 );
 
 const Item Item::WOOD_BOAT(36, "Boat", sf::IntRect(12, 31, 1, 1), false, 0, false, 
     "Helps you survive in the sea\nEquip it while in the water",
-    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 7599
+    EQUIPMENT_TYPE::BOAT, 0, 0, 0, sf::Vector2f(), false, 75
 );
 
 const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10, true,
     "Makes you feel rested\nIncreases stamina restore rate by 5",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 15000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 150, true,
     [](Entity* parent) {
         parent->increaseStaminaRefreshRate(5);
         return true;
@@ -281,7 +281,7 @@ const Item Item::LIQUID_NAP(37, "Liquid Nap", sf::IntRect(6, 11, 1, 1), true, 10
 
 const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 10, true,
     "Increases damage multiplier juuust a little bit",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1900, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19, true,
     [](Entity* parent) {
         parent->increaseDamageMultiplier(0.1f);
         return true;
@@ -290,7 +290,7 @@ const Item Item::LOCUS_LIFT(38, "Multivitamin", sf::IntRect(7, 11, 1, 1), true, 
 
 const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
     "Give it to a dog and it'll be your friend",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10, false,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 3, false,
     [](Entity* parent) {
         for (auto& entity : parent->getWorld()->getEntities()) {
             if (entity->isActive() && entity->getEntityType() == "dog") {
@@ -313,14 +313,16 @@ const Item Item::BONE(39, "Bone", sf::IntRect(5, 12, 1, 1), true, 99, true,
 
 const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 999, true,
     "Bring me coin\nThe more you have, the more you'll pull\nEquip to activate",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1025, true, 
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 14, true, 
     [](Entity* parent) {
         if (parent->getEntityType() == "player") {
             Player* player = dynamic_cast<Player*>(parent);
             if (player->getCoinMagnetCount() < 12) {
                 player->addCoinMagnet();
+                return true;
             }
-            return true;
+            MessageManager::displayMessage("You have consumed the max amount of magnets\nYou can sell your extra magnets to the shopkeep", 5);
+            return false;
         }
         return false;
     }
@@ -328,37 +330,37 @@ const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 999, 
 
 const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
     "Swing for slicing",
-    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 5999
+    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 59
 );
 
 const Item Item::MATMURA_HELMET(42, "Matmura Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 10000, false
+    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 100, false
 );
 
 const Item Item::MATMURA_CHESTPLATE(43, "Matmura Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 9000, false
+    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 90, false
 );
 
 const Item Item::MATMURA_LEGGINGS(44, "Matmura Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 8500, false
+    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 85, false
 );
 
 const Item Item::MATMURA_BOOTS(45, "Matmura Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 7000, false
+    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 70, false
 );
 
 const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
     "Chop chop",
-    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 7999
+    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 79
 );
 
 const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEET_SHIFT, 192 >> SPRITE_SHEET_SHIFT, 1, 1), true, 32, true,
     "Increases stamina restore rate",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 3250, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 32, true,
     [](Entity* parent) {
         parent->increaseStaminaRefreshRate(1);
         return true;
@@ -367,7 +369,7 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
 
 const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 30000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 300, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -387,7 +389,7 @@ const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGU
 
 const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
     "Harness the power of electromagnets\nto solve your problems",
-    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 50000, true,
+    EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 500, true,
     [](Entity* parent) {
         constexpr int railgunPassThroughCount = 5;
         fireTargetedProjectile(parent, DATA_PROJECTILE_RAILGUN_DART, "railgun", railgunPassThroughCount);
@@ -408,7 +410,7 @@ const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.g
 
 const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
     "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 19999, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 199, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_CHAINSAW, "chainsaw");
         return false;
@@ -431,7 +433,7 @@ const ProjectileData Item::DATA_PROJECTILE_ARROW(Item::ARROW.getId(), 3.75f, sf:
 
 const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1), false, ARROW.getId(), false,
     "Helps you get nice forearms",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(6, 0), true, 100, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(6, 0), true, 5, true,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW);
         return false;
@@ -440,7 +442,7 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
 
 const Item Item::CHEESE_SLICE(58, "Cheese", sf::IntRect(3, 11, 1, 1), true, 999, true,
     "Nummy\nHeals 20 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 500, false,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5, false,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
             parent->heal(20);
@@ -459,7 +461,7 @@ const ProjectileData Item::DATA_PROJECTILE_TEAR_DROP(Item::_PROJECTILE_TEAR_DROP
 
 const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false, 0, true,
     "Equip it and it will cry for you",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 25000, false,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 250, false,
     [](Entity* parent) {
         std::shared_ptr<Orbiter> eye = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::EYE_BALL.getId(), parent));
         eye->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -472,7 +474,7 @@ const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false,
 
 const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1), true, 10, true,
     "Increases max stamina by 50",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 15000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 150, true,
     [](Entity* parent) {
         parent->setMaxStamina(parent->getMaxStamina() + 50);
         return true;
@@ -481,7 +483,7 @@ const Item Item::LIQUID_EXERCISE(61, "Liquid Exercise", sf::IntRect(1, 11, 1, 1)
 
 const Item Item::CACTUS_FLESH(62, "Cactus Flesh", sf::IntRect(0, 11, 1, 1), true, 9999, true,
     "Prickly pieces\n\nHeals 6 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 35, false,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1, false,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
             parent->heal(6);
@@ -507,12 +509,12 @@ const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LA
 
 const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
     "Smells weird\n\nSell it to the shopkeep for a pretty penny",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, false
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10, false
 );
 
 const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 1, 1), true, 64, true,
     "Makes you emit bad vibes that hurt enemies\n\nIf you already have bad vibes, this will\nupgrade it",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 9000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 90, true,
     [](Entity* parent) {
         const unsigned int abilityId = Ability::DAMAGE_AURA.getId();
         if (!AbilityManager::givePlayerAbility(abilityId)) {
@@ -551,7 +553,7 @@ const Item Item::BAD_VIBES_POTION(66, "Potion of Bad Vibes", sf::IntRect(4, 37, 
 
 const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0, true,
     "Concentrated impaling", 
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 10000, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 75, true,
     [](Entity* parent) {
         std::shared_ptr<Orbiter> spikeBall = std::shared_ptr<Orbiter>(new Orbiter(90, OrbiterType::SPIKE_BALL.getId(), parent));
         spikeBall->loadSprite(parent->getWorld()->getSpriteSheet());
@@ -584,7 +586,7 @@ const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId
 
 const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
     "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 1999999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19999, true,
     [](Entity* parent) {
         const unsigned int id = Ability::HEALILNG_MIST.getId();
         if (!AbilityManager::givePlayerAbility(id)) {
@@ -849,6 +851,19 @@ bool Item::isUnlocked(unsigned int waveNumber) const {
 
 unsigned int Item::getRequiredWave() const {
     return ITEM_UNLOCK_WAVE_NUMBERS.at(getId());
+}
+
+std::map<unsigned int, unsigned int> Item::ITEM_SHOP_CHANCES = {
+    {Item::PROTEIN_SHAKE.getId(), 4},
+    {Item::BOTTLE_OF_MILK.getId(), 3},
+};
+
+unsigned int Item::getShopChance() const {
+    if (ITEM_SHOP_CHANCES.find(getId()) != ITEM_SHOP_CHANCES.end()) {
+        return ITEM_SHOP_CHANCES.at(getId());
+    }
+
+    return 2;
 }
 
 bool Item::isStartingItem() const {

@@ -28,7 +28,7 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
     _displayName = "Professor Hands";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(50000, 100000);
+    unsigned int pennyAmount = randomInt(500, 1000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     _animSpeed = 1;

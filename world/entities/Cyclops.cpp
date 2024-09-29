@@ -21,9 +21,8 @@ Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE
     _entityType = "cyclops";
 
     srand(currentTimeNano());
-    constexpr int hasPennyChance = 30;
-    unsigned int pennyAmount = randomInt(0, 930);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 9);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     constexpr int hasEyeChance = 1000;
     if (randomInt(0, hasEyeChance) == 0) getInventory().addItem(Item::CYCLOPS_EYE.getId(), 1);

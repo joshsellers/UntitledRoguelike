@@ -19,9 +19,8 @@ Yeti::Yeti(sf::Vector2f pos) : Entity(YETI, pos, 2.5f, TILE_SIZE * 2, TILE_SIZE 
     _entityType = "yeti";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 5;
-    unsigned int pennyAmount = randomInt(0, 555);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
 void Yeti::update() {

@@ -30,65 +30,50 @@ void ShopKeep::initInventory() {
     unsigned int seed = _pos.x + _pos.y * (_pos.x - _pos.y);
     srand(seed);
 
-    std::vector<int> availableItems;
+    int pennyCount = randomInt(100, 500);
+    getInventory().addItem(Item::PENNY.getId(), pennyCount);
+
+   
+    constexpr int itemCount = 10;
+    constexpr int maxAttempts = 100;
+    int attempts = 0;
+
+    std::vector<unsigned int> availableItems;
+
     for (const auto& item : Item::ITEMS) {
-        if (item->isUnlocked(getWorld()->getCurrentWaveNumber())) {
+        if (item->isBuyable()
+            && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO
+            && !stringStartsWith(item->getName(), "_")
+            && item->isUnlocked(getWorld()->getCurrentWaveNumber())
+            && item->getId() != Item::PENNY.getId()) {
+
             availableItems.push_back(item->getId());
         }
     }
 
-    int pennyCount = randomInt(5000, 10000);
-    getInventory().addItem(Item::PENNY.getId(), pennyCount);
+    while (getInventory().getCurrentSize() != itemCount + 1) {
+        int currentInvSize = getInventory().getCurrentSize();
 
-    int itemCount = randomInt(5, 50);
-    for (int i = 0; i < itemCount; i++) {
-        int itemAmount = randomInt(1, 100);
-        //int itemId = randomInt(0, Item::ITEMS.size() - 1);
-        int itemId = availableItems[randomInt(0, availableItems.size() - 1)];
-        for (const auto& item : Item::ITEMS) {
-            if (item->isGun() && item->getAmmoId() == itemId) {
-                itemAmount += 100;
-                itemAmount *= 5;
+        for (int i = 0; i < (itemCount + 1) - currentInvSize; i++) {
+            unsigned int itemPos = randomInt(0, availableItems.size() - 1);
+            const auto& item = Item::ITEMS[availableItems.at(itemPos)];
+
+            if (randomInt(0, item->getShopChance() - 1) == 0) {
+                unsigned int itemAmount = 1;
+                if (item->isStackable()) itemAmount = randomInt(1, item->getStackLimit());
+
+                getInventory().addItem(item->getId(), itemAmount);
+                availableItems.erase(availableItems.begin() + itemPos);
+                if (availableItems.size() == 0) break;
             }
         }
 
-        if (Item::ITEMS[itemId]->getEquipmentType() == EQUIPMENT_TYPE::AMMO
-            || stringStartsWith(Item::ITEMS[itemId]->getName(), "_") 
-            || !Item::ITEMS[itemId]->isBuyable() 
-            || !Item::ITEMS[itemId]->isUnlocked(getWorld()->getCurrentWaveNumber())) continue;
-
-        if (!Item::ITEMS[itemId]->isStackable()) itemAmount = 1;
-        else itemAmount = std::min((int)Item::ITEMS[itemId]->getStackLimit(), itemAmount);
-
-        getInventory().addItem(itemId, itemAmount);
+        attempts++;
+        if (attempts >= maxAttempts && getInventory().getCurrentSize() > 1) break;
+        else if (availableItems.size() == 0) break;
     }
 
-    // Give ammo for each gun if we don't have any already
-    /*std::vector<unsigned int> ammoNeeded;
-    for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-        std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
-        if (item->isGun()) {
-            bool hasAmmo = false;
-            for (int j = 0; j < getInventory().getCurrentSize(); j++) {
-                if (item->getAmmoId() == getInventory().getItemIdAt(j)) {
-                    hasAmmo = true;
-                    break;
-                }
-            }
-
-            if (!hasAmmo) {
-                ammoNeeded.push_back(item->getAmmoId());
-            }
-        }
-    }
-
-    for (unsigned int ammoId : ammoNeeded) {
-        int ammoCount = randomInt((5 + 100) * 5, (100 + 100) * 5);
-        getInventory().addItem(ammoId, ammoCount);
-    }*/
-    //
-
-    for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+    /*for (int i = 0; i < getInventory().getCurrentSize(); i++) {
         std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
         if (item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_HEAD
             || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_BODY
@@ -96,7 +81,7 @@ void ShopKeep::initInventory() {
             || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_FEET) {
             getInventory().equip(i, item->getEquipmentType());
         }
-    }
+    }*/
 
     for (unsigned int i = 0; i < _shopManager->getShopLedger()[seed].size(); i++) {
         auto& ledger = _shopManager->getShopLedger()[seed][i];
@@ -104,7 +89,9 @@ void ShopKeep::initInventory() {
         int amount = ledger.second;
 
         if (amount > 0) getInventory().addItem(itemId, amount);
-        else getInventory().removeItem(itemId, -amount);
+        else if (getInventory().hasItem(itemId) && getInventory().getItemAmountAt(getInventory().findItem(itemId)) >= -amount) {
+            getInventory().removeItem(itemId, -amount);
+        }
     }
 
     if (!Tutorial::isCompleted()) getInventory().addItem(Item::AXE.getId(), 1);

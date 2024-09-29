@@ -123,6 +123,7 @@ void ModManager::loadItem(std::ifstream& in) {
     unsigned int frameCount = 0;
     std::string ammoItemName = "";
     bool isStartingItem = false;
+    unsigned int shopChance = 2;
 
     std::string line;
     while (getline(in, line)) {
@@ -211,6 +212,8 @@ void ModManager::loadItem(std::ifstream& in) {
                 ammoItemName = ammoNameStr;
             } else if (tokens.at(0) == "isStartingItem") {
                 isStartingItem = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "shopChance") {
+                shopChance = std::stoul(tokens.at(2));
             } else {
                 MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -244,6 +247,7 @@ void ModManager::loadItem(std::ifstream& in) {
         reloadTimeMillis, isStartingItem, true, functionName)));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
+    Item::ITEM_SHOP_CHANCES[itemId] = shopChance;
 
     if (isAnimated) {
         Item::ANIMATION_CONFIGS[itemId] = WeaponAnimationConfig(itemId, ticksPerFrame, frameCount);
