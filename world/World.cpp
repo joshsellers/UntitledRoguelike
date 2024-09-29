@@ -672,7 +672,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int shopSpawnRate = 25000;
+    constexpr int shopSpawnRate = 24500;
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
     constexpr int cactusSpawnRate = 1000;
