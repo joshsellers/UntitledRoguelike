@@ -40,8 +40,13 @@ void UILabel::update() {
 void UILabel::draw(sf::RenderTexture& surface) {
 }
 
-void UILabel::setText(sf::String text) {
+void UILabel::setText(sf::String text, bool recenter) {
     _text.setString(text);
+    if (recenter) {
+        _width = _text.getGlobalBounds().width;
+
+        _text.setPosition(_x - _width / 2.f, _y);
+    }
 }
 
 void UILabel::mouseButtonPressed(const int mx, const int my, const int button) {

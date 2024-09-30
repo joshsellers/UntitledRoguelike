@@ -113,6 +113,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     initUI();
 
     loadLoadingScreenMessages();
+    loadTips();
 
     displayStartupMessages();
 }
@@ -521,6 +522,11 @@ void Game::initUI() {
 
 
     // New game menu
+    _tipLabel = std::shared_ptr<UILabel>(new UILabel(
+        "", 50.f, 20.f, 2, _font
+    ));
+    _newGameMenu->addElement(_tipLabel);
+
     _worldNameField = std::shared_ptr<UITextField>(new UITextField(
         "world name:", 49.5, 37, _font
     ));
@@ -1131,6 +1137,12 @@ void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
     } else if (buttonCode == "newgame") {
+        if (!Tutorial::isCompleted() && _tips.size() > 0) {
+            _tipLabel->setText("Tip: " + _tips.at(randomInt(0, _tips.size() - 1)), true);
+        } else {
+            _tipLabel->setText("");
+        }
+
         enableGamepadInput(_newGameMenu);
         _newGameMenu->show();
         _startMenu->hide();
@@ -1748,6 +1760,22 @@ void Game::loadLoadingScreenMessages() {
     _loadingScreenMessages.push_back("loading");
 
     _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
+}
+
+void Game::loadTips() {
+    const std::string path = "res/tips.txt";
+    std::ifstream in(path);
+
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find tips.txt", 5, WARN);
+        in.close();
+    } else {
+        std::string line;
+        while (getline(in, line)) {
+            _tips.push_back(line);
+        }
+        in.close();
+    }
 }
 
 void Game::textEntered(sf::Uint32 character) {

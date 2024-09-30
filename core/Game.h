@@ -132,6 +132,10 @@ private:
 	int _loadingScreenMessageIndex = 0;
 	void loadLoadingScreenMessages();
 
+	std::shared_ptr<UILabel> _tipLabel;
+	std::vector<std::string> _tips;
+	void loadTips();
+
 	sf::Clock _clock;
 	unsigned int _frameCounter = 0;
 	
