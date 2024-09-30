@@ -94,11 +94,11 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
 );
 
 const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 16, true, 
-    "Something something an apple a day\n\nRestores 10 HP",
+    "Something something an apple a day\n\nRestores 5 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
-            parent->heal(10);
+            parent->heal(5);
             return true;
         }
         return false;
@@ -199,13 +199,12 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     }, 0, false, 0, 0, true
 );
 
-const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 10, true,
-    "Kinda mushy but it makes me feel good\n\nRestores 20 HP",
+const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 5, true,
+    "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true, 
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
-            parent->heal(20);
-            parent->restoreStamina(100);
+            parent->heal(10);
             return true;
         }
         return false;
@@ -246,21 +245,21 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
 );
 
 const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), false, 0, true,
-    "Increases max HP by 20 and makes you feel good\n\nRestores 50 HP",
+    "Increases max HP by 20 and makes you feel good\n\nRestores 25 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 120, true, 
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 20);
-        parent->heal(50);
+        parent->heal(25);
         return true;
     }
 );
 
 const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), false, 0, true,
-    "Increases max HP by 10 and makes you feel a little better\n\nRestores 20 HP",
+    "Increases max HP by 10 and makes you feel a little better\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 25, true,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 10);
-        parent->heal(20);
+        parent->heal(10);
         return true;
     }
 );

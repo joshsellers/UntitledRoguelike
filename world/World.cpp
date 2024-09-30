@@ -619,6 +619,10 @@ void World::onWaveCleared() {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
     }
 
+    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
+        MessageManager::displayMessage("Something scary will appear after you beat this wave\nBe prepared", 10);
+    }
+
     spawnBoss(_currentWaveNumber);
 }
 
@@ -675,7 +679,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int shopSpawnRate = 24000;
+    constexpr int shopSpawnRate = 20000;
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
     constexpr int cactusSpawnRate = 1000;
