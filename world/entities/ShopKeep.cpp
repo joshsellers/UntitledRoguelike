@@ -47,6 +47,7 @@ void ShopKeep::initInventory() {
             && item->isUnlocked(getWorld()->getCurrentWaveNumber())
             && item->getId() != Item::PENNY.getId()) {
 
+            if (item->isGun() && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
             availableItems.push_back(item->getId());
         }
     }

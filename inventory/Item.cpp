@@ -94,11 +94,11 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
 );
 
 const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 16, true, 
-    "Something something an apple a day\n\nRestores 5 HP",
+    "Something something an apple a day\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5, true,
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
-            parent->heal(5);
+            parent->heal(10);
             return true;
         }
         return false;
@@ -200,11 +200,11 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
 );
 
 const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 10, true,
-    "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
+    "Kinda mushy but it makes me feel good\n\nRestores 20 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true, 
     [](Entity* parent) {
         if (parent->getHitPoints() < parent->getMaxHitPoints()) {
-            parent->heal(10);
+            parent->heal(20);
             parent->restoreStamina(100);
             return true;
         }
@@ -246,20 +246,20 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
 );
 
 const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), false, 0, true,
-    "Increases max HP by 10 and makes you feel good\n\nRestores 50 HP",
+    "Increases max HP by 20 and makes you feel good\n\nRestores 50 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 120, true, 
     [](Entity* parent) {
-        parent->setMaxHitPoints(parent->getMaxHitPoints() + 10);
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 20);
         parent->heal(50);
         return true;
     }
 );
 
 const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), false, 0, true,
-    "Increases max HP by 5 and makes you feel a little better\n\nRestores 20 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true,
+    "Increases max HP by 10 and makes you feel a little better\n\nRestores 20 HP",
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 25, true,
     [](Entity* parent) {
-        parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
+        parent->setMaxHitPoints(parent->getMaxHitPoints() + 10);
         parent->heal(20);
         return true;
     }
@@ -335,22 +335,22 @@ const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
 
 const Item Item::MATMURA_HELMET(42, "Matmura Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 100, false
+    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, true
 );
 
 const Item Item::MATMURA_CHESTPLATE(43, "Matmura Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 90, false
+    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, true
 );
 
 const Item Item::MATMURA_LEGGINGS(44, "Matmura Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 85, false
+    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, true
 );
 
 const Item Item::MATMURA_BOOTS(45, "Matmura Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 70, false
+    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, true
 );
 
 const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
@@ -813,10 +813,10 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::BONE.getId(),                            0},
     {Item::COIN_MAGNET.getId(),                     6},
     {Item::SCYTHE.getId(),                          10},
-    {Item::MATMURA_HELMET.getId(),                  0},
-    {Item::MATMURA_CHESTPLATE.getId(),              0},
-    {Item::MATMURA_LEGGINGS.getId(),                0},
-    {Item::MATMURA_BOOTS.getId(),                   0},
+    {Item::MATMURA_HELMET.getId(),                  17},
+    {Item::MATMURA_CHESTPLATE.getId(),              17},
+    {Item::MATMURA_LEGGINGS.getId(),                17},
+    {Item::MATMURA_BOOTS.getId(),                   17},
     {Item::BROADSWORD.getId(),                      8},
     {Item::ENERGY_DRINK.getId(),                    4},
     {Item::AUTOLASER.getId(),                       24},
@@ -856,6 +856,10 @@ unsigned int Item::getRequiredWave() const {
 std::map<unsigned int, unsigned int> Item::ITEM_SHOP_CHANCES = {
     {Item::PROTEIN_SHAKE.getId(), 4},
     {Item::BOTTLE_OF_MILK.getId(), 3},
+    {Item::MATMURA_HELMET.getId(), 50},
+    {Item::MATMURA_CHESTPLATE.getId(), 50},
+    {Item::MATMURA_LEGGINGS.getId(), 50},
+    {Item::MATMURA_BOOTS.getId(), 50}
 };
 
 unsigned int Item::getShopChance() const {
