@@ -672,7 +672,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int shopSpawnRate = 24500;
+    constexpr int shopSpawnRate = 24000;
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
     constexpr int cactusSpawnRate = 1000;
@@ -681,6 +681,8 @@ void World::generateChunkScatters(Chunk& chunk) {
     constexpr int smallTundraTreeSpawnRate = 1500;
     constexpr int fingerTreeSpawnRate = 875;
     constexpr int forestSmallTreeSpawnRate = 20;
+
+    bool spawnedShopThisChunk = false;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -694,12 +696,13 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
+            if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
                     shop->setWorld(this);
                     _scatterBuffer.push_back(shop);
+                    spawnedShopThisChunk = true;
 
                     if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                         MessageManager::displayMessage("There's a shop around here somewhere!", 5);
