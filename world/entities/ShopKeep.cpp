@@ -48,6 +48,7 @@ void ShopKeep::initInventory() {
             && item->getId() != Item::PENNY.getId()) {
 
             if (item->isGun() && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
+            else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
             availableItems.push_back(item->getId());
         }
     }
