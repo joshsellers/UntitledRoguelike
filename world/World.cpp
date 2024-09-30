@@ -675,16 +675,17 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr float chanceCoefficient = 0.005f;
-    constexpr int shopSpawnRate = 5000000 * chanceCoefficient;
-    constexpr int grassSpawnRate = 5000 * chanceCoefficient;
-    constexpr int smallTreeSpawnRate = 37500 * chanceCoefficient;
-    constexpr int cactusSpawnRate = 200000 * chanceCoefficient;
-    constexpr int smallSavannaTreeSpawnRate = 200000 * chanceCoefficient;
-    constexpr int largeSavannaTreeSpawnRate = 250000 * chanceCoefficient;
-    constexpr int smallTundraTreeSpawnRate = 300000 * chanceCoefficient;
-    constexpr int fingerTreeSpawnRate = 175000 * chanceCoefficient;
-    constexpr int forestSmallTreeSpawnRate = 4000 * chanceCoefficient;
+    constexpr int shopSpawnRate = 24000;
+    constexpr int grassSpawnRate = 25;
+    constexpr int smallTreeSpawnRate = 187;
+    constexpr int cactusSpawnRate = 1000;
+    constexpr int smallSavannaTreeSpawnRate = 1000;
+    constexpr int largeSavannaTreeSpawnRate = 1250;
+    constexpr int smallTundraTreeSpawnRate = 1500;
+    constexpr int fingerTreeSpawnRate = 875;
+    constexpr int forestSmallTreeSpawnRate = 20;
+
+    bool spawnedShopThisChunk = false;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -698,12 +699,13 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
+            if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
                     shop->setWorld(this);
                     _scatterBuffer.push_back(shop);
+                    spawnedShopThisChunk = true;
 
                     if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                         MessageManager::displayMessage("There's a shop around here somewhere!", 5);
