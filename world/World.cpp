@@ -46,6 +46,8 @@
 #include "TerrainGenParameters.h"
 #include "entities/TreeBoss.h"
 #include "entities/CreamBoss.h"
+#include "entities/Altar.h"
+#include "entities/AltarArrow.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -679,6 +681,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
+    constexpr int altarSpawnRate = 10000;
     constexpr int shopSpawnRate = 20000;
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
@@ -690,6 +693,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     constexpr int forestSmallTreeSpawnRate = 20;
 
     bool spawnedShopThisChunk = false;
+    bool spawnedAltarThisChunk = false;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -714,6 +718,21 @@ void World::generateChunkScatters(Chunk& chunk) {
                     if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                         MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                         shopSeenAt(sf::Vector2f(x, y));
+                    }
+                }
+            }
+
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH)) {
+                const sf::Vector2f pos = sf::Vector2f(x, y);
+                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate);
+                if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
+                    std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(pos, altarHasBeenActivatedAt(pos), _spriteSheet));
+                    altar->setWorld(this);
+                    _scatterBuffer.push_back(altar);
+                    spawnedAltarThisChunk = true;
+
+                    if (!altarHasBeenActivatedAt(pos)) {
+                        AltarArrow::altarSpawned(pos);
                     }
                 }
             }
@@ -1233,6 +1252,17 @@ bool World::shopHasBeenSeenAt(sf::Vector2f pos) const {
 
 void World::shopSeenAt(sf::Vector2f pos) {
     _seenShops.push_back(pos);
+}
+
+bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
+    for (auto& altar : _activatedAltars)
+        if (altar.x == pos.x && altar.y == pos.y) return true;
+    return false;
+}
+
+void World::altarActivatedAt(sf::Vector2f pos) {
+    _activatedAltars.push_back(pos);
+    AltarArrow::altarActivated();
 }
 
 void World::reseed(const unsigned int seed) {

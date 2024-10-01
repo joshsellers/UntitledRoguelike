@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="world\entities\AltarArrow.cpp" />
+    <ClCompile Include="world\entities\Altar.cpp" />
     <ClCompile Include="world\entities\CreamDrop.cpp" />
     <ClCompile Include="world\entities\CreamDropper.cpp" />
     <ClCompile Include="world\entities\CreamBoss.cpp" />
@@ -168,6 +170,8 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="world\entities\AltarArrow.h" />
+    <ClInclude Include="world\entities\Altar.h" />
     <ClInclude Include="world\entities\CreamDrop.h" />
     <ClInclude Include="world\entities\CreamDropper.h" />
     <ClInclude Include="world\entities\CreamBoss.h" />

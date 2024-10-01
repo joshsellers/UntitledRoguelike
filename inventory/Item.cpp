@@ -642,6 +642,14 @@ void Item::createItem(const unsigned int id, const std::string name, const sf::I
     ITEMS.push_back(itemPtr);
 }
 
+unsigned int Item::getIdFromName(std::string name) {
+    for (const auto& item : ITEMS) {
+        if (item->getName() == name) return item->getId();
+    }
+    MessageManager::displayMessage("No item named \"" + name + "\"", 5, WARN);
+    return 0;
+}
+
 void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
     const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
     if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {

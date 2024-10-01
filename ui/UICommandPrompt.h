@@ -34,6 +34,7 @@
 #include "../inventory/effect/PlayerVisualEffectManager.h"
 #include "../world/entities/TreeBoss.h"
 #include "../world/entities/CreamBoss.h"
+#include "../world/entities/Altar.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -285,6 +286,8 @@ private:
                             entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
                         } else if (entityName == "creamboss") {
                             entity = std::shared_ptr<CreamBoss>(new CreamBoss(pos));
+                        } else if (entityName == "altar") {
+                            entity = std::shared_ptr<Altar>(new Altar(pos, false, _world->getSpriteSheet()));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
@@ -767,6 +770,15 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 BACKUP_ENABLED = !BACKUP_ENABLED;
                 return (BACKUP_ENABLED ? "Enabled" : "Disabled") + (std::string)" save backups";
+            })
+        },
+
+        {
+            "clearaltars",
+            Command("Reset all altars",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->_activatedAltars.clear();
+                return "Cleared altar states";
             })
         }
     };

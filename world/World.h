@@ -95,8 +95,12 @@ public:
     void bossDefeated();
     std::shared_ptr<Entity> getCurrentBoss() const;
 
+    void altarActivatedAt(sf::Vector2f pos);
+    bool altarHasBeenActivatedAt(sf::Vector2f pos) const;
+
     friend class Game;
     friend class SaveManager;
+    friend class UICommandPrompt;
 
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
@@ -124,6 +128,8 @@ private:
     std::vector<sf::Vector2f> _seenShops;
     bool shopHasBeenSeenAt(sf::Vector2f pos) const;
     void shopSeenAt(sf::Vector2f pos);
+
+    std::vector<sf::Vector2f> _activatedAltars;
 
     void spawnMobs();
     void spawnEnemies();

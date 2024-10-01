@@ -18,6 +18,7 @@
 #include "music/MusicManager.h"
 #include "Viewport.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../world/entities/AltarArrow.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -104,6 +105,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _shopArrow.setWorld(&_world);
     _shopArrow.loadSprite(_spriteSheet);
+    AltarArrow::setWorld(&_world);
+    AltarArrow::loadSprite(_spriteSheet);
 
     GamePad::addListener(_player);
     GamePad::addListener(_ui);
@@ -980,6 +983,7 @@ void Game::update() {
 
         displayEnemyWaveCountdownUpdates();
         _shopArrow.update();
+        AltarArrow::update();
 
         if (_player->getStamina() < _player->getMaxStamina()) _staminaMeter->show();
         else _staminaMeter->hide();
@@ -1029,6 +1033,7 @@ void Game::draw(sf::RenderTexture& surface) {
     if (_gameStarted) {
         _world.draw(surface);
         _shopArrow.draw(surface);
+        AltarArrow::draw(surface);
     }
 }
 
@@ -1246,6 +1251,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();
+        _world._activatedAltars.clear();
         _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;

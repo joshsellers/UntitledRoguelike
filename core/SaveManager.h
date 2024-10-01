@@ -173,6 +173,14 @@ private:
             }
             out << std::endl;
         }
+
+        if (_world->_activatedAltars.size() != 0) {
+            out << "ALTARS";
+            for (auto& altar : _world->_activatedAltars) {
+                out << ":" << std::to_string(altar.x) << "," << std::to_string(altar.y);
+            }
+            out << std::endl;
+        }
     }
 
     static void saveAbilities(std::ofstream& out) {
@@ -420,6 +428,12 @@ private:
                 std::vector<std::string> parsedData = splitString(shopPosData, ",");
                 sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->shopSeenAt(shopPos);
+            }
+        } else if (header == "ALTARS") {
+            for (auto& altarPosData : data) {
+                std::vector<std::string> parsedData = splitString(altarPosData, ",");
+                sf::Vector2f altarPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
+                _world->altarActivatedAt(altarPos);
             }
         } else if (header == "SHOPLOCATION") {
             unsigned int seed = std::stoul(data[0]);

@@ -125,6 +125,8 @@ public:
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
         const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE");
 
+    static unsigned int getIdFromName(std::string name);
+
     unsigned int getId() const;
     std::string getName() const;
     std::string getDescription() const;

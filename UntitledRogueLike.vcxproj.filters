@@ -456,6 +456,12 @@
     <ClCompile Include="world\entities\CreamDrop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\Altar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\AltarArrow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -807,6 +813,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\CreamDrop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\Altar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\AltarArrow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
