@@ -16,7 +16,7 @@ SmallTree::SmallTree(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet)
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
     srand(currentTimeNano());
-    unsigned int appleAmount = randomInt(0, 99);
+    unsigned int appleAmount = randomInt(0, (HARD_MODE_ENABLED ? 99 : 3));
     if (appleAmount == 0) getInventory().addItem(Item::APPLE.getId(), 1);
 
     unsigned int woodAmount = 1;

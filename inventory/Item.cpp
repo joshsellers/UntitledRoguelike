@@ -231,7 +231,7 @@ const Item Item::WOOD(31, "Wood", sf::IntRect(6, 10, 1, 1), true, 99, false,
 const Item Item::_PROJECTILE_SNOW_BALL(32, "_SNOWBALL_PROJECTILE", sf::IntRect(32, 21, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false);
-const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 3, sf::IntRect(5, 5, 6, 6), false, false);
+const ProjectileData Item::DATA_PROJECTILE_SNOW_BALL(Item::_PROJECTILE_SNOW_BALL.getId(), 2, sf::IntRect(5, 5, 6, 6), false, false);
 
 const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT, 161 >> SPRITE_SHEET_SHIFT, 1, 1), true, 5, true,
     "Increases max HP by 5\nIncreases max stamina by 100\nIncreases damage multiplier by .25",

@@ -622,7 +622,7 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        MessageManager::displayMessage("Something scary will appear after you beat this wave\nBe prepared", 10);
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
     }
 
     spawnBoss(_currentWaveNumber);
@@ -681,8 +681,8 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 24000;
-    constexpr int shopSpawnRate = 20000;
+    constexpr int altarSpawnRate = 27000;
+    const int shopSpawnRate = (HARD_MODE_ENABLED ? 24000 : 20100);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
     constexpr int cactusSpawnRate = 1000;
@@ -725,7 +725,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 
             if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH || terrainType == TERRAIN_TYPE::TUNDRA)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
-                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 11 : 1));
+                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 15 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
                     std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(pos, altarHasBeenActivatedAt(pos), _spriteSheet));
                     altar->setWorld(this);

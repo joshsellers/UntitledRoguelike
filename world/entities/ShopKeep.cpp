@@ -47,7 +47,13 @@ void ShopKeep::initInventory() {
             && item->isUnlocked(getWorld()->getCurrentWaveNumber())
             && item->getId() != Item::PENNY.getId()) {
 
-            if (item->isGun() && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
+            const EQUIPMENT_TYPE equipType = item->getEquipmentType();
+            bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
+                || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
+                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+
+            if ((item->isGun() || isClothing) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
             else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
             availableItems.push_back(item->getId());
         }
@@ -60,7 +66,14 @@ void ShopKeep::initInventory() {
             unsigned int itemPos = randomInt(0, availableItems.size() - 1);
             const auto& item = Item::ITEMS[availableItems.at(itemPos)];
 
-            if (randomInt(0, item->getShopChance() - 1) == 0) {
+            unsigned int spawnChance = item->getShopChance() - 1;
+            const EQUIPMENT_TYPE equipType = item->getEquipmentType();
+            if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
+                || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
+                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance += 1;
+
+            if (randomInt(0, spawnChance - 1) == 0) {
                 unsigned int itemAmount = 1;
                 if (item->isStackable()) itemAmount = randomInt(1, item->getStackLimit());
 

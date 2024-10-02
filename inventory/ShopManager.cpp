@@ -87,4 +87,9 @@ void ShopManager::controllerButtonReleased(GAMEPAD_BUTTON button) {
             _sellInterface->blockControllerInput = false;
             break;
     }
+
+    if (!_buyInterface->blockControllerInput && !_sellInterface->blockControllerInput) {
+        _buyInterface->blockControllerInput = false;
+        _sellInterface->blockControllerInput = true;
+    }
 }
