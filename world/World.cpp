@@ -681,7 +681,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 10000;
+    constexpr int altarSpawnRate = 24000;
     constexpr int shopSpawnRate = 20000;
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
@@ -707,7 +707,8 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
+            if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND 
+                && terrainType != TERRAIN_TYPE::MOUNTAIN_HIGH) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
@@ -722,9 +723,9 @@ void World::generateChunkScatters(Chunk& chunk) {
                 }
             }
 
-            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH)) {
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH || terrainType == TERRAIN_TYPE::TUNDRA)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
-                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate);
+                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 11 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
                     std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(pos, altarHasBeenActivatedAt(pos), _spriteSheet));
                     altar->setWorld(this);
@@ -880,7 +881,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_HIGH;
             }
-
+            
             // biomes
             const double xOffset = TerrainGenInitializer::getParameters()->biomeXOffset / SCALE_COEFFICIENT;
             const double yOffset = TerrainGenInitializer::getParameters()->biomeYOffset / SCALE_COEFFICIENT;

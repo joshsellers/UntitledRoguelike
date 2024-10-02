@@ -780,6 +780,20 @@ private:
                 _world->_activatedAltars.clear();
                 return "Cleared altar states";
             })
+        },
+
+        {
+            "setspeed",
+            Command("Set the player's speed",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    const float newSpeed = std::stof(parsedCommand[1]);
+                    _world->getPlayer()->setBaseSpeed(newSpeed);
+                    return "Set the player's speed to " + std::to_string(newSpeed);
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
         }
     };
 };
