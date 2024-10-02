@@ -47,6 +47,7 @@ public:
     virtual void setMaxStamina(int amount);
     virtual void restoreStamina(int amount);
     virtual void increaseStaminaRefreshRate(int amount);
+    virtual void setStaminaRefreshRate(int amount);
 
     bool isUsingStamina();
     bool hasSufficientStamina(int cost);

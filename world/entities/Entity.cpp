@@ -594,7 +594,18 @@ void Entity::increaseDamageMultiplier(float amount) {
     _damageMultiplier += amount;
 }
 
+void Entity::setDamageMultiplier(float amount) {
+    _damageMultiplier = amount;
+}
+
 void Entity::increaseStaminaRefreshRate(int amount) {
+}
+
+void Entity::setStaminaRefreshRate(int amount) {
+}
+
+int Entity::getStaminaRefreshRate() const {
+    return 0;
 }
 
 sf::FloatRect Entity::getHitBox() const {

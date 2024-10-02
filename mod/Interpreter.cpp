@@ -449,6 +449,39 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 MessageManager::displayMessage("player.hasEffect() requires a string parameter", 5, ERR);
             }
             i++;
+        } else if (inst == INSTRUCTION::PLSETDAMAGE) {
+            if (entity != nullptr) {
+                float newDamage = pop();
+                entity->setDamageMultiplier(newDamage);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLGETDAMAGE) {
+            if (entity != nullptr) {
+                push(entity->getDamageMultiplier());
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLSETMAXSTAMINA) {
+            if (entity != nullptr) {
+                int newMaxStamina = pop();
+                entity->setMaxStamina(newMaxStamina);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLGETMAXSTAMINA) {
+            if (entity != nullptr) {
+                push(entity->getMaxStamina());
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLSETSTAMINARESTORE) {
+            if (entity != nullptr) {
+                int newStaminaRestore = pop();
+                entity->setStaminaRefreshRate(newStaminaRestore);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLGETSTAMINARESTORE) {
+            if (entity != nullptr) {
+                push(entity->getStaminaRefreshRate());
+            }
+            i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);
             i++;

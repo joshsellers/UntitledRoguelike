@@ -102,9 +102,12 @@ public:
     virtual void setMaxStamina(int amount);
     virtual void restoreStamina(int amount);
     virtual void increaseStaminaRefreshRate(int amount);
+    virtual void setStaminaRefreshRate(int amount);
+    virtual int getStaminaRefreshRate() const;
 
     float getDamageMultiplier() const;
     void increaseDamageMultiplier(float amount);
+    void setDamageMultiplier(float amount);
 
     sf::FloatRect getHitBox() const;
 

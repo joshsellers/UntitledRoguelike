@@ -629,6 +629,10 @@ void Player::increaseStaminaRefreshRate(int amount) {
     _staminaRefreshRate += amount;
 }
 
+void Player::setStaminaRefreshRate(int amount) {
+    _staminaRefreshRate = amount;
+}
+
 bool Player::isUsingStamina() {
     return _isUsingStamina;
 }
