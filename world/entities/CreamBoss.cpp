@@ -25,7 +25,7 @@ CreamBoss::CreamBoss(sf::Vector2f pos) : Boss(CREAM_BOSS, pos, 1, TILE_SIZE * 8,
     _canPickUpItems = false;
 
     _entityType = "creamboss";
-    _displayName = "Mr. Cream";
+    _displayName = "Arnold Creamston";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(1500, 1750);

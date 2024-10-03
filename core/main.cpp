@@ -124,6 +124,10 @@ void checkCrash() {
             MessageManager::displayMessage(
                 "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
             );
+        } else {
+            MessageManager::displayMessage(
+                "It looks like pennylooter did not shut down\ncorrectly last time.\n\nYou can report bugs on instagram (dm @pennylooter)\nor email rolmigame@gmail.com"
+                , 15);
         }
     }
 }

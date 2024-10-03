@@ -1361,6 +1361,12 @@ void World::bossDefeated() {
         case CANNON_BOSS:
             AchievementManager::unlock(DEFEAT_CANNONBOSS);
             break;
+        case TREE_BOSS:
+            AchievementManager::unlock(DEFEAT_TREEBOSS);
+            break;
+        case CREAM_BOSS:
+            AchievementManager::unlock(DEFEAT_CREAMBOSS);
+            break;
     }
 }
 
