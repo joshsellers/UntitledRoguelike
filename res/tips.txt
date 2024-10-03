@@ -2,3 +2,4 @@ you can sell items you don't need at the shop
 dodge to keep distance between enemies and yourself
 be sure to visit the controls menu
 hold B to skip the cooldown between waves
+trees will sometimes drop apples when you cut them down

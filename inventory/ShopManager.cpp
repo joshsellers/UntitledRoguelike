@@ -29,8 +29,7 @@ bool ShopManager::buy(int itemId, int amount) {
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), price);
 
         if (!Tutorial::isCompleted() 
-            && Item::ITEMS[itemId]->getEquipmentType() == EQUIPMENT_TYPE::TOOL
-            && !Item::ITEMS[itemId]->isGun()) Tutorial::completeStep(TUTORIAL_STEP::BUY_AXE);
+            && Item::ITEMS[itemId]->getId() == Item::BOW.getId()) Tutorial::completeStep(TUTORIAL_STEP::BUY_BOW);
 
         StatManager::increaseStat(ITEMS_PURCHASED, amount);
 
@@ -56,8 +55,6 @@ bool ShopManager::sell(int itemId, int amount) {
 
         _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, amount);
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), -price);
-        
-        if (!Tutorial::isCompleted() && itemId == Item::WOOD.getId()) Tutorial::completeStep(TUTORIAL_STEP::SELL_WOOD);
 
         StatManager::increaseStat(ITEMS_SOLD, amount);
 

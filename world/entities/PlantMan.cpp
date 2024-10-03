@@ -1,6 +1,7 @@
 #include "PlantMan.h"
 #include <boost/random/uniform_int_distribution.hpp>
 #include "../World.h"
+#include "../../core/Tutorial.h"
 
 PlantMan::PlantMan(sf::Vector2f pos) :
     Entity(PLANTMAN, pos, 3, TILE_SIZE * 2, TILE_SIZE * 2, false) {
@@ -23,6 +24,7 @@ PlantMan::PlantMan(sf::Vector2f pos) :
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(0, 5);
+    if (!Tutorial::isCompleted()) pennyAmount = 5;
     if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 

@@ -6,6 +6,7 @@
 #include "../../inventory/effect/PlayerVisualEffectManager.h"
 #include "../../inventory/abilities/AbilityManager.h"
 #include "../../inventory/abilities/Ability.h"
+#include "../../core/Tutorial.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -854,6 +855,8 @@ bool Player::reloadWeapon() {
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;
+
+                if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::RELOAD_BOW);
 
                 return true;
             }

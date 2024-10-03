@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../world/entities/DroppedItem.h"
 #include "../core/MessageManager.h"
+#include "../core/Tutorial.h"
 
 Inventory::Inventory(Entity* parent) :
     _parent(parent) {
@@ -149,6 +150,8 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
         if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) {
             MessageManager::displayMessage("You can only equip the boat in the water silly", 5);
             return;
+        } else if (!Tutorial::isCompleted() && equipType == EQUIPMENT_TYPE::TOOL && Item::ITEMS[getItemIdAt(index)]->getId() == Item::BOW.getId()) {
+            Tutorial::completeStep(TUTORIAL_STEP::EQUIP_BOW);
         }
         _equippedItems[(int)equipType] = index;
     }

@@ -39,7 +39,7 @@ const Item Item::SOMBRERO(4, "Sombrero", sf::IntRect(12, 13, 1, 1), false, 0, fa
 );
 
 const Item Item::AXE(5, "Axe", sf::IntRect(18, 4, 1, 1), false, 0, false,
-    "A large, formidible axe\nGood for cutting down trees, but not much else",
+    "A large, formidible axe\nGood for cutting down trees, but not much else.\n\nGo up to a tree and spin around in \ncircles really fast to use this.",
     EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 6
 );
 
@@ -332,22 +332,22 @@ const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 59
 );
 
-const Item Item::MATMURA_HELMET(42, "Matmura Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
+const Item Item::MATMURA_HELMET(42, "Crypticus Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
     EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, true
 );
 
-const Item Item::MATMURA_CHESTPLATE(43, "Matmura Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
+const Item Item::MATMURA_CHESTPLATE(43, "Crypticus Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
     EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, true
 );
 
-const Item Item::MATMURA_LEGGINGS(44, "Matmura Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
+const Item Item::MATMURA_LEGGINGS(44, "Crypticus Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
     EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, true
 );
 
-const Item Item::MATMURA_BOOTS(45, "Matmura Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
+const Item Item::MATMURA_BOOTS(45, "Crypticus Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
     EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, true
 );
@@ -504,7 +504,7 @@ const Item Item::_PROJECTILE_LARGE_BLOOD_BALL(64, "_LARGE_BLOOD_BALL_PROJECTILE"
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(), 2.75f, sf::IntRect(0, 0, 16, 16), false);
+const ProjectileData Item::DATA_PROJECTILE_LARGE_BLOOD_BALL(Item::_PROJECTILE_LARGE_BLOOD_BALL.getId(), 2.75f, sf::IntRect(0, 0, 16, 16), false, false, 10000LL);
 
 const Item Item::FINGER_NAIL(65, "Finger Nail", sf::IntRect(0, 12, 1, 1), true, 9999, false,
     "Smells weird\n\nSell it to the shopkeep for a pretty penny",

@@ -109,7 +109,7 @@ void ShopKeep::initInventory() {
         }
     }
 
-    if (!Tutorial::isCompleted()) getInventory().addItem(Item::AXE.getId(), 1);
+    if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
 }
 
 void ShopKeep::update() {

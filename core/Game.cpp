@@ -1676,6 +1676,7 @@ void Game::onPlayerDeath() {
             _deathMenu->show();
         } else {
             MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+            MessageManager::displayMessage("TIP: Be sure to dodge in order to help keep distance between enemies and yourself", 8);
             int playerPennyIndex = _player->getInventory().findItem(Item::PENNY.getId());
             if (playerPennyIndex != NO_ITEM) _player->getInventory().removeItem(Item::PENNY.getId(), _player->getInventory().getItemAmountAt(playerPennyIndex));
 
