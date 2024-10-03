@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_AUTO_PISTOL"
+velocity = 5
+lifeTime = 5000
+hitBox = 4, 5, 10, 9
+rotate = true

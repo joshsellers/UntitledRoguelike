@@ -1,0 +1,15 @@
+name = "Autopistol"
+description = "An automatic pistol"
+equipmentType = TOOL
+barrelPos = 12, 3
+isGun = true
+ammoName = "Rifle Round"
+isAutomatic = true
+magazineSize = 8
+fireRate = 125
+reloadTime = 1000
+unlockWaveNumber = 3
+isBuyable = true
+value = 20
+functionName = "fireautopistol"
+textureRect = 89, 0, 1, 1
