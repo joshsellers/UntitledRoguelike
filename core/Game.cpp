@@ -1192,7 +1192,7 @@ void Game::buttonPressed(std::string buttonCode) {
 
         std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::SLIME_BALL.getId()]);
 
-        constexpr int gunStartChance = 99;
+        constexpr int gunStartChance = 49;
         if (Tutorial::isCompleted() && randomInt(0, gunStartChance) == 0) {
             std::vector<unsigned int> startingGuns;
             for (const auto& item : Item::ITEMS) {
