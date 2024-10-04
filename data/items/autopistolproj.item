@@ -1,4 +1,4 @@
 name = "_PROJECTILE_AUTO_PISTOL"
 description = "This item should not be obtainable."
-damage = 3
+damage = 5
 textureRect = 89, 3, 1, 1
