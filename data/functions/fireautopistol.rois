@@ -1,5 +1,5 @@
 weaponLoaded = player.weaponIsLoaded();
 if: weaponLoaded {
-    #play sound
+    playSound("autopistol")
     player.fireProjectile("_PROJECTILE_AUTO_PISTOL", 1);
 }

@@ -1,5 +1,5 @@
 weaponLoaded = player.weaponIsLoaded();
 if: weaponLoaded {
-    #play sound
+    playSound("smg");
     player.fireProjectile("_PROJECTILE_SMG", 1);
 }

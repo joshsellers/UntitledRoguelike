@@ -10,7 +10,7 @@ if: currentMaxHp != 1 {
     }
 
     currentDamage = player.getDamageMultiplier();
-    player.setDamageMultiplier(currentDamage + 1);
+    player.setDamageMultiplier(currentDamage + (1 + 1 / 4));
 
     return true;
 }
