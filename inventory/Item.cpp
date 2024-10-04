@@ -65,13 +65,13 @@ const Item Item::HOWDAH(8, "Heavy Pistol", sf::IntRect(22, 0, 1, 1), false, BULL
 
 const Item Item::POD(9, "Pod", sf::IntRect(29, 3, 1, 1), true, 9999, false,
     "A large pod\nAmmunition for the Pod Launcher",
-    EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false, 200, true
+    EQUIPMENT_TYPE::AMMO, 50, 0, 0, sf::Vector2f(), false, 200, false
 );
 const ProjectileData Item::DATA_POD(Item::POD.getId(), 3, sf::IntRect(4, 8, 8, 8), true);
 
 const Item Item::POD_LAUNCHER(10, "Pod Launcher", sf::IntRect(29, 0, 1, 1), false, POD.getId(), false,
     "Don't vape, kids",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 1000, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(30, 0), true, 1000, false,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_POD, "slip");
         return false;

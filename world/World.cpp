@@ -681,7 +681,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 27000;
+    constexpr int altarSpawnRate = 26000;
     const int shopSpawnRate = (HARD_MODE_ENABLED ? 23500 : 20000);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
@@ -1084,9 +1084,9 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
             entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 2.5f));
             entity->heal(entity->getMaxHitPoints());
         } else if (!HARD_MODE_ENABLED) {
-            /*entity->heal(-entity->getMaxHitPoints());
-            entity->setMaxHitPoints(entity->getMaxHitPoints() - ((float)entity->getMaxHitPoints() * 0.25f));
-            entity->heal(entity->getMaxHitPoints());*/
+            entity->heal(-entity->getMaxHitPoints());
+            entity->setMaxHitPoints(entity->getMaxHitPoints() - ((float)entity->getMaxHitPoints() * 0.05f));
+            entity->heal(entity->getMaxHitPoints());
         }
 
         _bossIsActive = true;
