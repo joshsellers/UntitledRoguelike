@@ -52,8 +52,9 @@ void ShopKeep::initInventory() {
                 || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
                 || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
                 || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+            bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
 
-            if ((item->isGun() || isClothing) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
+            if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
             else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
             availableItems.push_back(item->getId());
         }

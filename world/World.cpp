@@ -681,7 +681,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 26000;
+    constexpr int altarSpawnRate = 26300;
     const int shopSpawnRate = (HARD_MODE_ENABLED ? 23500 : 20000);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
