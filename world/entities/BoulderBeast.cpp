@@ -55,7 +55,7 @@ void BoulderBeast::subUpdate() {
 void BoulderBeast::onStateChange(const BossState previousState, const BossState newState) {
     switch (newState.stateId) {
         case BEHAVIOR_STATE::CHASE:
-            _baseSpeed = 3.5f;
+            _baseSpeed = 4.f;
             break;
         case BEHAVIOR_STATE::TARGETED_FIRE:
             _baseSpeed = 1.f;

@@ -377,7 +377,7 @@ void World::spawnEnemies() {
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
                             if (HARD_MODE_ENABLED) _maxActiveEnemies *= 2;
-                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_player->getMaxHitPoints() / 100.f));
+                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)std::max(_player->getMaxHitPoints(), 100) / 100.f));
                             _waveCounter++;
                             break;
                         } else _enemiesSpawnedThisRound++;
@@ -1084,9 +1084,9 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
             entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 2.5f));
             entity->heal(entity->getMaxHitPoints());
         } else if (!HARD_MODE_ENABLED) {
-            entity->heal(-entity->getMaxHitPoints());
+            /*entity->heal(-entity->getMaxHitPoints());
             entity->setMaxHitPoints(entity->getMaxHitPoints() - ((float)entity->getMaxHitPoints() * 0.05f));
-            entity->heal(entity->getMaxHitPoints());
+            entity->heal(entity->getMaxHitPoints());*/
         }
 
         _bossIsActive = true;
