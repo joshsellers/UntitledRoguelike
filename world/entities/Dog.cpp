@@ -101,6 +101,7 @@ void Dog::draw(sf::RenderTexture& surface) {
 void Dog::setParent(Entity* parent) {
     _parent = parent;
     _hasOwner = true;
+    _usesDormancyRules = false;
 }
 
 Entity* Dog::getParent() const {
