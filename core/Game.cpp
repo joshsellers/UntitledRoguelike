@@ -911,7 +911,7 @@ void Game::update() {
         SteamAPI_RunCallbacks();
     }
 
-    if (!_world.playerIsInShop()) _shopMenu->hide();
+    if (!_world.playerIsInShop() && _shopMenu->isActive()) toggleShopMenu();
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
