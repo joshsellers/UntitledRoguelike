@@ -12,6 +12,7 @@ public:
     static const Ability DAMAGE_AURA;
     static const Ability HEALILNG_MIST;
     static const Ability THIRD_EYE;
+    static const Ability LIGHTNING;
 
     static std::vector<Ability*> ABILITIES;
 
@@ -61,7 +62,7 @@ private:
     long long _lastHealTimeMillis = 0LL;
     //
 
-    // THIRD_EYE
+    // THIRD_EYE & LIGHTNING
     long long _lastFireTimeMillis = 0LL;
     //
 };

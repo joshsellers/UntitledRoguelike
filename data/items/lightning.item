@@ -1,0 +1,10 @@
+name = "LIGHTNING_TEMP"
+description = "Harness the power of the skies"
+isStackable = true
+stackLimit = 5
+isConsumable = true
+value = 300
+isBuyable = true
+shopChance = 4
+unlockWaveNumber = 16
+functionName = "lightningitem"

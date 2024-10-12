@@ -1,6 +1,7 @@
 #include "Ability.h"
 #include "../../world/World.h"
 #include "../../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../../world/entities/Lightning.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
@@ -150,6 +151,27 @@ const Ability Ability::THIRD_EYE(2, "Third Eye",
                     break;
                 }
             }
+        }
+    },
+
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::LIGHTNING(3, "Lightning",
+    { {"damage", 25.f}, {"strike rate", 1000.f}, {"strike chance", 50}},
+    [](Player* player, Ability* ability) {
+        const int strikeChance = (int)ability->getParameter("strike chance") - 1;
+        const float strikeRate = ability->getParameter("strike rate");
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= strikeRate && player->getWorld()->getEnemyCount() > 0 && randomInt(0, strikeChance) == 0) {
+            const sf::Vector2f playerPos = player->getPosition();
+            sf::Vector2f pos(playerPos.x + randomInt(-WIDTH / 2, WIDTH / 2), playerPos.y + randomInt(-HEIGHT / 2, HEIGHT / 2));
+
+            std::shared_ptr<Lightning> lightning = std::shared_ptr<Lightning>(new Lightning(pos, ability->getParameter("damage"), 25));
+            lightning->setWorld(player->getWorld());
+            lightning->loadSprite(player->getWorld()->getSpriteSheet());
+            player->getWorld()->addEntity(lightning);
+
+            ability->_lastFireTimeMillis = currentTimeMillis();
         }
     },
 
