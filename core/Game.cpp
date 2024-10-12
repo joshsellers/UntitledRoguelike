@@ -236,7 +236,7 @@ void Game::initUI() {
         "HP", 50, 92, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
     ));
     playerHpMeter->setColor(0xCC0000FF);
-    playerHpMeter->setBackgroundColor(0xAA0000FF);
+    playerHpMeter->setBackgroundColor(0x9A0000FF);
     _HUDMenu->addElement(playerHpMeter);
 
     _magazineMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
@@ -624,7 +624,7 @@ void Game::initUI() {
         "", 50, 8, 32, 1.5f, placeholder, placeholder, _font
     ));
     _bossHPMeter->setColor(0xCC0000FF);
-    _bossHPMeter->setBackgroundColor(0xAA0000FF);
+    _bossHPMeter->setBackgroundColor(0x9A0000FF);
     _bossHPMeter->useDefaultLabel(false);
     _bossHPMeter->useAttributes(false);
     _bossHUDMenu->addElement(_bossHPMeter);
