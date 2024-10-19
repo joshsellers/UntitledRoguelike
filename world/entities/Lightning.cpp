@@ -63,7 +63,7 @@ void Lightning::draw(sf::RenderTexture& surface) {
     boost::random::uniform_int_distribution<> segmentLengthDist(30, 50);
     boost::random::uniform_int_distribution<> xOffset(-10, 10);
     float lastX = getPosition().x;
-    float segmentLength = segmentLengthDist(_rng);;
+    float segmentLength = segmentLengthDist(_rng);
     for (int i = 0; i < segmentCount; i++) {
         sf::ConvexShape segment;
         segment.setFillColor(sf::Color(0xFFFFFFFF));
