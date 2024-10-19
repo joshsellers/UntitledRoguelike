@@ -163,6 +163,9 @@ private:
     void blink();
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;
+
+    long long _timeDamageTaken = 0LL;
+    bool isTakingDamage() const;
 };
 
 #endif

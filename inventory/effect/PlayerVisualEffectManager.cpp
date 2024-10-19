@@ -1,5 +1,6 @@
 #include "PlayerVisualEffectManager.h"
 #include "../../core/MessageManager.h"
+#include "../../core/ShaderManager.h"
 
 void PlayerVisualEffectManager::drawEffects(Player* player, sf::RenderTexture& surface) {
     if (!player->isDodging() || !player->isMoving()) {
@@ -19,7 +20,7 @@ void PlayerVisualEffectManager::drawEffects(Player* player, sf::RenderTexture& s
             );
 
             _sprite.setPosition(sf::Vector2f(player->getSprite().getPosition().x - TILE_SIZE, player->getSprite().getPosition().y - TILE_SIZE));
-            surface.draw(_sprite);
+            surface.draw(_sprite, player->isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     }
 }

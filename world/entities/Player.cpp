@@ -7,6 +7,7 @@
 #include "../../inventory/abilities/AbilityManager.h"
 #include "../../inventory/abilities/Ability.h"
 #include "../../core/Tutorial.h"
+#include "../../core/ShaderManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -267,12 +268,12 @@ void Player::draw(sf::RenderTexture& surface) {
             drawTool(surface);
             if (noToolAim) _facingDir = noToolFaceDir;
 
-            surface.draw(_sprite);
+            surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
             PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
         } else if (_facingDir == DOWN || _facingDir == RIGHT) {
-            surface.draw(_sprite);
+            surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
             PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
@@ -326,7 +327,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
@@ -340,7 +341,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     }
 }
@@ -537,6 +538,11 @@ void Player::blink() {
     if (isDodging() && isMoving()) _isBlinking = false;
 }
 
+bool Player::isTakingDamage() const {
+    constexpr long long damageDisplayTime = 200LL;
+    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
+}
+
 void Player::move(float xa, float ya) {
     bool collidingX = false, collidingY = false;
 
@@ -700,6 +706,7 @@ void Player::damage(int damage) {
             int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
             GamePad::vibrate(vibrationAmount, 250);
         }
+        _timeDamageTaken = currentTimeMillis();
 
         _hitPoints -= (int)((float)damage * getTotalArmorCoefficient());
         if (_hitPoints <= 0) {

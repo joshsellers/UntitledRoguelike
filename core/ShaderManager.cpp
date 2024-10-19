@@ -63,6 +63,10 @@ void ShaderManager::configureShaders() {
     delete capsNoiseImage;
     getShader("waves_frag")->setUniform("capsNoiseTex", _capsNoiseTexture);
     //
+
+    // damage_frag
+    getShader("damage_frag")->setUniform("texture", sf::Shader::CurrentTexture);
+    //
 }
 
 void ShaderManager::updateShaders() {
