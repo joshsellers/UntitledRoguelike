@@ -12,7 +12,7 @@ void main(void)
     vec4 colHere = get(0, 0);
     vec4 col = colHere;
     if (colHere.a > 0) {
-        col.r += 0.3;
+        col.r += 0.75;
     }
     gl_FragColor = col;
 }
