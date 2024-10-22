@@ -1288,6 +1288,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_stamina = INITIAL_MAX_STAMINA;
         _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
         _player->_coinMagnetCount = 0;
+        _player->_speedMultiplier = 0.f;
 
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();
@@ -1730,6 +1731,7 @@ void Game::onPlayerDeath() {
             _player->_maxStamina = INITIAL_MAX_STAMINA;
             _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
             _player->_coinMagnetCount = 0;
+            _player->_speedMultiplier = 0.f;
 
             _world.resetChunks();
             _world.loadChunksAroundPlayer();

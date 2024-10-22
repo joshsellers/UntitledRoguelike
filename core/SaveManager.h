@@ -233,6 +233,7 @@ private:
         out << ":" << std::to_string(player->getStaminaRefreshRate());
         out << ":" << std::to_string(player->getDamageMultiplier());
         out << ":" << std::to_string(player->getCoinMagnetCount());
+        out << ":" << std::to_string(player->getSpeedMultiplier());
         out << std::endl;
         
         if (player->getInventory().getCurrentSize() != 0) {
@@ -461,6 +462,7 @@ private:
             player->_staminaRefreshRate = std::stoi(data[9]);
             player->_damageMultiplier = std::stof(data[10]);
             player->_coinMagnetCount = std::stoul(data[11]);
+            player->_speedMultiplier = std::stof(data[12]);
         } else if (header == "PINVENTORY") {
             auto& player = _world->getPlayer();
 

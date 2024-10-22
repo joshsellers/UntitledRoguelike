@@ -482,6 +482,23 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 push(entity->getStaminaRefreshRate());
             }
             i++;
+        } else if (inst == INSTRUCTION::PLSETSPEEDMULT) {
+            if (entity != nullptr && entity->getSaveId() == PLAYER) {
+                Player* player = dynamic_cast<Player*>(entity);
+                float newSpeedMult = pop();
+                player->setSpeedMultiplier(newSpeedMult);
+            } else if (entity != nullptr && entity->getSaveId() != PLAYER) {
+                MessageManager::displayMessage("player.getSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLGETSPEEDMULT) {
+            if (entity != nullptr && entity->getSaveId() == PLAYER) {
+                Player* player = dynamic_cast<Player*>(entity);
+                push(player->getSpeedMultiplier());
+            } else if (entity != nullptr && entity->getSaveId() != PLAYER) {
+                MessageManager::displayMessage("player.getSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
+            }
+            i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);
             i++;

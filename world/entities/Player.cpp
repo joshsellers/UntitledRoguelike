@@ -95,6 +95,11 @@ void Player::update() {
         }
     }
 
+    if (!isInBoat() && !isSwimming()) {
+        xa *= 1.f + getSpeedMultiplier();
+        ya *= 1.f + getSpeedMultiplier();
+    }
+
     if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
         constexpr float diagonalMultiplier = 0.707107; // 0.785398
         xa *= diagonalMultiplier;
@@ -622,6 +627,14 @@ int& Player::getStaminaRef() {
 
 int& Player::getMaxStaminaRef() {
     return _maxStamina;
+}
+
+void Player::setSpeedMultiplier(float speedMultiplier) {
+    _speedMultiplier = speedMultiplier;
+}
+
+float Player::getSpeedMultiplier() const {
+    return _speedMultiplier;
 }
 
 void Player::setMaxStamina(int amount) {

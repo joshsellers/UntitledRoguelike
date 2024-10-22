@@ -1,0 +1,5 @@
+currentMultiplier = player.getSpeedMultiplier();
+newMultiplier = currentMultiplier + (1 / 2);
+player.setSpeedMultiplier(newMultiplier);
+
+return true;

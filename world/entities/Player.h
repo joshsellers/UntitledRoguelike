@@ -43,6 +43,9 @@ public:
     int getStaminaRefreshRate() const;
     int& getStaminaRef();
     int& getMaxStaminaRef();
+
+    void setSpeedMultiplier(float speedMultiplier);
+    float getSpeedMultiplier() const;
     
     virtual void setMaxStamina(int amount);
     virtual void restoreStamina(int amount);
@@ -113,6 +116,7 @@ private:
     virtual TERRAIN_TYPE getCurrentTerrain();
 
     const float _slowMoveMultiplier = 0.5f;
+    float _speedMultiplier = 0.f;
 
     long long _lastTimeBoatBobbedUp = 0;
 

@@ -1,0 +1,6 @@
+name = "speedpill"
+description = "temp"
+isStackable = true
+stackLimit = 5
+isConsumable = true
+functionName = "speedpill"
