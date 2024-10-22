@@ -488,7 +488,7 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 float newSpeedMult = pop();
                 player->setSpeedMultiplier(newSpeedMult);
             } else if (entity != nullptr && entity->getSaveId() != PLAYER) {
-                MessageManager::displayMessage("player.getSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
+                MessageManager::displayMessage("player.setSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
             }
             i++;
         } else if (inst == INSTRUCTION::PLGETSPEEDMULT) {
