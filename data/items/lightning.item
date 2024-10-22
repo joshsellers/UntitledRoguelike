@@ -1,7 +1,7 @@
 name = "Thor's phone"
 description = "Call upon the skies when enemies are near.\n\nCauses lightning to strike around you when\nenemies are nearby.\n\nUsing more of these will increase the chance\nof lightning striking and increase its\ndamage."
 isStackable = true
-stackLimit = 5
+stackLimit = 1
 isConsumable = true
 value = 300
 isBuyable = true
