@@ -1,11 +1,11 @@
 hasEffect = player.hasEffect("Speed Eyes");
-if: hasEffect == false {
+if: not hasEffect {
     player.addEffect("Speed Eyes");
 }
 
 currentMultiplier = player.getSpeedMultiplier();
 
-if: currentMultiplier >= 2 {
+if: currentMultiplier >= 1 {
     displayMessage("You can't take any more of these", 5);
     return false;
 }

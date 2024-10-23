@@ -1,11 +1,11 @@
-name = "Speedpill"
+name = "Speed pill"
 description = "Go a bit faster"
 isStackable = true
 stackLimit = 2
 isConsumable = true
 functionName = "speedpill"
-isBuyable = true;
-shopChance = 3;
-unlockWaveNumber = 8;
-value = 250;
+isBuyable = true
+shopChance = 4
+unlockWaveNumber = 8
+value = 499
 textureRect = 8, 13, 1, 1
