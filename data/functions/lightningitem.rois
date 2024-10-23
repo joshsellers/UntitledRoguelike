@@ -1,5 +1,5 @@
 alreadyHas = player.hasAbility("Lightning");
-if: alreadyHas == false {
+if: not alreadyHas {
     player.addAbility("Lightning");
 }
 

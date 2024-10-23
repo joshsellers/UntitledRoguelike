@@ -82,7 +82,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         std::string itemName = item->getName();
         if (item->getId() == Item::PENNY.getId() && _source.getParent()->getEntityType() == "shopkeep") itemName = "Shopkeep's pennies";
         label.setString(itemName + (
-            item->isStackable() ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
+            item->isStackable() && _source.getItemAmountAt(i) > 1 ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
         ));
 
         sf::RectangleShape labelBg(sf::Vector2f(_width + (_width / 8) * 3 + label.getGlobalBounds().width + (_width / 8), _height + (_height / 8) * 2));
