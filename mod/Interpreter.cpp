@@ -199,6 +199,10 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
             float val = pop();
             push(-val);
             i++;
+        } else if (inst == INSTRUCTION::NOT) {
+            float val = pop();
+            push(!val);
+            i++;
         } else if (inst == INSTRUCTION::PRNT) {
             std::string val = strPop();
             std::cout << val;
