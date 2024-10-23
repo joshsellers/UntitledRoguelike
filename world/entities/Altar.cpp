@@ -90,12 +90,13 @@ void Altar::onActivation() {
         HP,
         STAMINA,
         MUSHROOM,
-        BAD_VIBES
+        BAD_VIBES,
+        LIGHTNING
     };
 
     const auto& player = _world->getPlayer();
 
-    REWARD reward = (REWARD)randomInt(0, 5);
+    REWARD reward = (REWARD)randomInt(0, 6);
     switch (reward) {
         case ARMOR:
         {
@@ -144,10 +145,18 @@ void Altar::onActivation() {
         }
         case BAD_VIBES:
         {
-            const int badVibesAmount = randomInt(20, 50);
+            const int badVibesAmount = randomInt(15, 25);
             player->getInventory().addItem(Item::BAD_VIBES_POTION.getId(), badVibesAmount);
 
             MessageManager::displayMessage(std::to_string(badVibesAmount) + " bottles of a powerful potion have been imparted unto you", 5);
+            break;
+        }
+        case LIGHTNING:
+        {
+            const int lightningAmount = randomInt(5, 10);
+            player->getInventory().addItem(Item::getIdFromName("Thor's phone"), lightningAmount);
+
+            MessageManager::displayMessage("You have been gifted implements used by the gods", 5);
             break;
         }
     }
