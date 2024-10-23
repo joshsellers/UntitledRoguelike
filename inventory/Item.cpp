@@ -797,7 +797,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::OVERALLS.getId(),                        6},
     {Item::BOOTS.getId(),                           6},
     {Item::RIFLE_ROUND.getId(),                     17},
-    {Item::ASSAULT_RIFLE.getId(),                   17},
+    {Item::ASSAULT_RIFLE.getId(),                   16},
     {Item::PENNY.getId(),                           0},
     {Item::LIGHT_LASER_CHARGE.getId(),              18},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
