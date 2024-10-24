@@ -770,7 +770,7 @@ bool Item::use(Entity* parent) const {
     if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN:")) {
         Interpreter interpreter;
         return interpreter.interpret(ModManager::getFunction(_functionName), parent);
-    } else if (_isConsumable && stringStartsWith(_functionName, "BUILTIN:")) {
+    } else if (_isCustomItem && stringStartsWith(_functionName, "BUILTIN:")) {
         return ScriptExtensions::execute(splitString(_functionName, ":")[1], parent, nullptr);
     }
     return _use(parent);

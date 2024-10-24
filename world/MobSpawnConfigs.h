@@ -34,7 +34,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
 };
 
 constexpr int CHEESE_BOSS_CHANCE = 18;
-constexpr int PROJ_ENEMIES_WAVE = 16;
+constexpr int PROJ_ENEMIES_WAVE = 10;
 const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
