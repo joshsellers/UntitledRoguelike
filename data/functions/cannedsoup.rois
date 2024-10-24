@@ -1,0 +1,10 @@
+playerMaxHp = player.getMaxHp();
+playerHp = player.getHp();
+
+if: playerHp < playerMaxHp {
+    healAmount = random(50, 100);
+    player.setHp(playerHp + healAmount);
+    return true;
+}
+
+return false;
