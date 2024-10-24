@@ -27,6 +27,10 @@ void ShopKeep::initInventory() {
         getInventory().removeItemAt(0, getInventory().getItemAmountAt(0));
     }
 
+    for (int i = 0; i < 4; i++) {
+        _equippedApparel[i] = NOTHING_EQUIPPED;
+    }
+
     unsigned int seed = _pos.x + _pos.y * (_pos.x - _pos.y);
     srand(seed);
 
@@ -111,6 +115,22 @@ void ShopKeep::initInventory() {
     }
 
     if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
+
+    // apparel
+    std::vector<std::vector<int>> clothingOptions = {
+        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED},
+        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED}
+    };
+
+    for (const auto& item : Item::ITEMS) {
+        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD) {
+            clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
+        }
+    }
+
+    for (int i = 0; i < clothingOptions.size(); i++) {
+        _equippedApparel[i] = clothingOptions.at(i).at((size_t)randomInt(0, clothingOptions.at(i).size() - 1));
+    }
 }
 
 void ShopKeep::update() {
@@ -143,8 +163,8 @@ void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Ren
         int spriteHeight = 3;
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
 
-        if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
-            sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
+        if ((int)equipType < 4 && (int)equipType > 0 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
             int spriteY = itemTextureRect.top + TILE_SIZE;
 
             sprite.setTextureRect(sf::IntRect(
@@ -157,8 +177,8 @@ void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Ren
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
 
-        if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
-            sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
+        if ((int)equipType < 4 && (int)equipType > 0 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
             int spriteY = itemTextureRect.top;
 
             sprite.setTextureRect(sf::IntRect(
