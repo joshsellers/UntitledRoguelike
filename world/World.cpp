@@ -1297,8 +1297,10 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
 
         _shopKeep->setPosition(sf::Vector2f(buildingPos.x + 32, buildingPos.y + 80 - 12));
         _shopKeep->initInventory();
-        _shopKeep->activate();
-        addEntity(_shopKeep);
+        if (!isShopKeepDead(_shopKeep->getPosition().x + _shopKeep->getPosition().y * (_shopKeep->getPosition().x - _shopKeep->getPosition().y))) {
+            _shopKeep->activate();
+            addEntity(_shopKeep);
+        }
 
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
         _player->_pos.y = shopCounter->getPosition().y + 46;
@@ -1330,6 +1332,17 @@ void World::exitBuilding() {
 
 bool World::playerIsInShop() const {
     return _isPlayerInShop;
+}
+
+void World::shopKeepKilled(unsigned int shopSeed) {
+    _deadShopKeeps.push_back(shopSeed);
+}
+
+bool World::isShopKeepDead(unsigned int shopSeed) const {
+    for (unsigned int seed : _deadShopKeeps) {
+        if (seed == shopSeed) return true;
+    }
+    return false;
 }
 
 void World::setShopKeep(std::shared_ptr<ShopKeep> shopKeep) {

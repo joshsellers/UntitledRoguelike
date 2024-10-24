@@ -17,6 +17,9 @@ public:
 
     void setPosition(sf::Vector2f pos);
 
+protected:
+    virtual void damage(int damage);
+
 private:
     sf::Sprite _clothingHeadSprite;
     sf::Sprite _clothingBodySprite;

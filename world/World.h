@@ -85,6 +85,9 @@ public:
     void exitBuilding();
     bool playerIsInShop() const;
 
+    void shopKeepKilled(unsigned int shopSeed);
+    bool isShopKeepDead(unsigned int shopSeed) const;
+
     void setShopKeep(std::shared_ptr<ShopKeep> shopKeep);
 
     void startNewGameCooldown();
@@ -128,6 +131,8 @@ private:
     std::vector<sf::Vector2f> _seenShops;
     bool shopHasBeenSeenAt(sf::Vector2f pos) const;
     void shopSeenAt(sf::Vector2f pos);
+
+    std::vector<unsigned int> _deadShopKeeps;
 
     std::vector<sf::Vector2f> _activatedAltars;
 

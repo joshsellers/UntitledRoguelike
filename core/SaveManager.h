@@ -181,6 +181,14 @@ private:
             }
             out << std::endl;
         }
+
+        if (_world->_deadShopKeeps.size() != 0) {
+            out << "DEADSHOPKEEPS";
+            for (auto& seed : _world->_deadShopKeeps) {
+                out << ":" << std::to_string(seed);
+            }
+            out << std::endl;
+        }
     }
 
     static void saveAbilities(std::ofstream& out) {
@@ -435,6 +443,10 @@ private:
                 std::vector<std::string> parsedData = splitString(altarPosData, ",");
                 sf::Vector2f altarPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->altarActivatedAt(altarPos);
+            }
+        } else if (header == "DEADSHOPKEEPS") {
+            for (auto& seedData : data) {
+                _world->shopKeepKilled(std::stoul(seedData));
             }
         } else if (header == "SHOPLOCATION") {
             unsigned int seed = std::stoul(data[0]);

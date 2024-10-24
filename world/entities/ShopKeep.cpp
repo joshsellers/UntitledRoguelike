@@ -121,12 +121,14 @@ void ShopKeep::update() {
 }
 
 void ShopKeep::draw(sf::RenderTexture& surface) {
-    surface.draw(_sprite);
+    if (_isActive) {
+        surface.draw(_sprite);
 
-    drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
-    drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
-    drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
-    drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
+        drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
+        drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
+        drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
+        drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
+    }
 }
 
 void ShopKeep::setPosition(sf::Vector2f pos) {
@@ -166,6 +168,15 @@ void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Ren
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
             surface.draw(sprite);
         }
+    }
+}
+
+void ShopKeep::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+
+        getWorld()->shopKeepKilled(_pos.x + _pos.y * (_pos.x - _pos.y));
     }
 }
 

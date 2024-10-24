@@ -28,6 +28,8 @@ bool ShopManager::buy(int itemId, int amount) {
         _shopLedger[currentSeed][transactionNumber] = std::make_pair(itemId, -amount);
         _shopLedger[currentSeed][transactionNumber + 1u] = std::make_pair(Item::PENNY.getId(), price);
 
+        if (Item::ITEMS[itemId]->getName() == "Shopkeep's Heart") shopKeep->takeDamage(shopKeep->getMaxHitPoints());
+
         if (!Tutorial::isCompleted() 
             && Item::ITEMS[itemId]->getId() == Item::BOW.getId()) Tutorial::completeStep(TUTORIAL_STEP::BUY_BOW);
 

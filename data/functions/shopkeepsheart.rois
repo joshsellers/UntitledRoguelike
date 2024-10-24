@@ -1,0 +1,16 @@
+playerMaxHp = player.getMaxHp();
+playerHp = player.getHp();
+
+if: playerHp < playerMaxHp {
+    player.setHp(playerMaxHp);
+
+    hasEffect = player.hasEffect("Shopkeep's Heart");
+    if: not hasEffect {
+        player.addEffect("Shopkeep's Heart");
+    }
+
+    return true;
+}
+
+displayMessage("Your HP is already full!", 5);
+return false;

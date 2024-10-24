@@ -928,7 +928,11 @@ void Game::update() {
             }
         }
 
-        if (_world.playerIsInShop()) _world.incrementEnemySpawnCooldownTimeWhilePaused();
+        if (_world.playerIsInShop()) {
+            _world.incrementEnemySpawnCooldownTimeWhilePaused();
+
+            if (!_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
+        }
         _world.update();
 
         if (_world.bossIsActive() && !_bossHUDMenu->isActive()) {
@@ -1266,6 +1270,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._destroyedProps.clear();
         _world._seenShops.clear();
         _world._activatedAltars.clear();
+        _world._deadShopKeeps.clear();
         _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;
@@ -1637,7 +1642,7 @@ void Game::toggleInventoryMenu() {
 }
 
 void Game::toggleShopMenu() {
-    if (_world.playerIsInShop() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
+    if (_world.playerIsInShop() && _shopKeep->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
         for (auto& entity : _world.getEntities()) {
             if (entity->isActive() && entity->getEntityType() == "shopkeep") {
                 if (_player->getHitBox().intersects(entity->getHitBox())) {

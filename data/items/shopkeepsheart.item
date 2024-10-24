@@ -1,0 +1,10 @@
+name = "Shopkeep's Heart"
+description = "Buy the shopkeep's heart, and consume it to\nrestore 100% of your HP.\n\nThis kills the shopkeep."
+isBuyable = true
+value = 199
+isStackable = false
+unlockWaveNumber = 18
+shopChance = 4
+isConsumable = true
+functionName = "shopkeepsheart"
+textureRect = 9, 13, 1, 1
