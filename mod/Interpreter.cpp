@@ -8,6 +8,7 @@
 #include "../inventory/effect/PlayerVisualEffectManager.h"
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
+#include "ScriptExtensions.h"
 
 int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
     int i = 0;
@@ -221,7 +222,11 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
             i++;
         } else if (inst == INSTRUCTION::CALL) {
             std::string funcName = strPop();
-            push(interpret(ModManager::getFunction(funcName), entity));
+            if (!stringStartsWith(funcName, "BUILTIN:")) {
+                push(interpret(ModManager::getFunction(funcName), entity));
+            } else {
+                push(ScriptExtensions::execute(splitString(funcName, ":")[1], entity, this));
+            }
             i++;
         } else if (inst == INSTRUCTION::POP) {
             i++;

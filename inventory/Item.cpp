@@ -12,6 +12,7 @@
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../mod/Interpreter.h"
 #include "../mod/ModManager.h"
+#include "../mod/ScriptExtensions.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -766,9 +767,11 @@ const bool Item::isBuyable() const {
 * should be removed from the inventory upon use.
 */
 bool Item::use(Entity* parent) const {
-    if (_isCustomItem && _functionName != "NONE") {
+    if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN:")) {
         Interpreter interpreter;
         return interpreter.interpret(ModManager::getFunction(_functionName), parent);
+    } else if (_isConsumable && stringStartsWith(_functionName, "BUILTIN:")) {
+        return ScriptExtensions::execute(splitString(_functionName, ":")[1], parent, nullptr);
     }
     return _use(parent);
 }

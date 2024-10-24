@@ -9,6 +9,8 @@
 class Interpreter {
 public:
     int interpret(std::vector<int> bytecode, Entity* entity);
+
+    friend class ScriptExtensions;
 private:
     static inline const int MAX_STACK = 128;
     int _stackSize = 0;
