@@ -163,7 +163,7 @@ void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Ren
         int spriteHeight = 3;
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
 
-        if ((int)equipType < 4 && (int)equipType > 0 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+        if ((int)equipType < 4 && (int)equipType > -1 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
             sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
             int spriteY = itemTextureRect.top + TILE_SIZE;
 
@@ -177,7 +177,7 @@ void ShopKeep::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Ren
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
 
-        if ((int)equipType < 4 && (int)equipType > 0 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+        if ((int)equipType < 4 && (int)equipType > -1 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
             sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
             int spriteY = itemTextureRect.top;
 
