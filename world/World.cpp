@@ -1092,7 +1092,7 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
         _bossIsActive = true;
         _currentBoss = entity;
     } else if (HARD_MODE_ENABLED && entity->isMiniBoss()) {
-        entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 1.50f));
+        //entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 1.15f));
         entity->heal(entity->getMaxHitPoints());
     }
 

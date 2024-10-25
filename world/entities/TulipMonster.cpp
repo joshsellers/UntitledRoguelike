@@ -5,7 +5,7 @@
 TulipMonster::TulipMonster(sf::Vector2f pos) : Entity(TULIP_MONSTER, pos, 2, TILE_SIZE * 3, TILE_SIZE * 3, false) {
     setMaxHitPoints(105);
     if (HARD_MODE_ENABLED) {
-        setMaxHitPoints(getMaxHitPoints() + ((float)getMaxHitPoints() * 1.5f));
+        //setMaxHitPoints(getMaxHitPoints() + ((float)getMaxHitPoints() * 1.15f));
     }
 
     heal(getMaxHitPoints());

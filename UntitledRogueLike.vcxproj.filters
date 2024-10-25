@@ -468,6 +468,9 @@
     <ClCompile Include="mod\ScriptExtensions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\ShopKeepCorpse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -831,6 +834,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mod\ScriptExtensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\ShopKeepCorpse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

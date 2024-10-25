@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mod\ScriptExtensions.cpp" />
+    <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
     <ClCompile Include="world\entities\Lightning.cpp" />
     <ClCompile Include="world\entities\AltarArrow.cpp" />
     <ClCompile Include="world\entities\Altar.cpp" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mod\ScriptExtensions.h" />
+    <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
     <ClInclude Include="world\entities\AltarArrow.h" />
     <ClInclude Include="world\entities\Altar.h" />
