@@ -48,6 +48,7 @@
 #include "entities/CreamBoss.h"
 #include "entities/Altar.h"
 #include "entities/AltarArrow.h"
+#include "entities/ShopKeepCorpse.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1300,6 +1301,11 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         if (!isShopKeepDead(_shopKeep->getPosition().x + _shopKeep->getPosition().y * (_shopKeep->getPosition().x - _shopKeep->getPosition().y))) {
             _shopKeep->activate();
             addEntity(_shopKeep);
+        } else {
+            sf::Vector2f corpsePos(_shopKeep->getPosition().x - 8, _shopKeep->getPosition().y + 10);
+            std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getSpriteSheet()));
+            corpse->setWorld(this);
+            addEntity(corpse);
         }
 
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;

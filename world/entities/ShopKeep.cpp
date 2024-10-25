@@ -1,6 +1,7 @@
 #include "ShopKeep.h"
 #include "../World.h"
 #include "../../core/Tutorial.h"
+#include "ShopKeepCorpse.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -197,6 +198,11 @@ void ShopKeep::damage(int damage) {
         _isActive = false;
 
         getWorld()->shopKeepKilled(_pos.x + _pos.y * (_pos.x - _pos.y));
+
+        sf::Vector2f corpsePos(getPosition().x - 8, getPosition().y + 10);
+        std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getWorld()->getSpriteSheet()));
+        corpse->setWorld(getWorld());
+        getWorld()->addEntity(corpse);
     }
 }
 
