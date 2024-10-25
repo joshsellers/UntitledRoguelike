@@ -29,12 +29,14 @@ void Boss::deactivateBossMode() {
 void Boss::changeState() {
     const BossState previousState = _currentState;
 
-    std::vector<BossState> availableStates;
-    for (int i = 0; i < _numBossStates; i++) {
-        int stateIndex = i;
-        if (stateIndex != _currentState.stateId) availableStates.push_back(_bossStates.at(stateIndex));
+    if (_numBossStates != 1) {
+        std::vector<BossState> availableStates;
+        for (int i = 0; i < _numBossStates; i++) {
+            int stateIndex = i;
+            if (stateIndex != _currentState.stateId) availableStates.push_back(_bossStates.at(stateIndex));
+        }
+        _currentState = availableStates.at(randomInt(0, (int)availableStates.size() - 1));
     }
-    _currentState = availableStates.at(randomInt(0, (int)availableStates.size() - 1));
 
     _currentStateLength = (long long)randomInt(_currentState.minLength, _currentState.maxLength);
     _lastStateChangeTime = currentTimeMillis();

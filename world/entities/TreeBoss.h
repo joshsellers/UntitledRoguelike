@@ -27,6 +27,9 @@ private:
 
     const long long _fireRateMillis = 450LL;
     long long _lastFireTimeMillis = 0LL;
+
+    void resetChaseTarget();
+    sf::Vector2f _chaseTarget;
 };
 
 #endif

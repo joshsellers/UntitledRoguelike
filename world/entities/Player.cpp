@@ -543,11 +543,6 @@ void Player::blink() {
     if (isDodging() && isMoving()) _isBlinking = false;
 }
 
-bool Player::isTakingDamage() const {
-    constexpr long long damageDisplayTime = 200LL;
-    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
-}
-
 void Player::move(float xa, float ya) {
     bool collidingX = false, collidingY = false;
 
@@ -714,7 +709,7 @@ void Player::damage(int damage) {
 
     if (isDodging() && isMoving()) return;
 
-    if (!isDodging() && !freeMove) {
+    if (!isDodging() && !freeMove && !isTakingDamage()) {
         if (GamePad::isConnected()) {
             int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
             GamePad::vibrate(vibrationAmount, 250);
@@ -729,6 +724,11 @@ void Player::damage(int damage) {
 
         StatManager::increaseStat(DAMAGE_TAKEN, damage);
     }
+}
+
+bool Player::isTakingDamage() const {
+    constexpr long long damageDisplayTime = 225LL;
+    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
 }
 
 float getArmorCoefficient(unsigned int itemId) {

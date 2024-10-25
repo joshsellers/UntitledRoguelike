@@ -5,8 +5,8 @@
 TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 5,
     {
         BossState(BEHAVIOR_STATE::CHASE, 2000LL, 2500LL),
-        BossState(BEHAVIOR_STATE::SHOOT_LOGS_0, 5000LL, 5000LL),
-        BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 5000LL, 5000LL)
+        BossState(BEHAVIOR_STATE::SHOOT_LOGS_0, 3000LL, 5000LL)
+        //BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 3000LL, 4000LL)
     }) 
 {
     setMaxHitPoints(475);
@@ -82,10 +82,15 @@ void TreeBoss::subUpdate() {
     }
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    if (_chaseTarget.x == 0.f && _chaseTarget.y == 0.f) resetChaseTarget();
 }
 
 void TreeBoss::onStateChange(const BossState previousState, const BossState newState) {
-    if (newState.stateId == CHASE) _baseSpeed = 3.f;
+    if (newState.stateId == CHASE) {
+        _baseSpeed = 4.5f;
+        resetChaseTarget();
+    }
     else _baseSpeed = 1.f;
 }
 
@@ -93,40 +98,24 @@ void TreeBoss::runCurrentState() {
     switch (_currentState.stateId) {
         case CHASE:
         {
-            sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
-            sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5);
+            sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5 / 2);
 
-            float xa = 0.f, ya = 0.f;
+            const float dist = std::sqrt(std::pow(_chaseTarget.x - cLoc.x, 2) + std::pow(_chaseTarget.y - cLoc.y, 2));
+            const float targetDist = _baseSpeed;
+            const float distRat = targetDist / dist;
 
-            if (goalPos.y < cLoc.y) {
-                ya--;
-                _movingDir = LEFT;
-            } else if (goalPos.y > cLoc.y) {
-                ya++;
-                _movingDir = DOWN;
-            }
-
-            if (goalPos.x < cLoc.x) {
-                xa--;
-            } else if (goalPos.x > cLoc.x) {
-                xa++;
-            }
-
-            if (xa && ya) {
-                xa *= 0.785398;
-                ya *= 0.785398;
-
-                if (ya > 0) _movingDir = DOWN;
-                else _movingDir = LEFT;
-            }
-
-            if (_spawnedWithEnemies) hoardMove(xa, ya, true, 50);
-            else move(xa, ya);
+            _pos = sf::Vector2f(((1 - distRat) * cLoc.x + distRat * _chaseTarget.x), ((1 - distRat) * cLoc.y + distRat * _chaseTarget.y) - TILE_SIZE * 5 / 2);
 
             if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
                 _world->getPlayer()->takeDamage(15);
                 _world->getPlayer()->knockBack(15, getMovingDir());
             }
+
+            if (distRat > 1.f) resetChaseTarget();
+
+            _numSteps++;
+            _isMoving = true;
+
             break;
         }
         case SHOOT_LOGS_0:
@@ -262,4 +251,15 @@ void TreeBoss::runCurrentState() {
             break;
         }
     }
+}
+
+void TreeBoss::resetChaseTarget() {
+    const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+    const sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 5);
+
+    const float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
+    const float targetDist = dist + 100.f;
+    const float distRat = targetDist / dist;
+
+    _chaseTarget = sf::Vector2f(((1 - distRat) * cLoc.x + distRat * playerPos.x), ((1 - distRat) * cLoc.y + distRat * playerPos.y));
 }
