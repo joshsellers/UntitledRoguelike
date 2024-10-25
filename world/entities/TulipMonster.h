@@ -3,7 +3,7 @@
 
 #include "Entity.h"
 
-constexpr long long TULIP_MONSTER_FIRE_RATE = 500LL;
+constexpr long long TULIP_MONSTER_FIRE_RATE = 750LL;
 
 class TulipMonster : public Entity {
 public:
