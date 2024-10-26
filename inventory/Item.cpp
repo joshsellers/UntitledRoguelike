@@ -255,9 +255,9 @@ const Item Item::PROTEIN_SHAKE(34, "Protein Shake", sf::IntRect(4, 11, 1, 1), fa
     }
 );
 
-const Item Item::BOTTLE_OF_MILK(35, "Bottle of Milk", sf::IntRect(5, 11, 1, 1), false, 0, true,
+const Item Item::BOTTLE_OF_MILK(35, "_Bottle of Milk", sf::IntRect(5, 11, 1, 1), false, 0, true,
     "Increases max HP by 10 and makes you feel a little better\n\nRestores 10 HP",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 25, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 25, false,
     [](Entity* parent) {
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 10);
         parent->heal(10);
@@ -865,7 +865,6 @@ unsigned int Item::getRequiredWave() const {
 
 std::map<unsigned int, unsigned int> Item::ITEM_SHOP_CHANCES = {
     {Item::PROTEIN_SHAKE.getId(), 4},
-    {Item::BOTTLE_OF_MILK.getId(), 3},
     {Item::MATMURA_HELMET.getId(), 50},
     {Item::MATMURA_CHESTPLATE.getId(), 50},
     {Item::MATMURA_LEGGINGS.getId(), 50},

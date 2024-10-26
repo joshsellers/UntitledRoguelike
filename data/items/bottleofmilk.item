@@ -1,0 +1,9 @@
+name = "Bottle of Milk"
+description = "Increases max HP by 10 and makes you feel a little better\n\nRestores 10 HP"
+isConsumable = true
+textureRect = 5, 11, 1, 1
+isBuyable = true
+value = 25
+unlockWaveNumber = 5
+shopChance = 3
+functionName = "bottleofmilk"
