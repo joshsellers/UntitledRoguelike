@@ -474,6 +474,11 @@ private:
             player->_staminaRefreshRate = std::stoi(data[9]);
             player->_damageMultiplier = std::stof(data[10]);
             player->_coinMagnetCount = std::stoul(data[11]);
+
+            if (data.size() < 13) {
+                player->_speedMultiplier = 0.f;
+                return;
+            }
             player->_speedMultiplier = std::stof(data[12]);
         } else if (header == "PINVENTORY") {
             auto& player = _world->getPlayer();

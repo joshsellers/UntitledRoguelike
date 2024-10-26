@@ -7,5 +7,5 @@ functionName = "speedpill"
 isBuyable = true
 shopChance = 4
 unlockWaveNumber = 8
-value = 499
+value = 399
 textureRect = 8, 13, 1, 1
