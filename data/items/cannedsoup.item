@@ -9,3 +9,4 @@ shopChance = 3
 isConsumable = true
 functionName = "cannedsoup"
 textureRect = 10, 13, 1, 1
+tags = "food"

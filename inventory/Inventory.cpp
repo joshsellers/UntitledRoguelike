@@ -128,7 +128,19 @@ int Inventory::findItem(unsigned int itemId) const {
 }
 
 void Inventory::useItem(size_t inventoryIndex) const {
-    if (inventoryIndex < _inventory.size()) Item::ITEMS.at(_inventory.at(inventoryIndex).x)->use(_parent);
+    if (inventoryIndex < _inventory.size()) {
+        const auto& item = Item::ITEMS.at(_inventory.at(inventoryIndex).x);
+
+        const int hpBeforeUse = _parent->getHitPoints();
+        
+        item->use(_parent);
+
+        const int hpAfterUse = _parent->getHitPoints();
+        if (hpAfterUse > hpBeforeUse && item->hasTag("food")) {
+            const int healAmount = hpAfterUse - hpBeforeUse;
+            _parent->heal((float)healAmount * 0.25);
+        }
+    }
     else MessageManager::displayMessage("Invalid inventory index: " + std::to_string(inventoryIndex) + ". Inventory size is " + std::to_string(_inventory.size()), 10, WARN);
 }
 

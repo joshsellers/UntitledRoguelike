@@ -168,7 +168,10 @@ public:
     bool isAnimated() const;
     WeaponAnimationConfig getAnimationConfig() const;
 
-    static void checkForIncompleteItemConfigs();
+    bool hasTag(std::string tag) const;
+    std::vector<std::string> getTags() const;
+
+    static void initItems();
 
     friend class ModManager;
 private:
@@ -210,6 +213,11 @@ private:
     const std::string _functionName;
 
     const EQUIPMENT_TYPE _equipType;
+
+    std::vector<std::string> _tags;
+    void addTag(std::string tag);
+
+    static void checkForIncompleteItemConfigs();
 };
 
 #endif

@@ -7,3 +7,4 @@ value = 25
 unlockWaveNumber = 5
 shopChance = 3
 functionName = "bottleofmilk"
+tags = "food"

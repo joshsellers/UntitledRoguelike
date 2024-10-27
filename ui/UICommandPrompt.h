@@ -797,6 +797,77 @@ private:
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "gettags",
+            Command("List all the tags that an item has",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
+                        std::shared_ptr<const Item> item = nullptr;
+                        for (int i = 0; i < Item::ITEMS.size(); i++) {
+                            std::string itemName = Item::ITEMS[i]->getName();
+                            boost::to_lower(itemName);
+                            if (parsedCommand.at(1) == itemName) {
+                                item = Item::ITEMS[i];
+                                std::string tagsString = "";
+                                int tagsThisLine = 0;
+                                for (const auto& tag : item->getTags()) {
+                                    tagsThisLine++;
+                                    
+                                    tagsString += tag + ", ";
+
+                                    if (tagsThisLine == 5) {
+                                        tagsThisLine = 0;
+                                        tagsString += "\n";
+                                    }
+                                }
+
+                                if (tagsString.at(tagsString.size() - 1) == '\n') tagsString.pop_back();
+                                if (stringEndsWith(tagsString, ", ")) {
+                                    tagsString.pop_back();
+                                    tagsString.pop_back();
+                                }
+
+                                return tagsString;
+                            }
+                        }
+                        return parsedCommand.at(1) + " is not a valid item";
+                    } else {
+                        try {
+                            int itemId = stoi(parsedCommand.at(1));
+                            if (itemId >= Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
+
+                            std::shared_ptr<const Item> item = Item::ITEMS[itemId];
+                            std::string tagsString = "";
+                            int tagsThisLine = 0;
+                            for (const auto& tag : item->getTags()) {
+                                tagsThisLine++;
+
+                                tagsString += tag + ",";
+
+                                if (tagsThisLine == 5) {
+                                    tagsThisLine = 0;
+                                    tagsString += "\n";
+                                }
+                            }
+
+                            if (tagsString.at(tagsString.size() - 1) == '\n') tagsString.pop_back();
+                            if (stringEndsWith(tagsString, ", ")) {
+                                tagsString.pop_back();
+                                tagsString.pop_back();
+                            }
+
+                            return tagsString;
+                        } catch (std::exception ex) {
+                            return ex.what();
+                        }
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
         }
     };
 };

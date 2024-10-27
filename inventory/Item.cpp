@@ -895,6 +895,31 @@ WeaponAnimationConfig Item::getAnimationConfig() const {
     return ANIMATION_CONFIGS.at(getId());
 }
 
+void Item::addTag(std::string tag) {
+    _tags.push_back(tag);
+}
+
+bool Item::hasTag(std::string tag) const {
+    for (const auto& existingTag : _tags) {
+        if (existingTag == tag) return true;
+    }
+    return false;
+}
+
+std::vector<std::string> Item::getTags() const {
+    return _tags;
+}
+
+void Item::initItems() {
+    ITEMS[APPLE.getId()]->addTag("food");
+    ITEMS[BANANA.getId()]->addTag("food");
+    ITEMS[CACTUS_FLESH.getId()]->addTag("food");
+    ITEMS[PROTEIN_SHAKE.getId()]->addTag("food");
+    ITEMS[CHEESE_SLICE.getId()]->addTag("food");
+
+    checkForIncompleteItemConfigs();
+}
+
 void Item::checkForIncompleteItemConfigs() {
     for (const auto& item : ITEMS) {
         if (ITEM_UNLOCK_WAVE_NUMBERS.count(item->getId()) == 0) {

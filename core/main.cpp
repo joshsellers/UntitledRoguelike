@@ -154,7 +154,7 @@ int main() {
     steamworksSetup();
     AchievementManager::start();
 
-    Item::checkForIncompleteItemConfigs();
+    Item::initItems();
 
     checkLocalLowExists();
 

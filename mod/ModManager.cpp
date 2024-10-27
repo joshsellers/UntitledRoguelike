@@ -124,6 +124,7 @@ void ModManager::loadItem(std::ifstream& in) {
     std::string ammoItemName = "";
     bool isStartingItem = false;
     unsigned int shopChance = 2;
+    std::vector<std::string> tags;
 
     std::string line;
     while (getline(in, line)) {
@@ -214,6 +215,18 @@ void ModManager::loadItem(std::ifstream& in) {
                 isStartingItem = tokens.at(2) == "1";
             } else if (tokens.at(0) == "shopChance") {
                 shopChance = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "tags") {
+                for (int i = 2; i < tokens.size(); i++) {
+                    std::string currentToken = tokens.at(i);
+                    if (stringStartsWith(currentToken, "\"") || currentToken == ",") {
+                        if (stringStartsWith(currentToken, "\"")) {
+                            replaceAll(currentToken, "\"", "");
+                            tags.push_back(currentToken);
+                        }
+                    } else {
+                        MessageManager::displayMessage("Bad tag syntax for item \"" + name + "\": " + currentToken, 5, ERR);
+                    }
+                }
             } else {
                 MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -248,6 +261,10 @@ void ModManager::loadItem(std::ifstream& in) {
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
     Item::ITEM_SHOP_CHANCES[itemId] = shopChance;
+
+    for (std::string tag : tags) {
+        Item::ITEMS[itemId]->addTag(tag);
+    }
 
     if (isAnimated) {
         Item::ANIMATION_CONFIGS[itemId] = WeaponAnimationConfig(itemId, ticksPerFrame, frameCount);

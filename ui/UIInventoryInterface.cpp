@@ -235,7 +235,15 @@ void UIInventoryInterface::useItem(int index) {
     std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(index)];
 
     if (item->isConsumable()) {
+        const int hpBeforeUse = _source.getParent()->getHitPoints();
+
         if (item->use(_source.getParent())) _source.removeItemAt(index, 1);
+
+        const int hpAfterUse = _source.getParent()->getHitPoints();
+        if (hpAfterUse > hpBeforeUse && item->hasTag("food") && _source.getEquippedItemId(EQUIPMENT_TYPE::CLOTHING_HEAD) == Item::getIdFromName("Chef's Hat")) {
+            const int healAmount = hpAfterUse - hpBeforeUse;
+            _source.getParent()->heal((float)healAmount * 0.25);
+        }
     } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
         if (_source.isEquipped(index)) {
             _source.deEquip(item->getEquipmentType());
