@@ -124,7 +124,7 @@ void ShopKeep::initInventory() {
     };
 
     for (const auto& item : Item::ITEMS) {
-        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD) {
+        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()) {
             clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
         }
     }

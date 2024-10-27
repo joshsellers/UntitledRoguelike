@@ -6,6 +6,6 @@ isConsumable = true
 functionName = "speedpill"
 isBuyable = true
 shopChance = 4
-unlockWaveNumber = 8
+unlockWaveNumber = 10
 value = 399
 textureRect = 8, 13, 1, 1
