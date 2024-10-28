@@ -36,6 +36,7 @@
 #include "../world/entities/CreamBoss.h"
 #include "../world/entities/Altar.h"
 #include "../world/entities/Lightning.h"
+#include "../world/entities/ChefBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -291,6 +292,8 @@ private:
                             entity = std::shared_ptr<Altar>(new Altar(pos, false, _world->getSpriteSheet()));
                         } else if (entityName == "lightning") {
                             entity = std::shared_ptr<Lightning>(new Lightning(pos));
+                        } else if (entityName == "chefboss") {
+                            entity = std::shared_ptr<ChefBoss>(new ChefBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

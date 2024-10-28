@@ -28,6 +28,7 @@ public:
     static const OrbiterType CREAM_COUNTERCLOCKWISE_OUT;
     static const OrbiterType CREAM_CLOCKWISE_IN;
     static const OrbiterType CREAM_COUNTERCLOCKWISE_IN;
+    static const OrbiterType PIZZA_CHEFBOSS;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

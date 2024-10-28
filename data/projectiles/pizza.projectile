@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_CHEFBOSS_PIZZA"
+velocity = 1.5
+lifeTime = 800
+hitBox = 0, 0, 16, 16
+rotate = true
+onlyHitEnemies = false

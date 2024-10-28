@@ -54,7 +54,7 @@ void Orbiter::update() {
 }
 
 void Orbiter::attack() {
-    if (currentTimeMillis() - _lastFireTime >= _orbiterType->getAttackFrequency()) {
+    if (currentTimeMillis() - _lastFireTime >= _orbiterType->getAttackFrequency() + _attackFreqOffset) {
         switch (_orbiterType->getAttackMethod()) {
             case OrbiterAttackMethod::CONTACT:
                 contactAttack();
@@ -128,9 +128,9 @@ void Orbiter::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileDat
     fireTargetedProjectile(angle, projData, soundName);
 }
 
-void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName) {
+void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, sf::Vector2f centerOffset) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y);
-    sf::Vector2f spawnPos(centerPoint.x - 8, centerPoint.y);
+    sf::Vector2f spawnPos(centerPoint.x - 8 + centerOffset.x, centerPoint.y + centerOffset.y);
 
     bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT && _orbiterType->getAttackMethod() != OrbiterAttackMethod::CUSTOM;
     
@@ -172,6 +172,10 @@ void Orbiter::setCenterPointOffset(float xOffset, float yOffset) {
 void Orbiter::setCenterPointOffset(sf::Vector2f offset) {
     _centerPointOffset = offset;
     _centerPointOffsetWasReset = true;
+}
+
+void Orbiter::setAttackFrequencyOffset(long long attackFreqOffset) {
+    _attackFreqOffset = attackFreqOffset;
 }
 
 Entity* Orbiter::getParent() const {

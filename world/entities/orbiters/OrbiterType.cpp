@@ -113,6 +113,20 @@ const OrbiterType OrbiterType::CREAM_COUNTERCLOCKWISE_IN(9, "CREAM_CCI", sf::Int
     }, true
 );
 
+const OrbiterType OrbiterType::PIZZA_CHEFBOSS(10, "PIZZA_CHEFBOSS", sf::IntRect(13, 13, 1, 1), 1.5f, 75.f,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, true, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        float fireAngle = orbiterInstance->getAngle();
+        fireAngle += 180.f;
+        if (fireAngle >= 360.f) fireAngle -= 360.f;
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(fireAngle), ProjectileDataManager::getData("_PROJECTILE_CHEFBOSS_PIZZA"), orbiterInstance->_orbiterType->getAttackSoundName(),
+            {8.f, 0.f}
+        );
+        orbiterInstance->deactivate();
+    }, true
+);
+
 
 std::vector<const OrbiterType*> OrbiterType::ORBITER_TYPES;
 

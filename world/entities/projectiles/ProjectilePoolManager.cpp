@@ -29,6 +29,17 @@ void ProjectilePoolManager::draw(sf::RenderTexture& surface) {
     for (auto& projectile : _pool) {
         if (projectile->isActive() && projectile->getHitBox().intersects(cameraBounds)) {
             projectile->draw(surface);
+            
+            if (_debug) {
+                sf::RectangleShape hitBox;
+                sf::FloatRect box = projectile->getHitBox();
+                hitBox.setPosition(box.left, box.top);
+                hitBox.setSize(sf::Vector2f(box.width, box.height));
+                hitBox.setFillColor(sf::Color::Transparent);
+                hitBox.setOutlineColor(sf::Color(0xFF0000FF));
+                hitBox.setOutlineThickness(1.f);
+                surface.draw(hitBox);
+            }
         }
     }
 }
@@ -59,4 +70,8 @@ void ProjectilePoolManager::removeAll() {
     for (auto& projectile : _pool) {
         projectile->deactivate();
     }
+}
+
+void ProjectilePoolManager::setDebug(bool debug) {
+    _debug = debug;
 }

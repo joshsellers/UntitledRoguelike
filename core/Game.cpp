@@ -1530,6 +1530,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     switch (key) {
     case sf::Keyboard::F3:
         _showDebug = !_showDebug;
+        ProjectilePoolManager::setDebug(_showDebug);
         break;
     case sf::Keyboard::F10:
         if (_commandMenu->isActive()) {
