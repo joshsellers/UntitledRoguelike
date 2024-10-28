@@ -154,7 +154,9 @@ void CreamBoss::onStateChange(const BossState previousState, const BossState new
 void CreamBoss::runCurrentState() {
     constexpr long long layerSpawnRate = 500LL;
 
-    if (_currentLayerCount < _maxLayers && currentTimeMillis() - _lastLayerSpawnTime >= layerSpawnRate) {
+    constexpr int maxLayers = 5;
+
+    if (_currentLayerCount < maxLayers && currentTimeMillis() - _lastLayerSpawnTime >= layerSpawnRate) {
         constexpr float layerDist = 100.f;
         constexpr int orbiterCount = 8;
 

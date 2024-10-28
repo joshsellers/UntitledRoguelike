@@ -2,7 +2,6 @@
 #include "../World.h"
 #include "orbiters/Orbiter.h"
 
-
 CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, 
     {
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),

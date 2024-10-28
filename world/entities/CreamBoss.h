@@ -26,7 +26,6 @@ private:
 
     long long _lastContactDamageTimeMillis = 0LL;
 
-    const int _maxLayers = 10;
     int _currentLayerCount = 0;
     long long _lastLayerSpawnTime = 0LL;
 };
