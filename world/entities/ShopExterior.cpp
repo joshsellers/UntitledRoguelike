@@ -2,8 +2,8 @@
 #include "../World.h"
 #include "ShopInterior.h"
 
-ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 192, 96, true) {
-    _pos = pos;
+ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
+    //_pos = pos;
     loadSprite(spriteSheet);
 
     _hitBoxXOffset = 80;

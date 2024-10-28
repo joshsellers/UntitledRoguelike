@@ -58,6 +58,7 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
 }
 
 void World::init(unsigned int seed) {
+    MessageManager::displayMessage("Initializing world with seed " + std::to_string(seed), 0, DEBUG);
     _seed = seed;
     srand(_seed);
     gen.seed(_seed);
