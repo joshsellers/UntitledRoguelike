@@ -18,6 +18,7 @@
 #include "music/MusicManager.h"
 #include "Viewport.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
+#include "../world/entities/AltarArrow.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -79,6 +80,11 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _coinMagnetCountLabel.setCharacterSize(24);
     _coinMagnetCountLabel.setString("magnets: ");
     _coinMagnetCountLabel.setPosition(0, 225);
+    
+    _hardModeEnabledLabel.setFont(_font);
+    _hardModeEnabledLabel.setCharacterSize(24);
+    _hardModeEnabledLabel.setString("hardmode: ");
+    _hardModeEnabledLabel.setPosition(0, 250);
 
     _loadingStatusLabel.setFont(_font);
     _loadingStatusLabel.setCharacterSize(UIElement::getRelativeWidth(3.f));
@@ -99,6 +105,8 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _shopArrow.setWorld(&_world);
     _shopArrow.loadSprite(_spriteSheet);
+    AltarArrow::setWorld(&_world);
+    AltarArrow::loadSprite(_spriteSheet);
 
     GamePad::addListener(_player);
     GamePad::addListener(_ui);
@@ -108,6 +116,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     initUI();
 
     loadLoadingScreenMessages();
+    loadTips();
 
     displayStartupMessages();
 }
@@ -140,19 +149,6 @@ void Game::initUI() {
     // Load game menu
     _ui->addMenu(_loadGameMenu);
 
-
-    // Boss HUD menu
-    // probably should not be passing this as a reference but it should be okay
-    int placeholder = 0;
-    _bossHPMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "", 50, 8, 32, 1.5f, placeholder, placeholder, _font
-    ));
-    _bossHPMeter->setColor(0xCC0000FF);
-    _bossHPMeter->setBackgroundColor(0xAA0000FF);
-    _bossHPMeter->useDefaultLabel(false);
-    _bossHPMeter->useAttributes(false);
-    _bossHUDMenu->addElement(_bossHPMeter);
-    _ui->addMenu(_bossHUDMenu);
 
     // Pause menu
     std::shared_ptr<UIButton> mainMenuButton = std::shared_ptr<UIButton>(new UIButton(
@@ -240,7 +236,7 @@ void Game::initUI() {
         "HP", 50, 92, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
     ));
     playerHpMeter->setColor(0xCC0000FF);
-    playerHpMeter->setBackgroundColor(0xAA0000FF);
+    playerHpMeter->setBackgroundColor(0x9A0000FF);
     _HUDMenu->addElement(playerHpMeter);
 
     _magazineMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
@@ -260,6 +256,7 @@ void Game::initUI() {
     _staminaMeter->setBackgroundColor(0x00AA00FF);
     _HUDMenu->addElement(_staminaMeter);
 
+    int placeholder = 0;
     _waveCounterMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
         "", 50.f, 97.f, 14.f, 0.75f, placeholder, placeholder, _font
     ));
@@ -304,19 +301,19 @@ void Game::initUI() {
     ));
     filterAmmoButton->pressWhenSelected = true;
     filterAmmoButton->setSelectionId(3);
-    _inventoryMenu->addElement(filterAmmoButton);
+    //_inventoryMenu->addElement(filterAmmoButton);
 
     std::shared_ptr<UIButton> filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 34, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
+        26, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
     ));
     filterMiscButton->pressWhenSelected = true;
-    filterMiscButton->setSelectionId(4);
+    filterMiscButton->setSelectionId(3);
     _inventoryMenu->addElement(filterMiscButton);
     
     _inventoryMenu->useGamepadConfiguration = true;
     _inventoryMenu->defineSelectionGrid(
         {
-            {0, 1, 2, 3, 4}
+            {0, 1, 2, 3}
         }
     );
 
@@ -356,13 +353,13 @@ void Game::initUI() {
     ));
     shop_filterAmmoButton->pressWhenSelected = true;
     shop_filterAmmoButton->setSelectionId(3);
-    _shopMenu->addElement(shop_filterAmmoButton);
+    //_shopMenu->addElement(shop_filterAmmoButton);
 
     std::shared_ptr<UIButton> shop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 54, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
+        26, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
     ));
     shop_filterMiscButton->pressWhenSelected = true;
-    shop_filterMiscButton->setSelectionId(4);
+    shop_filterMiscButton->setSelectionId(3);
     _shopMenu->addElement(shop_filterMiscButton);
 
     _shopMenu->addElement(buyInterface);
@@ -398,19 +395,19 @@ void Game::initUI() {
     ));
     sellshop_filterAmmoButton->pressWhenSelected = true;
     sellshop_filterAmmoButton->setSelectionId(3);
-    _shopMenu->addElement(sellshop_filterAmmoButton);
+    //_shopMenu->addElement(sellshop_filterAmmoButton);
 
     std::shared_ptr<UIButton> sellshop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        71 - 2.25, 54, 5, 3, "misc", _font, sellInterface.get(), "filter_misc"
+        71 - 2.25, 48, 5, 3, "misc", _font, sellInterface.get(), "filter_misc"
     ));
     sellshop_filterMiscButton->pressWhenSelected = true;
-    sellshop_filterMiscButton->setSelectionId(4);
+    sellshop_filterMiscButton->setSelectionId(3);
     _shopMenu->addElement(sellshop_filterMiscButton);
 
     _shopMenu->useGamepadConfiguration = true;
     _shopMenu->defineSelectionGrid(
         {
-            {0, 1, 2, 3, 4}
+            {0, 1, 2, 3}
         }
     );
 
@@ -528,6 +525,11 @@ void Game::initUI() {
 
 
     // New game menu
+    _tipLabel = std::shared_ptr<UILabel>(new UILabel(
+        "", 50.f, 20.f, 2, _font
+    ));
+    _newGameMenu->addElement(_tipLabel);
+
     _worldNameField = std::shared_ptr<UITextField>(new UITextField(
         "world name:", 49.5, 37, _font
     ));
@@ -557,6 +559,12 @@ void Game::initUI() {
     ));
     newGameBackButton->setSelectionId(3);
     _newGameMenu->addElement(newGameBackButton);
+
+    _hardModeToggleButton = std::shared_ptr<UIButton>(new UIButton(
+        44, 72, 11, 3, "hard mode: off", _font, this, "hardmode"
+    ));
+    _hardModeToggleButton->setSelectionId(4);
+    if (Tutorial::isCompleted()) _newGameMenu->addElement(_hardModeToggleButton);
     
     _newGameMenu->useGamepadConfiguration = true;
     _newGameMenu->defineSelectionGrid(
@@ -564,7 +572,8 @@ void Game::initUI() {
             {_worldNameField->getSelectionId()},
             {_seedField->getSelectionId()},
             {startGameButton->getSelectionId()},
-            {newGameBackButton->getSelectionId()}
+            {newGameBackButton->getSelectionId()},
+            {_hardModeToggleButton->getSelectionId()}
         }
     );
     _ui->addMenu(_newGameMenu);
@@ -607,6 +616,19 @@ void Game::initUI() {
     _messageDispMenu->addElement(messageDisp);
     _ui->addMenu(_messageDispMenu);
     _messageDispMenu->show();
+
+
+    // Boss HUD menu
+    // probably should not be passing this as a reference but it should be okay
+    _bossHPMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
+        "", 50, 8, 32, 1.5f, placeholder, placeholder, _font
+    ));
+    _bossHPMeter->setColor(0xCC0000FF);
+    _bossHPMeter->setBackgroundColor(0x9A0000FF);
+    _bossHPMeter->useDefaultLabel(false);
+    _bossHPMeter->useAttributes(false);
+    _bossHUDMenu->addElement(_bossHPMeter);
+    _ui->addMenu(_bossHUDMenu);
 
 
     // Controls menu
@@ -842,6 +864,39 @@ void Game::initUI() {
     );
     _ui->addMenu(_statsMenu_mainMenu);
 
+   
+    // Death screen
+    std::shared_ptr<UILabel> youDiedLabel = std::shared_ptr<UILabel>(new UILabel(
+        "you died :(", 50.f, 3.f, 3.f, _font
+    ));
+    _deathMenu->addElement(youDiedLabel);
+
+    _waveReachedLabel = std::shared_ptr<UILabel>(new UILabel(
+        "you made it to wave ", 49.5f, 9.f, 1.25f, _font
+    ));
+    _deathMenu->addElement(_waveReachedLabel);
+
+    _statsLabel_deathMenu = std::shared_ptr<UILabel>(new UILabel(
+        "", 36.f, 18.f, 1.f, _font
+    ));
+    _deathMenu->addElement(_statsLabel_deathMenu);
+
+    std::shared_ptr<UIButton> mainMenuButton_deathMenu = std::shared_ptr<UIButton>(new UIButton(
+        45.f, 87.f, 9.f, 3.f, "main menu", _font, this, "death_mm"
+    ));
+    mainMenuButton_deathMenu->setSelectionId(0);
+    _deathMenu->addElement(mainMenuButton_deathMenu);
+
+    _deathMenu->useGamepadConfiguration = true;
+    _deathMenu->defineSelectionGrid(
+        {
+            {mainMenuButton_deathMenu->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_deathMenu);
+    //
+
+
     // Command prompt menu
     _cmdPrompt = std::shared_ptr<UICommandPrompt>(new UICommandPrompt(&_world, _font));
     _commandMenu->addElement(_cmdPrompt);
@@ -856,7 +911,7 @@ void Game::update() {
         SteamAPI_RunCallbacks();
     }
 
-    if (!_world.playerIsInShop()) _shopMenu->hide();
+    if (!_world.playerIsInShop() && _shopMenu->isActive()) toggleShopMenu();
 
     _ui->update();
     if (!_isPaused && _gameStarted) {
@@ -873,7 +928,11 @@ void Game::update() {
             }
         }
 
-        if (_world.playerIsInShop()) _world.incrementEnemySpawnCooldownTimeWhilePaused();
+        if (_world.playerIsInShop()) {
+            _world.incrementEnemySpawnCooldownTimeWhilePaused();
+
+            if (!_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
+        }
         _world.update();
 
         if (_world.bossIsActive() && !_bossHUDMenu->isActive()) {
@@ -892,9 +951,9 @@ void Game::update() {
 
             _magazineMeter->show();
             if (ammoIndex != NOTHING_EQUIPPED && _player->getInventory().getItemIdAt(ammoIndex) == Item::ITEMS[equippedTool]->getAmmoId()) {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":" + std::to_string(ammoCount)));
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
             } else {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents()) + ":0"));
+                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
             }
         } else {
             _magazineMeter->hide();
@@ -928,6 +987,7 @@ void Game::update() {
 
         displayEnemyWaveCountdownUpdates();
         _shopArrow.update();
+        AltarArrow::update();
 
         if (_player->getStamina() < _player->getMaxStamina()) _staminaMeter->show();
         else _staminaMeter->hide();
@@ -977,6 +1037,7 @@ void Game::draw(sf::RenderTexture& surface) {
     if (_gameStarted) {
         _world.draw(surface);
         _shopArrow.draw(surface);
+        AltarArrow::draw(surface);
     }
 }
 
@@ -990,7 +1051,16 @@ void Game::drawUI(sf::RenderTexture& surface) {
         startMenuBg.setSize(sf::Vector2f(surface.getSize().x, surface.getSize().y));
         surface.draw(startMenuBg);
 
-        _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+        if (!_deathMenu->isActive()) _titleScreenBackground->render(surface, ShaderManager::getShader("waves_frag"));
+        else {
+            sf::RectangleShape deathStatsBg;
+            deathStatsBg.setFillColor(sf::Color(0x333337FF));
+            deathStatsBg.setOutlineColor(sf::Color(0x3C3C40FF));
+            deathStatsBg.setOutlineThickness(UIElement::getRelativeWidth(1.f));
+            deathStatsBg.setPosition(UIElement::getRelativePos(34.f, 16.f));
+            deathStatsBg.setSize(UIElement::getRelativePos(32.f, 65.f));
+            surface.draw(deathStatsBg);
+        }
 
         if (_gameLoading) {
             std::string elipsesString = "";
@@ -1065,6 +1135,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _coinMagnetCountLabel.setString("magnets: " + std::to_string(_player->getCoinMagnetCount()));
         surface.draw(_coinMagnetCountLabel);
 
+        _hardModeEnabledLabel.setString("hardmode: " + (std::string)(HARD_MODE_ENABLED ? "1" : "0"));
+        surface.draw(_hardModeEnabledLabel);
+
         _frameCounter++;
     }
 }
@@ -1073,6 +1146,12 @@ void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         _window->close();
     } else if (buttonCode == "newgame") {
+        if (!Tutorial::isCompleted() && _tips.size() > 0) {
+            _tipLabel->setText("Tip: " + _tips.at(randomInt(0, _tips.size() - 1)), true);
+        } else {
+            _tipLabel->setText("");
+        }
+
         enableGamepadInput(_newGameMenu);
         _newGameMenu->show();
         _startMenu->hide();
@@ -1107,9 +1186,29 @@ void Game::buttonPressed(std::string buttonCode) {
         //_HUDMenu->show();
         _magazineMeter->hide();
 
-        constexpr size_t numStartingItems = 3;
-        const unsigned int startingItems[numStartingItems] = { Item::SLIME_BALL.getId(), Item::SPIKE_BALL.getId(), Item::BAD_VIBES_POTION.getId() };
-        const Item* startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : &Item::SLIME_BALL);
+        std::vector<unsigned int> startingItems;
+        for (const auto& item : Item::ITEMS) {
+            if (item->isStartingItem()) {
+                startingItems.push_back(item->getId());
+            }
+        }
+        const size_t numStartingItems = startingItems.size();
+
+        std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::SLIME_BALL.getId()]);
+
+        constexpr int gunStartChance = 49;
+        if (Tutorial::isCompleted() && randomInt(0, gunStartChance) == 0) {
+            std::vector<unsigned int> startingGuns;
+            for (const auto& item : Item::ITEMS) {
+                if (item->isGun() && item->isBuyable()) {
+                    startingGuns.push_back(item->getId());
+                }
+            }
+
+            const size_t numStartingGuns = startingGuns.size();
+            startingItem = Item::ITEMS[startingGuns[randomInt(0, numStartingGuns - 1)]];
+        }
+
         std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
                 sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, startingItem->getId(), 1, startingItem->getTextureRect())
@@ -1121,7 +1220,7 @@ void Game::buttonPressed(std::string buttonCode) {
         startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
-            if (GamePad::isConnected()) msg = "Press A to dodge";
+            if (GamePad::isConnected()) msg = "Press the left bumper to dodge";
             else msg = "Press spacebar to dodge";
             MessageManager::displayMessage(msg, 15);
         }
@@ -1140,6 +1239,9 @@ void Game::buttonPressed(std::string buttonCode) {
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
+        HARD_MODE_ENABLED = false;
+        _hardModeToggleButton->setLabelText("hard mode: off");
+
         _gameStarted = false;
         _gameLoading = false;
         _isPaused = false;
@@ -1156,6 +1258,7 @@ void Game::buttonPressed(std::string buttonCode) {
         
         ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
+        PlayerVisualEffectManager::clearPlayerEffects();
         StatManager::resetStatsForThisSave();
 
         PLAYER_SCORE = 1.f;
@@ -1166,6 +1269,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._maxEnemiesReached = false;
         _world._destroyedProps.clear();
         _world._seenShops.clear();
+        _world._activatedAltars.clear();
+        _world._deadShopKeeps.clear();
         _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;
@@ -1188,6 +1293,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_stamina = INITIAL_MAX_STAMINA;
         _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
         _player->_coinMagnetCount = 0;
+        _player->_speedMultiplier = 0.f;
 
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();
@@ -1406,6 +1512,12 @@ void Game::buttonPressed(std::string buttonCode) {
         } else {
             enterCharacter(key.at(0));
         }
+    } else if (buttonCode == "death_mm") {
+        _deathMenu->hide();
+        buttonPressed("mainmenu");
+    } else if (buttonCode == "hardmode") {
+        HARD_MODE_ENABLED = !HARD_MODE_ENABLED;
+        _hardModeToggleButton->setLabelText(HARD_MODE_ENABLED ? "hard mode: on" : "hard mode: off");
     }
 }
 
@@ -1418,6 +1530,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     switch (key) {
     case sf::Keyboard::F3:
         _showDebug = !_showDebug;
+        ProjectilePoolManager::setDebug(_showDebug);
         break;
     case sf::Keyboard::F10:
         if (_commandMenu->isActive()) {
@@ -1530,7 +1643,7 @@ void Game::toggleInventoryMenu() {
 }
 
 void Game::toggleShopMenu() {
-    if (_world.playerIsInShop() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
+    if (_world.playerIsInShop() && _shopKeep->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !_isPaused) {
         for (auto& entity : _world.getEntities()) {
             if (entity->isActive() && entity->getEntityType() == "shopkeep") {
                 if (_player->getHitBox().intersects(entity->getHitBox())) {
@@ -1566,16 +1679,29 @@ void Game::onPlayerDeath() {
     constexpr long long deathCallCooldown = 1000LL;
     if (currentTimeMillis() - _lastPlayerDeathCallTime > deathCallCooldown) {
         bool tutorialComplete = Tutorial::isCompleted();
-        MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
 
         StatManager::increaseStat(TIMES_DIED, 1.f);
 
         if (tutorialComplete) {
             SaveManager::deleteSaveFile();
-            buttonPressed("mainmenu");
+            _bossHUDMenu->hide();
+            _HUDMenu->hide();
+            if (_inventoryMenu->isActive()) toggleInventoryMenu();
+            if (_shopMenu->isActive()) toggleShopMenu();
+            _gameStarted = false;
+
+            _waveReachedLabel->setText("you made it to wave " + std::to_string(_world._currentWaveNumber));
+            std::string statsText = "Stats:\n\n\n";
+            generateStatsString(statsText, false, false);
+            _statsLabel_deathMenu->setText(statsText);
+            _deathMenu->show();
         } else {
+            MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
+            MessageManager::displayMessage("TIP: Be sure to dodge in order to help keep distance between enemies and yourself", 8);
             int playerPennyIndex = _player->getInventory().findItem(Item::PENNY.getId());
             if (playerPennyIndex != NO_ITEM) _player->getInventory().removeItem(Item::PENNY.getId(), _player->getInventory().getItemAmountAt(playerPennyIndex));
+
+            HARD_MODE_ENABLED = false;
 
             _cmdPrompt->unlock();
             _cmdPrompt->processCommand("removedroppeditems");
@@ -1611,6 +1737,7 @@ void Game::onPlayerDeath() {
             _player->_maxStamina = INITIAL_MAX_STAMINA;
             _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
             _player->_coinMagnetCount = 0;
+            _player->_speedMultiplier = 0.f;
 
             _world.resetChunks();
             _world.loadChunksAroundPlayer();
@@ -1664,6 +1791,22 @@ void Game::loadLoadingScreenMessages() {
     _loadingScreenMessageIndex = randomInt(0, _loadingScreenMessages.size() - 1);
 }
 
+void Game::loadTips() {
+    const std::string path = "res/tips.txt";
+    std::ifstream in(path);
+
+    if (!in.good()) {
+        MessageManager::displayMessage("Could not find tips.txt", 5, WARN);
+        in.close();
+    } else {
+        std::string line;
+        while (getline(in, line)) {
+            _tips.push_back(line);
+        }
+        in.close();
+    }
+}
+
 void Game::textEntered(sf::Uint32 character) {
     _ui->textEntered(character);
 }
@@ -1681,7 +1824,7 @@ void Game::autoSave() {
     }
 }
 
-void Game::generateStatsString(std::string& statsString, bool overall) {
+void Game::generateStatsString(std::string& statsString, bool overall, bool useUnderscores) {
     for (int i = 0; i < StatManager::NUM_STATS; i++) {
         const std::string statName = STAT_NAMES[(STATISTIC)i];
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
@@ -1696,7 +1839,7 @@ void Game::generateStatsString(std::string& statsString, bool overall) {
         }
         const std::string statString = unit != "" ? trimString(std::to_string(statValue)) : std::to_string((int)statValue);
 
-        statsString += statName + ":  " + statString + unit + "\n_______________\n";
+        statsString += statName + ":  " + statString + unit + (useUnderscores ? "\n_______________\n" : "\n\n");
     }
 }
 

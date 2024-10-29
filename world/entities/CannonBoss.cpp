@@ -8,10 +8,10 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
         BossState(BEHAVIOR_STATE::RING_OF_BLOOD, 11000LL, 12000LL),
         //BossState(BEHAVIOR_STATE::TARGETED_FIRE, 2000LL, 4000LL),
-        BossState(BEHAVIOR_STATE::BLASTING, 4000LL, 6000LL)
+        BossState(BEHAVIOR_STATE::BLASTING, 3000LL, 5000LL)
     })
 {
-    setMaxHitPoints(1750);
+    setMaxHitPoints(4000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 6) / 2;
@@ -28,7 +28,7 @@ CannonBoss::CannonBoss(sf::Vector2f pos) : Boss(CANNON_BOSS, pos, 1, TILE_SIZE *
     _displayName = "Professor Hands";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(50000, 100000);
+    unsigned int pennyAmount = randomInt(500, 1000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     _animSpeed = 1;

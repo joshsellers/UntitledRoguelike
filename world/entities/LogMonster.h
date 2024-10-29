@@ -20,7 +20,7 @@ protected:
         TARGETED_FIRE
     };
 private:
-    const long long _fireRateMillis = 250LL;
+    const long long _fireRateMillis = 750LL;
     long long _lastFireTimeMillis = 0LL;
 
     long long _lastContactDamageTimeMillis = 0LL;

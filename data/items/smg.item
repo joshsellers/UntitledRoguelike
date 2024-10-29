@@ -1,0 +1,15 @@
+name = "SMG"
+description = "Shoots real fast"
+equipmentType = TOOL
+barrelPos = 18, 4
+isGun = true
+ammoName = "Rifle Round"
+isAutomatic = true
+magazineSize = 30
+fireRate = 75
+reloadTime = 2000
+unlockWaveNumber = 16
+isBuyable = true
+value = 200
+functionName = "firesmg"
+textureRect = 96, 0, 1, 1

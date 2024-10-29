@@ -3,6 +3,11 @@
 #include "../World.h"
 #include "../../core/InputBindings.h"
 #include "../../statistics/StatManager.h"
+#include "../../inventory/effect/PlayerVisualEffectManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
+#include "../../core/Tutorial.h"
+#include "../../core/ShaderManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -27,7 +32,7 @@ void Player::update() {
     if (isInBoat() && !isSwimming()) getInventory().deEquip(EQUIPMENT_TYPE::BOAT);
 
     if (_isReloading) {
-        const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+        std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
         if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
             _isReloading = false;
             _magazineContents = _magContentsFilled;
@@ -88,6 +93,11 @@ void Player::update() {
             xa = getBaseSpeed();
             _movingDir = RIGHT;
         }
+    }
+
+    if (!isInBoat() && !isSwimming()) {
+        xa *= 1.f + getSpeedMultiplier();
+        ya *= 1.f + getSpeedMultiplier();
     }
 
     if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
@@ -210,18 +220,72 @@ void Player::draw(sf::RenderTexture& surface) {
             terrainType == TERRAIN_TYPE::WATER && !isInBoat() ? 16 : 32)
         );
 
+        bool noToolAim = false;
+        MOVING_DIRECTION noToolFaceDir = getMovingDir();
+        if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == NOTHING_EQUIPPED && AbilityManager::playerHasAbility(Ability::THIRD_EYE.getId())) {
+            if (!_gamePaused) {
+                sf::Vector2f handPos = sf::Vector2f(getPosition().x, getPosition().y + 23);
+                sf::Vector2i mPos = sf::Mouse::getPosition(*_window);
+
+                sf::Vector2i center = _window->mapCoordsToPixel(handPos, surface.getView());
+
+                double x = (double)(mPos.x - center.x);
+                double y = (double)(mPos.y - center.y);
+
+                float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
+
+                if (GamePad::isConnected()) {
+                    angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
+                    if (GamePad::isRightStickDeadZoned()) {
+                        switch (_movingDir) {
+                            case UP:
+                                angle = 0.f;
+                                break;
+                            case DOWN:
+                                angle = 180.f;
+                                break;
+                            case LEFT:
+                                angle = 270.f;
+                                break;
+                            case RIGHT:
+                                angle = 90.f;
+                                break;
+                        }
+                    }
+                }
+
+                if (angle >= -45.f && angle < 45.f)
+                    _facingDir = UP;
+                else if (angle >= 45.f && angle < 135.f)
+                    _facingDir = RIGHT;
+                else if (angle >= 135.f && angle < 225.f)
+                    _facingDir = DOWN;
+                else if (angle >= 225.f || angle < -45.f)
+                    _facingDir = LEFT;
+
+            }
+            noToolAim = true;
+
+        }
+        noToolFaceDir = _facingDir;
+
         if (_facingDir == UP || _facingDir == LEFT) {
             drawTool(surface);
+            if (noToolAim) _facingDir = noToolFaceDir;
 
-            surface.draw(_sprite);
+            surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
+            PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
         } else if (_facingDir == DOWN || _facingDir == RIGHT) {
-            surface.draw(_sprite);
+            surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
+            PlayerVisualEffectManager::drawEffects(this, surface);
 
             if (!isDodging() || !isMoving()) drawEquipables(surface);
             drawTool(surface);
+            if (noToolAim) _facingDir = noToolFaceDir;
         }
+
 
         if (isInBoat()) {
             _boatSprite.setTextureRect(sf::IntRect(
@@ -268,7 +332,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
@@ -282,7 +346,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     }
 }
@@ -292,7 +356,7 @@ void Player::drawTool(sf::RenderTexture& surface) {
         sf::RectangleShape meleeHitBoxDisplay;
         sf::RectangleShape barrelDisplay;
         if (!_gamePaused) {
-            const Item* equippedTool = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+            std::shared_ptr<const Item> equippedTool = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
             sf::IntRect itemTextureRect =
                 equippedTool->getTextureRect();
             int spriteX = itemTextureRect.left + TILE_SIZE;
@@ -560,6 +624,14 @@ int& Player::getMaxStaminaRef() {
     return _maxStamina;
 }
 
+void Player::setSpeedMultiplier(float speedMultiplier) {
+    _speedMultiplier = speedMultiplier;
+}
+
+float Player::getSpeedMultiplier() const {
+    return _speedMultiplier;
+}
+
 void Player::setMaxStamina(int amount) {
     _maxStamina = amount;
 }
@@ -570,6 +642,10 @@ void Player::restoreStamina(int amount) {
 
 void Player::increaseStaminaRefreshRate(int amount) {
     _staminaRefreshRate += amount;
+}
+
+void Player::setStaminaRefreshRate(int amount) {
+    _staminaRefreshRate = amount;
 }
 
 bool Player::isUsingStamina() {
@@ -596,7 +672,7 @@ void Player::decrementMagazine() {
     if (_magazineContents != 0) {
         _magazineContents--;
         if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED) {
-            const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+            std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
             _magContentsPercentage = ((float)_magazineContents / (float)weapon->getMagazineSize()) * 100.f;
         }
     }
@@ -629,13 +705,16 @@ void Player::knockBack(float amt, MOVING_DIRECTION dir) {
 }
 
 void Player::damage(int damage) {
+    if (HARD_MODE_ENABLED) damage *= 2;
+
     if (isDodging() && isMoving()) return;
 
-    if (!isDodging() && !freeMove) {
+    if (!isDodging() && !freeMove && !isTakingDamage()) {
         if (GamePad::isConnected()) {
             int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
             GamePad::vibrate(vibrationAmount, 250);
         }
+        _timeDamageTaken = currentTimeMillis();
 
         _hitPoints -= (int)((float)damage * getTotalArmorCoefficient());
         if (_hitPoints <= 0) {
@@ -645,6 +724,11 @@ void Player::damage(int damage) {
 
         StatManager::increaseStat(DAMAGE_TAKEN, damage);
     }
+}
+
+bool Player::isTakingDamage() const {
+    constexpr long long damageDisplayTime = 225LL;
+    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
 }
 
 float getArmorCoefficient(unsigned int itemId) {
@@ -775,26 +859,28 @@ void Player::startReloadingWeapon() {
 bool Player::reloadWeapon() {
     if (!_gamePaused && getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun()) {
-        if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
+        /*if (getInventory().hasItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId())) {
             getInventory().equip(
                 getInventory().findItem(Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId()),
                 EQUIPMENT_TYPE::AMMO
-            );
+            );*/
 
-            if (getMagazineContents() == 0 && !isReloading()) {
-                const Item* weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
-                const Item* ammo = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::AMMO)];
-                const unsigned int removeAmount = std::min(
-                    (unsigned int)weapon->getMagazineSize(), getInventory().getItemAmountAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO))
-                );
-                getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
+            if (/*getMagazineContents() == 0 && */!isReloading()) {
+                _magazineContents = 0;
+                std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
+                std::shared_ptr<const Item> ammo = Item::ITEMS[weapon->getAmmoId()];
+                const unsigned int removeAmount = 
+                    (unsigned int)weapon->getMagazineSize();
+                //getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;
 
+                if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::RELOAD_BOW);
+
                 return true;
             }
-        }
+        //}
     }
     return false;
 }
@@ -825,6 +911,8 @@ void Player::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _toolSprite.setTexture(*spriteSheet);
 
     initHairSprites(spriteSheet);
+
+    PlayerVisualEffectManager::loadSprite(spriteSheet);
 }
 
 void Player::toggleVisible() {

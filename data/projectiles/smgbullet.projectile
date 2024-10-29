@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_SMG"
+velocity = 8
+lifeTime = 2500
+hitBox = 4, 5, 10, 9
+rotate = true

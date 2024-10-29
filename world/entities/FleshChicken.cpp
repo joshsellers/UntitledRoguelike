@@ -21,9 +21,8 @@ FleshChicken::FleshChicken(sf::Vector2f pos) : Entity(FLESH_CHICKEN, pos, 3.5f, 
     _entityType = "fleshchicken";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 10;
-    unsigned int pennyAmount = randomInt(0, 510);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
 void FleshChicken::update() {

@@ -1,0 +1,46 @@
+alreadyHas = player.hasAbility("Lightning");
+if: not alreadyHas {
+    player.addAbility("Lightning");
+}
+
+if: alreadyHas {
+    parameterChoice = random(0, 2);
+    currentStrikeRate = player.getAbilityParameter("Lightning", "strike rate");
+    currentStrikeChance = player.getAbilityParameter("Lightning", "strike chance");
+
+    if: parameterChoice == 1 and currentStrikeRate <= 50 {
+        parameterChoice = random(0, 1);
+        if: parameterChoice == 1 {
+            parameterChoice = 2;
+        }
+    }
+    if: parameterChoice == 2 and currentStrikeChance == 2 {
+        parameterChoice = random(0, 1);
+    }
+    if: currentStrikeRate <= 50 and currentStrikeChance == 2 {
+        parameterChoice = 0;
+    }
+
+    if: parameterChoice == 0 {
+        oldDamage = player.getAbilityParameter("Lightning", "damage");
+        increase = random(1, 2);
+        player.setAbilityParameter("Lightning", "damage", oldDamage + increase);
+        msg = "Increased lightning damage";
+    }
+    if: parameterChoice == 1 {
+        oldStrikeRate = player.getAbilityParameter("Lightning", "strike rate");
+        change = random(10, 15);
+        player.setAbilityParameter("Lightning", "strike rate", oldStrikeRate - change);
+        msg = "Increased lightning strike rate";
+    }
+    if: parameterChoice == 2 {
+        oldStrikeChance = player.getAbilityParameter("Lightning", "strike chance");
+        decrease = 1;
+        player.setAbilityParameter("Lightning", "strike chance", oldStrikeChance - decrease);
+        msg = "Increased lightning strike chance";
+    }
+
+    displayMessage(msg, 5);
+}
+
+return true;

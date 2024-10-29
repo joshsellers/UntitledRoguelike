@@ -18,11 +18,14 @@ public:
     const unsigned int getOrbiterTypeId() const;
 
     float getAngle() const;
+    void setDistance(float distance);
     float getDistance() const;
     float getSpeed() const;
 
     void setCenterPointOffset(float xOffset, float yOffset);
     void setCenterPointOffset(sf::Vector2f offset);
+
+    void setAttackFrequencyOffset(long long attackFreqOffset);
 
     Entity* getParent() const;
 
@@ -44,8 +47,10 @@ protected:
     sf::Vector2f _centerPointOffset;
     bool _centerPointOffsetWasReset = false;
 
+    long long _attackFreqOffset = 0;
+
     void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName);
-    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName);
+    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, sf::Vector2f centerOffset = {0.f, 0.f});
     long long _lastFireTime = 0LL;
 private:
     Entity* _parent;

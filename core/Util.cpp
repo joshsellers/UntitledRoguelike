@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "Util.h"
 #include <random>
 #include <sstream>
@@ -77,6 +79,14 @@ bool stringEndsWith(std::string const& fullString, std::string const& ending) {
     } else {
         return false;
     }
+}
+
+float degToRads(float angle) {
+    return angle * (M_PI / 180.f);
+}
+
+float radsToDeg(float angle) {
+    return angle * 180.f / M_PI;
 }
 
 std::string generateUID() {

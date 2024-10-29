@@ -1,0 +1,26 @@
+alreadyHas = player.hasEffect("Third Eye");
+
+if: alreadyHas {
+    parameterChoice = random(0, 1);
+    if: parameterChoice == 0 {
+        oldDamage = player.getAbilityParameter("Third Eye", "damage");
+        player.setAbilityParameter("Third Eye", "damage", oldDamage + 1);
+
+        displayMessage("Increased third eye damage", 5);
+    }
+
+    if: parameterChoice == 1 {
+        oldFireRate = player.getAbilityParameter("Third Eye", "fire rate");
+        player.setAbilityParameter("Third Eye", "fire rate", oldFireRate - 10);
+
+        displayMessage("Increased third eye fire rate", 5);
+    }
+
+    return true;
+}
+
+if: alreadyHas == false {
+    player.addEffect("Third Eye");
+    player.addAbility("Third Eye");
+    return true;
+}

@@ -26,6 +26,15 @@ public:
     }
 
     static void saveGame(bool displaySuccessfulSaveMessage = true) {
+        if (BACKUP_ENABLED) {
+            std::string prevSaveFileName = _currentSaveFileName;
+            _currentSaveFileName = "BACKUP_" + prevSaveFileName;
+            BACKUP_ENABLED = false;
+            saveGame(false);
+            BACKUP_ENABLED = true;
+            _currentSaveFileName = prevSaveFileName;
+        }
+
         if (_currentSaveFileName == "NONE") {
             MessageManager::displayMessage("Saving game while _currentSaveFileName is \"NONE\"", 5, WARN);
             _currentSaveFileName += ".save";
@@ -45,10 +54,12 @@ public:
             out << "GAMEVERSION:" << VERSION << std::endl;
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
+            if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
             saveStats(out);
             savePlayerData(out);
             saveWorldData(out);
             saveAbilities(out);
+            saveEffects(out);
             saveShopData(out);
             saveEntityData(out);
 
@@ -162,6 +173,22 @@ private:
             }
             out << std::endl;
         }
+
+        if (_world->_activatedAltars.size() != 0) {
+            out << "ALTARS";
+            for (auto& altar : _world->_activatedAltars) {
+                out << ":" << std::to_string(altar.x) << "," << std::to_string(altar.y);
+            }
+            out << std::endl;
+        }
+
+        if (_world->_deadShopKeeps.size() != 0) {
+            out << "DEADSHOPKEEPS";
+            for (auto& seed : _world->_deadShopKeeps) {
+                out << ":" << std::to_string(seed);
+            }
+            out << std::endl;
+        }
     }
 
     static void saveAbilities(std::ofstream& out) {
@@ -172,6 +199,16 @@ private:
 
             for (auto& parameter : ability->getParameters()) {
                 out << ":" << parameter.first << "," << std::to_string(parameter.second);
+            }
+            out << std::endl;
+        }
+    }
+
+    static void saveEffects(std::ofstream& out) {
+        if (PlayerVisualEffectManager::getPlayerEffects().size() > 0) {
+            out << "EFFECTS";
+            for (const unsigned int effectId : PlayerVisualEffectManager::getPlayerEffects()) {
+                out << ":" << std::to_string(effectId);
             }
             out << std::endl;
         }
@@ -204,6 +241,7 @@ private:
         out << ":" << std::to_string(player->getStaminaRefreshRate());
         out << ":" << std::to_string(player->getDamageMultiplier());
         out << ":" << std::to_string(player->getCoinMagnetCount());
+        out << ":" << std::to_string(player->getSpeedMultiplier());
         out << std::endl;
         
         if (player->getInventory().getCurrentSize() != 0) {
@@ -354,6 +392,8 @@ private:
             _world->_currentWaveNumber = std::stoi(data[8]);
 
             _world->init(seed);
+        } else if (header == "HARD") {
+            HARD_MODE_ENABLED = true;
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {
@@ -376,6 +416,16 @@ private:
                     }
                 }
             }
+        } else if (header == "EFFECTS") {
+            for (int i = 0; i < data.size(); i++) {
+                const unsigned int effectId = std::stoul(data[i]);
+                for (const auto& effect : PlayerVisualEffectManager::_effectTypes) {
+                    if (effect.id == effectId) {
+                        PlayerVisualEffectManager::addEffectToPlayer(effect.name);
+                        break;
+                    }
+                }
+            }
         } else if (header == "DESTROYEDPROPS") {
             for (auto& propPosData : data) {
                 std::vector<std::string> parsedData = splitString(propPosData, ",");
@@ -387,6 +437,16 @@ private:
                 std::vector<std::string> parsedData = splitString(shopPosData, ",");
                 sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->shopSeenAt(shopPos);
+            }
+        } else if (header == "ALTARS") {
+            for (auto& altarPosData : data) {
+                std::vector<std::string> parsedData = splitString(altarPosData, ",");
+                sf::Vector2f altarPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
+                _world->altarActivatedAt(altarPos);
+            }
+        } else if (header == "DEADSHOPKEEPS") {
+            for (auto& seedData : data) {
+                _world->shopKeepKilled(std::stoul(seedData));
             }
         } else if (header == "SHOPLOCATION") {
             unsigned int seed = std::stoul(data[0]);
@@ -414,6 +474,12 @@ private:
             player->_staminaRefreshRate = std::stoi(data[9]);
             player->_damageMultiplier = std::stof(data[10]);
             player->_coinMagnetCount = std::stoul(data[11]);
+
+            if (data.size() < 13) {
+                player->_speedMultiplier = 0.f;
+                return;
+            }
+            player->_speedMultiplier = std::stof(data[12]);
         } else if (header == "PINVENTORY") {
             auto& player = _world->getPlayer();
 
@@ -421,6 +487,7 @@ private:
             for (int i = 0; i < data.size(); i++) {
                 std::vector<std::string> parsedData = splitString(data[i], ",");
                 unsigned int itemId = std::stoi(parsedData[0]);
+                if (itemId >= Item::ITEMS.size()) continue;
                 unsigned int amount = std::stoi(parsedData[1]);
                 bool isEquipped = parsedData[2] == "1";
                 if (isEquipped) equippedItemIds.push_back(itemId);
@@ -483,7 +550,7 @@ private:
                 {
                     unsigned int itemId = std::stoul(data[4]);
                     unsigned int amount = std::stoul(data[5]);
-                    entity = std::shared_ptr<DroppedItem>(new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect()));
+                    entity = std::shared_ptr<DroppedItem>(new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), true));
                     break;
                 }
                 case PROJECTILE:
@@ -607,6 +674,15 @@ private:
                     break;
                 case TULIP_MONSTER:
                     entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
+                    break;
+                case TREE_BOSS:
+                    entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
+                    break;
+                case CREAM_BOSS:
+                    entity = std::shared_ptr<CreamBoss>(new CreamBoss(pos));
+                    break;
+                case CHEF_BOSS:
+                    entity = std::shared_ptr<ChefBoss>(new ChefBoss(pos));
                     break;
             }
 

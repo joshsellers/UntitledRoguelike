@@ -4,6 +4,10 @@
 
 TulipMonster::TulipMonster(sf::Vector2f pos) : Entity(TULIP_MONSTER, pos, 2, TILE_SIZE * 3, TILE_SIZE * 3, false) {
     setMaxHitPoints(105);
+    if (HARD_MODE_ENABLED) {
+        //setMaxHitPoints(getMaxHitPoints() + ((float)getMaxHitPoints() * 1.15f));
+    }
+
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -TILE_SIZE / 2;
@@ -21,9 +25,8 @@ TulipMonster::TulipMonster(sf::Vector2f pos) : Entity(TULIP_MONSTER, pos, 2, TIL
     _entityType = "tulipmonster";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 5;
-    unsigned int pennyAmount = randomInt(0, 505);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
 void TulipMonster::update() {

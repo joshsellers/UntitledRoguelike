@@ -18,8 +18,12 @@ public:
         bool onlyHitPlayer = false, int damageBoost = 0, bool addParentVelocity = true, int passThroughCount = 1);
 
     static void removeAll();
+
+    static void setDebug(bool debug);
 private:
     static inline Projectile* _pool[MAX_PROJECTILES];
+
+    static inline bool _debug = false;
 };
 
 #endif

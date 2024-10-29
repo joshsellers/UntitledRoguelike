@@ -1,4 +1,5 @@
 #include "ShopArrow.h"
+#include "../../core/Tutorial.h"
 
 void ShopArrow::update() {
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_HEIGHT / 2);
@@ -50,7 +51,7 @@ void ShopArrow::update() {
 }
 
 void ShopArrow::draw(sf::RenderTexture& surface) {
-    if (_isVisible && !_world->playerIsInShop()) surface.draw(_sprite);
+    if (_isVisible && !_world->playerIsInShop() && (Tutorial::isCompleted() || (int)Tutorial::getCurrentStep() >= (int)TUTORIAL_STEP::BUY_BOW)) surface.draw(_sprite);
 }
 
 void ShopArrow::setWorld(World* world) {

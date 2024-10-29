@@ -24,9 +24,8 @@ LogMonster::LogMonster(sf::Vector2f pos) : Boss(LOG_MONSTER, pos, 2.5, TILE_SIZE
     _entityType = "logmonster";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 5;
-    unsigned int pennyAmount = randomInt(0, 505);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
     getInventory().addItem(Item::WOOD.getId(), 1);
 
     deactivateBossMode();
@@ -39,7 +38,7 @@ void LogMonster::subUpdate() {
     if (currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis 
         && getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
-        getWorld()->getPlayer()->takeDamage(5);
+        getWorld()->getPlayer()->takeDamage(12);
         _lastContactDamageTimeMillis = currentTimeMillis();
     }
 }
@@ -58,7 +57,7 @@ void LogMonster::draw(sf::RenderTexture& surface) {
 void LogMonster::onStateChange(const BossState previousState, const BossState newState) {
     switch (newState.stateId) {
         case BEHAVIOR_STATE::CHASE:
-            _baseSpeed = 3.5f;
+            _baseSpeed = 4.f;
             break;
         case BEHAVIOR_STATE::TARGETED_FIRE:
             _baseSpeed = 1.f;

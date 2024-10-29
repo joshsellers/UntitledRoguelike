@@ -1,0 +1,12 @@
+hasEffect = player.hasEffect("Milk Mouth");
+if: not hasEffect {
+    player.addEffect("Milk Mouth");
+}
+
+maxHp = player.getMaxHp();
+player.setMaxHp(maxHp + 10);
+
+currentHp = player.getHp();
+player.setHp(currentHp + 10);
+
+return true;

@@ -44,6 +44,11 @@
 #include "entities/BoulderBeast.h"
 #include "entities/TulipMonster.h"
 #include "TerrainGenParameters.h"
+#include "entities/TreeBoss.h"
+#include "entities/CreamBoss.h"
+#include "entities/Altar.h"
+#include "entities/AltarArrow.h"
+#include "entities/ShopKeepCorpse.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -53,6 +58,7 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
 }
 
 void World::init(unsigned int seed) {
+    MessageManager::displayMessage("Initializing world with seed " + std::to_string(seed), 0, DEBUG);
     _seed = seed;
     srand(_seed);
     gen.seed(_seed);
@@ -372,7 +378,8 @@ void World::spawnEnemies() {
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
-                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_player->getMaxHitPoints() / 100.f));
+                            if (HARD_MODE_ENABLED) _maxActiveEnemies *= 2;
+                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)std::max(_player->getMaxHitPoints(), 100) / 100.f));
                             _waveCounter++;
                             break;
                         } else _enemiesSpawnedThisRound++;
@@ -616,6 +623,10 @@ void World::onWaveCleared() {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
     }
 
+    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+    }
+
     spawnBoss(_currentWaveNumber);
 }
 
@@ -672,16 +683,19 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr float chanceCoefficient = 0.005f;
-    constexpr int shopSpawnRate = 5000000 * chanceCoefficient;
-    constexpr int grassSpawnRate = 5000 * chanceCoefficient;
-    constexpr int smallTreeSpawnRate = 37500 * chanceCoefficient;
-    constexpr int cactusSpawnRate = 200000 * chanceCoefficient;
-    constexpr int smallSavannaTreeSpawnRate = 200000 * chanceCoefficient;
-    constexpr int largeSavannaTreeSpawnRate = 250000 * chanceCoefficient;
-    constexpr int smallTundraTreeSpawnRate = 300000 * chanceCoefficient;
-    constexpr int fingerTreeSpawnRate = 175000 * chanceCoefficient;
-    constexpr int forestSmallTreeSpawnRate = 4000 * chanceCoefficient;
+    constexpr int altarSpawnRate = 26300;
+    const int shopSpawnRate = (HARD_MODE_ENABLED ? 23500 : 20000);
+    constexpr int grassSpawnRate = 25;
+    constexpr int smallTreeSpawnRate = 187;
+    constexpr int cactusSpawnRate = 1000;
+    constexpr int smallSavannaTreeSpawnRate = 1000;
+    constexpr int largeSavannaTreeSpawnRate = 1250;
+    constexpr int smallTundraTreeSpawnRate = 1500;
+    constexpr int fingerTreeSpawnRate = 875;
+    constexpr int forestSmallTreeSpawnRate = 20;
+
+    bool spawnedShopThisChunk = false;
+    bool spawnedAltarThisChunk = false;
 
     srand(chX + chY * _seed);
     gen.seed(chX + chY * _seed);
@@ -695,16 +709,33 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dY = y - chY;
 
             TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
-            if (terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND) {
+            if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND 
+                && terrainType != TERRAIN_TYPE::MOUNTAIN_HIGH) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
                     shop->setWorld(this);
                     _scatterBuffer.push_back(shop);
+                    spawnedShopThisChunk = true;
 
                     if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                         MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                         shopSeenAt(sf::Vector2f(x, y));
+                    }
+                }
+            }
+
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH || terrainType == TERRAIN_TYPE::TUNDRA)) {
+                const sf::Vector2f pos = sf::Vector2f(x, y);
+                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 15 : 1));
+                if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
+                    std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(pos, altarHasBeenActivatedAt(pos), _spriteSheet));
+                    altar->setWorld(this);
+                    _scatterBuffer.push_back(altar);
+                    spawnedAltarThisChunk = true;
+
+                    if (!altarHasBeenActivatedAt(pos)) {
+                        AltarArrow::altarSpawned(pos);
                     }
                 }
             }
@@ -852,7 +883,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 rgb = (sf::Uint32)TERRAIN_COLOR::MOUNTAIN_HIGH;
                 data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::MOUNTAIN_HIGH;
             }
-
+            
             // biomes
             const double xOffset = TerrainGenInitializer::getParameters()->biomeXOffset / SCALE_COEFFICIENT;
             const double yOffset = TerrainGenInitializer::getParameters()->biomeYOffset / SCALE_COEFFICIENT;
@@ -888,6 +919,7 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             if (!Tutorial::isCompleted()) {
                 desert = false;
                 tundra = false;
+                forest = false;
             }
 
             // rare biomes 
@@ -1050,8 +1082,20 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     if (entity->canPickUpItems()) _collectorMobs.push_back(entity);
 
     if (entity->isBoss()) {
+        if (HARD_MODE_ENABLED && entity->getSaveId() != TREE_BOSS) {
+            entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 2.5f));
+            entity->heal(entity->getMaxHitPoints());
+        } else if (!HARD_MODE_ENABLED) {
+            /*entity->heal(-entity->getMaxHitPoints());
+            entity->setMaxHitPoints(entity->getMaxHitPoints() - ((float)entity->getMaxHitPoints() * 0.05f));
+            entity->heal(entity->getMaxHitPoints());*/
+        }
+
         _bossIsActive = true;
         _currentBoss = entity;
+    } else if (HARD_MODE_ENABLED && entity->isMiniBoss()) {
+        //entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 1.15f));
+        entity->heal(entity->getMaxHitPoints());
     }
 
     if (entity->isOrbiter() && !defer) _orbiters.push_back(entity);
@@ -1173,11 +1217,17 @@ void World::spawnBoss(int currentWaveNumber) {
 
     std::shared_ptr<Entity> boss = nullptr;
     switch (currentWaveNumber) {
+        case 8:
+            boss = std::shared_ptr<TreeBoss>(new TreeBoss(spawnPos));
+            break;
         case 16:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
             break;
-        case 32:
+        case 24:
             boss = std::shared_ptr<CannonBoss>(new CannonBoss(spawnPos));
+            break;
+        case 32:
+            boss = std::shared_ptr<CreamBoss>(new CreamBoss(spawnPos));
             break;
     }
 
@@ -1206,6 +1256,17 @@ bool World::shopHasBeenSeenAt(sf::Vector2f pos) const {
 
 void World::shopSeenAt(sf::Vector2f pos) {
     _seenShops.push_back(pos);
+}
+
+bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
+    for (auto& altar : _activatedAltars)
+        if (altar.x == pos.x && altar.y == pos.y) return true;
+    return false;
+}
+
+void World::altarActivatedAt(sf::Vector2f pos) {
+    _activatedAltars.push_back(pos);
+    AltarArrow::altarActivated();
 }
 
 void World::reseed(const unsigned int seed) {
@@ -1238,13 +1299,24 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
 
         _shopKeep->setPosition(sf::Vector2f(buildingPos.x + 32, buildingPos.y + 80 - 12));
         _shopKeep->initInventory();
-        _shopKeep->activate();
-        addEntity(_shopKeep);
+        if (!isShopKeepDead(_shopKeep->getPosition().x + _shopKeep->getPosition().y * (_shopKeep->getPosition().x - _shopKeep->getPosition().y))) {
+            _shopKeep->activate();
+            addEntity(_shopKeep);
+        } else {
+            sf::Vector2f corpsePos(_shopKeep->getPosition().x - 8, _shopKeep->getPosition().y + 10);
+            std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getSpriteSheet()));
+            corpse->setWorld(this);
+            addEntity(corpse);
+        }
 
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
         _player->_pos.y = shopCounter->getPosition().y + 46;
 
-        MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+        if (GamePad::isConnected()) {
+            MessageManager::displayMessage("Approach the shopkeep and press X to see what he's got", 6);
+        } else {
+            MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+        }
     } else if (buildingID == "barber") {
         std::shared_ptr<BarberInterior> barberInterior = std::shared_ptr<BarberInterior>(new BarberInterior(buildingPos, getSpriteSheet()));
         barberInterior->setWorld(this);
@@ -1267,6 +1339,17 @@ void World::exitBuilding() {
 
 bool World::playerIsInShop() const {
     return _isPlayerInShop;
+}
+
+void World::shopKeepKilled(unsigned int shopSeed) {
+    _deadShopKeeps.push_back(shopSeed);
+}
+
+bool World::isShopKeepDead(unsigned int shopSeed) const {
+    for (unsigned int seed : _deadShopKeeps) {
+        if (seed == shopSeed) return true;
+    }
+    return false;
 }
 
 void World::setShopKeep(std::shared_ptr<ShopKeep> shopKeep) {
@@ -1297,6 +1380,12 @@ void World::bossDefeated() {
             break;
         case CANNON_BOSS:
             AchievementManager::unlock(DEFEAT_CANNONBOSS);
+            break;
+        case TREE_BOSS:
+            AchievementManager::unlock(DEFEAT_TREEBOSS);
+            break;
+        case CREAM_BOSS:
+            AchievementManager::unlock(DEFEAT_CREAMBOSS);
             break;
     }
 }

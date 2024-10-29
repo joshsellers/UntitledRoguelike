@@ -49,7 +49,7 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
 }
 
 void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mousedOverItemIndex) {
-    const Item* item = Item::ITEMS[
+    std::shared_ptr<const Item> item = Item::ITEMS[
         _source.getItemIdAt(
             (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
             _gamepadUnfilteredSelectedItemIndex :

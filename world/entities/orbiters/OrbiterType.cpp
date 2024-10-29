@@ -4,6 +4,7 @@
 #include "../Entity.h"
 #include "Orbiter.h"
 #include "../../World.h"
+#include "../projectiles/ProjectileDataManager.h"
 
 const OrbiterType OrbiterType::SLIME_BALL(0, "Slime Ball", sf::IntRect(6, 4, 1, 1), 2, 32, 
     OrbiterAttackMethod::PROJECTILE_CLOSEST_ENEMY, 1000LL, 0, false, "NONE", Item::DATA_PROJECTILE_SLIME_BALL);
@@ -62,6 +63,68 @@ const OrbiterType OrbiterType::BLOOD_BALL(4, "Blood Ball", sf::IntRect(4, 4, 1, 
 
 const OrbiterType OrbiterType::SPIKE_BALL(5, "Spike Ball", sf::IntRect(6, 37, 2, 2), 2, 64,
     OrbiterAttackMethod::CONTACT, 500LL, 7
+);
+
+const OrbiterType OrbiterType::CREAM_CLOCKWISE_OUT(6, "CREAM_CO", sf::IntRect(60, 105, 1, 1), 1, 0,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        const float angle = orbiterInstance->getAngle();
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_CREAM_ORB"), orbiterInstance->_orbiterType->getAttackSoundName()
+        );
+        orbiterInstance->deactivate();
+    }, true
+);
+
+const OrbiterType OrbiterType::CREAM_COUNTERCLOCKWISE_OUT(7, "CREAM_CCO", sf::IntRect(60, 105, 1, 1), -1, 0,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        const float angle = orbiterInstance->getAngle();
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_CREAM_ORB"), orbiterInstance->_orbiterType->getAttackSoundName()
+        );
+        orbiterInstance->deactivate();
+    }, true
+);
+
+const OrbiterType OrbiterType::CREAM_CLOCKWISE_IN(8, "CREAM_CI", sf::IntRect(60, 105, 1, 1), 1, 0,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        float angle = orbiterInstance->getAngle();
+        angle += 180.f;
+        if (angle >= 360.f) angle -= 360.f;
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_CREAM_ORB"), orbiterInstance->_orbiterType->getAttackSoundName()
+        );
+        orbiterInstance->deactivate();
+    }, true
+);
+
+const OrbiterType OrbiterType::CREAM_COUNTERCLOCKWISE_IN(9, "CREAM_CCI", sf::IntRect(60, 105, 1, 1), -1, 0,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        float angle = orbiterInstance->getAngle();
+        angle += 180.f;
+        if (angle >= 360.f) angle -= 360.f;
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_CREAM_ORB"), orbiterInstance->_orbiterType->getAttackSoundName()
+        );
+        orbiterInstance->deactivate();
+    }, true
+);
+
+const OrbiterType OrbiterType::PIZZA_CHEFBOSS(10, "PIZZA_CHEFBOSS", sf::IntRect(13, 13, 1, 1), 1.5f, 75.f,
+    OrbiterAttackMethod::CUSTOM, 4000LL, 0, true, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        float fireAngle = orbiterInstance->getAngle();
+        fireAngle += 180.f;
+        if (fireAngle >= 360.f) fireAngle -= 360.f;
+        orbiterInstance->fireTargetedProjectile(
+            degToRads(fireAngle), ProjectileDataManager::getData("_PROJECTILE_CHEFBOSS_PIZZA"), orbiterInstance->_orbiterType->getAttackSoundName(),
+            {8.f, 0.f}
+        );
+        orbiterInstance->deactivate();
+    }, true
 );
 
 

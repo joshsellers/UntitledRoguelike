@@ -31,6 +31,12 @@
 #include "../core/Viewport.h"
 #include "../world/entities/BoulderBeast.h"
 #include "../world/entities/TulipMonster.h"
+#include "../inventory/effect/PlayerVisualEffectManager.h"
+#include "../world/entities/TreeBoss.h"
+#include "../world/entities/CreamBoss.h"
+#include "../world/entities/Altar.h"
+#include "../world/entities/Lightning.h"
+#include "../world/entities/ChefBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -96,7 +102,7 @@ private:
                         processCommand("give:" + std::to_string(Item::MATMURA_BOOTS.getId()));
                         return "Player given Matmura armor";
                     } else if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
-                        const Item* item = nullptr;
+                        std::shared_ptr<const Item> item = nullptr;
                         for (int i = 0; i < Item::ITEMS.size(); i++) {
                             std::string itemName = Item::ITEMS[i]->getName();
                             boost::to_lower(itemName);
@@ -278,6 +284,16 @@ private:
                             entity = std::shared_ptr<BoulderBeast>(new BoulderBeast(pos));
                         } else if (entityName == "tulipmonster") {
                             entity = std::shared_ptr<TulipMonster>(new TulipMonster(pos));
+                        } else if (entityName == "treeboss") {
+                            entity = std::shared_ptr<TreeBoss>(new TreeBoss(pos));
+                        } else if (entityName == "creamboss") {
+                            entity = std::shared_ptr<CreamBoss>(new CreamBoss(pos));
+                        } else if (entityName == "altar") {
+                            entity = std::shared_ptr<Altar>(new Altar(pos, false, _world->getSpriteSheet()));
+                        } else if (entityName == "lightning") {
+                            entity = std::shared_ptr<Lightning>(new Lightning(pos));
+                        } else if (entityName == "chefboss") {
+                            entity = std::shared_ptr<ChefBoss>(new ChefBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
@@ -728,6 +744,132 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 Viewport::setCullingEnabled(!Viewport::isCullingEnabled());
                 return (Viewport::isCullingEnabled() ? "Enabled" : "Disabled") + (std::string)" culling";
+            })
+        },
+
+        {
+            "addeffect",
+            Command("Add an effect to the player",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    const std::string effectName = parsedCommand[1];
+                    PlayerVisualEffectManager::addEffectToPlayer(effectName);
+                    return "Player given effect \"" + effectName + "\"";
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "killplayer",
+            Command("Kill the player",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->getPlayer()->takeDamage(_world->getPlayer()->getHitPoints());
+                return "";
+            })
+        },
+
+        {
+            "tbu",
+            Command("Toggle save file backups",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                BACKUP_ENABLED = !BACKUP_ENABLED;
+                return (BACKUP_ENABLED ? "Enabled" : "Disabled") + (std::string)" save backups";
+            })
+        },
+
+        {
+            "clearaltars",
+            Command("Reset all altars",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->_activatedAltars.clear();
+                return "Cleared altar states";
+            })
+        },
+
+        {
+            "setspeed",
+            Command("Set the player's speed",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() == 2) {
+                    const float newSpeed = std::stof(parsedCommand[1]);
+                    _world->getPlayer()->setBaseSpeed(newSpeed);
+                    return "Set the player's speed to " + std::to_string(newSpeed);
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "gettags",
+            Command("List all the tags that an item has",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    if (!std::regex_match(parsedCommand.at(1), std::regex("^[0-9]+$"))) {
+                        std::shared_ptr<const Item> item = nullptr;
+                        for (int i = 0; i < Item::ITEMS.size(); i++) {
+                            std::string itemName = Item::ITEMS[i]->getName();
+                            boost::to_lower(itemName);
+                            if (parsedCommand.at(1) == itemName) {
+                                item = Item::ITEMS[i];
+                                std::string tagsString = "";
+                                int tagsThisLine = 0;
+                                for (const auto& tag : item->getTags()) {
+                                    tagsThisLine++;
+                                    
+                                    tagsString += tag + ", ";
+
+                                    if (tagsThisLine == 5) {
+                                        tagsThisLine = 0;
+                                        tagsString += "\n";
+                                    }
+                                }
+
+                                if (tagsString.at(tagsString.size() - 1) == '\n') tagsString.pop_back();
+                                if (stringEndsWith(tagsString, ", ")) {
+                                    tagsString.pop_back();
+                                    tagsString.pop_back();
+                                }
+
+                                return tagsString;
+                            }
+                        }
+                        return parsedCommand.at(1) + " is not a valid item";
+                    } else {
+                        try {
+                            int itemId = stoi(parsedCommand.at(1));
+                            if (itemId >= Item::ITEMS.size()) return "Invalid item ID: " + std::to_string(itemId);
+
+                            std::shared_ptr<const Item> item = Item::ITEMS[itemId];
+                            std::string tagsString = "";
+                            int tagsThisLine = 0;
+                            for (const auto& tag : item->getTags()) {
+                                tagsThisLine++;
+
+                                tagsString += tag + ",";
+
+                                if (tagsThisLine == 5) {
+                                    tagsThisLine = 0;
+                                    tagsString += "\n";
+                                }
+                            }
+
+                            if (tagsString.at(tagsString.size() - 1) == '\n') tagsString.pop_back();
+                            if (stringEndsWith(tagsString, ", ")) {
+                                tagsString.pop_back();
+                                tagsString.pop_back();
+                            }
+
+                            return tagsString;
+                        } catch (std::exception ex) {
+                            return ex.what();
+                        }
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

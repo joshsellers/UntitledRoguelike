@@ -1,0 +1,3 @@
+name = "_PROJECTILE_LARGE_CREAM_DROP"
+description = "This item should not be obtainable"
+textureRect = 56, 103, 3, 3

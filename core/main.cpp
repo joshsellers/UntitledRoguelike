@@ -16,6 +16,7 @@
 #include "music/MusicManager.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../world/TerrainGenParameters.h"
+#include "../mod/ModManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -123,6 +124,10 @@ void checkCrash() {
             MessageManager::displayMessage(
                 "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
             );
+        } else {
+            MessageManager::displayMessage(
+                "It looks like pennylooter did not shut down\ncorrectly last time.\n\nYou can report bugs on instagram (dm @pennylooter)\nor email rolmigame@gmail.com"
+                , 15);
         }
     }
 }
@@ -132,6 +137,7 @@ int main() {
     Logger::start();
     Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();
+    ModManager::loadAll();
     InputBindingManager::init();
     SoundManager::loadSounds();
     ShaderManager::compileShaders();
@@ -148,7 +154,7 @@ int main() {
     steamworksSetup();
     AchievementManager::start();
 
-    Item::checkForIncompleteItemConfigs();
+    Item::initItems();
 
     checkLocalLowExists();
 

@@ -1,0 +1,21 @@
+currentMaxHp = player.getMaxHp();
+
+if: currentMaxHp != 1 {
+    newMaxHp = currentMaxHp / 2;
+    player.setMaxHp(newMaxHp);
+
+    currentHp = player.getHp();
+    if: currentHp > newMaxHp {
+        player.setHp(newMaxHp);
+    }
+
+    currentDamage = player.getDamageMultiplier();
+    player.setDamageMultiplier(currentDamage + (1 + 1 / 4));
+
+    return true;
+}
+
+if: currentMaxHp == 1 {
+    displayMessage("Your max hp is too low to use this", 5);
+    return false;
+}

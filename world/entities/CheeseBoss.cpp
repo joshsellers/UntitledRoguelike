@@ -2,7 +2,6 @@
 #include "../World.h"
 #include "orbiters/Orbiter.h"
 
-
 CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE * 5, TILE_SIZE * 6, 
     {
         BossState(BEHAVIOR_STATE::REST, 3000LL, 5000LL),
@@ -10,7 +9,7 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE *
         BossState(BEHAVIOR_STATE::RAPID_FIRE, 4500LL, 6000LL)
     }) 
 {
-    setMaxHitPoints(750);
+    setMaxHitPoints(2500);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 5) / 2;
@@ -27,10 +26,10 @@ CheeseBoss::CheeseBoss(sf::Vector2f pos) : Boss(CHEESE_BOSS, pos, 1, TILE_SIZE *
     _displayName = "William Cheesequake";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(10000, 12000);
+    unsigned int pennyAmount = randomInt(200, 300);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
-    unsigned int cheeseAmount = randomInt(10, 16);
+    unsigned int cheeseAmount = randomInt(1, 2);
     getInventory().addItem(Item::CHEESE_SLICE.getId(), cheeseAmount);
 }
 

@@ -20,9 +20,8 @@ Skeleton::Skeleton(sf::Vector2f pos) : Entity(SKELETON, pos, 3, TILE_SIZE, TILE_
     _entityType = "skeleton";
 
     srand(currentTimeNano());
-    constexpr int hasPennyChance = 12;
-    unsigned int pennyAmount = randomInt(0, 512);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     constexpr int hasBoneChance = 20;
     bool hasBone = randomInt(0, hasBoneChance) == 0;

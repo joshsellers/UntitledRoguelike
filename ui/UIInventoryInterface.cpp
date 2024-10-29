@@ -65,7 +65,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     int mousedOverItemIndex = -1;
     int filteredIndex = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
 
         const EQUIPMENT_TYPE itemType = item->getEquipmentType();
         if (!isItemCorrectType(itemType)) continue;
@@ -82,7 +82,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         std::string itemName = item->getName();
         if (item->getId() == Item::PENNY.getId() && _source.getParent()->getEntityType() == "shopkeep") itemName = "Shopkeep's pennies";
         label.setString(itemName + (
-            item->isStackable() ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
+            item->isStackable() && _source.getItemAmountAt(i) > 1 ? " (" + std::to_string(_source.getItemAmountAt(i)) + ")" : ""
         ));
 
         sf::RectangleShape labelBg(sf::Vector2f(_width + (_width / 8) * 3 + label.getGlobalBounds().width + (_width / 8), _height + (_height / 8) * 2));
@@ -164,7 +164,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     try {
         if (mousedOverItemIndex >= 0 || (_gamepadShowTooltip && _gamepadSelectedItemIndex < (int)_source.getCurrentSize() && _gamepadSelectedItemIndex >= 0
             && _gamepadUnfilteredSelectedItemIndex < (int)_source.getCurrentSize())) {
-            const Item* item = Item::ITEMS[
+            std::shared_ptr<const Item> item = Item::ITEMS[
                 _source.getItemIdAt(
                     (_gamepadShowTooltip && GamePad::isConnected() && _gamepadUnfilteredSelectedItemIndex >= 0 && !USING_MOUSE) ?
                     _gamepadUnfilteredSelectedItemIndex :
@@ -232,10 +232,18 @@ bool UIInventoryInterface::isItemCorrectType(EQUIPMENT_TYPE type) {
 }
 
 void UIInventoryInterface::useItem(int index) {
-    const Item* item = Item::ITEMS[_source.getItemIdAt(index)];
+    std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(index)];
 
     if (item->isConsumable()) {
+        const int hpBeforeUse = _source.getParent()->getHitPoints();
+
         if (item->use(_source.getParent())) _source.removeItemAt(index, 1);
+
+        const int hpAfterUse = _source.getParent()->getHitPoints();
+        if (hpAfterUse > hpBeforeUse && item->hasTag("food") && _source.getEquippedItemId(EQUIPMENT_TYPE::CLOTHING_HEAD) == Item::getIdFromName("Chef's Hat")) {
+            const int healAmount = hpAfterUse - hpBeforeUse;
+            _source.getParent()->heal((float)healAmount * 0.25);
+        }
     } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
         if (_source.isEquipped(index)) {
             _source.deEquip(item->getEquipmentType());
@@ -346,7 +354,7 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
     if (button == sf::Mouse::Left) {
         int totalDisplayedItems = 0;
         for (int i = 0; i < _source.getCurrentSize(); i++) {
-            const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+            std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
             if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
         }
 
@@ -424,7 +432,7 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 
     int totalDisplayedItems = 0;
     for (int i = 0; i < _source.getCurrentSize(); i++) {
-        const Item* item = Item::ITEMS[_source.getItemIdAt(i)];
+        std::shared_ptr<const Item> item = Item::ITEMS[_source.getItemIdAt(i)];
         if (isItemCorrectType(item->getEquipmentType())) totalDisplayedItems++;
     }
 

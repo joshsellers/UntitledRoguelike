@@ -24,6 +24,11 @@ public:
     static const OrbiterType EYE_BALL;
     static const OrbiterType BLOOD_BALL;
     static const OrbiterType SPIKE_BALL;
+    static const OrbiterType CREAM_CLOCKWISE_OUT;
+    static const OrbiterType CREAM_COUNTERCLOCKWISE_OUT;
+    static const OrbiterType CREAM_CLOCKWISE_IN;
+    static const OrbiterType CREAM_COUNTERCLOCKWISE_IN;
+    static const OrbiterType PIZZA_CHEFBOSS;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

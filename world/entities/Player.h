@@ -43,10 +43,14 @@ public:
     int getStaminaRefreshRate() const;
     int& getStaminaRef();
     int& getMaxStaminaRef();
+
+    void setSpeedMultiplier(float speedMultiplier);
+    float getSpeedMultiplier() const;
     
     virtual void setMaxStamina(int amount);
     virtual void restoreStamina(int amount);
     virtual void increaseStaminaRefreshRate(int amount);
+    virtual void setStaminaRefreshRate(int amount);
 
     bool isUsingStamina();
     bool hasSufficientStamina(int cost);
@@ -76,6 +80,7 @@ public:
     friend class RemotePlayer;
     friend class World;
     friend class SaveManager;
+    friend class PlayerVisualEffectManager;
 protected:
     virtual void damage(int damage);
 
@@ -111,6 +116,7 @@ private:
     virtual TERRAIN_TYPE getCurrentTerrain();
 
     const float _slowMoveMultiplier = 0.5f;
+    float _speedMultiplier = 0.f;
 
     long long _lastTimeBoatBobbedUp = 0;
 
@@ -161,6 +167,9 @@ private:
     void blink();
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;
+
+    long long _timeDamageTaken = 0LL;
+    bool isTakingDamage() const;
 };
 
 #endif

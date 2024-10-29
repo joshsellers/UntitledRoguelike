@@ -17,8 +17,10 @@ Cactus::Cactus(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Ent
     _displayBottom = true;
 
     srand(currentTimeNano());
-    const unsigned int fleshAmount = randomInt(1, 5);
-    getInventory().addItem(Item::CACTUS_FLESH.getId(), fleshAmount);
+    if (randomInt(0, 10) == 0) {
+        const unsigned int fleshAmount = 1;
+        getInventory().addItem(Item::CACTUS_FLESH.getId(), fleshAmount);
+    }
 }
 
 void Cactus::update() {

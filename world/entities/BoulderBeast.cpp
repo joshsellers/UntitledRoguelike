@@ -23,9 +23,8 @@ BoulderBeast::BoulderBeast(sf::Vector2f pos) : Boss(BOULDER_BEAST, pos, 2.5, TIL
     _entityType = "boulderbeast";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 5;
-    unsigned int pennyAmount = randomInt(0, 505);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     deactivateBossMode();
 }
@@ -48,7 +47,7 @@ void BoulderBeast::subUpdate() {
     if (currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis 
         && getWorld()->getPlayer()->isActive()
         && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
-        getWorld()->getPlayer()->takeDamage(5);
+        getWorld()->getPlayer()->takeDamage(12);
         _lastContactDamageTimeMillis = currentTimeMillis();
     }
 }
@@ -56,7 +55,7 @@ void BoulderBeast::subUpdate() {
 void BoulderBeast::onStateChange(const BossState previousState, const BossState newState) {
     switch (newState.stateId) {
         case BEHAVIOR_STATE::CHASE:
-            _baseSpeed = 3.5f;
+            _baseSpeed = 4.f;
             break;
         case BEHAVIOR_STATE::TARGETED_FIRE:
             _baseSpeed = 1.f;

@@ -11,6 +11,8 @@ class Ability {
 public:
     static const Ability DAMAGE_AURA;
     static const Ability HEALILNG_MIST;
+    static const Ability THIRD_EYE;
+    static const Ability LIGHTNING;
 
     static std::vector<Ability*> ABILITIES;
 
@@ -36,6 +38,8 @@ public:
     void draw(Player* player, Ability* ability, sf::RenderTexture& surface);
 
 private:
+    static void fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost = 0, bool addParentVelocity = false);
+
     const unsigned int _id;
     const std::string _name;
 
@@ -53,8 +57,13 @@ private:
 
     std::vector<std::string> _hitEntities;
     //
+    
     // HEALING_MIST
     long long _lastHealTimeMillis = 0LL;
+    //
+
+    // THIRD_EYE & LIGHTNING
+    long long _lastFireTimeMillis = 0LL;
     //
 };
 

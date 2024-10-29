@@ -23,17 +23,20 @@ void Boss::update() {
 void Boss::deactivateBossMode() {
     _spawnedWithEnemies = true;
     _isBoss = false;
+    _isMiniboss = true;
 }
 
 void Boss::changeState() {
     const BossState previousState = _currentState;
 
-    std::vector<BossState> availableStates;
-    for (int i = 0; i < _numBossStates; i++) {
-        int stateIndex = i;
-        if (stateIndex != _currentState.stateId) availableStates.push_back(_bossStates.at(stateIndex));
+    if (_numBossStates != 1) {
+        std::vector<BossState> availableStates;
+        for (int i = 0; i < _numBossStates; i++) {
+            int stateIndex = i;
+            if (stateIndex != _currentState.stateId) availableStates.push_back(_bossStates.at(stateIndex));
+        }
+        _currentState = availableStates.at(randomInt(0, (int)availableStates.size() - 1));
     }
-    _currentState = availableStates.at(randomInt(0, (int)availableStates.size() - 1));
 
     _currentStateLength = (long long)randomInt(_currentState.minLength, _currentState.maxLength);
     _lastStateChangeTime = currentTimeMillis();
@@ -46,7 +49,12 @@ void Boss::damage(int damage) {
     if (_hitPoints <= 0) {
         _isActive = false;
         for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+            if (getInventory().getItemIdAt(i) == Item::PENNY.getId() && !_spawnedWithEnemies) {
+                MessageManager::displayMessage("You defeated " + getDisplayName() + "\n\nYou won " + std::to_string(getInventory().getItemAmountAt(i)) + " pennies!\n\nCongrats", 10);
+                getWorld()->getPlayer()->getInventory().addItem(Item::PENNY.getId(), getInventory().getItemAmountAt(i));
+            } else {
+                getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+            }
         }
 
         if (!_spawnedWithEnemies) getWorld()->bossDefeated();

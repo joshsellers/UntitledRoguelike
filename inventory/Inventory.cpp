@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../world/entities/DroppedItem.h"
 #include "../core/MessageManager.h"
+#include "../core/Tutorial.h"
 
 Inventory::Inventory(Entity* parent) :
     _parent(parent) {
@@ -10,7 +11,7 @@ Inventory::Inventory(Entity* parent) :
 
 void Inventory::addItem(unsigned int itemId, unsigned int amount) {
     if (amount > 0) {
-        const Item* itemData = Item::ITEMS[itemId];
+        std::shared_ptr<const Item> itemData = Item::ITEMS[itemId];
 
         if (_inventory.size() + amount <= getMaxSize() || itemData->isStackable()) {
             for (auto& item : _inventory) {
@@ -104,7 +105,7 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
 
     sf::Vector2f pos(px, py);
     std::shared_ptr<DroppedItem> droppedItem = std::shared_ptr<DroppedItem>(
-        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect())
+        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), true)
     );
     droppedItem->setWorld(_parent->getWorld());
     droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());
@@ -127,7 +128,19 @@ int Inventory::findItem(unsigned int itemId) const {
 }
 
 void Inventory::useItem(size_t inventoryIndex) const {
-    if (inventoryIndex < _inventory.size()) Item::ITEMS.at(_inventory.at(inventoryIndex).x)->use(_parent);
+    if (inventoryIndex < _inventory.size()) {
+        const auto& item = Item::ITEMS.at(_inventory.at(inventoryIndex).x);
+
+        const int hpBeforeUse = _parent->getHitPoints();
+        
+        item->use(_parent);
+
+        const int hpAfterUse = _parent->getHitPoints();
+        if (hpAfterUse > hpBeforeUse && item->hasTag("food")) {
+            const int healAmount = hpAfterUse - hpBeforeUse;
+            _parent->heal((float)healAmount * 0.25);
+        }
+    }
     else MessageManager::displayMessage("Invalid inventory index: " + std::to_string(inventoryIndex) + ". Inventory size is " + std::to_string(_inventory.size()), 10, WARN);
 }
 
@@ -149,6 +162,8 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
         if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) {
             MessageManager::displayMessage("You can only equip the boat in the water silly", 5);
             return;
+        } else if (!Tutorial::isCompleted() && equipType == EQUIPMENT_TYPE::TOOL && Item::ITEMS[getItemIdAt(index)]->getId() == Item::BOW.getId()) {
+            Tutorial::completeStep(TUTORIAL_STEP::EQUIP_BOW);
         }
         _equippedItems[(int)equipType] = index;
     }
@@ -194,8 +209,8 @@ Entity* Inventory::getParent() const {
 
 void Inventory::emptyAmmoMagazine(EQUIPMENT_TYPE equipType) {
     if (getEquippedItemId(equipType) != NOTHING_EQUIPPED && Item::ITEMS[getEquippedItemId(equipType)]->isGun()) {
-        const Item* weapon = Item::ITEMS[getEquippedItemId(equipType)];
-        addItem(weapon->getAmmoId(), _parent->getMagazineContents());
+        //std::shared_ptr<const Item> weapon = Item::ITEMS[getEquippedItemId(equipType)];
+        //addItem(weapon->getAmmoId(), _parent->getMagazineContents());
         _parent->emptyMagazine();
     }
 }

@@ -1,0 +1,10 @@
+name = "Writ of Blood"
+description = "Upon signing, you agree to forfeit half of your\nmax hp in exchange for greatly increased damage."
+value = 150
+unlockWaveNumber = 9
+functionName = "writofblood"
+isBuyable = true
+isStackable = false
+textureRect = 6, 13, 1, 1
+isConsumable = true
+shopChance = 4

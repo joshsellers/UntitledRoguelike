@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_LARGE_CREAM_DROP"
+velocity = 2.75
+lifeTime = 4000
+hitBox = 0, 0, 48, 48
+onlyHitEnemies = true
+noCollide = true

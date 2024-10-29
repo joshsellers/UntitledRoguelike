@@ -1,0 +1,11 @@
+name = "Funny Mushroom"
+description = "Open your third eye"
+textureRect = 3, 13, 1, 1
+isStackable = true
+stackLimit = 16
+isConsumable = true
+value = 50
+isBuyable = true
+unlockWaveNumber = 5
+functionName = "funnyshroom"
+isStartingItem = true

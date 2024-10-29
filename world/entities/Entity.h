@@ -45,6 +45,7 @@ public:
     bool isProp() const;
     bool isEnemy() const;
     bool isBoss() const;
+    bool isMiniBoss() const;
     bool isOrbiter() const;
     bool canPickUpItems() const;
     
@@ -101,9 +102,12 @@ public:
     virtual void setMaxStamina(int amount);
     virtual void restoreStamina(int amount);
     virtual void increaseStaminaRefreshRate(int amount);
+    virtual void setStaminaRefreshRate(int amount);
+    virtual int getStaminaRefreshRate() const;
 
     float getDamageMultiplier() const;
     void increaseDamageMultiplier(float amount);
+    void setDamageMultiplier(float amount);
 
     sf::FloatRect getHitBox() const;
 
@@ -165,6 +169,7 @@ protected:
     const bool _isProp = false;
     bool _isEnemy = false;
     bool _isBoss = false;
+    bool _isMiniboss = false;
     bool _isOrbiter = false;
     bool _canPickUpItems = false;
     bool _usesDormancyRules = false;
@@ -174,9 +179,9 @@ protected:
     bool _isHostile = false;
 
     void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
-        bool displayProjectileOnTop = false);
+        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = { 0, 0 });
     void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
-        bool displayProjectileOnTop = false);
+        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = {0, 0});
 
     Inventory _inventory = Inventory(this);
 

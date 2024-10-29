@@ -1,0 +1,12 @@
+name = "Can of Soup"
+description = "Nutritious\n\nHeals between 50 and 100 HP"
+isBuyable = true
+value = 125
+isStackable = true
+stackLimit = 2
+unlockWaveNumber = 16
+shopChance = 3
+isConsumable = true
+functionName = "cannedsoup"
+textureRect = 10, 13, 1, 1
+tags = "food"

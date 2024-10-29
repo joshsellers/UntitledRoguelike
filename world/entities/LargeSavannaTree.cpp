@@ -15,7 +15,7 @@ LargeSavannaTree::LargeSavannaTree(sf::Vector2f pos, std::shared_ptr<sf::Texture
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    unsigned int woodAmount = randomInt(1, 8);
+    unsigned int woodAmount = 1;
     getInventory().addItem(Item::WOOD.getId(), woodAmount);
 
     _displayBottom = true;

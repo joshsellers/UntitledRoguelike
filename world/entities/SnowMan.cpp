@@ -20,9 +20,8 @@ SnowMan::SnowMan(sf::Vector2f pos) : Entity(SNOWMAN, pos, 2, TILE_SIZE, TILE_SIZ
     _entityType = "snowman";
 
     srand(currentTimeNano());
-    const int hasPennyChance = 10;
-    unsigned int pennyAmount = randomInt(0, 510);
-    if (pennyAmount >= hasPennyChance) getInventory().addItem(Item::PENNY.getId(), pennyAmount - hasPennyChance);
+    unsigned int pennyAmount = randomInt(0, 5);
+    if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
 void SnowMan::update() {

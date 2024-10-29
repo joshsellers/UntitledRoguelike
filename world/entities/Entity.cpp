@@ -322,19 +322,21 @@ void Entity::swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator,
     }
 }
 
-void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, bool displayProjectileOnTop) {
+void Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
+    bool displayProjectileOnTop, sf::Vector2f centerOffset) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
-    double x = (double)(targetPos.x - centerPoint.x);
-    double y = (double)(targetPos.y - centerPoint.y);
+    double x = (double)(targetPos.x - centerPoint.x + centerOffset.x);
+    double y = (double)(targetPos.y - centerPoint.y + centerOffset.y);
 
     float angle = (float)((std::atan2(y, x)));
-    fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop);
+    fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset);
 }
 
-void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, bool displayProjectileOnTop) {
+void Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
+    bool displayProjectileOnTop, sf::Vector2f centerOffset) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
-    sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2, centerPoint.y);
+    sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2 + centerOffset.x, centerPoint.y + centerOffset.y);
 
     ProjectilePoolManager::addProjectile(spawnPos, this, angle, projData.baseVelocity, projData, onlyDamagePlayer);
 
@@ -383,6 +385,10 @@ bool Entity::isEnemy() const {
 
 bool Entity::isBoss() const {
     return _isBoss;
+}
+
+bool Entity::isMiniBoss() const {
+    return _isMiniboss;
 }
 
 bool Entity::isOrbiter() const {
@@ -531,7 +537,8 @@ int& Entity::getMaxHitPointsRef() {
 }
 
 void Entity::takeDamage(int damage) {
-    if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint" && getEntityType() != "barberext" && getEntityType() != "barberint") {
+    if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint" && getEntityType() != "barberext" && getEntityType() != "barberint" 
+        && getEntityType() != "shopkeep") {
         sf::Vector2f pos = getPosition();
         if (_isProp) pos.x += (float)(_spriteWidth * TILE_SIZE) / 2;
 
@@ -588,7 +595,18 @@ void Entity::increaseDamageMultiplier(float amount) {
     _damageMultiplier += amount;
 }
 
+void Entity::setDamageMultiplier(float amount) {
+    _damageMultiplier = amount;
+}
+
 void Entity::increaseStaminaRefreshRate(int amount) {
+}
+
+void Entity::setStaminaRefreshRate(int amount) {
+}
+
+int Entity::getStaminaRefreshRate() const {
+    return 0;
 }
 
 sf::FloatRect Entity::getHitBox() const {
