@@ -11,7 +11,11 @@ void MusicManager::start() {
         } else if (stringStartsWith(songName, "cooldown")) {
             _cooldownSongs.push_back(songName);
         } else if (stringStartsWith(songName, "wave")) {
-            _cooldownSongs.push_back(songName);
+            _waveSongs.push_back(songName);
+        } else if (stringStartsWith(songName, "boss")) {
+            _bossSongs.push_back(songName);
+        } else if (stringStartsWith(songName, "shop")) {
+            _shopSongs.push_back(songName);
         }
     }
 
@@ -33,7 +37,7 @@ MUSIC_SITUTAION MusicManager::getSituation() {
 
 void MusicManager::run() {
     while (!_isHalted) {
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(500.f)));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(250.f)));
 
         if (_situation != _lastSituation) {
             _lastSituation = _situation;
@@ -62,10 +66,18 @@ void MusicManager::run() {
                     }
                     break;
                 case MUSIC_SITUTAION::BOSS:
-
+                    if (_bossSongs.size() > 1) {
+                        SoundManager::playSong(_bossSongs.at(randomInt(0, _bossSongs.size() - 1)));
+                    } else if (_bossSongs.size() == 1) {
+                        SoundManager::playSong(_bossSongs.at(0));
+                    }
                     break;
                 case MUSIC_SITUTAION::SHOP:
-
+                    if (_shopSongs.size() > 1) {
+                        SoundManager::playSong(_shopSongs.at(randomInt(0, _shopSongs.size() - 1)));
+                    } else if (_shopSongs.size() == 1) {
+                        SoundManager::playSong(_shopSongs.at(0));
+                    }
                     break;
             }
         }

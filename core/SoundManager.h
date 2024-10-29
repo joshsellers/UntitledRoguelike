@@ -72,11 +72,27 @@ public:
 
         setVolume("revolver", .25f);
 
+        const std::string musicDirName = "res/sounds/music";
+        std::vector<std::string> musicFiles;
+        for (const auto& entry : std::filesystem::directory_iterator(musicDirName)) {
+            if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+            else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "wav") continue;
+            musicFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+        }
+
+        for (const auto& musicFile : musicFiles) {
+            std::string songName = splitString(musicFile, ".")[0];
+            musicNames.push_back(songName);
+        }
+
         for (int i = 0; i < musicNames.size(); i++) {
             std::string filePath = "res/sounds/music/" + musicNames[i] + ".wav";
             if (music[musicNames[i]].load(filePath.c_str()) != 0) {
                 MessageManager::displayMessage("Could not load " + musicNames[i] + ".wav", 10, WARN);
-            } else music[musicNames[i]].setSingleInstance(true);
+            } else {
+                music[musicNames[i]].setSingleInstance(true);
+                music[musicNames[i]].setLooping(true);
+            }
         }
     }
 
@@ -92,9 +108,7 @@ private:
     inline static std::vector<std::string> soundNames;
 
     inline static std::map<std::string, SoLoud::Wav> music;
-    inline static std::vector<std::string> musicNames = {
-        "cooldown_0", "mainmenu"
-    };
+    inline static std::vector<std::string> musicNames;
 };
 
 #endif

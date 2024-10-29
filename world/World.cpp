@@ -591,10 +591,10 @@ void World::dumpChunkBuffer() {
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
-        MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
     } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
         _cooldownActive = false;
-        MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
     } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
 }
 
@@ -1232,6 +1232,8 @@ void World::spawnBoss(int currentWaveNumber) {
     }
 
     if (boss != nullptr) {
+        MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
+
         boss->loadSprite(getSpriteSheet());
         boss->setWorld(this);
         addEntity(boss);
@@ -1289,6 +1291,8 @@ void World::resetChunks() {
 void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
     _isPlayerInShop = true;
     if (buildingID == "shop") {
+        MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
+
         std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet()));
         shopInterior->setWorld(this);
         addEntity(shopInterior);
@@ -1334,6 +1338,10 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
 }
 
 void World::exitBuilding() {
+    if (onEnemySpawnCooldown() && !bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
+    else if (bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
+    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+
     _isPlayerInShop = false;
 }
 
@@ -1371,6 +1379,9 @@ bool World::bossIsActive() const {
 }
 
 void World::bossDefeated() {
+    if (onEnemySpawnCooldown()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
+    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
 

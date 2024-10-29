@@ -23,6 +23,8 @@ private:
     static inline std::vector<std::string> _mainMenuSongs;
     static inline std::vector<std::string> _cooldownSongs;
     static inline std::vector<std::string> _waveSongs;
+    static inline std::vector<std::string> _bossSongs;
+    static inline std::vector<std::string> _shopSongs;
 };
 
 #endif
