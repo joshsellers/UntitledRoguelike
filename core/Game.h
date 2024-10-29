@@ -15,6 +15,7 @@
 #include "../world/entities/ShopArrow.h"
 #include "../ui/UILabel.h"
 #include "../../SteamworksHeaders/steam_api.h"
+#include "../ui/UISlider.h"
 
 
 const std::string GAME_NAME = "pennylooter";
@@ -83,6 +84,10 @@ private:
 	std::shared_ptr<UIMenu> _virtualKeyboardMenu_lower = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _virtualKeyboardMenu_upper = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _deathMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _audioMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UISlider> _musicSlider;
+	std::shared_ptr<UISlider> _sfxSlider;
 
 	std::shared_ptr<UILabel> _overallStatsLabel_mainMenu;
 	std::shared_ptr<UILabel> _overallStatsLabel_pauseMenu;

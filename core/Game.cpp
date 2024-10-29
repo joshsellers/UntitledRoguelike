@@ -19,6 +19,8 @@
 #include "Viewport.h"
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../world/entities/AltarArrow.h"
+#include "../ui/UISlider.h"
+#include "SoundManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -220,15 +222,56 @@ void Game::initUI() {
     _vsyncToggleButton_pauseMenu->setSelectionId(2);
     _pauseMenu_settings->addElement(_vsyncToggleButton_pauseMenu);
 
+    std::shared_ptr<UIButton> audioSettingsButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
+        1, 30, 11, 3, "audio settings", _font, this, "audiosettings_pause"
+    ));
+    audioSettingsButton_pauseMenu->setSelectionId(3);
+    _pauseMenu_settings->addElement(audioSettingsButton_pauseMenu);
+
     _pauseMenu_settings->useGamepadConfiguration = true;
     _pauseMenu_settings->defineSelectionGrid(
         {
             {backSettingsMenuButton->getSelectionId()},
             {togglefullscreenButton->getSelectionId()},
-            {_vsyncToggleButton_pauseMenu->getSelectionId()}
+            {_vsyncToggleButton_pauseMenu->getSelectionId()},
+            {audioSettingsButton_pauseMenu->getSelectionId()}
         }
     );
     _ui->addMenu(_pauseMenu_settings);
+
+
+    // Audio menu
+    std::shared_ptr<UIButton> backAudioSettingsButton = std::shared_ptr<UIButton>(new UIButton(
+        1, 5, 9, 3, "back", _font, this, "back_audio"
+    ));
+    backAudioSettingsButton->setSelectionId(0);
+    _audioMenu->addElement(backAudioSettingsButton);
+
+    _sfxSlider = std::shared_ptr<UISlider>(new UISlider(
+        "sound effects:", 45, 11, 10, _font, "sfxslider"
+    ));
+    _sfxSlider->setSelectionId(1);
+    _sfxSlider->setListener(this);
+    _sfxSlider->setValue(SFX_VOLUME);
+    _audioMenu->addElement(_sfxSlider);
+
+    _musicSlider = std::shared_ptr<UISlider>(new UISlider(
+        "music:", 45, 19, 10, _font, "musicslider"
+    ));
+    _musicSlider->setSelectionId(2);
+    _musicSlider->setListener(this);
+    _musicSlider->setValue(MUSIC_VOLUME);
+    _audioMenu->addElement(_musicSlider);
+
+    _audioMenu->useGamepadConfiguration = true;
+    _audioMenu->defineSelectionGrid(
+        {
+            {backAudioSettingsButton->getSelectionId()},
+            {_sfxSlider->getSelectionId()},
+            {_musicSlider->getSelectionId()}
+        }
+    );
+    _ui->addMenu(_audioMenu);
 
 
     // HUD
@@ -512,13 +555,20 @@ void Game::initUI() {
     _completeTutorialButton_startSettings->setSelectionId(3);
     _startMenu_settings->addElement(_completeTutorialButton_startSettings);
 
+    std::shared_ptr<UIButton> audioSettingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
+        43.5, 38, 12, 3, "audio settings", _font, this, "audiosettings_main"
+    ));
+    audioSettingsButton_mainMenu->setSelectionId(4);
+    _startMenu_settings->addElement(audioSettingsButton_mainMenu);
+
     _startMenu_settings->useGamepadConfiguration = true;
     _startMenu_settings->defineSelectionGrid(
         {
             {backButton_startSettings->getSelectionId()},
             {togglefullscreenButton_fromstart->getSelectionId()},
             {_vsyncToggleButton_mainMenu->getSelectionId()},
-            {_completeTutorialButton_startSettings->getSelectionId()}
+            {_completeTutorialButton_startSettings->getSelectionId()},
+            {audioSettingsButton_mainMenu->getSelectionId()}
         }
     );
     _ui->addMenu(_startMenu_settings);
@@ -1082,7 +1132,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
     }
 
     if (!_hideUI) {
-        if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive() || _statsMenu_pauseMenu->isActive())) {
+        if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive() || _statsMenu_pauseMenu->isActive() || _audioMenu->isActive())) {
             sf::RectangleShape controlsMenuBg;
             controlsMenuBg.setFillColor(sf::Color(0x444448FF));
             controlsMenuBg.setPosition(0, 0);
@@ -1518,6 +1568,24 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "hardmode") {
         HARD_MODE_ENABLED = !HARD_MODE_ENABLED;
         _hardModeToggleButton->setLabelText(HARD_MODE_ENABLED ? "hard mode: on" : "hard mode: off");
+    } else if (buttonCode == "audiosettings_pause") {
+        _pauseMenu_settings->hide();
+        _audioMenu->show();
+    } else if (buttonCode == "audiosettings_main") {
+        _startMenu_settings->hide();
+        _audioMenu->show();
+    } else if (buttonCode == "back_audio") {
+        _audioMenu->hide();
+        if (_gameStarted) _pauseMenu_settings->show();
+        else _startMenu_settings->show();
+
+        SFX_VOLUME = _sfxSlider->getValue();
+        MUSIC_VOLUME = _musicSlider->getValue();
+        updateSettingsFiles();
+    } else if (buttonCode == "sfxslider") {
+        SoundManager::setSfxVolume(_sfxSlider->getValue());
+    } else if (buttonCode == "musicslider") {
+        SoundManager::setMusicVolume(_musicSlider->getValue());
     }
 }
 
@@ -1618,13 +1686,14 @@ void Game::togglePauseMenu() {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
-        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive()) {
+        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
         else if (_controlsMenu->isActive()) buttonPressed("back_controls");
         else if (_inputBindingsMenu->isActive()) buttonPressed("back_bindings");
         else if (_statsMenu_pauseMenu->isActive()) buttonPressed("back_stats_pause");
+        else if (_audioMenu->isActive()) buttonPressed("back_audio");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 

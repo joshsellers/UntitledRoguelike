@@ -14,6 +14,9 @@ extern int HEIGHT;
 
 extern bool VSYNC_ENABLED;
 
+extern float SFX_VOLUME;
+extern float MUSIC_VOLUME;
+
 extern bool AUTOSAVE_ENABLED;
 extern long long AUTOSAVE_INTERVAL_SECONDS;
 

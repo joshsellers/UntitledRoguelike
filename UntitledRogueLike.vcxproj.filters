@@ -474,6 +474,9 @@
     <ClCompile Include="world\entities\ChefBoss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UISlider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -843,6 +846,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\ChefBoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UISlider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

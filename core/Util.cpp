@@ -156,6 +156,8 @@ void updateSettingsFile(std::string path) {
         out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
         out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
         out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
+        out << "sfx=" << std::to_string(SFX_VOLUME) << std::endl;
+        out << "music=" << std::to_string(MUSIC_VOLUME) << std::endl;
         out.close();
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);

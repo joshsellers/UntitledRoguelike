@@ -49,6 +49,20 @@ void readSettings(std::ifstream& in) {
             } catch (std::exception ex) {
                 MessageManager::displayMessage(ex.what(), 5, ERR);
             }
+        } else if (line.rfind("sfx", 0) == 0) {
+            try {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                SFX_VOLUME = std::stof(parsedLine[1]);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
+        } else if (line.rfind("music", 0) == 0) {
+            try {
+                std::vector<std::string> parsedLine = splitString(line, "=");
+                MUSIC_VOLUME = std::stof(parsedLine[1]);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
         }
     }
 }
@@ -162,6 +176,8 @@ int main() {
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
 
     loadSettings();
+    SoundManager::setSfxVolume(SFX_VOLUME);
+    SoundManager::setMusicVolume(MUSIC_VOLUME);
 
     if (FULLSCREEN) {
         HEIGHT = (float)WIDTH / ((float)sf::VideoMode::getDesktopMode().width / (float)sf::VideoMode::getDesktopMode().height);

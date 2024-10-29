@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ui\UISlider.cpp" />
     <ClCompile Include="world\entities\ChefBoss.cpp" />
     <ClCompile Include="mod\ScriptExtensions.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ui\UISlider.h" />
     <ClInclude Include="world\entities\ChefBoss.h" />
     <ClInclude Include="mod\ScriptExtensions.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />

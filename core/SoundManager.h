@@ -23,12 +23,14 @@ public:
 
     static void playSong(std::string musicName) {
         stopMusic();
-        soloud.play(music[musicName]);
+        _currentSong = soloud.play(music[musicName]);
+        _songIsPlaying = true;
         music[musicName].setLooping(true);
     }
 
     static void stopSong(std::string songName) {
         music[songName].stop();
+        _songIsPlaying = false;
     }
 
     static void stopMusic() {
@@ -44,6 +46,16 @@ public:
     static void setMusicVolume(float volume) {
         for (auto& song : music) {
             song.second.setVolume(volume);
+        }
+
+        if (_songIsPlaying) {
+            soloud.setVolume(_currentSong, volume);
+        }
+    }
+
+    static void setSfxVolume(float volume) {
+        for (auto& sound : sounds) {
+            sound.second.setVolume(volume);
         }
     }
 
@@ -109,6 +121,9 @@ private:
 
     inline static std::map<std::string, SoLoud::Wav> music;
     inline static std::vector<std::string> musicNames;
+
+    inline static SoLoud::handle _currentSong;
+    inline static bool _songIsPlaying = false;
 };
 
 #endif
