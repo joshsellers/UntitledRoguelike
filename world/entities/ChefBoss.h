@@ -22,6 +22,8 @@ protected:
         SPAWN_BURGERS
     };
 private:
+    sf::Sprite _tearsSprite;
+
     long long _lastContactDamageTimeMillis = 0LL;
 
     int _animCounter = 0;

@@ -23,7 +23,7 @@ ChefBoss::ChefBoss(sf::Vector2f pos) : Boss(CHEF_BOSS, pos, 3.f, TILE_SIZE * 2, 
     _canPickUpItems = false;
 
     _entityType = "chefboss";
-    _displayName = "";
+    _displayName = "Chef Pete";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(2300, 3000);
@@ -63,6 +63,9 @@ void ChefBoss::subUpdate() {
         else _movingDir = LEFT;
     }
 
+    if (dist - desiredDist < 10.f) _baseSpeed = 1.f;
+    else _baseSpeed = 3.f;
+
     if (dist < desiredDist || _currentState.stateId == KNIFE_ATTACK) {
         xa = 0;
         ya = 0;
@@ -74,7 +77,8 @@ void ChefBoss::subUpdate() {
     if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
     else move(xa, ya);
 
-    _sprite.setPosition(getPosition()); 
+    _sprite.setPosition(getPosition());
+    _tearsSprite.setPosition(getPosition());
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
@@ -93,18 +97,24 @@ void ChefBoss::draw(sf::RenderTexture& surface) {
     constexpr int ticksPerFrame = 4;
     constexpr int frameCount = 26;
     const int xOffset = ((_animCounter / ticksPerFrame) % frameCount) * TILE_SIZE * 2;
-    _sprite.setTextureRect(sf::IntRect(
+    _tearsSprite.setTextureRect(sf::IntRect(
         960 + xOffset, 1728, TILE_SIZE * 2, TILE_SIZE * 4
     ));
 
     surface.draw(_sprite);
+    surface.draw(_tearsSprite);
 }
 
 void ChefBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(960, 1728, TILE_SIZE * 2, TILE_SIZE * 4));
+    _sprite.setTextureRect(sf::IntRect(928, 1728, TILE_SIZE * 2, TILE_SIZE * 4));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin((float)TILE_SIZE * 2 / 2, 0);
+
+    _tearsSprite.setTexture(*spriteSheet);
+    _tearsSprite.setTextureRect(sf::IntRect(960, 1728, TILE_SIZE * 2, TILE_SIZE * 4));
+    _tearsSprite.setPosition(getPosition());
+    _tearsSprite.setOrigin((float)TILE_SIZE * 2 / 2, 0);
 }
 
 void ChefBoss::onStateChange(const BossState previousState, const BossState newState) {
