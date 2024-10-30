@@ -147,6 +147,11 @@ void UIButton::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScr
 
 void UIButton::textEntered(const sf::Uint32 character) {}
 
+void UIButton::show() {
+    _isActive = true;
+    _mouseDown = false;
+}
+
 std::shared_ptr<sf::Texture> UIButton::getHoverTexture() {
     return _hoverTexture;
 }

@@ -40,12 +40,15 @@ void UISlider::update() {
         }
     }
 
-    if (((_handle.getGlobalBounds().contains(_mPos.x, _mPos.y)) || _isSelected)) {
+    if (((_handle.getGlobalBounds().contains(_mPos.x, _mPos.y) && !_mouseDown))) {
         _handle.setFillColor(sf::Color(BUTTON_COLOR[0], BUTTON_COLOR[1], BUTTON_COLOR[2], 0xFF));
         _handle.setOutlineColor(sf::Color(BUTTON_COLOR_BORDER_HOVER[0], BUTTON_COLOR_BORDER_HOVER[1], BUTTON_COLOR_BORDER_HOVER[2], 0xFF));
-    } else if ((!_mouseDown || !_handle.getGlobalBounds().contains(_mPos.x, _mPos.y))) {
+    } else if ((!_mouseDown && !_handle.getGlobalBounds().contains(_mPos.x, _mPos.y) && !_isSelected)) {
         _handle.setFillColor(sf::Color(BUTTON_COLOR[0], BUTTON_COLOR[1], BUTTON_COLOR[2], 0xFF));
         _handle.setOutlineColor(sf::Color(BUTTON_COLOR_BORDER[0], BUTTON_COLOR_BORDER[1], BUTTON_COLOR_BORDER[2], 0xFF));
+    } else if ((_mouseSelected) || _isSelected) {
+        _handle.setFillColor(sf::Color(BUTTON_COLOR_CLICK[0], BUTTON_COLOR_CLICK[1], BUTTON_COLOR_CLICK[2], 0xFF));
+        _handle.setOutlineColor(sf::Color(BUTTON_COLOR_CLICK[0], BUTTON_COLOR_CLICK[1], BUTTON_COLOR_CLICK[2], 0xFF));
     }
 
     if (_mouseSelected) {

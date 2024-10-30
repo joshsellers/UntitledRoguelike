@@ -7,6 +7,13 @@ void UIMenu::update() {
     for (auto& element : _elements) {
         if (element->isActive()) element->update();
     }
+
+    if (_pendingActivation) {
+        for (auto& element : _elements) {
+            element->show();
+        }
+        _pendingActivation = false;
+    }
 }
 
 void UIMenu::draw(sf::RenderTexture& surface) {
@@ -123,9 +130,10 @@ void UIMenu::textEntered(sf::Uint32 character) {
 
 void UIMenu::show() {
     _isActive = true;
-    for (auto& element : _elements) {
-        element->show();
-    }
+    //for (auto& element : _elements) {
+    //    element->show();
+    //}
+    _pendingActivation = true;
 }
 
 void UIMenu::hide() {

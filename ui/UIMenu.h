@@ -45,6 +45,8 @@ private:
     int _selectedItemX = -1;
     int _selectedItemY = -1;
     std::vector<std::vector<int>> _selectionGrid;
+
+    bool _pendingActivation = false;
 };
 
 #endif 

@@ -223,7 +223,7 @@ void Game::initUI() {
     _pauseMenu_settings->addElement(_vsyncToggleButton_pauseMenu);
 
     std::shared_ptr<UIButton> audioSettingsButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
-        1, 30, 11, 3, "audio settings", _font, this, "audiosettings_pause"
+        1, 23, 11, 3, "audio settings", _font, this, "audiosettings_pause"
     ));
     audioSettingsButton_pauseMenu->setSelectionId(3);
     _pauseMenu_settings->addElement(audioSettingsButton_pauseMenu);

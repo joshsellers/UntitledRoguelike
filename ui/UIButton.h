@@ -37,6 +37,8 @@ public:
     void textEntered(const sf::Uint32 character);
 
     bool pressWhenSelected = false;
+
+    virtual void show();
 protected:
     std::shared_ptr<sf::Texture> getHoverTexture();
     std::shared_ptr<sf::Texture> getClickTexture();
