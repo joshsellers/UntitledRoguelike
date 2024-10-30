@@ -49,6 +49,7 @@
 #include "entities/Altar.h"
 #include "entities/AltarArrow.h"
 #include "entities/ShopKeepCorpse.h"
+#include "entities/ChefBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1229,6 +1230,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 32:
             boss = std::shared_ptr<CreamBoss>(new CreamBoss(spawnPos));
             break;
+        case 40:
+            boss = std::shared_ptr<ChefBoss>(new ChefBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1397,6 +1401,9 @@ void World::bossDefeated() {
             break;
         case CREAM_BOSS:
             AchievementManager::unlock(DEFEAT_CREAMBOSS);
+            break;
+        case CHEF_BOSS:
+            //AchievementManager::unlock(DEFEAT_CHEFBOSS);
             break;
     }
 }

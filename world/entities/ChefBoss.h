@@ -33,6 +33,11 @@ private:
 
     float _fireAngle = 0;
     long long _lastFireTimeMillis = 0;
+
+    int _burgersToSpawn = 0;
+    int _burgersSpawned = 0;
+    long long _timeToNextBurgerSpawn = 0;
+    long long _lastBurgerSpawnTime = 0;
 };
 
 #endif

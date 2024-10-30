@@ -684,6 +684,9 @@ private:
                 case CHEF_BOSS:
                     entity = std::shared_ptr<ChefBoss>(new ChefBoss(pos));
                     break;
+                case BURGER_BEAST:
+                    entity = std::shared_ptr<BurgerBeast>(new BurgerBeast(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

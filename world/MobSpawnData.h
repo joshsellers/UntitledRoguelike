@@ -22,7 +22,9 @@ enum class MOB_TYPE : int {
     LOG_MONSTER,
     BOULDER_BEAST,
     TULIP_MONSTER,
-    TREE_BOSS
+    TREE_BOSS,
+    CHEF_BOSS,
+    BURGER_BEAST
 };
 
 struct MobSpawnData {

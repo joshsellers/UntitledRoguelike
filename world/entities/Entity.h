@@ -179,9 +179,9 @@ protected:
     bool _isHostile = false;
 
     void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
-        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = { 0, 0 });
+        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = { 0, 0 }, bool addParentVelocity = true);
     void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
-        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = {0, 0});
+        bool displayProjectileOnTop = false, sf::Vector2f centerOffset = {0, 0}, bool addParentVelocity = true);
 
     Inventory _inventory = Inventory(this);
 

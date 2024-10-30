@@ -575,7 +575,7 @@ const Item Item::_PROJECTILE_ROCK(69, "_ROCK_PROJECTILE", sf::IntRect(93, 52, 1,
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 15, 0, 0, sf::Vector2f(), false
 );
 
-const ProjectileData Item::DATA_PROJECTILE_ROCK(Item::_PROJECTILE_ROCK.getId(), 3.f, sf::IntRect(3, 3, 10, 10), false);
+const ProjectileData Item::DATA_PROJECTILE_ROCK(Item::_PROJECTILE_ROCK.getId(), 2.f, sf::IntRect(3, 3, 10, 10), false);
 
 const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40, 1, 1), false, 0, false,
     "This item should not be obtainable",

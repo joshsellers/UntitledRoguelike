@@ -2,12 +2,14 @@
 #include "../../core/Util.h"
 #include "orbiters/Orbiter.h"
 #include "../World.h"
+#include "BurgerBeast.h"
 
 ChefBoss::ChefBoss(sf::Vector2f pos) : Boss(CHEF_BOSS, pos, 3.f, TILE_SIZE * 2, TILE_SIZE * 4, 
     {
         BossState(BEHAVIOR_STATE::REST, 1000LL, 2000LL),
         BossState(BEHAVIOR_STATE::PIZZA_RING, 8000LL, 8000LL),
-        BossState(BEHAVIOR_STATE::KNIFE_ATTACK, 6000LL, 9000LL)
+        BossState(BEHAVIOR_STATE::KNIFE_ATTACK, 6000LL, 9000LL),
+        BossState(BEHAVIOR_STATE::SPAWN_BURGERS, 5000LL, 6000LL)
     }) {
     setMaxHitPoints(14500);
     heal(getMaxHitPoints());
@@ -120,6 +122,9 @@ void ChefBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 void ChefBoss::onStateChange(const BossState previousState, const BossState newState) {
     if (newState.stateId == PIZZA_RING) {
         _orbiterCount = 0;
+    } else if (newState.stateId == SPAWN_BURGERS) {
+        _burgersToSpawn = randomInt(5, 8);
+        _burgersSpawned = 0;
     }
 }
 
@@ -159,6 +164,40 @@ void ChefBoss::runCurrentState() {
                     fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_CHEFBOSS_KNIFE"), "NONE", true, false, {8, 0});
                 }
                 _lastFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+        case SPAWN_BURGERS:
+        {
+            if (_burgersSpawned < _burgersToSpawn) {
+                sf::Vector2f spawnPos;
+                const int dist = randomInt(0, 3);
+                constexpr int maxDist = 128;
+                constexpr int minDist = 64;
+                if (dist == 0) {
+                    spawnPos.x = getPosition().x + randomInt(-maxDist, maxDist);
+                    spawnPos.y = getPosition().y - randomInt(minDist, maxDist);
+                } else if (dist == 1) {
+                    spawnPos.x = getPosition().x + randomInt(-maxDist, maxDist);
+                    spawnPos.y = getPosition().y + randomInt(minDist, maxDist);
+                } else if (dist == 2) {
+                    spawnPos.x = getPosition().x - randomInt(minDist, maxDist);
+                    spawnPos.y = getPosition().y + randomInt(-maxDist, maxDist);
+                } else if (dist == 3) {
+                    spawnPos.x = getPosition().x + randomInt(minDist, maxDist);
+                    spawnPos.y = getPosition().y + randomInt(-maxDist, maxDist);
+                }
+
+                if (currentTimeMillis() - _lastBurgerSpawnTime >= _timeToNextBurgerSpawn) {
+                    std::shared_ptr<BurgerBeast> burger = std::shared_ptr<BurgerBeast>(new BurgerBeast(spawnPos));
+                    burger->loadSprite(getWorld()->getSpriteSheet());
+                    burger->setWorld(getWorld());
+                    getWorld()->addEntity(burger);
+
+                    _lastBurgerSpawnTime = currentTimeMillis();
+                    _timeToNextBurgerSpawn = randomInt(250, 1000);
+                    _burgersSpawned++;
+                }
             }
             break;
         }

@@ -84,16 +84,16 @@ void BoulderBeast::runCurrentState() {
 
             if (currentTimeMillis() - _lastFireTimeMillis >= _fireRateMillis) {
                 if (!_fireDiagonal) {
-                    fireTargetedProjectile(0.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(90.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(180.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(270.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(0.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(90.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(180.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(270.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
                     _fireDiagonal = true;
                 } else {
-                    fireTargetedProjectile(45.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(135.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(225.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
-                    fireTargetedProjectile(315.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true);
+                    fireTargetedProjectile(45.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(135.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(225.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
+                    fireTargetedProjectile(315.f * ((float)PI / 180.f), Item::DATA_PROJECTILE_ROCK, "NONE", true, false, { 0, 0 }, false);
                     _fireDiagonal = false;
                 }
                 _lastFireTimeMillis = currentTimeMillis();
