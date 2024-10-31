@@ -711,7 +711,7 @@ void Player::damage(int damage) {
 
     if (!isDodging() && !freeMove && !isTakingDamage()) {
         if (GamePad::isConnected()) {
-            int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), (float)100));
+            int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), 1.f));
             GamePad::vibrate(vibrationAmount, 250);
         }
         _timeDamageTaken = currentTimeMillis();
@@ -722,6 +722,10 @@ void Player::damage(int damage) {
             _hitPoints = 0;
         }
 
+        if (!getWorld()->onEnemySpawnCooldown()) {
+            AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave", 1.f);
+            AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
+        }
         StatManager::increaseStat(DAMAGE_TAKEN, damage);
     }
 }

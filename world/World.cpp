@@ -56,6 +56,10 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
     _player = player;
     _player->setWorld(this);
 
+    if (!AbilityManager::playerHasAbility(Ability::ALTAR_CHANCE.getId())) {
+        AbilityManager::givePlayerAbility(Ability::ALTAR_CHANCE.getId());
+    }
+
     _entities.push_back(_player);
 }
 
@@ -615,6 +619,8 @@ void World::onWaveCleared() {
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
 
         if (getPlayer()->getHitPoints() < 10) AchievementManager::unlock(SURVIVOR);
+
+        checkAltarSpawn();
     }
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
@@ -634,6 +640,59 @@ void World::onWaveCleared() {
     }
 
     spawnBoss(_currentWaveNumber);
+}
+
+void World::checkAltarSpawn() {
+    if (AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave") == 0.f) {
+        AbilityManager::setParameter(
+            Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage",
+            AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") + 1.f
+        );
+
+        constexpr float maxAltarChance = 50.f;
+        const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
+        if (altarChance != 0.f) {
+            const int die = std::ceil(100.f / altarChance);
+            int roll = 1;
+            if (altarChance < 100.f) {
+                roll = randomInt(1, die);
+            }
+
+            if (roll == 1) {
+                sf::Vector2f spawnPos;
+                const int dirFromPlayer = randomInt(0, 3);
+                const int maxDistFromPlayer = HEIGHT;
+                const int minDistFromPlayer = HEIGHT;
+                if (dirFromPlayer == 0) {
+                    spawnPos.x = getPlayer()->getPosition().x + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+                    spawnPos.y = getPlayer()->getPosition().y - randomInt(minDistFromPlayer, maxDistFromPlayer);
+                } else if (dirFromPlayer == 1) {
+                    spawnPos.x = getPlayer()->getPosition().x + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+                    spawnPos.y = getPlayer()->getPosition().y + randomInt(minDistFromPlayer, maxDistFromPlayer);
+                } else if (dirFromPlayer == 2) {
+                    spawnPos.x = getPlayer()->getPosition().x - randomInt(minDistFromPlayer, maxDistFromPlayer);
+                    spawnPos.y = getPlayer()->getPosition().y + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+                } else if (dirFromPlayer == 3) {
+                    spawnPos.x = getPlayer()->getPosition().x + randomInt(minDistFromPlayer, maxDistFromPlayer);
+                    spawnPos.y = getPlayer()->getPosition().y + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
+                }
+
+                std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(
+                    spawnPos, false, getSpriteSheet()
+                ));
+                altar->setWorld(this);
+                addEntity(altar);
+                AltarArrow::altarSpawned(spawnPos);
+
+                AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
+            }
+
+            MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance), 0, DEBUG);
+            MessageManager::displayMessage("Die: " + std::to_string(die), 0, DEBUG);
+            MessageManager::displayMessage("Roll: " + std::to_string(roll), 0, DEBUG);
+        }
+    }
+    AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave", 0.f);
 }
 
 void World::loadChunk(sf::Vector2f pos) {
@@ -689,7 +748,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 26300;
+    constexpr int altarSpawnRate = 27000;
     const int shopSpawnRate = (HARD_MODE_ENABLED ? 23500 : 20000);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;

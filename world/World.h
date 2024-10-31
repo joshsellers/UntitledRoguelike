@@ -169,6 +169,7 @@ private:
 
     void manageCurrentWave();
     void onWaveCleared();
+    void checkAltarSpawn();
 
     void loadChunk(sf::Vector2f pos);
     void buildChunk(sf::Vector2f pos);

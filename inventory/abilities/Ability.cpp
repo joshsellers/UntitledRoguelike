@@ -184,6 +184,12 @@ const Ability Ability::STOPWATCH(4, "Stopwatch",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::ALTAR_CHANCE(5, "ALTARCHANCE",
+    { {"damageThisWave", 0.f}, {"wavesWithoutDamage", 0.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
