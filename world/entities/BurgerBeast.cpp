@@ -2,7 +2,7 @@
 #include "../World.h"
 
 BurgerBeast::BurgerBeast(sf::Vector2f pos) : Entity(BURGER_BEAST, pos, 3, TILE_SIZE * 2, TILE_SIZE * 2, false) {
-    setMaxHitPoints(125);
+    setMaxHitPoints(200);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -TILE_SIZE + 4;
@@ -29,7 +29,7 @@ void BurgerBeast::update() {
     feetPos.y += TILE_SIZE * 2;
 
     if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
-        getWorld()->getPlayer()->takeDamage(10);
+        getWorld()->getPlayer()->takeDamage(30);
         getWorld()->getPlayer()->knockBack(20.f, getMovingDir());
     }
 

@@ -1,4 +1,4 @@
 name = "_PROJECTILE_CHEFBOSS_PIZZA"
 description = "This item should not be obtainable."
-damage = 10
+damage = 25
 textureRect = 11, 13, 1, 1
