@@ -792,7 +792,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 
             if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH || terrainType == TERRAIN_TYPE::TUNDRA)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
-                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 15 : 1));
+                boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 18 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
                     std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(pos, altarHasBeenActivatedAt(pos), _spriteSheet));
                     altar->setWorld(this);
