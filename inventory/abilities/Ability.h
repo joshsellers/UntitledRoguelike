@@ -13,6 +13,7 @@ public:
     static const Ability HEALILNG_MIST;
     static const Ability THIRD_EYE;
     static const Ability LIGHTNING;
+    static const Ability STOPWATCH;
 
     static std::vector<Ability*> ABILITIES;
 

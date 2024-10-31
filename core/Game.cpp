@@ -1025,7 +1025,7 @@ void Game::update() {
 
                 if (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))
                     || (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN)))) {
-                    _world._cooldownStartTime -= 500LL;
+                    _world._cooldownStartTime -= _world.getEnemySpawnCooldownTimeMilliseconds() * 0.00657;
                 }
             } else {
                 _waveCounterMeter->setPercentFull(0.f);

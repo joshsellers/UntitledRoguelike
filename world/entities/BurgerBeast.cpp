@@ -22,6 +22,10 @@ BurgerBeast::BurgerBeast(sf::Vector2f pos) : Entity(BURGER_BEAST, pos, 3, TILE_S
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(0, 2);
     if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount); 
+
+    if (randomInt(0, 49) == 0) {
+        getInventory().addItem(Item::getIdFromName("Cheeseburger"), 1);
+    }
 }
 
 void BurgerBeast::update() {

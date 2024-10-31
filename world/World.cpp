@@ -50,6 +50,7 @@
 #include "entities/AltarArrow.h"
 #include "entities/ShopKeepCorpse.h"
 #include "entities/ChefBoss.h"
+#include "../inventory/abilities/Ability.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -377,6 +378,10 @@ void World::spawnEnemies() {
                         if ((getEnemyCount() >= _maxActiveEnemies || _enemiesSpawnedThisRound >= _maxActiveEnemies)) {
                             _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
+                            if (AbilityManager::playerHasAbility(Ability::STOPWATCH.getId())) {
+                                _enemySpawnCooldownTimeMilliseconds *= (long long)AbilityManager::getParameter(Ability::STOPWATCH.getId(), "count");
+                            }
+
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
                             if (HARD_MODE_ENABLED) _maxActiveEnemies *= 2;

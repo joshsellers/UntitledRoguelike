@@ -1,0 +1,9 @@
+name = "Cheeseburger"
+description = "Plain cheeseburger with no ketchup, mustard,\nor pickles.\n\nRestores 45 HP"
+isConsumable = true
+isStackable = true
+stackLimit = 5
+functionName = "cheeseburger"
+tags = "food"
+value = 200
+textureRect = 14, 13, 1, 1

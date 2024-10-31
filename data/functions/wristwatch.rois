@@ -1,0 +1,15 @@
+hasAbility = player.hasAbility("Stopwatch");
+hasEffect = player.hasEffect("Wristwatch");
+
+if: not hasAbility {
+    player.addAbility("Stopwatch");
+}
+
+if: not hasEffect {
+    player.addEffect("Wristwatch");
+}
+
+currentCount = player.getAbilityParameter("Stopwatch", "count");
+player.setAbilityParameter("Stopwatch", "count", currentCount + 1);
+
+return true;

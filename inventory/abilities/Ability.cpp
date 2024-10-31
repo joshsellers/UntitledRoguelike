@@ -158,7 +158,7 @@ const Ability Ability::THIRD_EYE(2, "Third Eye",
 );
 
 const Ability Ability::LIGHTNING(3, "Lightning",
-    { {"damage", 25.f}, {"strike rate", 1000.f}, {"strike chance", 50}},
+    { {"damage", 25.f}, {"strike rate", 1000.f}, {"strike chance", 50} },
     [](Player* player, Ability* ability) {
         const int strikeChance = (int)ability->getParameter("strike chance") - 1;
         const float strikeRate = ability->getParameter("strike rate");
@@ -175,6 +175,12 @@ const Ability Ability::LIGHTNING(3, "Lightning",
         }
     },
 
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::STOPWATCH(4, "Stopwatch",
+    { {"count", 0.f} },
+    [](Player* player, Ability* ability) {},
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 

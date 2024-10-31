@@ -1,0 +1,10 @@
+name = "Wristwatch"
+description = "What time is it?\n\nIncreases cooldown time between waves.\nThe more you use, the longer cooldowns will last."
+isConsumable = true
+isStackable = false
+isBuyable = true
+value = 249
+unlockWaveNumber = 15
+shopChance = 5
+functionName = "wristwatch"
+textureRect = 15, 13, 1, 1
