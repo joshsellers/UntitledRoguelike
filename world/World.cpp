@@ -682,9 +682,14 @@ void World::checkAltarSpawn() {
                 ));
                 altar->setWorld(this);
                 addEntity(altar);
-                AltarArrow::altarSpawned(spawnPos);
 
-                AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
+                if (getTerrainDataAt(spawnPos) != TERRAIN_TYPE::EMPTY) {
+                    AltarArrow::altarSpawned(spawnPos);
+
+                    AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
+                } else {
+                    MessageManager::displayMessage("Did not spawn altar because it would have spawned in empty terrain", 5, DEBUG);
+                }
             }
 
             MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance), 0, DEBUG);
