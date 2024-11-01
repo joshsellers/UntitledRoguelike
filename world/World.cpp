@@ -383,7 +383,7 @@ void World::spawnEnemies() {
                             _maxEnemiesReached = true;
                             _enemySpawnCooldownTimeMilliseconds = randomInt(MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS, MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS);
                             if (AbilityManager::playerHasAbility(Ability::STOPWATCH.getId())) {
-                                _enemySpawnCooldownTimeMilliseconds *= (long long)AbilityManager::getParameter(Ability::STOPWATCH.getId(), "count");
+                                _enemySpawnCooldownTimeMilliseconds += (long long)AbilityManager::getParameter(Ability::STOPWATCH.getId(), "count") * 30000LL;
                             }
 
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
@@ -661,8 +661,8 @@ void World::checkAltarSpawn() {
             if (roll == 1) {
                 sf::Vector2f spawnPos;
                 const int dirFromPlayer = randomInt(0, 3);
-                const int maxDistFromPlayer = HEIGHT;
-                const int minDistFromPlayer = HEIGHT;
+                const int maxDistFromPlayer = WIDTH;
+                const int minDistFromPlayer = WIDTH;
                 if (dirFromPlayer == 0) {
                     spawnPos.x = getPlayer()->getPosition().x + randomInt(-maxDistFromPlayer, maxDistFromPlayer);
                     spawnPos.y = getPlayer()->getPosition().y - randomInt(minDistFromPlayer, maxDistFromPlayer);
