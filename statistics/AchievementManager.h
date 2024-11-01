@@ -6,11 +6,13 @@
 #include <string>
 #include "Statistic.h"
 
-constexpr int NUM_ACHIEVEMENTS = 18;
+constexpr int NUM_ACHIEVEMENTS = 29;
 enum ACHIEVEMENT {
     MILLIONAIRE,
     DEFEAT_CHEESEBOSS,
+    HARDMODE_DEFEAT_CHEESEBOSS,
     DEFEAT_CANNONBOSS,
+    HARDMODE_DEFEAT_CANNONBOSS,
     TRIATHLON,
     MARATHON,
     AROUND_THE_WORLD,
@@ -25,7 +27,16 @@ enum ACHIEVEMENT {
     UNTOUCHABLE,
     FLESHY,
     DEFEAT_TREEBOSS,
-    DEFEAT_CREAMBOSS
+    HARDMODE_DEFEAT_TREEBOSS,
+    DEFEAT_CREAMBOSS,
+    HARDMODE_DEFEAT_CREAMBOSS,
+    DEFEAT_CHEFBOSS,
+    HARDMODE_DEFEAT_CHEFBOSS,
+    HEARTBREAKER,
+    HUMAN_BOULDER,
+    HARDMODE_UNSTOPPABLE,
+    HARDMODE_SLIPPERY,
+    HARDMODE_UNTOUCHABLE
 };
 
 class AchievementManagerInstance {
@@ -56,7 +67,9 @@ public:
     inline static const std::vector<std::string> achievementNames = {
         "ACH_MILLIONAIRE",
         "ACH_CHEESEBOSS",
+        "ACH_HARDMODE_CHEESEBOSS",
         "ACH_CANNONBOSS",
+        "ACH_HARDMODE_CANNONBOSS",
         "ACH_TRIATHLON",
         "ACH_MARATHON",
         "ACH_AROUND_THE_WORLD",
@@ -71,7 +84,16 @@ public:
         "ACH_UNTOUCHABLE",
         "ACH_FLESHY",
         "ACH_TREEBOSS",
-        "ACH_CREAMBOSS"
+        "ACH_HARDMODE_TREEBOSS",
+        "ACH_CREAMBOSS",
+        "ACH_HARDMODE_CREAMBOSS",
+        "ACH_CHEFBOSS",
+        "ACH_HARDMODE_CHEFBOSS",
+        "ACH_HEARTBREAKER",
+        "ACH_HUMAN_BOULDER",
+        "ACH_HARDMODE_UNSTOPPABLE",
+        "ACH_HARDMODE_SLIPPERY",
+        "ACH_HARDMODE_UNTOUCHABLE"
     };
 
     static void start() {

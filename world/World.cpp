@@ -625,7 +625,10 @@ void World::onWaveCleared() {
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
-    if (_currentWaveNumber == 100) AchievementManager::unlock(UNSTOPPABLE);
+    if (_currentWaveNumber == 100) {
+        AchievementManager::unlock(UNSTOPPABLE);
+        if (HARD_MODE_ENABLED) AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
+    }
 
     int unlockedItemCount = 0;
     for (const auto& item : Item::ITEMS) {
@@ -1458,22 +1461,28 @@ void World::bossDefeated() {
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
 
+    ACHIEVEMENT achievement = MILLIONAIRE;
     switch (getCurrentBoss()->getSaveId()) {
         case CHEESE_BOSS:
-            AchievementManager::unlock(DEFEAT_CHEESEBOSS);
+            achievement = DEFEAT_CHEESEBOSS;
             break;
         case CANNON_BOSS:
-            AchievementManager::unlock(DEFEAT_CANNONBOSS);
+            achievement = DEFEAT_CANNONBOSS;
             break;
         case TREE_BOSS:
-            AchievementManager::unlock(DEFEAT_TREEBOSS);
+            achievement = DEFEAT_TREEBOSS;
             break;
         case CREAM_BOSS:
-            AchievementManager::unlock(DEFEAT_CREAMBOSS);
+            achievement = DEFEAT_CREAMBOSS;
             break;
         case CHEF_BOSS:
-            //AchievementManager::unlock(DEFEAT_CHEFBOSS);
+            achievement = DEFEAT_CHEFBOSS;
             break;
+    }
+
+    if (achievement != MILLIONAIRE) {
+        AchievementManager::unlock(achievement);
+        if (HARD_MODE_ENABLED) AchievementManager::unlock((ACHIEVEMENT)((int)achievement + 1));
     }
 }
 

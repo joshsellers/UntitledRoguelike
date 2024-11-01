@@ -2,6 +2,7 @@
 #include "../World.h"
 #include "../../core/Tutorial.h"
 #include "ShopKeepCorpse.h"
+#include "../../statistics/AchievementManager.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -203,6 +204,8 @@ void ShopKeep::damage(int damage) {
         std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getWorld()->getSpriteSheet()));
         corpse->setWorld(getWorld());
         getWorld()->addEntity(corpse);
+
+        AchievementManager::unlock(HEARTBREAKER);
     }
 }
 
