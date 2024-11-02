@@ -124,7 +124,7 @@ void ChefBoss::onStateChange(const BossState previousState, const BossState newS
     if (newState.stateId == PIZZA_RING) {
         _orbiterCount = 0;
     } else if (newState.stateId == SPAWN_BURGERS) {
-        _burgersToSpawn = randomInt(5, 8);
+        _burgersToSpawn = randomInt(6, 12);
         _burgersSpawned = 0;
     }
 }
