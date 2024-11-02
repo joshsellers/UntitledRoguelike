@@ -1,0 +1,26 @@
+abilityName = "Better Reload";
+
+hasAbility = player.hasAbility(abilityName);
+hasEffect = player.hasEffect(abilityName);
+
+if: not hasAbility {
+    player.addAbility(abilityName);
+
+    if: not hasEffect {
+        player.addEffect(abilityName);
+    }
+}
+
+currentRedux = player.getAbilityParameter(abilityName, "reloadTimeRedux");
+if: currentRedux < 1 {
+    player.setAbilityParameter(abilityName, "reloadTimeRedux", currentRedux + 1 / 4);
+
+    currentMultiplier = player.getSpeedMultiplier();
+
+    newMultiplier = currentMultiplier + (1 / 10);
+    player.setSpeedMultiplier(newMultiplier);
+    return true;
+}
+
+displayMessage("You can't use any more of these", 5);
+return false;

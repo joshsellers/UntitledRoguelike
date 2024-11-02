@@ -15,6 +15,7 @@ public:
     static const Ability LIGHTNING;
     static const Ability STOPWATCH;
     static const Ability ALTAR_CHANCE;
+    static const Ability BETTER_RELOAD;
 
     static std::vector<Ability*> ABILITIES;
 

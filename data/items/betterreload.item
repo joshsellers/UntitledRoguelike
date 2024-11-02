@@ -1,0 +1,10 @@
+name = "Nimbility Implant"
+description = "A permanent implant that rewires your brain\nso that your fingers and feet move faster\n and more precisely.\n\nDecreases reload time by 25%\nIncreases speed multiplier by 0.1"
+isStackable = false
+isConsumable = true
+functionName = "betterreload"
+isBuyable = true
+value = 405
+unlockWaveNumber = 21
+shopChance = 5
+textureRect = 16, 13, 1, 1

@@ -33,14 +33,25 @@ void Player::update() {
 
     if (_isReloading) {
         std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
-        if (currentTimeMillis() - _reloadStartTimeMillis >= weapon->getReloadTimeMilliseconds()) {
+
+        unsigned int reloadTime = weapon->getReloadTimeMilliseconds();
+        if (AbilityManager::playerHasAbility(Ability::BETTER_RELOAD.getId())) {
+            const float redux = AbilityManager::getParameter(Ability::BETTER_RELOAD.getId(), "reloadTimeRedux");
+            if (redux < 1.f) {
+                reloadTime -= reloadTime * redux;
+            } else {
+                reloadTime = 1;
+            }
+        }
+
+        if (currentTimeMillis() - _reloadStartTimeMillis >= reloadTime) {
             _isReloading = false;
             _magazineContents = _magContentsFilled;
 
             _magContentsPercentage = ((float)_magazineContents / weapon->getMagazineSize()) * 100;
         } else {
             float maxAmmo = ((float)weapon->getMagazineSize()) - ((float)weapon->getMagazineSize() - (float)_magContentsFilled);
-            float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / weapon->getReloadTimeMilliseconds();
+            float reloadProgress = (float)(currentTimeMillis() - _reloadStartTimeMillis) / reloadTime;
 
             _magazineContents = maxAmmo * reloadProgress;
 

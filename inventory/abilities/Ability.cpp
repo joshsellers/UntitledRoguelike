@@ -190,6 +190,12 @@ const Ability Ability::ALTAR_CHANCE(5, "ALTARCHANCE",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::BETTER_RELOAD(6, "Better Reload",
+    { {"reloadTimeRedux", 0.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
