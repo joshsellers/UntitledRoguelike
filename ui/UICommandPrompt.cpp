@@ -125,7 +125,7 @@ void UICommandPrompt::textEntered(const sf::Uint32 character) {
         } else if (processCommand("hash:" + userInput) == UNLOCK_HASH) {
             unlock();
             MessageManager::displayMessage("Command prompt has been unlocked", 5);
-        } else MessageManager::displayMessage("Commmand prompt is locked", 5);
+        } else MessageManager::displayMessage("Command prompt is locked", 5);
         _text.setString("");
     }
 }
