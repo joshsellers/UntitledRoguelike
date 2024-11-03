@@ -46,15 +46,21 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 void ShopExterior::update() {
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
-        auto& entity = getWorld()->getPlayer();
-        if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-            getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48));
+        if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive()) {
+            auto& entity = getWorld()->getPlayer();
+            if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
+                getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48));
+            }
+            _colliders.at(2).height = 17;
+        } else {
+            _colliders.at(2).height = 26;
         }
     } else _hasColliders = false;
 }
 
 void ShopExterior::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
+    if (!getWorld()->onEnemySpawnCooldown() || getWorld()->bossIsActive()) surface.draw(_closedSprite);
 }
 
 void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
@@ -63,4 +69,10 @@ void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
         sf::IntRect(45 * TILE_SIZE, 23 * TILE_SIZE, 192, 96)
     );
     _sprite.setPosition(getPosition());
+
+    _closedSprite.setTexture(*spriteSheet);
+    _closedSprite.setTextureRect(
+        sf::IntRect(57 * TILE_SIZE, 27 * TILE_SIZE, 3 * TILE_SIZE, 3 * TILE_SIZE)
+    );
+    _closedSprite.setPosition(getPosition().x + 72, getPosition().y + 65);
 }

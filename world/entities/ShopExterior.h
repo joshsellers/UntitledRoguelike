@@ -11,6 +11,8 @@ public:
     virtual void draw(sf::RenderTexture& surface);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+private:
+    sf::Sprite _closedSprite;
 };
 
 #endif
