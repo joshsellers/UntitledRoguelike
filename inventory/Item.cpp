@@ -560,7 +560,7 @@ const Item Item::SPIKE_BALL(67, "Spike Ball", sf::IntRect(5, 37, 1, 1), false, 0
         spikeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(spikeBall);
         return true;
-    }, 0, false, 0, 0, true
+    }, 0, false, 0, 0
 );
 
 const Item Item::_PROJECTILE_THORN(68, "_THORN_PROJECTILE", sf::IntRect(1, 13, 1, 1), false, 0, false, 
