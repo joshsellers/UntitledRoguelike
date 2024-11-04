@@ -3,7 +3,7 @@
 #include "ShopInterior.h"
 
 ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
-    //_pos = pos;
+    _pos = pos;
     loadSprite(spriteSheet);
 
     _hitBoxXOffset = 80;

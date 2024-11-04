@@ -781,19 +781,22 @@ void World::generateChunkScatters(Chunk& chunk) {
             int dX = x - chX;
             int dY = y - chY;
 
-            TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
+            const TERRAIN_TYPE terrainType = chunk.terrainData[dX + dY * CHUNK_SIZE];
             if (!spawnedShopThisChunk && terrainType != TERRAIN_TYPE::WATER && terrainType != TERRAIN_TYPE::EMPTY && terrainType != TERRAIN_TYPE::SAND 
                 && terrainType != TERRAIN_TYPE::MOUNTAIN_HIGH) {
                 boost::random::uniform_int_distribution<> shopDist(0, shopSpawnRate);
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
-                    std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
-                    shop->setWorld(this);
-                    _scatterBuffer.push_back(shop);
-                    spawnedShopThisChunk = true;
+                    const TERRAIN_TYPE shopDoorTerrain = getTerrainDataAt(&chunk, sf::Vector2f(x + 192 / 2, y + 96));
+                    if (shopDoorTerrain != TERRAIN_TYPE::WATER && shopDoorTerrain != TERRAIN_TYPE::EMPTY) {
+                        std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
+                        shop->setWorld(this);
+                        _scatterBuffer.push_back(shop);
+                        spawnedShopThisChunk = true;
 
-                    if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
-                        MessageManager::displayMessage("There's a shop around here somewhere!", 5);
-                        shopSeenAt(sf::Vector2f(x, y));
+                        if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
+                            MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                            shopSeenAt(sf::Vector2f(x, y));
+                        }
                     }
                 }
             }

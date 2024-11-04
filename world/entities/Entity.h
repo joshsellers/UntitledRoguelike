@@ -66,7 +66,7 @@ public:
 
     Inventory& getInventory();
 
-    void setWorld(World* world);
+    virtual void setWorld(World* world);
     World* getWorld() const;
 
     bool isActive() const;
