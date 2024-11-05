@@ -9,7 +9,7 @@ TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TI
         //BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 3000LL, 4000LL)
     }) 
 {
-    setMaxHitPoints(475);
+    setMaxHitPoints(HARD_MODE_ENABLED ? 700 : 475);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 3) / 2;

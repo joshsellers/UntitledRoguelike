@@ -118,7 +118,7 @@ void Altar::onActivation() {
         }
         case HP:
         {
-            const int maxHpIncrease = randomInt(50, 100);
+            const int maxHpIncrease = randomInt(50, 75);
             player->setMaxHitPoints(player->getMaxHitPoints() + maxHpIncrease);
             player->heal(player->getMaxHitPoints());
 
@@ -137,7 +137,7 @@ void Altar::onActivation() {
         }
         case MUSHROOM:
         {
-            const int mushroomAmount = randomInt(20, 50);
+            const int mushroomAmount = randomInt(10, 15);
             player->getInventory().addItem(Item::getIdFromName("Funny Mushroom"), mushroomAmount);
 
             MessageManager::displayMessage("You have been granted " + std::to_string(mushroomAmount) + " samples of a powerful fungus", 5);
