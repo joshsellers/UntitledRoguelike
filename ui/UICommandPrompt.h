@@ -339,7 +339,7 @@ private:
                             int vibrationAmount = std::stoi(parsedCommand[1]);
                             long long time = std::stoll(parsedCommand[2]);
 
-                            GamePad::vibrate(vibrationAmount, time);
+                            GamePad::vibrate(std::min(1.f, (float)vibrationAmount / 100.f) * (float)MAX_CONTROLLER_VIBRATION, time);
                             return "Controller vibrating at strength " + std::to_string(vibrationAmount) + " for " + std::to_string(time) + " milliseconds";
                         } catch (std::exception ex) {
                             return ex.what();
