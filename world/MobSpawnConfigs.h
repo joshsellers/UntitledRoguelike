@@ -64,10 +64,9 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
-        MobSpawnData(MOB_TYPE::CYCLOPS, 2, 4, 5, 0),
-        MobSpawnData(MOB_TYPE::FLESH_CHICKEN, 0, 1, 4, 0),
+        MobSpawnData(MOB_TYPE::CYCLOPS, 3, 4, 5, 8),
+        MobSpawnData(MOB_TYPE::FLESH_CHICKEN, 0, 2, 5, 0),
         MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
-        MobSpawnData(MOB_TYPE::BOULDER_BEAST, 3, 1, 2, PROJ_ENEMIES_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {

@@ -1,0 +1,6 @@
+itemName = "_CYCLOPS_TEAR"
+velocity = 3.0
+lifeTime = 5000
+onlyHitEnemies = false
+hitBox = 4, 4, 12, 12
+rotate = true

@@ -17,6 +17,8 @@ private:
     sf::Sprite _wavesSprite;
 
     float _desiredDist = 512.f;
+
+    long long _lastFireTime = 0LL;
 };
 
 #endif
