@@ -1065,7 +1065,7 @@ void Game::update() {
 }
 
 void Game::displayEnemyWaveCountdownUpdates() {
-    if (currentTimeMillis() - _lastCooldownUpdateTime > 1000 && !_world.playerIsInShop() && !_isPaused && !_world.bossIsActive()) {
+    if (_world.onEnemySpawnCooldown() && currentTimeMillis() - _lastCooldownUpdateTime > 1000 && !_world.playerIsInShop() && !_isPaused && !_world.bossIsActive()) {
         int secondsUntilNextWave = _world.getTimeUntilNextEnemyWave() / 1000;
 
         std::string timeRemainingString = "NONE";
@@ -1226,9 +1226,13 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.resetChunks();
         //
         _world.init(seed);
-        if (!Tutorial::isCompleted()) _world._newGameCooldownLength = 45000LL;
-        else _world._newGameCooldownLength = 15000LL;
-        _world.startNewGameCooldown();
+        //if (!Tutorial::isCompleted()) _world._newGameCooldownLength = 45000LL;
+        //else _world._newGameCooldownLength = 15000LL;
+        //_world.startNewGameCooldown();
+        _world._cooldownActive = true;
+        _world._cooldownStartTime = currentTimeMillis();
+        if (!Tutorial::isCompleted()) _world._enemySpawnCooldownTimeMilliseconds = 45000LL;
+        else _world._enemySpawnCooldownTimeMilliseconds = 15000LL;
 
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
