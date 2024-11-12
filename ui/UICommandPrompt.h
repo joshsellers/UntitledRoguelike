@@ -38,6 +38,7 @@
 #include "../world/entities/Lightning.h"
 #include "../world/entities/ChefBoss.h"
 #include "../world/entities/BurgerBeast.h"
+#include "../world/entities/Explosion.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -297,6 +298,8 @@ private:
                             entity = std::shared_ptr<ChefBoss>(new ChefBoss(pos));
                         } else if (entityName == "burgerbeast") {
                             entity = std::shared_ptr<BurgerBeast>(new BurgerBeast(pos));
+                        } else if (entityName == "explosion") {
+                            entity = std::shared_ptr<Explosion>(new Explosion(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
