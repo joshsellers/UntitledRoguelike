@@ -2,12 +2,14 @@
 #include "../../World.h"
 #include "../../../statistics/StatManager.h"
 #include "../DroppedItem.h"
+#include "../../entities/Explosion.h"
 
 constexpr long long LIFETIME = 5000LL;
 
-Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, int damageBoost, bool addParentVelocity) :
+Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyDamagePlayer, 
+    int damageBoost, bool addParentVelocity, EXPLOSION_BEHAVIOR explosionBehavior) :
     Entity(PROJECTILE, pos, 0, 1, 1, false), _originalPos(pos), _parent(parent), _directionAngle(directionAngle), _velocity(velocity), _data(data), _damageBoost(damageBoost),
-    _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer) {
+    _itemId(data.itemId), onlyDamagePlayer(onlyDamagePlayer), _explosionBehavior(explosionBehavior) {
     if (parent != nullptr) {
         sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);
 
@@ -24,6 +26,8 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
         _hitBoxYOffset = _data.hitBox.top;
         _hitBox.width = _data.hitBox.width;
         _hitBox.height = _data.hitBox.height;
+
+        if (_explosionBehavior == EXPLOSION_BEHAVIOR::DEFER_TO_DATA) _explosionBehavior = _data.explosionBehavior;
     } else {
         _lifeTime = 0;
         _spawnTime = 0;
@@ -40,6 +44,11 @@ void Projectile::update() {
             droppedItem->loadSprite(getWorld()->getSpriteSheet());
             getWorld()->addEntity(droppedItem);
         }
+
+        if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+            spawnExplosion();
+        }
+
         return;
     }
 
@@ -52,6 +61,9 @@ void Projectile::update() {
         if (onlyDamagePlayer) {
             if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
                 _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
+                if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+                    spawnExplosion();
+                }
                 _isActive = false;
                 return;
             }
@@ -64,6 +76,9 @@ void Projectile::update() {
                         entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
                         _entitiesPassedThrough++;
                         if (_entitiesPassedThrough >= passThroughCount) {
+                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+                                spawnExplosion();
+                            }
                             _isActive = false;
                             return;
                         }
@@ -93,6 +108,9 @@ void Projectile::update() {
                         _entitiesPassedThrough++;
                         _hitEntities.push_back(entity->getUID());
                         if (_entitiesPassedThrough >= passThroughCount) {
+                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+                                spawnExplosion();
+                            }
                             _isActive = false;
                             return;
                         }
@@ -112,6 +130,14 @@ void Projectile::update() {
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 
     _currentTime++;
+}
+
+void Projectile::spawnExplosion() const {
+    const sf::Vector2f spawnPos(_sprite.getGlobalBounds().left + TILE_SIZE / 2, _sprite.getGlobalBounds().top - (3.f * (float)TILE_SIZE / 2.f));
+    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage()));
+    explosion->setWorld(getWorld());
+    explosion->loadSprite(getWorld()->getSpriteSheet());
+    getWorld()->addEntity(explosion);
 }
 
 void Projectile::draw(sf::RenderTexture& surface) {
@@ -161,8 +187,8 @@ std::string Projectile::getSaveData() const {
     } else return "NOSAVE";
 }
 
-void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
-    bool onlyHitPlayer, int damageBoost, bool addParentVelocity, int passThroughCount) {
+void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data,
+    bool onlyHitPlayer, int damageBoost, bool addParentVelocity, int passThroughCount, EXPLOSION_BEHAVIOR explosionBehavior) {
     _originalPos = pos;
     _parent = parent;
     _directionAngle = directionAngle;
@@ -171,6 +197,8 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _itemId = data.itemId;
     this->onlyDamagePlayer = onlyHitPlayer;
     _data = data;
+    if (explosionBehavior == EXPLOSION_BEHAVIOR::DEFER_TO_DATA) _explosionBehavior = data.explosionBehavior;
+    else _explosionBehavior = explosionBehavior;
 
     _pos = pos;
     sf::Vector2f shooterVelocity(parent->getVelocity().x, parent->getVelocity().y);

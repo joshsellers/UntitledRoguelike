@@ -300,6 +300,12 @@ void ModManager::loadProjectiles() {
 }
 
 void ModManager::loadProjectile(std::ifstream& in) {
+    std::map<std::string, EXPLOSION_BEHAVIOR> explosionBehaviorNames = {
+        {"NOT_EXPLOSIVE", EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE},
+        {"EXPLODE_ON_IMPACT", EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT},
+        {"EXPLODE_ON_DECAY_AND_IMPACT", EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT}
+    };
+
     std::string itemName = "";
     float baseVelocity = 0;
     sf::IntRect hitBox;
@@ -312,6 +318,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     bool dropOnExpire = false;
     bool noCollide = false;
     bool useDamageMultiplier = true;
+    EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE;
 
     std::string line;
     while (getline(in, line)) {
@@ -357,6 +364,13 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 noCollide = tokens.at(2) == "1";
             } else if (tokens.at(0) == "useDamageMultiplier") {
                 useDamageMultiplier = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "explosionBehavior") {
+                std::string strExplBehavior = tokens.at(2);
+                if (explosionBehaviorNames.find(strExplBehavior) == explosionBehaviorNames.end()) {
+                    MessageManager::displayMessage("Invalid explosion behavior type for projectile \"" + itemName + "\": \"" + strExplBehavior + "\"", 5, ERR);
+                } else {
+                    explosionBehavior = explosionBehaviorNames.at(strExplBehavior);
+                }
             } else {
                 MessageManager::displayMessage("Unrecognized projectile parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -379,7 +393,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
         return;
     }
 
-    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide, useDamageMultiplier);
+    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide, useDamageMultiplier, explosionBehavior);
 }
 
 void ModManager::loadPlayerVisualEffects() {

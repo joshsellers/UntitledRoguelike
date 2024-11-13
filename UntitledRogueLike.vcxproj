@@ -182,6 +182,7 @@
     <ClInclude Include="ui\UISlider.h" />
     <ClInclude Include="world\entities\ChefBoss.h" />
     <ClInclude Include="mod\ScriptExtensions.h" />
+    <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
     <ClInclude Include="world\entities\AltarArrow.h" />

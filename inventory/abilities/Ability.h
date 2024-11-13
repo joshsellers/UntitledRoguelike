@@ -16,6 +16,7 @@ public:
     static const Ability STOPWATCH;
     static const Ability ALTAR_CHANCE;
     static const Ability BETTER_RELOAD;
+    static const Ability EXPLOSIVE_ROUNDS;
 
     static std::vector<Ability*> ABILITIES;
 

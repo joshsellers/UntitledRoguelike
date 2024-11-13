@@ -654,16 +654,19 @@ unsigned int Item::getIdFromName(std::string name) {
 void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
     const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
     if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {
-        sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
-        sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
+        const sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
+        const sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
 
-        double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
-        double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
+        const double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
+        const double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
 
-        float angle = (float)((std::atan2(y, x)));
+        const float angle = (float)((std::atan2(y, x)));
+
+        EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
+        if (AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
 
         ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
-            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount);
+            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount, explosionBehavior);
 
         parent->decrementMagazine();
 
