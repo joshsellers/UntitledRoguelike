@@ -1,0 +1,5 @@
+weaponLoaded = player.weaponIsLoaded();
+if: weaponLoaded {
+    playSound("rocketlauncher");
+    player.fireProjectile("_PROJECTILE_ROCKET_LAUNCHER", 1);
+}
