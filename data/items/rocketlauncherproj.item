@@ -1,4 +1,4 @@
 name = "_PROJECTILE_ROCKET_LAUNCHER"
 description = "This item should not be obtainable."
-damage = 10
+damage = 16
 textureRect = 103, 3, 2, 1
