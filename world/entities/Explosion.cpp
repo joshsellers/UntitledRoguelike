@@ -36,14 +36,14 @@ void Explosion::update() {
     }
 
     if (_currentFrame == 13) deactivate();
+    constexpr int ticksPerFrame = 2;
+    constexpr int frameCount = 14;
+    _currentFrame = ((_animCounter / ticksPerFrame) % frameCount);
     _animCounter++;
 }
 
 void Explosion::draw(sf::RenderTexture& surface) {
     const sf::Vector2i textureCoords(64 * TILE_SIZE, 24 * TILE_SIZE);
-    constexpr int ticksPerFrame = 2;
-    constexpr int frameCount = 14;
-    _currentFrame = ((_animCounter / ticksPerFrame) % frameCount);
 
     _sprite.setTextureRect(sf::IntRect(
         textureCoords.x + _currentFrame * TILE_SIZE * 3,
