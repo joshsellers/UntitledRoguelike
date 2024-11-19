@@ -1,0 +1,4 @@
+name = "_PROJECTILE_BLOOD_GUN"
+description = "This item should not be obtainable."
+damage = 75
+textureRect = 11, 7, 1, 1
