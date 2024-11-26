@@ -653,13 +653,7 @@ void World::checkAltarSpawn() {
         constexpr float maxAltarChance = 50.f;
         const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
         if (altarChance != 0.f) {
-            const int die = std::ceil(100.f / altarChance);
-            int roll = 1;
-            if (altarChance < 100.f) {
-                roll = randomInt(1, die);
-            }
-
-            if (roll == 1) {
+            if (randomChance(altarChance / 100.f)) {
                 sf::Vector2f spawnPos;
                 const int dirFromPlayer = randomInt(0, 3);
                 const int maxDistFromPlayer = WIDTH;
@@ -693,9 +687,7 @@ void World::checkAltarSpawn() {
                 }
             }
 
-            MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance), 0, DEBUG);
-            MessageManager::displayMessage("Die: " + std::to_string(die), 0, DEBUG);
-            MessageManager::displayMessage("Roll: " + std::to_string(roll), 0, DEBUG);
+            MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance) + "%", 5, DEBUG);
         }
     }
     AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave", 0.f);
