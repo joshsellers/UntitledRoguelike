@@ -202,6 +202,12 @@ const Ability Ability::EXPLOSIVE_ROUNDS(7, "Explosive Rounds",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::CRIT_CHANCE(8, "Crit Chance",
+    { {"chance", 0.02f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

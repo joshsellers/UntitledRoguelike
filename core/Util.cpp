@@ -13,6 +13,13 @@ int randomInt(int min, int max) {
     return (rand() % (max - min + 1)) + min;
 }
 
+bool randomChance(float probability) {
+    const int range = (int)(1.f / probability);
+    const int min = 0;
+    const int max = range - 1;
+    return randomInt(min, max) == 0;
+}
+
 long long currentTimeMillis() {
     auto time = std::chrono::system_clock::now();
 

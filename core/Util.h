@@ -8,6 +8,8 @@
 
 int randomInt(int min, int max);
 
+bool randomChance(float probability);
+
 long long currentTimeMillis();
 
 long long currentTimeNano();

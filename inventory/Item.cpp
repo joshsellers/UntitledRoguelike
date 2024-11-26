@@ -665,8 +665,18 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
         if (AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
 
+        const int projDamage = ITEMS[projData.itemId]->getDamage();
+        const float critChance = AbilityManager::getParameter(Ability::CRIT_CHANCE.getId(), "chance");
+        bool crit = false;
+        if (parent->getSaveId() == PLAYER) {
+            crit = randomChance(critChance);
+        }
+
+        const int damageBoost = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage();
+        const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
+
         ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
-            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount, explosionBehavior);
+            false, damage, true, passThroughCount, explosionBehavior);
 
         parent->decrementMagazine();
 

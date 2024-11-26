@@ -56,10 +56,6 @@ World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showD
     _player = player;
     _player->setWorld(this);
 
-    if (!AbilityManager::playerHasAbility(Ability::ALTAR_CHANCE.getId())) {
-        AbilityManager::givePlayerAbility(Ability::ALTAR_CHANCE.getId());
-    }
-
     _entities.push_back(_player);
 }
 
@@ -70,6 +66,8 @@ void World::init(unsigned int seed) {
     gen.seed(_seed);
 
     _newGameCooldown = false;
+
+    givePlayerDefaultAbilities();
 
     loadChunksAroundPlayer();
 }
@@ -1491,4 +1489,14 @@ void World::bossDefeated() {
 
 std::shared_ptr<Entity> World::getCurrentBoss() const {
     return _currentBoss;
+}
+
+void World::givePlayerDefaultAbilities() const {
+    if (!AbilityManager::playerHasAbility(Ability::ALTAR_CHANCE.getId())) {
+        AbilityManager::givePlayerAbility(Ability::ALTAR_CHANCE.getId());
+    }
+
+    if (!AbilityManager::playerHasAbility(Ability::CRIT_CHANCE.getId())) {
+        AbilityManager::givePlayerAbility(Ability::CRIT_CHANCE.getId());
+    }
 }
