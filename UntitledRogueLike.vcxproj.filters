@@ -483,6 +483,12 @@
     <ClCompile Include="world\entities\Explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\BombBoy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\MegaBombBoy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -864,6 +870,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\BombBoy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\MegaBombBoy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

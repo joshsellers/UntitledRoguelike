@@ -39,6 +39,8 @@
 #include "../world/entities/ChefBoss.h"
 #include "../world/entities/BurgerBeast.h"
 #include "../world/entities/Explosion.h"
+#include "../world/entities/BombBoy.h"
+#include "../world/entities/MegaBombBoy.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -238,9 +240,18 @@ private:
                         }
                     }
 
+                    int distanceMultiplier = 1;
+                    if (parsedCommand.size() > 3) {
+                        try {
+                            distanceMultiplier = stoi(parsedCommand.at(3));
+                        } catch (std::exception ex) {
+                            return ex.what();
+                        }
+                    }
+
                     for (int i = 0; i < amt; i++) {
-                        const int offsetX = randomInt(16, 32);
-                        const int offsetY = randomInt(16, 32);
+                        const int offsetX = randomInt(16, 32) * distanceMultiplier;
+                        const int offsetY = randomInt(16, 32) * distanceMultiplier;
                         const int signX = randomInt(-1, 0);
                         const int signY = randomInt(-1, 0);
                         const sf::Vector2f pos(playerPos.x + (offsetX * (signX == 0 ? 1 : signX)), playerPos.y + (offsetY * (signY == 0 ? 1 : signY)));
@@ -300,6 +311,10 @@ private:
                             entity = std::shared_ptr<BurgerBeast>(new BurgerBeast(pos));
                         } else if (entityName == "explosion") {
                             entity = std::shared_ptr<Explosion>(new Explosion(pos));
+                        } else if (entityName == "bombboy") {
+                            entity = std::shared_ptr<BombBoy>(new BombBoy(pos));
+                        } else if (entityName == "megabombboy") {
+                            entity = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

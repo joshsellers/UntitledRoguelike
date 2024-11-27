@@ -687,6 +687,12 @@ private:
                 case BURGER_BEAST:
                     entity = std::shared_ptr<BurgerBeast>(new BurgerBeast(pos));
                     break;
+                case BOMB_BOY:
+                    entity = std::shared_ptr<BombBoy>(new BombBoy(pos));
+                    break;
+                case MEGA_BOMB_BOY:
+                    entity = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

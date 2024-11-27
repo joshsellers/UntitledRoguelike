@@ -51,6 +51,8 @@
 #include "entities/ShopKeepCorpse.h"
 #include "entities/ChefBoss.h"
 #include "../inventory/abilities/Ability.h"
+#include "entities/BombBoy.h"
+#include "entities/MegaBombBoy.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -368,6 +370,12 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::TULIP_MONSTER:
                                 mob = std::shared_ptr<TulipMonster>(new TulipMonster(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BOMB_BOY:
+                                mob = std::shared_ptr<BombBoy>(new BombBoy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::MEGA_BOMB_BOY:
+                                mob = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
