@@ -15,10 +15,12 @@ currentRedux = player.getAbilityParameter(abilityName, "reloadTimeRedux");
 if: currentRedux < 1 {
     player.setAbilityParameter(abilityName, "reloadTimeRedux", currentRedux + 1 / 4);
 
-    currentMultiplier = player.getSpeedMultiplier();
+    #currentMultiplier = player.getSpeedMultiplier();
 
-    newMultiplier = currentMultiplier + (1 / 10);
-    player.setSpeedMultiplier(newMultiplier);
+    #newMultiplier = currentMultiplier + (1 / 10);
+    #player.setSpeedMultiplier(newMultiplier);
+
+    runFunction(1 / 50, "BUILTIN_increaseCritChance");
     return true;
 }
 

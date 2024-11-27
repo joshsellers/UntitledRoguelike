@@ -780,11 +780,11 @@ const bool Item::isBuyable() const {
 * should be removed from the inventory upon use.
 */
 bool Item::use(Entity* parent) const {
-    if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN:")) {
+    if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN_")) {
         Interpreter interpreter;
         return interpreter.interpret(ModManager::getFunction(_functionName), parent);
-    } else if (_isCustomItem && stringStartsWith(_functionName, "BUILTIN:")) {
-        return ScriptExtensions::execute(splitString(_functionName, ":")[1], parent, nullptr);
+    } else if (_isCustomItem && stringStartsWith(_functionName, "BUILTIN_")) {
+        return ScriptExtensions::execute(splitString(_functionName, "_")[1], parent, nullptr);
     }
     return _use(parent);
 }
