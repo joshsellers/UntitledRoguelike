@@ -1,0 +1,14 @@
+name = "Blood Gun"
+description = ""
+equipmentType = TOOL
+isGun = true
+isAutomatic = true
+magazineSize = 500
+fireRate = 50
+reloadTime = 1250
+unlockWaveNumber = 40
+isBuyable = true
+value = 799
+functionName = "firebloodgun"
+barrelPos = 20, 2
+textureRect = 110, 0, 1, 1
