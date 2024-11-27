@@ -129,6 +129,8 @@ std::string Dog::getSaveData() const {
 }
 
 void Dog::damage(int damage) {
+    if (_hasOwner) return;
+
     _hitPoints -= damage;
     if (_hitPoints <= 0) {
         _isActive = false;
