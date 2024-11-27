@@ -1,7 +1,6 @@
 name = "Speed pill"
 description = "Go a bit faster"
-isStackable = true
-stackLimit = 2
+isStackable = false
 isConsumable = true
 functionName = "speedpill"
 isBuyable = true
