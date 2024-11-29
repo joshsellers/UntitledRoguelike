@@ -19,10 +19,20 @@ if: currentRedux < 1 {
 
     #newMultiplier = currentMultiplier + (1 / 10);
     #player.setSpeedMultiplier(newMultiplier);
-
-    runFunction(1 / 50, "BUILTIN_increaseCritChance");
-    return true;
 }
 
-displayMessage("You can't use any more of these", 5);
-return false;
+currentCritChance = player.getAbilityParameter("Crit Chance", "chance");
+if: currentCritChance < 1 {
+    increaseAmount = 1 / 50;
+    if: currentCritChance + increaseAmount > 1 {
+        increaseAmount = 1 - currentCritChance;
+    }
+    player.setAbilityParameter("Crit Chance", "chance", currentCritChance + increaseAmount);
+}
+
+if: currentCritChance >= 1 and currentRedux >= 1 {
+    displayMessage("You can't take any more of these", 5);
+    return false;
+}
+
+return true;
