@@ -3,11 +3,11 @@
 #include "../../core/SoundManager.h"
 #include "../World.h"
 
-Explosion::Explosion(sf::Vector2f pos) : Entity(NO_SAVE, pos, 0, 3 * TILE_SIZE, 3 * TILE_SIZE, false) {
+Explosion::Explosion(sf::Vector2f pos, bool onlyDamagePlayer) : Entity(NO_SAVE, pos, 0, 3 * TILE_SIZE, 3 * TILE_SIZE, false), _onlyDamagePlayer(onlyDamagePlayer) {
     init(pos, 15);
 }
 
-Explosion::Explosion(sf::Vector2f pos, int damage) : Entity(NO_SAVE, pos, 0, 3 * TILE_SIZE, 3 * TILE_SIZE, false) {
+Explosion::Explosion(sf::Vector2f pos, int damage, bool onlyDamagePlayer) : Entity(NO_SAVE, pos, 0, 3 * TILE_SIZE, 3 * TILE_SIZE, false), _onlyDamagePlayer(onlyDamagePlayer) {
     init(pos, damage);
 }
 
@@ -28,10 +28,14 @@ void Explosion::init(sf::Vector2f pos, int damage) {
 
 void Explosion::update() {
     if (_currentFrame >= 1 && _currentFrame <= 6) {
-        for (const auto& entity : getWorld()->getEntities()) {
-            if (entity->getEntityType() != "explosion" && entity->isActive() && entity->getHitBox().intersects(getHitBox())) {
-                entity->takeDamage(_damage);
+        if (!_onlyDamagePlayer) {
+            for (const auto& entity : getWorld()->getEntities()) {
+                if (entity->getEntityType() != "explosion" && entity->getSaveId() != BABY_BOSS && entity->isActive() && entity->getHitBox().intersects(getHitBox())) {
+                    entity->takeDamage(_damage);
+                }
             }
+        } else {
+            if (getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) getWorld()->getPlayer()->takeDamage(_damage);
         }
     }
 

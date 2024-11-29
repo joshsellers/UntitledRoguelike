@@ -43,6 +43,7 @@
 #include "../world/entities/MegaBombBoy.h"
 #include "../mod/byrgo/Bygro.h"
 #include "../mod/ModManager.h"
+#include "../world/entities/FallingNuke.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -317,6 +318,8 @@ private:
                             entity = std::shared_ptr<BombBoy>(new BombBoy(pos));
                         } else if (entityName == "megabombboy") {
                             entity = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(pos));
+                        } else if (entityName == "fallingnuke") {
+                            entity = std::shared_ptr<FallingNuke>(new FallingNuke(playerPos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

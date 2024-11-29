@@ -5,8 +5,8 @@
 
 class Explosion : public Entity {
 public:
-    Explosion(sf::Vector2f pos);
-    Explosion(sf::Vector2f pos, int damage);
+    Explosion(sf::Vector2f pos, bool onlyDamagePlayer = false);
+    Explosion(sf::Vector2f pos, int damage, bool onlyDamagePlayer = false);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
@@ -19,6 +19,8 @@ private:
 
     int _animCounter = 0;
     int _currentFrame = 0;
+
+    const bool _onlyDamagePlayer;
 };
 
 #endif
