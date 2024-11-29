@@ -156,6 +156,7 @@ private:
         out << ":" << std::to_string(_world->_enemiesSpawnedThisRound);
         out << ":" << std::to_string(_world->_waveCounter);
         out << ":" << std::to_string(_world->_currentWaveNumber);
+        out << ":" << std::to_string(_world->_highestPlayerHp);
         out << std::endl;
 
         if (_world->_destroyedProps.size() != 0) {
@@ -390,6 +391,9 @@ private:
             _world->_enemiesSpawnedThisRound = std::stoi(data[6]);
             _world->_waveCounter = std::stoi(data[7]);
             _world->_currentWaveNumber = std::stoi(data[8]);
+            if (data.size() > 9) {
+                _world->_highestPlayerHp = std::stoi(data[9]);
+            }
 
             _world->init(seed);
         } else if (header == "HARD") {

@@ -151,6 +151,7 @@ private:
     int _enemiesSpawnedThisRound = 0;
     int _waveCounter = 0;
     int _currentWaveNumber = 1;
+    int _highestPlayerHp = 100;
 
     bool _newGameCooldown = false;
     long long _newGameCooldownStartTime = 0;
