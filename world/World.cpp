@@ -297,7 +297,7 @@ void World::spawnMobs() {
 }
 
 void World::spawnEnemies() {
-    constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
+    const float MOB_SPAWN_RATE_SECONDS = std::max(0.05f, (500.f - _waveCounter * 10.f) / 1000.f);
     constexpr int MOB_SPAWN_CHANCE = 5;
     constexpr float MIN_DIST = 250.f;
     constexpr int PACK_SPREAD = 20;
