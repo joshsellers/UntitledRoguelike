@@ -1,6 +1,6 @@
 itemName = "_PROJECTILE_BOMB"
 velocity = 4
-lifeTime = 650
+lifeTime = 1000
 hitBox = 0, 0, 16, 16
 rotate = false
 explosionBehavior = EXPLODE_ON_DECAY_AND_IMPACT
