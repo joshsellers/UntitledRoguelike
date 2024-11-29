@@ -88,6 +88,16 @@ bool stringEndsWith(std::string const& fullString, std::string const& ending) {
     }
 }
 
+bool isNumber(std::string s) {
+    return !s.empty() && s.find_first_not_of("0123456789.") == std::string::npos;
+}
+
+void rtrim(std::string& s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+        }).base(), s.end());
+}
+
 float degToRads(float angle) {
     return angle * (M_PI / 180.f);
 }

@@ -21,6 +21,10 @@ void ModManager::loadAll() {
     loadPlayerVisualEffects();
 }
 
+void ModManager::reloadFunctions() {
+    loadFunctions();
+}
+
 void ModManager::loadFunctions() {
     const std::string dirName = "data/functions";
     if (!std::filesystem::is_directory(dirName + "/")) {

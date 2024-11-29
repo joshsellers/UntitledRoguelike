@@ -489,6 +489,18 @@
     <ClCompile Include="world\entities\MegaBombBoy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mod\byrgo\Bygro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod\byrgo\Compiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod\byrgo\Parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod\byrgo\Tokenizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -876,6 +888,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\MegaBombBoy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\byrgo\Bygro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\byrgo\Compiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\byrgo\Expression.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\byrgo\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mod\byrgo\Tokenizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

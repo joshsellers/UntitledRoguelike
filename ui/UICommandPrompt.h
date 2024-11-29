@@ -41,6 +41,8 @@
 #include "../world/entities/Explosion.h"
 #include "../world/entities/BombBoy.h"
 #include "../world/entities/MegaBombBoy.h"
+#include "../mod/byrgo/Bygro.h"
+#include "../mod/ModManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -888,6 +890,24 @@ private:
                             return ex.what();
                         }
                     }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "bygro",
+            Command("Compile a script",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const bool debug = parsedCommand.size() == 3;
+
+                    Bygro bygro;
+                    bygro.loadAndCompile("data/functions/" + parsedCommand[1] + ".rois", debug);
+
+                    ModManager::reloadFunctions();
+                    return "Reloaded scripts";
                 } else {
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }

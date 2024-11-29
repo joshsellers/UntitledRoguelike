@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="mod\byrgo\Bygro.cpp" />
+    <ClCompile Include="mod\byrgo\Compiler.cpp" />
+    <ClCompile Include="mod\byrgo\Parser.cpp" />
+    <ClCompile Include="mod\byrgo\Tokenizer.cpp" />
     <ClCompile Include="world\entities\MegaBombBoy.cpp" />
     <ClCompile Include="world\entities\BombBoy.cpp" />
     <ClCompile Include="world\entities\Explosion.cpp" />
@@ -179,6 +183,11 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mod\byrgo\Bygro.h" />
+    <ClInclude Include="mod\byrgo\Compiler.h" />
+    <ClInclude Include="mod\byrgo\Expression.h" />
+    <ClInclude Include="mod\byrgo\Parser.h" />
+    <ClInclude Include="mod\byrgo\Tokenizer.h" />
     <ClInclude Include="world\entities\MegaBombBoy.h" />
     <ClInclude Include="world\entities\BombBoy.h" />
     <ClInclude Include="world\entities\Explosion.h" />
