@@ -2,7 +2,7 @@
 #include "../World.h"
 
 Soldier::Soldier(sf::Vector2f pos) : Entity(SOLDIER, pos, 1.f, TILE_SIZE, TILE_SIZE * 2, false), 
-    _weaponId(Item::getIdFromName("Autopistol"))
+    _weaponId(Item::getIdFromName("_SNIPER_SOLDIER"))
 {
     setMaxHitPoints(100);
     heal(getMaxHitPoints()); 
@@ -25,6 +25,11 @@ Soldier::Soldier(sf::Vector2f pos) : Entity(SOLDIER, pos, 1.f, TILE_SIZE, TILE_S
     _isEnemy = true;
 
     _entityType = "soldier";
+
+    _equippedApparel[0] = Item::getIdFromName("Military Helmet");
+    _equippedApparel[1] = Item::getIdFromName("Military Vest");
+    _equippedApparel[2] = Item::getIdFromName("Military Briefs");
+    _equippedApparel[3] = Item::getIdFromName("Military Boots");
 }
 
 void Soldier::update() {
@@ -116,8 +121,17 @@ void Soldier::draw(sf::RenderTexture& surface) {
         drawWeapon(surface);
 
         surface.draw(_sprite);
+        drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
+        drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
+        drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
+        drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
     } else if (_facingDir == DOWN || _facingDir == RIGHT) {
         surface.draw(_sprite);
+        drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
+        drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
+        drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
+        drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
+
         drawWeapon(surface);
     }
 }
@@ -211,6 +225,39 @@ void Soldier::drawWeapon(sf::RenderTexture& surface) {
     }
 }
 
+void Soldier::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::RenderTexture& surface) {
+    if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD || equipType == EQUIPMENT_TYPE::ARMOR_HEAD) {
+        int spriteHeight = 3;
+        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+
+        if ((int)equipType < 4 && (int)equipType > -1 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
+            int spriteY = itemTextureRect.top + TILE_SIZE;
+
+            sprite.setTextureRect(sf::IntRect(
+                itemTextureRect.left + TILE_SIZE * 3 * _facingDir, spriteY + yOffset, TILE_SIZE * 3, TILE_SIZE * spriteHeight)
+            );
+
+            sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
+            surface.draw(sprite);
+        }
+    } else {
+        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
+
+        if ((int)equipType < 4 && (int)equipType > -1 && _equippedApparel[(int)equipType] != NOTHING_EQUIPPED) {
+            sf::IntRect itemTextureRect = Item::ITEMS[_equippedApparel[(int)equipType]]->getTextureRect();
+            int spriteY = itemTextureRect.top;
+
+            sprite.setTextureRect(sf::IntRect(
+                itemTextureRect.left + TILE_SIZE * _facingDir, spriteY + yOffset, TILE_SIZE, TILE_SIZE)
+            );
+
+            sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
+            surface.draw(sprite);
+        }
+    }
+}
+
 void Soldier::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(sf::IntRect(0, 0, 16, 32));
@@ -222,4 +269,9 @@ void Soldier::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + PLAYER_HEIGHT / 2));
 
     _toolSprite.setTexture(*spriteSheet);
+
+    _clothingHeadSprite.setTexture(*spriteSheet);
+    _clothingBodySprite.setTexture(*spriteSheet);
+    _clothingLegsSprite.setTexture(*spriteSheet);
+    _clothingFeetSprite.setTexture(*spriteSheet);
 }

@@ -651,7 +651,7 @@ unsigned int Item::getIdFromName(std::string name) {
     return 0;
 }
 
-void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
+void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount, bool onlyHitPlayer) {
     const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
     if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {
         const sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
@@ -676,7 +676,7 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
 
         ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
-            false, damage, true, passThroughCount, explosionBehavior);
+            onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
 
         parent->decrementMagazine();
 

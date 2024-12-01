@@ -107,7 +107,7 @@ public:
 
     static std::vector<std::shared_ptr<Item>> ITEMS;
 
-    static void fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName = "NONE", int passThroughCount = 1);
+    static void fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName = "NONE", int passThroughCount = 1, bool onlyHitPlayer = false);
 
     Item(const unsigned int id, const std::string name, const sf::IntRect textureRect, 
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable, 

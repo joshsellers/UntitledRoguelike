@@ -300,7 +300,7 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 std::string projItemName = strPop();
                 int passThroughCount = pop();
                 if (entity != nullptr) {
-                    Item::fireTargetedProjectile(entity, ProjectileDataManager::getData(projItemName), "NONE", passThroughCount);
+                    Item::fireTargetedProjectile(entity, ProjectileDataManager::getData(projItemName), "NONE", passThroughCount, entity->getSaveId() != PLAYER);
                 }
             } else {
                 MessageManager::displayMessage("player.fireProjectile() requires a string parameter", 5, ERR);
