@@ -53,6 +53,7 @@
 #include "../inventory/abilities/Ability.h"
 #include "entities/BombBoy.h"
 #include "entities/MegaBombBoy.h"
+#include "entities/BabyBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -646,7 +647,12 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+        // !TODO: increase the number in the if statement
+        // as new bosses are added, remove the if statement
+        // once all bosses are added
+        if (_currentWaveNumber < 48) {
+            MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+        }
     }
 
     spawnBoss(_currentWaveNumber);
@@ -1306,6 +1312,9 @@ void World::spawnBoss(int currentWaveNumber) {
             break;
         case 40:
             boss = std::shared_ptr<ChefBoss>(new ChefBoss(spawnPos));
+            break;
+        case 48:
+            boss = std::shared_ptr<BabyBoss>(new BabyBoss(spawnPos));
             break;
     }
 
