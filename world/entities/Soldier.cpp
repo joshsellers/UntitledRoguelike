@@ -33,6 +33,8 @@ Soldier::Soldier(sf::Vector2f pos) : Entity(SOLDIER, pos, 1.f, TILE_SIZE, TILE_S
 }
 
 void Soldier::update() {
+    if (!_isActive) return;
+
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x + (float)PLAYER_WIDTH / 2.f), ((int)getPosition().y) + 32);
 
@@ -254,6 +256,35 @@ void Soldier::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rend
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
             surface.draw(sprite);
+        }
+    }
+}
+
+void Soldier::damage(int damage) {
+    _hitPoints -= damage;
+
+    if (_hitPoints <= 0) {
+        _isActive = false; 
+        
+        getInventory().removeItem(getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL), 1);
+
+        srand(currentTimeMillis());
+        constexpr float DROP_ARMOR_CHANCE = 0.05f;
+        const bool dropHelmet = randomChance(DROP_ARMOR_CHANCE);
+        const bool dropVest = randomChance(DROP_ARMOR_CHANCE);
+        const bool dropPants = randomChance(DROP_ARMOR_CHANCE);
+        const bool dropBoots = randomChance(DROP_ARMOR_CHANCE);
+
+        const bool dropWeapon = randomChance(0.03f);
+        if (dropWeapon) getInventory().addItem(Item::getIdFromName("Sniper Rifle"), 1);
+
+        if (dropHelmet) getInventory().addItem(Item::getIdFromName("Military Helmet"), 1);
+        if (dropVest) getInventory().addItem(Item::getIdFromName("Military Vest"), 1);
+        if (dropPants) getInventory().addItem(Item::getIdFromName("Military Briefs"), 1);
+        if (dropBoots) getInventory().addItem(Item::getIdFromName("Military Boots"), 1);
+
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
         }
     }
 }

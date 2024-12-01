@@ -12,6 +12,8 @@ public:
 
     virtual void decrementMagazine();
 
+    void damage(int damage);
+
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 private:
     void drawWeapon(sf::RenderTexture& surface);
