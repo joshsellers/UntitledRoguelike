@@ -126,7 +126,7 @@ void BabyBoss::draw(sf::RenderTexture& surface) {
 void BabyBoss::onStateChange(const BossState previousState, const BossState newState) {
     if (newState.stateId == DROP_NUKES) _spawnedNukes = false;
     else if (newState.stateId == SPAWN_SOLDIERS) {
-        _soldiersToSpawn = randomInt(6, 12);
+        _soldiersToSpawn = randomInt(3, 5);
         _soldiersSpawned = 0;
     }
 }
