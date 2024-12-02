@@ -22,6 +22,9 @@ private:
     static inline bool _isVisible = false;
 
     static inline sf::Vector2f _altarPos;
+
+    static void checkIfAltarDespawned();
+    static inline long long _lastAltarCheckTime = 0LL;
 };
 
 #endif
