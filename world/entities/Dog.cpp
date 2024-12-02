@@ -63,6 +63,15 @@ void Dog::update() {
         }
 
         move(xa, ya);
+
+        constexpr long long damageRate = 500LL;
+        if (currentTimeMillis() - _lastDamageTime >= damageRate)
+        for (const auto& enemy : getWorld()->getEnemies()) {
+            if (getHitBox().intersects(enemy->getHitBox())) {
+                enemy->takeDamage(4);
+                _lastDamageTime = currentTimeMillis();
+            }
+        }
     }
 
     _sprite.setPosition(getPosition());
@@ -92,7 +101,7 @@ void Dog::draw(sf::RenderTexture& surface) {
     int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * 2 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        32 * TILE_SIZE + xOffset, 5 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE * 2 / 2 : TILE_SIZE * 2
+        (_hasOwner ? 73 : 65) * TILE_SIZE + xOffset, 29 * TILE_SIZE + yOffset, TILE_SIZE * 2, isSwimming() ? TILE_SIZE * 2 / 2 : TILE_SIZE * 2
     ));
 
     surface.draw(_sprite);
@@ -114,7 +123,7 @@ bool Dog::hasParent() const {
 
 void Dog::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(32 * TILE_SIZE, 5 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
+    _sprite.setTextureRect(sf::IntRect(65 * TILE_SIZE, 29 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin(TILE_SIZE, 0);
 
