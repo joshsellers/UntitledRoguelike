@@ -93,6 +93,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == DAMAGE_TAKEN) {
         _wavesWithoutDamage = 0;
         _tookDamageThisWave = true;
+        if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) unlock(MASOCHIST);
     } else if (stat == WAVES_CLEARED) {
         if (!_tookDamageThisWave) {
             _wavesWithoutDamage++;
@@ -108,7 +109,5 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
         unlock(HUMAN_BOULDER);
-    } else if (stat == DAMAGE_TAKEN && StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) {
-        unlock(MASOCHIST);
     }
 }
