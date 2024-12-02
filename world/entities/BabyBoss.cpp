@@ -36,7 +36,7 @@ void BabyBoss::subUpdate() {
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 8);
 
     float dist = std::sqrt(std::pow(cLoc.x - playerPos.x, 2) + std::pow(cLoc.y - playerPos.y, 2));
-    float desiredDist = 150.f;
+    constexpr float desiredDist = 200.f;
     float distanceRatio = desiredDist / dist;
 
     float xa = 0.f, ya = 0.f;
@@ -94,6 +94,8 @@ void BabyBoss::subUpdate() {
         getWorld()->getPlayer()->takeDamage(50);
         _lastContactDamageTimeMillis = currentTimeMillis();
     }
+
+    blink();
 }
 
 void BabyBoss::draw(sf::RenderTexture& surface) {
@@ -117,7 +119,7 @@ void BabyBoss::draw(sf::RenderTexture& surface) {
     int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 8 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        1664, 640 + yOffset, TILE_SIZE * 6, isSwimming() ? TILE_SIZE * 6 : TILE_SIZE * 8
+        (_isBlinking ? 1760 : 1664), 640 + yOffset, TILE_SIZE * 6, isSwimming() ? TILE_SIZE * 6 : TILE_SIZE * 8
     ));
 
     surface.draw(_sprite);
@@ -140,7 +142,7 @@ void BabyBoss::runCurrentState() {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
                 constexpr int aimCone = 100;
                 const sf::Vector2f targetPos(playerPos.x + randomInt(-aimCone, aimCone), playerPos.y + randomInt(-aimCone, aimCone));
-                fireTargetedProjectile(targetPos, ProjectileDataManager::getData("_PROJECTILE_BABYBOSS_BOMB"), "NONE", true, false, {0, 0}, false);
+                fireTargetedProjectile(targetPos, ProjectileDataManager::getData("_PROJECTILE_BABYBOSS_BOMB"), "basicprojlaunch", true, false, {0, 0}, false);
                 _lastFireTimeMillis = currentTimeMillis();
             }
             break;
@@ -197,6 +199,15 @@ void BabyBoss::runCurrentState() {
             break;
         }
     }
+}
+
+void BabyBoss::blink() {
+    const long long blinkDuration = 150LL;
+    const int blinkChance = 600;
+    if (!_isBlinking) {
+        _isBlinking = randomInt(0, blinkChance) == 0;
+        if (_isBlinking) _blinkStartTime = currentTimeMillis();
+    } else if (currentTimeMillis() - _blinkStartTime > blinkDuration) _isBlinking = false;
 }
 
 void BabyBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

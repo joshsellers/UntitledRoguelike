@@ -35,6 +35,10 @@ private:
     long long _lastSoldierSpawnTime = 0;
 
     bool _spawnedNukes = false;
+
+    void blink();
+    bool _isBlinking = false;
+    long long _blinkStartTime = 0LL;
 };
 
 #endif
