@@ -108,5 +108,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
         unlock(HUMAN_BOULDER);
+    } else if (stat == DAMAGE_TAKEN && StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) {
+        unlock(MASOCHIST);
     }
 }

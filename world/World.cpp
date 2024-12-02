@@ -1493,6 +1493,9 @@ void World::bossDefeated() {
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
             break;
+        case BABY_BOSS:
+            achievement = DEFEAT_BABYBOSS;
+            break;
     }
 
     if (achievement != MILLIONAIRE) {
