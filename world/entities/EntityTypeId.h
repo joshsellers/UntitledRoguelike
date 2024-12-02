@@ -31,7 +31,8 @@ enum ENTITY_SAVE_ID {
     BOMB_BOY,
     MEGA_BOMB_BOY,
     BABY_BOSS,
-    SOLDIER
+    SOLDIER,
+    BIG_SNOWMAN
 };
 
 #endif

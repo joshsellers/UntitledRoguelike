@@ -46,6 +46,7 @@
 #include "../world/entities/FallingNuke.h"
 #include "../world/entities/Soldier.h"
 #include "../world/entities/BabyBoss.h"
+#include "../world/entities/BigSnowMan.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -326,6 +327,8 @@ private:
                             entity = std::shared_ptr<Soldier>(new Soldier(pos));
                         } else if (entityName == "babyboss") {
                             entity = std::shared_ptr<BabyBoss>(new BabyBoss(pos));
+                        } else if (entityName == "bigsnowman") {
+                            entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

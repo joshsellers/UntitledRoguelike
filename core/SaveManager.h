@@ -703,6 +703,9 @@ private:
                 case BABY_BOSS:
                     entity = std::shared_ptr<BabyBoss>(new BabyBoss(pos));
                     break;
+                case BIG_SNOWMAN:
+                    entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

@@ -26,7 +26,10 @@ enum class MOB_TYPE : int {
     CHEF_BOSS,
     BURGER_BEAST,
     BOMB_BOY,
-    MEGA_BOMB_BOY
+    MEGA_BOMB_BOY,
+    SOLDIER,
+    BABY_BOSS,
+    BIG_SNOW_MAN
 };
 
 struct MobSpawnData {

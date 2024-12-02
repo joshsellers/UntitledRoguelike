@@ -54,6 +54,7 @@
 #include "entities/BombBoy.h"
 #include "entities/MegaBombBoy.h"
 #include "entities/BabyBoss.h"
+#include "entities/BigSnowMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -377,6 +378,9 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::MEGA_BOMB_BOY:
                                 mob = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BIG_SNOW_MAN:
+                                mob = std::shared_ptr<BigSnowMan>(new BigSnowMan(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
