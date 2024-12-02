@@ -95,7 +95,7 @@ void BabyBoss::subUpdate() {
         _lastContactDamageTimeMillis = currentTimeMillis();
     }
 
-    blink();
+    if (_currentState.stateId != SPAM_BOMBS) blink();
 }
 
 void BabyBoss::draw(sf::RenderTexture& surface) {
@@ -119,7 +119,7 @@ void BabyBoss::draw(sf::RenderTexture& surface) {
     int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 8 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        (_isBlinking ? 1760 : 1664), 640 + yOffset, TILE_SIZE * 6, isSwimming() ? TILE_SIZE * 6 : TILE_SIZE * 8
+        (_currentState.stateId == SPAM_BOMBS ? 2048 : (_isBlinking ? 1760 : 1664)), 640 + yOffset, TILE_SIZE * 6, isSwimming() ? TILE_SIZE * 6 : TILE_SIZE * 8
     ));
 
     surface.draw(_sprite);
@@ -142,7 +142,7 @@ void BabyBoss::runCurrentState() {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
                 constexpr int aimCone = 100;
                 const sf::Vector2f targetPos(playerPos.x + randomInt(-aimCone, aimCone), playerPos.y + randomInt(-aimCone, aimCone));
-                fireTargetedProjectile(targetPos, ProjectileDataManager::getData("_PROJECTILE_BABYBOSS_BOMB"), "basicprojlaunch", true, false, {0, 0}, false);
+                fireTargetedProjectile(targetPos, ProjectileDataManager::getData("_PROJECTILE_BABYBOSS_BOMB"), "basicprojlaunch", true, false, {0, -12}, false);
                 _lastFireTimeMillis = currentTimeMillis();
             }
             break;
