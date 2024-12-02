@@ -292,7 +292,9 @@ private:
 
             unsigned int orbiterTypeId = std::stoul(deferredData[4]);
             std::string parentUID = deferredData[5];
-            float angle = std::stof(deferredData[6]);
+            float angle = std::stof(deferredData[6]); 
+            float distance = 0;
+            if (deferredData.size() > 7) distance = std::stof(deferredData[7]);
             Entity* parent = nullptr;
             bool foundParent = false;
             for (auto& entity : _world->getEntities()) {
@@ -304,7 +306,9 @@ private:
             }
 
             if (foundParent) {
-                entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                if (distance != 0) orbiter->setDistance(distance);
+                entity = orbiter;
                 entity->setUID(uid);
                 entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
@@ -524,6 +528,8 @@ private:
                     unsigned int orbiterTypeId = std::stoul(data[4]);
                     std::string parentUID = data[5];
                     float angle = std::stof(data[6]);
+                    float distance = 0;
+                    if (data.size() > 7) distance = std::stof(data[7]);
                     Entity* parent = nullptr;
                     bool foundParent = false;
                     for (auto& entity : _world->getEntities()) {
@@ -535,7 +541,9 @@ private:
                     }
 
                     if (foundParent) {
-                        entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                        std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                        if (distance != 0) orbiter->setDistance(distance);
+                        entity = orbiter;
                     } else {
                         entityLoadedSuccessfully = false;
                         _deferredOrbiters.push_back(data);
