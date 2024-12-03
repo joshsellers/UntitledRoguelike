@@ -80,7 +80,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == DIST_TRAVELLED && StatManager::getOverallStat(DIST_TRAVELLED) >= 42000) {
         unlock(MARATHON);
     } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
-        && StatManager::getStatThisSave(ITEMS_PURCHASED) >= 1000 && StatManager::getStatThisSave(ITEMS_SOLD) >= 1000) {
+        && StatManager::getOverallStat(ITEMS_PURCHASED) >= 1000 && StatManager::getOverallStat(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
     } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
         unlock(TENACIOUS);
