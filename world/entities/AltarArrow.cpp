@@ -28,6 +28,12 @@ void AltarArrow::update() {
         _sprite.setRotation(angle);
 
         _isVisible = true;
+
+        constexpr long long altarCheckRate = 2000LL;
+        if (currentTimeMillis() - _lastAltarCheckTime >= altarCheckRate) {
+            checkIfAltarDespawned();
+            _lastAltarCheckTime = currentTimeMillis();
+        }
     }
 }
 
@@ -38,6 +44,8 @@ void AltarArrow::draw(sf::RenderTexture& surface) {
 void AltarArrow::altarSpawned(sf::Vector2f pos) {
     _altarPos = pos;
     _altarSpawned = true;
+
+    _lastAltarCheckTime = currentTimeMillis();
 }
 
 void AltarArrow::altarActivated() {
@@ -54,4 +62,18 @@ void AltarArrow::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTextureRect(sf::IntRect(80, 208, TILE_SIZE, TILE_SIZE));
     _sprite.setPosition(0, 0);
     _sprite.setOrigin(_sprite.getTextureRect().width / 2, _sprite.getTextureRect().height / 2);
+}
+
+void AltarArrow::checkIfAltarDespawned() {
+    if (_world != nullptr) {
+        bool foundAltar = false;
+        for (const auto& prop : _world->getEntities()) {
+            if (prop->isProp() && prop->getEntityType() == "altar") {
+                foundAltar = true;
+                break;
+            }
+        }
+
+        if (!foundAltar) altarActivated();
+    }
 }

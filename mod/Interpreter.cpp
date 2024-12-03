@@ -222,10 +222,10 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
             i++;
         } else if (inst == INSTRUCTION::CALL) {
             std::string funcName = strPop();
-            if (!stringStartsWith(funcName, "BUILTIN:")) {
+            if (!stringStartsWith(funcName, "BUILTIN_")) {
                 push(interpret(ModManager::getFunction(funcName), entity));
             } else {
-                push(ScriptExtensions::execute(splitString(funcName, ":")[1], entity, this));
+                push(ScriptExtensions::execute(splitString(funcName, "_")[1], entity, this));
             }
             i++;
         } else if (inst == INSTRUCTION::POP) {
@@ -300,7 +300,7 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 std::string projItemName = strPop();
                 int passThroughCount = pop();
                 if (entity != nullptr) {
-                    Item::fireTargetedProjectile(entity, ProjectileDataManager::getData(projItemName), "NONE", passThroughCount);
+                    Item::fireTargetedProjectile(entity, ProjectileDataManager::getData(projItemName), "NONE", passThroughCount, entity->getSaveId() != PLAYER);
                 }
             } else {
                 MessageManager::displayMessage("player.fireProjectile() requires a string parameter", 5, ERR);

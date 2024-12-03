@@ -1,0 +1,5 @@
+weaponLoaded = player.weaponIsLoaded();
+if: weaponLoaded {
+    playSound("sniper");
+    player.fireProjectile("_PROJECTILE_SNIPER", 1);
+}

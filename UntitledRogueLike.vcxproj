@@ -19,6 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="world\entities\BabyBoss.cpp" />
+    <ClCompile Include="world\entities\BigSnowMan.cpp" />
+    <ClCompile Include="world\entities\FallingNuke.cpp" />
+    <ClCompile Include="mod\byrgo\Bygro.cpp" />
+    <ClCompile Include="mod\byrgo\Compiler.cpp" />
+    <ClCompile Include="mod\byrgo\Parser.cpp" />
+    <ClCompile Include="mod\byrgo\Tokenizer.cpp" />
+    <ClCompile Include="world\entities\FallingObjectShadow.cpp" />
+    <ClCompile Include="world\entities\MegaBombBoy.cpp" />
+    <ClCompile Include="world\entities\BombBoy.cpp" />
+    <ClCompile Include="world\entities\Explosion.cpp" />
     <ClCompile Include="world\entities\BurgerBeast.cpp" />
     <ClCompile Include="ui\UISlider.cpp" />
     <ClCompile Include="world\entities\ChefBoss.cpp" />
@@ -33,6 +44,7 @@
     <ClCompile Include="mod\Interpreter.cpp" />
     <ClCompile Include="mod\ModManager.cpp" />
     <ClCompile Include="inventory\effect\PlayerVisualEffectManager.cpp" />
+    <ClCompile Include="world\entities\Soldier.cpp" />
     <ClCompile Include="world\entities\TreeBoss.cpp" />
     <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp" />
     <ClCompile Include="world\entities\TulipMonster.cpp" />
@@ -176,10 +188,23 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="world\entities\BabyBoss.h" />
+    <ClInclude Include="world\entities\BigSnowMan.h" />
+    <ClInclude Include="world\entities\FallingNuke.h" />
+    <ClInclude Include="mod\byrgo\Bygro.h" />
+    <ClInclude Include="mod\byrgo\Compiler.h" />
+    <ClInclude Include="mod\byrgo\Expression.h" />
+    <ClInclude Include="mod\byrgo\Parser.h" />
+    <ClInclude Include="mod\byrgo\Tokenizer.h" />
+    <ClInclude Include="world\entities\FallingObjectShadow.h" />
+    <ClInclude Include="world\entities\MegaBombBoy.h" />
+    <ClInclude Include="world\entities\BombBoy.h" />
+    <ClInclude Include="world\entities\Explosion.h" />
     <ClInclude Include="world\entities\BurgerBeast.h" />
     <ClInclude Include="ui\UISlider.h" />
     <ClInclude Include="world\entities\ChefBoss.h" />
     <ClInclude Include="mod\ScriptExtensions.h" />
+    <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
     <ClInclude Include="world\entities\AltarArrow.h" />
@@ -192,6 +217,7 @@
     <ClInclude Include="mod\Interpreter.h" />
     <ClInclude Include="mod\ModManager.h" />
     <ClInclude Include="inventory\effect\PlayerVisualEffectManager.h" />
+    <ClInclude Include="world\entities\Soldier.h" />
     <ClInclude Include="world\entities\TreeBoss.h" />
     <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h" />
     <ClInclude Include="world\entities\TulipMonster.h" />

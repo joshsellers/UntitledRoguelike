@@ -1,0 +1,7 @@
+name = "Military Helmet"
+description = "Impersonate a military official\n\nProtects your head a little bit"
+damage = 1
+equipmentType = ARMOR_HEAD
+isBuyable = false
+value = 15
+textureRect = 116, 49, 1, 1

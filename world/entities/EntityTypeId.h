@@ -27,7 +27,12 @@ enum ENTITY_SAVE_ID {
     TREE_BOSS,
     CREAM_BOSS,
     CHEF_BOSS,
-    BURGER_BEAST
+    BURGER_BEAST,
+    BOMB_BOY,
+    MEGA_BOMB_BOY,
+    BABY_BOSS,
+    SOLDIER,
+    BIG_SNOWMAN
 };
 
 #endif

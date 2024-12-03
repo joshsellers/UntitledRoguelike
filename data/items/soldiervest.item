@@ -1,0 +1,7 @@
+name = "Military Vest"
+description = "Impersonate a military official\n\nProtects your torso a little bit"
+damage = 1
+equipmentType = ARMOR_BODY
+isBuyable = false
+value = 15
+textureRect = 116, 45, 1, 1

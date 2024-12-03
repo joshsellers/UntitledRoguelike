@@ -1,0 +1,14 @@
+name = "Rocket Launcher"
+description = "Launches rockets"
+value = 599
+isBuyable = true
+shopChance = 5
+unlockWaveNumber = 32
+isGun = true
+isAutomatic = false
+magazineSize = 1
+reloadTime = 1250
+barrelPos = 34, 1
+functionName = "firerocketlauncher"
+equipmentType = TOOL
+textureRect = 103, 0, 1, 1

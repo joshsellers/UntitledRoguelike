@@ -1,0 +1,2 @@
+playSound("sniper")
+player.fireProjectile("_PROJECTILE_SOLDIER_SNIPER", 1);

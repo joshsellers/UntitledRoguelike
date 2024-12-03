@@ -151,6 +151,7 @@ private:
     int _enemiesSpawnedThisRound = 0;
     int _waveCounter = 0;
     int _currentWaveNumber = 1;
+    int _highestPlayerHp = 100;
 
     bool _newGameCooldown = false;
     long long _newGameCooldownStartTime = 0;
@@ -193,6 +194,10 @@ private:
     bool _bossIsActive = false;
     std::shared_ptr<Entity> _currentBoss = nullptr;
     void spawnBoss(int currentWaveNumber);
+
+    // this should be in a different class but oh well
+    // also might not work right if done from a different class tho
+    void givePlayerDefaultAbilities() const;
 };
 
 #endif

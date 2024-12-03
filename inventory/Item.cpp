@@ -651,19 +651,32 @@ unsigned int Item::getIdFromName(std::string name) {
     return 0;
 }
 
-void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount) {
+void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData, std::string soundName, int passThroughCount, bool onlyHitPlayer) {
     const unsigned int ammoId = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getAmmoId();
     if (parent->getHitPoints() > 0 && parent->getMagazineAmmoType() == ammoId && parent->getMagazineContents() > 0) {
-        sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
-        sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
+        const sf::Vector2f cBarrelPos = parent->getCalculatedBarrelPos();
+        const sf::Vector2f spawnPos(cBarrelPos.x, cBarrelPos.y);
 
-        double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
-        double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
+        const double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
+        const double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
 
-        float angle = (float)((std::atan2(y, x)));
+        const float angle = (float)((std::atan2(y, x)));
+
+        EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
+        if (AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
+
+        const int projDamage = ITEMS[projData.itemId]->getDamage();
+        const float critChance = AbilityManager::getParameter(Ability::CRIT_CHANCE.getId(), "chance");
+        bool crit = false;
+        if (parent->getSaveId() == PLAYER) {
+            crit = randomChance(critChance);
+        }
+
+        const int damageBoost = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage();
+        const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
 
         ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
-            false, ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage(), true, passThroughCount);
+            onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
 
         parent->decrementMagazine();
 
@@ -767,11 +780,11 @@ const bool Item::isBuyable() const {
 * should be removed from the inventory upon use.
 */
 bool Item::use(Entity* parent) const {
-    if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN:")) {
+    if (_isCustomItem && _functionName != "NONE" && !stringStartsWith(_functionName, "BUILTIN_")) {
         Interpreter interpreter;
         return interpreter.interpret(ModManager::getFunction(_functionName), parent);
-    } else if (_isCustomItem && stringStartsWith(_functionName, "BUILTIN:")) {
-        return ScriptExtensions::execute(splitString(_functionName, ":")[1], parent, nullptr);
+    } else if (_isCustomItem && stringStartsWith(_functionName, "BUILTIN_")) {
+        return ScriptExtensions::execute(splitString(_functionName, "_")[1], parent, nullptr);
     }
     return _use(parent);
 }

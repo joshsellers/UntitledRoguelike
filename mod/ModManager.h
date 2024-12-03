@@ -10,6 +10,7 @@ class Item;
 class ModManager {
 public:
     static void loadAll();
+    static void reloadFunctions();
 
     static std::vector<int> getFunction(std::string functionName);
 private:

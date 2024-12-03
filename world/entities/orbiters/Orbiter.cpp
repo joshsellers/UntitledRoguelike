@@ -183,7 +183,7 @@ Entity* Orbiter::getParent() const {
 }
 
 std::string Orbiter::getSaveData() const {
-    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUID() + ":" + std::to_string(_angle);
+    return std::to_string(_orbiterTypeId) + ":" + getParent()->getUID() + ":" + std::to_string(_angle) + ":" + std::to_string(_distance);
 }
 
 void Orbiter::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

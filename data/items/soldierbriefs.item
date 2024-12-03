@@ -1,0 +1,7 @@
+name = "Military Briefs"
+description = "Impersonate a military official\n\nProtects your legs a little bit"
+damage = 1
+equipmentType = ARMOR_LEGS
+isBuyable = false
+value = 15
+textureRect = 120, 45, 1, 1
