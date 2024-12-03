@@ -24,7 +24,7 @@ BabyBoss::BabyBoss(sf::Vector2f pos) : Boss(BABY_BOSS, pos, 1.f, TILE_SIZE * 6, 
     _canPickUpItems = false;
 
     _entityType = "babyboss";
-    _displayName = "";
+    _displayName = "Lieutenant Timmy";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(4500, 5250);
