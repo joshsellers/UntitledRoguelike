@@ -116,4 +116,11 @@ void BigSnowMan::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 }
 
 void BigSnowMan::damage(int damage) {
+    _hitPoints -= damage;
+    if (_hitPoints <= 0) {
+        _isActive = false;
+        for (int i = 0; i < getInventory().getCurrentSize(); i++) {
+            getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
+        }
+    }
 }
