@@ -11,7 +11,7 @@ class SoundManager {
 public:
     static void playSound(std::string soundName) {
         if (sounds.find(soundName) == sounds.end()) {
-            MessageManager::displayMessage("No sound named \"" + soundName + "\"", 5, ERR);
+            MessageManager::displayMessage("No sound named \"" + soundName + "\"", _failedInit ? 0 : 5, ERR);
             return;
         }
         soloud.play(sounds[soundName]);
@@ -60,8 +60,15 @@ public:
     }
 
     static void loadSounds() {
-        soloud.init();
-        
+        const SoLoud::result result = soloud.init();
+        if (result != 0) {
+            MessageManager::displayMessage("There was an error initiating the audio engine\nAborting audio init\n\nSounds will not be loaded.\nTry changing your audio device and restarting the game.", 20, ERR);
+            MessageManager::displayMessage("Error code: " + std::to_string(result), 10, DEBUG);
+            soloud.deinit();
+            _failedInit = true;
+            return;
+        }
+
         const std::string dirName = "res/sounds";
         std::vector<std::string> soundFiles;
         for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
@@ -115,6 +122,7 @@ public:
     friend class MusicManager;
 private:
     inline static SoLoud::Soloud soloud;
+    inline static bool _failedInit = false;
 
     inline static std::map<std::string, SoLoud::Wav> sounds;
     inline static std::vector<std::string> soundNames;
