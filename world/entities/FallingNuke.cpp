@@ -17,7 +17,7 @@ FallingNuke::FallingNuke(sf::Vector2f playerPos) : Entity(NO_SAVE, playerPos, 0,
 
 void FallingNuke::update() {
     if (!_landed) {
-        constexpr float dropSpeed = 4.f;
+        constexpr float dropSpeed = 5.f;
         _dropSprite.move(0, dropSpeed);
     }
 
