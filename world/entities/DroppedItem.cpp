@@ -91,26 +91,24 @@ std::string DroppedItem::getSaveData() const {
 
 void DroppedItem::moveTowardPlayer() {
     if (getWorld()->getPlayer()->getCoinMagnetCount() > 0) {
-        sf::Vector2f playerPos(
+        const sf::Vector2f playerPos(
             (int)getWorld()->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, 
             (int)getWorld()->getPlayer()->getPosition().y + PLAYER_WIDTH
         );
 
-        sf::Vector2f currentPos(getPosition().x + TILE_SIZE / 2, getPosition().y + TILE_SIZE / 2);
+        const sf::Vector2f currentPos(getPosition().x + TILE_SIZE / 2, getPosition().y + TILE_SIZE / 2);
 
-        float dx = playerPos.x - currentPos.x;
-        float dy = playerPos.y - currentPos.y;
-        float distSquared = (dx * dx) + (dy * dy);
+        const float dx = playerPos.x - currentPos.x;
+        const float dy = playerPos.y - currentPos.y;
+        const float distSquared = (dx * dx) + (dy * dy);
 
         constexpr float minDistanceSquared = 250.f * 250.f;
 
         if (distSquared <= minDistanceSquared) {
             const float attractionSpeed = 1000.f * (1 / (distSquared / getWorld()->getPlayer()->getCoinMagnetCount()));
-            float xa = 0, ya = 0;
-            if (playerPos.y < currentPos.y) ya = -attractionSpeed;
-            else if (playerPos.y > currentPos.y) ya = attractionSpeed;
-            if (playerPos.x < currentPos.x) xa = -attractionSpeed;
-            else if (playerPos.x > currentPos.x) xa = attractionSpeed;
+            const float angle = std::atan2(dy, dx);
+            const float xa = attractionSpeed * std::cos(angle);
+            const float ya = attractionSpeed * std::sin(angle);
             
             move(xa, ya);
         }
