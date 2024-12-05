@@ -72,6 +72,27 @@ void Dog::update() {
                 _lastDamageTime = currentTimeMillis();
             }
         }
+
+        constexpr float teleportDist = CHUNK_SIZE * 2;
+        if (dist >= teleportDist) {
+            const int dir = randomInt(0, 3);
+            sf::Vector2f newPos;
+            if (dir == 0) {
+                newPos.x = playerPos.x;
+                newPos.y = playerPos.y - (HEIGHT + 32);
+            } else if (dir == 1) {
+                newPos.x = playerPos.x;
+                newPos.y = playerPos.y + (HEIGHT + 32);
+            } else if (dir == 2) {
+                newPos.x = playerPos.x - (WIDTH + 32);
+                newPos.y = playerPos.y;
+            } else if (dir == 3) {
+                newPos.x = playerPos.x + (WIDTH + 32);
+                newPos.y = playerPos.y;
+            }
+
+            _pos = newPos;
+        }
     }
 
     _sprite.setPosition(getPosition());
