@@ -51,7 +51,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
-        MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6, 24),
+        MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6, 36),
         MobSpawnData(MOB_TYPE::BIG_SNOW_MAN, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::YETI, 1, 4, 8, 0),
         //MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
