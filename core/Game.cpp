@@ -1057,7 +1057,10 @@ void Game::update() {
             _HUDMenu->show();
             
             MUSIC_SITUTAION situation = MUSIC_SITUTAION::WAVE;
-            if (_world.onEnemySpawnCooldown()) situation = MUSIC_SITUTAION::COOLDOWN;
+            if (_world.onEnemySpawnCooldown()) {
+                situation = MUSIC_SITUTAION::COOLDOWN;
+                if (_world.bossIsActive()) situation = MUSIC_SITUTAION::BOSS;
+            }
             MusicManager::setSituation(situation);
         }
     }

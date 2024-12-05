@@ -718,11 +718,12 @@ private:
 
             if (entityLoadedSuccessfully) {
                 entity->setUID(uid);
-                entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
                 entity->setWorld(_world);
                 // not deferring here solves a problem but also scares me a little check for bugs
                 _world->addEntity(entity, false);
+                // fixes bosses spawning with full hp when loading a save during a boss fight
+                entity->_hitPoints = hitPoints;
             }
         }
     }

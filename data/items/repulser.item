@@ -1,7 +1,7 @@
 name = "Repulser"
 description = "Push your friends away\n\nCauses orbiters to orbit farther away.\nUsing more of these will further increase\norbit radius."
 isBuyable = true
-shopChance = 6
+shopChance = 5
 unlockWaveNumber = 12
 value = 250
 isStackable = true
