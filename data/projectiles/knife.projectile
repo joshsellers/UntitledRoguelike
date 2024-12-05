@@ -1,6 +1,6 @@
 itemName = "_PROJECTILE_CHEFBOSS_KNIFE"
 velocity = 2
 lifeTime = 10000
-hitBox = 9, 9, 17, 17
+hitBox = 11, 11, 15, 15
 rotate = true
 onlyHitEnemies = false
