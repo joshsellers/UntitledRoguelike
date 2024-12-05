@@ -11,7 +11,7 @@ ChefBoss::ChefBoss(sf::Vector2f pos) : Boss(CHEF_BOSS, pos, 3.f, TILE_SIZE * 2, 
         BossState(BEHAVIOR_STATE::KNIFE_ATTACK, 6000LL, 9000LL),
         BossState(BEHAVIOR_STATE::SPAWN_BURGERS, 5000LL, 6000LL)
     }) {
-    setMaxHitPoints(14500);
+    setMaxHitPoints(11750);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 2) / 2;
