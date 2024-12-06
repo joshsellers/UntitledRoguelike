@@ -17,12 +17,12 @@ FallingNuke::FallingNuke(sf::Vector2f playerPos) : Entity(NO_SAVE, playerPos, 0,
 
 void FallingNuke::update() {
     if (!_landed) {
-        constexpr float dropSpeed = 5.f;
+        constexpr float dropSpeed = 8.f;
         _dropSprite.move(0, dropSpeed);
     }
 
     constexpr long long timeBetweenLayers = 50LL;
-    constexpr int maxLayers = 20;
+    constexpr int maxLayers = 24;
     if (!_landed && _dropSprite.getPosition().y + TILE_SIZE * 5 >= _sprite.getPosition().y + TILE_SIZE) {
         _landed = true;
         _shadow->deactivate();
