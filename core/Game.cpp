@@ -978,11 +978,7 @@ void Game::update() {
             }
         }
 
-        if (_world.playerIsInShop()) {
-            _world.incrementEnemySpawnCooldownTimeWhilePaused();
-
-            if (!_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
-        }
+        if (_world.playerIsInShop() && !_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
         _world.update();
 
         if (_world.bossIsActive() && !_bossHUDMenu->isActive()) {
@@ -1010,14 +1006,14 @@ void Game::update() {
         }
 
         if (_showWaveMeter) {
-            long long cooldownTimeAtStart = _world.getEnemySpawnCooldownTimeMilliseconds() / 1000;
-            long long cooldownTimeRemaining = _world.getTimeUntilNextEnemyWave() / 1000;
+            const long long cooldownTimeAtStart = _world.getEnemySpawnCooldownTimeMilliseconds() / 1000;
+            const long long cooldownTimeRemaining = _world.getTimeUntilNextEnemyWave() / 1000;
 
-            int timeRemainingMinutes = cooldownTimeRemaining / 60;
-            int timeRemainingSeconds = cooldownTimeRemaining % 60;
+            const int timeRemainingMinutes = cooldownTimeRemaining / 60;
+            const int timeRemainingSeconds = cooldownTimeRemaining % 60;
 
             std::string timerString = "";
-            if (_world.onEnemySpawnCooldown()) {
+            if (_world.onEnemySpawnCooldown() && !_world.playerIsInShop()) {
                 timerString = " in " + std::to_string(timeRemainingMinutes) + ":"
                     + (timeRemainingSeconds < 10 ? "0" : "") + std::to_string(timeRemainingSeconds);
 
@@ -1027,12 +1023,14 @@ void Game::update() {
                     || (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN)))) {
                     _world._cooldownStartTime -= _world.getEnemySpawnCooldownTimeMilliseconds() * 0.00657;
                 }
-            } else {
+            } else if (!_world.playerIsInShop()) {
                 _waveCounterMeter->setPercentFull(0.f);
             }
 
-            _waveCounterMeter->setText("WAVE " + std::to_string(_world._currentWaveNumber) 
-                + timerString);
+            if (!_world.playerIsInShop()) {
+                _waveCounterMeter->setText("WAVE " + std::to_string(_world._currentWaveNumber)
+                    + timerString);
+            }
         }
 
         displayEnemyWaveCountdownUpdates();
@@ -1047,8 +1045,6 @@ void Game::update() {
         } else {
             autoSave();
         }
-    } else if (_isPaused && _gameStarted) {
-        _world.incrementEnemySpawnCooldownTimeWhilePaused();
     } else if (!_isPaused && !_gameStarted && _gameLoading) {
         _world.dumpChunkBuffer();
         if (_world._chunks.size() == 4) {
@@ -1704,6 +1700,12 @@ void Game::togglePauseMenu() {
         else if (_audioMenu->isActive()) buttonPressed("back_audio");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
+
+    if (_world.onEnemySpawnCooldown() && _isPaused) {
+        _pauseStartTimeMillis = currentTimeMillis();
+    } else if (_world.onEnemySpawnCooldown() && !_isPaused) {
+        _world._cooldownStartTime = currentTimeMillis() - (_pauseStartTimeMillis - _world._cooldownStartTime);
+    }
 
 }
 

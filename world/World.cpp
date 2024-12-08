@@ -1426,6 +1426,8 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         barberChair->setWorld(this);
         addEntity(barberChair);
     }
+
+    if (onEnemySpawnCooldown()) _shopEntranceTimeMillis = currentTimeMillis();
 }
 
 void World::exitBuilding() {
@@ -1434,6 +1436,10 @@ void World::exitBuilding() {
     else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
 
     _isPlayerInShop = false;
+
+    if (onEnemySpawnCooldown()) {
+        _cooldownStartTime = currentTimeMillis() - (_shopEntranceTimeMillis - _cooldownStartTime);
+    }
 }
 
 bool World::playerIsInShop() const {

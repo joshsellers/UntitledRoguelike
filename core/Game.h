@@ -52,6 +52,8 @@ private:
 	bool _showDebug = false;
 	bool _isPaused = false;
 
+	long long _pauseStartTimeMillis = 0LL;
+
 	bool _gameStarted = false;
 	bool _gameLoading = false;
 	

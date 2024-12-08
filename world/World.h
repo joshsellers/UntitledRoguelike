@@ -190,6 +190,7 @@ private:
     bool& _showDebug;
 
     bool _isPlayerInShop = false;
+    long long _shopEntranceTimeMillis = 0LL;
 
     bool _bossIsActive = false;
     std::shared_ptr<Entity> _currentBoss = nullptr;
