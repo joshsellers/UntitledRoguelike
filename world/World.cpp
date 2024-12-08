@@ -51,14 +51,14 @@
 #include "entities/ShopKeepCorpse.h"
 #include "entities/ChefBoss.h"
 #include "../inventory/abilities/Ability.h"
+#include "entities/BombBoy.h"
+#include "entities/MegaBombBoy.h"
+#include "entities/BabyBoss.h"
+#include "entities/BigSnowMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
     _player->setWorld(this);
-
-    if (!AbilityManager::playerHasAbility(Ability::ALTAR_CHANCE.getId())) {
-        AbilityManager::givePlayerAbility(Ability::ALTAR_CHANCE.getId());
-    }
 
     _entities.push_back(_player);
 }
@@ -70,6 +70,8 @@ void World::init(unsigned int seed) {
     gen.seed(_seed);
 
     _newGameCooldown = false;
+
+    givePlayerDefaultAbilities();
 
     loadChunksAroundPlayer();
 }
@@ -297,7 +299,7 @@ void World::spawnMobs() {
 }
 
 void World::spawnEnemies() {
-    constexpr float MOB_SPAWN_RATE_SECONDS = 0.5f;
+    const float MOB_SPAWN_RATE_SECONDS = std::max(0.05f, (500.f - _currentWaveNumber * 10.f) / 1000.f);
     constexpr int MOB_SPAWN_CHANCE = 5;
     constexpr float MIN_DIST = 250.f;
     constexpr int PACK_SPREAD = 20;
@@ -371,6 +373,15 @@ void World::spawnEnemies() {
                             case MOB_TYPE::TULIP_MONSTER:
                                 mob = std::shared_ptr<TulipMonster>(new TulipMonster(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::BOMB_BOY:
+                                mob = std::shared_ptr<BombBoy>(new BombBoy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::MEGA_BOMB_BOY:
+                                mob = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BIG_SNOW_MAN:
+                                mob = std::shared_ptr<BigSnowMan>(new BigSnowMan(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }
@@ -389,7 +400,8 @@ void World::spawnEnemies() {
                             _maxActiveEnemies = (int)((12.f * std::log(std::pow(PLAYER_SCORE, 2)) * std::log(PLAYER_SCORE / 2) + 5) * 0.5f);
                             if (_maxActiveEnemies == 2) _maxActiveEnemies = 4;
                             if (HARD_MODE_ENABLED) _maxActiveEnemies *= 2;
-                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)std::max(_player->getMaxHitPoints(), 100) / 100.f));
+                            if (_player->getMaxHitPoints() > _highestPlayerHp) _highestPlayerHp = _player->getMaxHitPoints();
+                            PLAYER_SCORE += 1.f * ((_player->getDamageMultiplier()) * ((float)_highestPlayerHp / 100.f));
                             _waveCounter++;
                             break;
                         } else _enemiesSpawnedThisRound++;
@@ -639,7 +651,12 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+        // !TODO: increase the number in the if statement
+        // as new bosses are added, remove the if statement
+        // once all bosses are added
+        if (_currentWaveNumber < 48) {
+            MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+        }
     }
 
     spawnBoss(_currentWaveNumber);
@@ -655,13 +672,7 @@ void World::checkAltarSpawn() {
         constexpr float maxAltarChance = 50.f;
         const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
         if (altarChance != 0.f) {
-            const int die = std::ceil(100.f / altarChance);
-            int roll = 1;
-            if (altarChance < 100.f) {
-                roll = randomInt(1, die);
-            }
-
-            if (roll == 1) {
+            if (randomChance(altarChance / 100.f)) {
                 sf::Vector2f spawnPos;
                 const int dirFromPlayer = randomInt(0, 3);
                 const int maxDistFromPlayer = WIDTH;
@@ -695,9 +706,7 @@ void World::checkAltarSpawn() {
                 }
             }
 
-            MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance), 0, DEBUG);
-            MessageManager::displayMessage("Die: " + std::to_string(die), 0, DEBUG);
-            MessageManager::displayMessage("Roll: " + std::to_string(roll), 0, DEBUG);
+            MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance) + "%", 5, DEBUG);
         }
     }
     AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave", 0.f);
@@ -757,7 +766,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chY = chunk.pos.y;
 
     constexpr int altarSpawnRate = 27000;
-    const int shopSpawnRate = (HARD_MODE_ENABLED ? 23500 : 20000);
+    const int shopSpawnRate = (HARD_MODE_ENABLED ? 22975 : 19700);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
     constexpr int cactusSpawnRate = 1000;
@@ -1308,6 +1317,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 40:
             boss = std::shared_ptr<ChefBoss>(new ChefBoss(spawnPos));
             break;
+        case 48:
+            boss = std::shared_ptr<BabyBoss>(new BabyBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1481,6 +1493,9 @@ void World::bossDefeated() {
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
             break;
+        case BABY_BOSS:
+            achievement = DEFEAT_BABYBOSS;
+            break;
     }
 
     if (achievement != MILLIONAIRE) {
@@ -1491,4 +1506,14 @@ void World::bossDefeated() {
 
 std::shared_ptr<Entity> World::getCurrentBoss() const {
     return _currentBoss;
+}
+
+void World::givePlayerDefaultAbilities() const {
+    if (!AbilityManager::playerHasAbility(Ability::ALTAR_CHANCE.getId())) {
+        AbilityManager::givePlayerAbility(Ability::ALTAR_CHANCE.getId());
+    }
+
+    if (!AbilityManager::playerHasAbility(Ability::CRIT_CHANCE.getId())) {
+        AbilityManager::givePlayerAbility(Ability::CRIT_CHANCE.getId());
+    }
 }

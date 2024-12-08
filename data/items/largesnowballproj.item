@@ -1,0 +1,4 @@
+name = "_PROJECTILE_LARGE_SNOWBALL"
+description = "This item should not be obtainable."
+textureRect = 33, 21, 1, 1
+damage = 15

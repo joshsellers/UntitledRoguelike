@@ -80,7 +80,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == DIST_TRAVELLED && StatManager::getOverallStat(DIST_TRAVELLED) >= 42000) {
         unlock(MARATHON);
     } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
-        && StatManager::getStatThisSave(ITEMS_PURCHASED) >= 1000 && StatManager::getStatThisSave(ITEMS_SOLD) >= 1000) {
+        && StatManager::getOverallStat(ITEMS_PURCHASED) >= 1000 && StatManager::getOverallStat(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
     } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
         unlock(TENACIOUS);
@@ -93,6 +93,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == DAMAGE_TAKEN) {
         _wavesWithoutDamage = 0;
         _tookDamageThisWave = true;
+        if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) unlock(MASOCHIST);
     } else if (stat == WAVES_CLEARED) {
         if (!_tookDamageThisWave) {
             _wavesWithoutDamage++;

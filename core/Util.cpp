@@ -13,6 +13,13 @@ int randomInt(int min, int max) {
     return (rand() % (max - min + 1)) + min;
 }
 
+bool randomChance(float probability) {
+    const int range = (int)(1.f / probability);
+    const int min = 0;
+    const int max = range - 1;
+    return randomInt(min, max) == 0;
+}
+
 long long currentTimeMillis() {
     auto time = std::chrono::system_clock::now();
 
@@ -79,6 +86,16 @@ bool stringEndsWith(std::string const& fullString, std::string const& ending) {
     } else {
         return false;
     }
+}
+
+bool isNumber(std::string s) {
+    return !s.empty() && s.find_first_not_of("0123456789.") == std::string::npos;
+}
+
+void rtrim(std::string& s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+        }).base(), s.end());
 }
 
 float degToRads(float angle) {

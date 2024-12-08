@@ -3,7 +3,7 @@
 #include "../World.h"
 
 Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 4, false) {
-    setMaxHitPoints(175);
+    setMaxHitPoints(130);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 3) / 2;
@@ -24,7 +24,7 @@ Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE
     unsigned int pennyAmount = randomInt(0, 9);
     if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
-    constexpr int hasEyeChance = 499;
+    constexpr int hasEyeChance = 199;
     if (randomInt(0, hasEyeChance) == 0) getInventory().addItem(Item::CYCLOPS_EYE.getId(), 1);
 }
 
@@ -75,6 +75,12 @@ void Cyclops::update() {
     }
 
     _desiredDist = std::max(1.f, _desiredDist - 0.12f);
+
+    constexpr long long fireRate = 750LL;
+    if (currentTimeMillis() - _lastFireTime >= fireRate) {
+        fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_CYCLOPS_TEAR"), "NONE", true, false, {4, -17});
+        _lastFireTime = currentTimeMillis();
+    }
 }
 
 void Cyclops::draw(sf::RenderTexture& surface) {

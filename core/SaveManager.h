@@ -156,6 +156,7 @@ private:
         out << ":" << std::to_string(_world->_enemiesSpawnedThisRound);
         out << ":" << std::to_string(_world->_waveCounter);
         out << ":" << std::to_string(_world->_currentWaveNumber);
+        out << ":" << std::to_string(_world->_highestPlayerHp);
         out << std::endl;
 
         if (_world->_destroyedProps.size() != 0) {
@@ -291,7 +292,9 @@ private:
 
             unsigned int orbiterTypeId = std::stoul(deferredData[4]);
             std::string parentUID = deferredData[5];
-            float angle = std::stof(deferredData[6]);
+            float angle = std::stof(deferredData[6]); 
+            float distance = 0;
+            if (deferredData.size() > 7) distance = std::stof(deferredData[7]);
             Entity* parent = nullptr;
             bool foundParent = false;
             for (auto& entity : _world->getEntities()) {
@@ -303,7 +306,9 @@ private:
             }
 
             if (foundParent) {
-                entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                if (distance != 0) orbiter->setDistance(distance);
+                entity = orbiter;
                 entity->setUID(uid);
                 entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
@@ -390,6 +395,9 @@ private:
             _world->_enemiesSpawnedThisRound = std::stoi(data[6]);
             _world->_waveCounter = std::stoi(data[7]);
             _world->_currentWaveNumber = std::stoi(data[8]);
+            if (data.size() > 9) {
+                _world->_highestPlayerHp = std::stoi(data[9]);
+            }
 
             _world->init(seed);
         } else if (header == "HARD") {
@@ -520,6 +528,8 @@ private:
                     unsigned int orbiterTypeId = std::stoul(data[4]);
                     std::string parentUID = data[5];
                     float angle = std::stof(data[6]);
+                    float distance = 0;
+                    if (data.size() > 7) distance = std::stof(data[7]);
                     Entity* parent = nullptr;
                     bool foundParent = false;
                     for (auto& entity : _world->getEntities()) {
@@ -531,7 +541,9 @@ private:
                     }
 
                     if (foundParent) {
-                        entity = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                        std::shared_ptr<Orbiter> orbiter = std::shared_ptr<Orbiter>(new Orbiter(angle, orbiterTypeId, parent));
+                        if (distance != 0) orbiter->setDistance(distance);
+                        entity = orbiter;
                     } else {
                         entityLoadedSuccessfully = false;
                         _deferredOrbiters.push_back(data);
@@ -687,15 +699,31 @@ private:
                 case BURGER_BEAST:
                     entity = std::shared_ptr<BurgerBeast>(new BurgerBeast(pos));
                     break;
+                case BOMB_BOY:
+                    entity = std::shared_ptr<BombBoy>(new BombBoy(pos));
+                    break;
+                case MEGA_BOMB_BOY:
+                    entity = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(pos));
+                    break;
+                case SOLDIER:
+                    entity = std::shared_ptr<Soldier>(new Soldier(pos));
+                    break;
+                case BABY_BOSS:
+                    entity = std::shared_ptr<BabyBoss>(new BabyBoss(pos));
+                    break;
+                case BIG_SNOWMAN:
+                    entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {
                 entity->setUID(uid);
-                entity->_hitPoints = hitPoints;
                 entity->loadSprite(_world->getSpriteSheet());
                 entity->setWorld(_world);
                 // not deferring here solves a problem but also scares me a little check for bugs
                 _world->addEntity(entity, false);
+                // fixes bosses spawning with full hp when loading a save during a boss fight
+                entity->_hitPoints = hitPoints;
             }
         }
     }

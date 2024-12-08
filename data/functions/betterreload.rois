@@ -15,12 +15,24 @@ currentRedux = player.getAbilityParameter(abilityName, "reloadTimeRedux");
 if: currentRedux < 1 {
     player.setAbilityParameter(abilityName, "reloadTimeRedux", currentRedux + 1 / 4);
 
-    currentMultiplier = player.getSpeedMultiplier();
+    #currentMultiplier = player.getSpeedMultiplier();
 
-    newMultiplier = currentMultiplier + (1 / 10);
-    player.setSpeedMultiplier(newMultiplier);
-    return true;
+    #newMultiplier = currentMultiplier + (1 / 10);
+    #player.setSpeedMultiplier(newMultiplier);
 }
 
-displayMessage("You can't use any more of these", 5);
-return false;
+currentCritChance = player.getAbilityParameter("Crit Chance", "chance");
+if: currentCritChance < 1 {
+    increaseAmount = 1 / 50;
+    if: currentCritChance + increaseAmount > 1 {
+        increaseAmount = 1 - currentCritChance;
+    }
+    player.setAbilityParameter("Crit Chance", "chance", currentCritChance + increaseAmount);
+}
+
+if: currentCritChance >= 1 and currentRedux >= 1 {
+    displayMessage("You can't take any more of these", 5);
+    return false;
+}
+
+return true;

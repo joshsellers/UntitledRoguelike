@@ -10,7 +10,7 @@ if: currentMultiplier >= 1 {
     return false;
 }
 
-newMultiplier = currentMultiplier + (1 / 5);
+newMultiplier = currentMultiplier + (1 / 10);
 player.setSpeedMultiplier(newMultiplier);
 
 return true;

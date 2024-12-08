@@ -1,0 +1,9 @@
+itemName = "_PROJECTILE_ROCKET_LAUNCHER"
+velocity = 6
+lifeTime = 500
+hitBox = 14, 5, 8, 8
+rotate = true
+isAnimated = true
+frameCount = 3
+animationSpeed = 2
+explosionBehavior = EXPLODE_ON_DECAY_AND_IMPACT

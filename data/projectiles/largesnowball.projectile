@@ -1,0 +1,4 @@
+itemName = "_PROJECTILE_LARGE_SNOWBALL"
+velocity = 3
+hitBox = 2, 2, 12, 12
+lifeTime = 5000

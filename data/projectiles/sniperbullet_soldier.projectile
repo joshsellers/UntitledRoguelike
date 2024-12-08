@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_SOLDIER_SNIPER"
+velocity = 12
+lifeTime = 2500
+hitBox = 4, 6, 10, 7
+rotate = true
+onlyHitEnemies = false

@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_BABYBOSS_BOMB"
+velocity = 10
+lifeTime = 5000
+hitBox = 0, 0, 16, 16
+rotate = false
+explosionBehavior = EXPLODE_ON_IMPACT

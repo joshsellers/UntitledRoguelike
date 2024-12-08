@@ -1,0 +1,7 @@
+name = "Military Boots"
+description = "Impersonate a military official\n\nProtects your feet a little bit"
+damage = 1
+equipmentType = ARMOR_FEET
+isBuyable = false
+value = 15
+textureRect = 124, 45, 1, 1

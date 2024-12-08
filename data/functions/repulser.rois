@@ -1,0 +1,7 @@
+hasEffect = player.hasEffect("Repulser");
+if: not hasEffect {
+    player.addEffect("Repulser");
+}
+
+retVal = runFunction("BUILTIN_increaseOrbiterDist");
+return retVal;

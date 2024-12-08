@@ -1,0 +1,4 @@
+name = "_PROJECTILE_BABYBOSS_BOMB"
+description = "This item should not be obtainable."
+damage = 20
+textureRect = 103, 40, 1, 1
