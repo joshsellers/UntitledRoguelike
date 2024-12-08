@@ -1701,9 +1701,9 @@ void Game::togglePauseMenu() {
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 
-    if (_world.onEnemySpawnCooldown() && _isPaused) {
+    if (_world.onEnemySpawnCooldown() && _isPaused && !_world.playerIsInShop()) {
         _pauseStartTimeMillis = currentTimeMillis();
-    } else if (_world.onEnemySpawnCooldown() && !_isPaused) {
+    } else if (_world.onEnemySpawnCooldown() && !_isPaused && !_world.playerIsInShop()) {
         _world._cooldownStartTime = currentTimeMillis() - (_pauseStartTimeMillis - _world._cooldownStartTime);
     }
 
