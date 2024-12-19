@@ -1,5 +1,5 @@
 name = "Blood Gun"
-description = ""
+description = "Tired of having blood? Give it away!\n\nUse this gun to exchange HP for damage"
 equipmentType = TOOL
 isGun = true
 isAutomatic = true
