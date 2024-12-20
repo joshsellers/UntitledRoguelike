@@ -7,7 +7,8 @@ enum class MUSIC_SITUTAION {
     COOLDOWN,
     WAVE,
     BOSS,
-    SHOP
+    SHOP,
+    DEATH
 };
 
 #endif

@@ -25,6 +25,7 @@ private:
     static inline std::vector<std::string> _waveSongs;
     static inline std::vector<std::string> _bossSongs;
     static inline std::vector<std::string> _shopSongs;
+    static inline std::vector<std::string> _deathSongs;
 };
 
 #endif

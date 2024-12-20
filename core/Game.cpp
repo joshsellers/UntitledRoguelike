@@ -1774,6 +1774,7 @@ void Game::onPlayerDeath() {
             generateStatsString(statsText, false, false);
             _statsLabel_deathMenu->setText(statsText);
             _deathMenu->show();
+            MusicManager::setSituation(MUSIC_SITUTAION::DEATH);
         } else {
             MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
             MessageManager::displayMessage("TIP: Be sure to dodge in order to help keep distance between enemies and yourself", 8);

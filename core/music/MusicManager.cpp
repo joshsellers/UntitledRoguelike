@@ -16,6 +16,8 @@ void MusicManager::start() {
             _bossSongs.push_back(songName);
         } else if (stringStartsWith(songName, "shop")) {
             _shopSongs.push_back(songName);
+        } else if (stringStartsWith(songName, "death")) {
+            _deathSongs.push_back(songName);
         }
     }
 
@@ -77,6 +79,13 @@ void MusicManager::run() {
                         SoundManager::playSong(_shopSongs.at(randomInt(0, _shopSongs.size() - 1)));
                     } else if (_shopSongs.size() == 1) {
                         SoundManager::playSong(_shopSongs.at(0));
+                    }
+                    break;
+                case MUSIC_SITUTAION::DEATH:
+                    if (_deathSongs.size() > 1) {
+                        SoundManager::playSong(_deathSongs.at(randomInt(0, _deathSongs.size() - 1)));
+                    } else if (_deathSongs.size() == 1) {
+                        SoundManager::playSong(_deathSongs.at(0));
                     }
                     break;
             }
