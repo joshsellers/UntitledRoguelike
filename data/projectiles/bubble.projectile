@@ -1,0 +1,4 @@
+itemName = "_PROJECTILE_BUBBLE"
+velocity = 1
+lifeTime = 2000
+hitBox = 6, 6, 6, 6

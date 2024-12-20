@@ -24,6 +24,7 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             return false;
         }
     },
+
     {
         "increaseOrbiterDist",
         [](Entity* parent, Interpreter* interpreter) {
@@ -36,6 +37,32 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
                     }
                 }
             }
+
+            return true;
+        }
+    },
+
+    {
+        "addOrbiter",
+        [](Entity* parent, Interpreter* interpreter) {
+            const std::string orbiterName = interpreter->strPop();
+            int orbiterId = -1;
+            for (int i = 0; i < OrbiterType::ORBITER_TYPES.size(); i++) {
+                if (OrbiterType::ORBITER_TYPES.at(i)->getName() == orbiterName) {
+                    orbiterId = i;
+                    break;
+                }
+            }
+
+            if (orbiterId == -1) {
+                MessageManager::displayMessage("No orbiter named \"" + orbiterName + "\"", 5, ERR);
+                return false;
+            }
+
+            const auto& orbiter = std::shared_ptr<Orbiter>(new Orbiter(90.f, orbiterId, parent));
+            orbiter->setWorld(parent->getWorld());
+            orbiter->loadSprite(parent->getWorld()->getSpriteSheet());
+            parent->getWorld()->addEntity(orbiter);
 
             return true;
         }

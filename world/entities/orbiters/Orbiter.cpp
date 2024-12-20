@@ -132,7 +132,8 @@ void Orbiter::fireTargetedProjectile(float angle, const ProjectileData projData,
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y);
     sf::Vector2f spawnPos(centerPoint.x - 8 + centerOffset.x, centerPoint.y + centerOffset.y);
 
-    bool addParentVelocity = _orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT && _orbiterType->getAttackMethod() != OrbiterAttackMethod::CUSTOM;
+    bool addParentVelocity = (_orbiterType->getAttackMethod() != OrbiterAttackMethod::FIRE_ON_TIMEOUT && _orbiterType->getAttackMethod() != OrbiterAttackMethod::CUSTOM)
+        || _orbiterType->addVelocityToProjectiles();
     
     ProjectilePoolManager::addProjectile(spawnPos, this, angle, projData.baseVelocity, projData, 
         _orbiterType->getId() == OrbiterType::CHEESE_SLICE.getId() || _orbiterType->onlyHitPlayer(), 0, addParentVelocity);

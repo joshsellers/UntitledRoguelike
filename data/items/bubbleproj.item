@@ -1,0 +1,4 @@
+name = "_PROJECTILE_BUBBLE"
+description = "This item should not be obtainable."
+damage = 3
+textureRect = 20, 13, 1, 1

@@ -127,16 +127,44 @@ const OrbiterType OrbiterType::PIZZA_CHEFBOSS(10, "PIZZA_CHEFBOSS", sf::IntRect(
     }, true
 );
 
+const OrbiterType OrbiterType::BUBBLE(11, "Bubble", sf::IntRect(19, 13, 1, 1), 1.f, 24,
+    OrbiterAttackMethod::CUSTOM, 750LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        constexpr float fireRange = 350.f * 350.f;
+        bool enemyWithinRange = false;
+        for (auto& entity : orbiterInstance->getWorld()->getEnemies()) {
+            if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
+                float dist = std::pow(orbiterInstance->_pos.x - entity->getPosition().x, 2) + std::pow(orbiterInstance->_pos.y - entity->getPosition().y, 2);
+                if (dist <= fireRange) {
+                    enemyWithinRange = true;
+                    break;
+                }
+            }
+        }
+        if (!enemyWithinRange) return;
+
+        constexpr int projCount = 8;
+        constexpr float angleIncrement = 360.f / projCount;
+        for (int i = 0; i < projCount; i++) {
+            orbiterInstance->fireTargetedProjectile(
+                degToRads(angleIncrement * i), ProjectileDataManager::getData("_PROJECTILE_BUBBLE"), orbiterInstance->_orbiterType->getAttackSoundName()
+            );
+        }
+        orbiterInstance->_lastFireTime = currentTimeMillis();
+    }, false, true
+);
+
 
 std::vector<const OrbiterType*> OrbiterType::ORBITER_TYPES;
 
 OrbiterType::OrbiterType(const unsigned int id, const std::string name, const sf::IntRect textureRect,
     const float orbitSpeed, const float orbitRadius, const OrbiterAttackMethod attackMethod, const long long attackFrequency,
     const int contactDamage, const bool rotateSprite, const std::string attackSoundName, const ProjectileData projectileData,
-    const std::function<void(Orbiter* orbiterInstance)> attack, const bool onlyHitPlayer) :
+    const std::function<void(Orbiter* orbiterInstance)> attack, const bool onlyHitPlayer, const bool addVelocityToProjectiles) :
     _id(id), _name(name), _textureRect(textureRect), _orbitSpeed(orbitSpeed), _contactDamage(contactDamage),
     _orbitRadius(orbitRadius), _attackMethod(attackMethod), _attackFrequency(attackFrequency),
-    _attackSoundName(attackSoundName), _projectileData(projectileData), _attack(attack), _rotateSprite(rotateSprite), _onlyHitPlayer(onlyHitPlayer)
+    _attackSoundName(attackSoundName), _projectileData(projectileData), _attack(attack), _rotateSprite(rotateSprite), _onlyHitPlayer(onlyHitPlayer),
+    _addVelocityToProjectiles(addVelocityToProjectiles)
 {
     ORBITER_TYPES.push_back(this);
 }
@@ -191,4 +219,8 @@ void OrbiterType::attack(Orbiter* orbiterInstance) const {
 
 const bool OrbiterType::onlyHitPlayer() const {
     return _onlyHitPlayer;
+}
+
+const bool OrbiterType::addVelocityToProjectiles() const {
+    return _addVelocityToProjectiles;
 }
