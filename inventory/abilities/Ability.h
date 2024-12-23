@@ -18,6 +18,7 @@ public:
     static const Ability BETTER_RELOAD;
     static const Ability EXPLOSIVE_ROUNDS;
     static const Ability CRIT_CHANCE;
+    static const Ability OCTOPUS;
 
     static std::vector<Ability*> ABILITIES;
 
@@ -42,6 +43,8 @@ public:
     void update(Player* player, Ability* ability);
     void draw(Player* player, Ability* ability, sf::RenderTexture& surface);
 
+    void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
 private:
     static void fireTargetedProjectile(float angle, const ProjectileData projData, sf::Vector2f projSpawnPoint, Player* player, int damageBoost = 0, bool addParentVelocity = false);
 
@@ -56,6 +59,8 @@ private:
     const std::function<void(Player*, Ability*) > _update;
     const std::function<void(Player*, Ability*, sf::RenderTexture&)> _draw;
 
+    sf::Sprite _sprite;
+
     // Some of these are specific to certain abilities
     // DAMAGE_AURA
     long long _lastAttackTimeMillis = 0LL;
@@ -67,7 +72,7 @@ private:
     long long _lastHealTimeMillis = 0LL;
     //
 
-    // THIRD_EYE & LIGHTNING
+    // THIRD_EYE & LIGHTNING & OCTOPUS
     long long _lastFireTimeMillis = 0LL;
     //
 };

@@ -2,6 +2,7 @@
 #include "../../world/World.h"
 #include "../../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../../world/entities/Lightning.h"
+#include "../../core/ShaderManager.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
@@ -208,6 +209,44 @@ const Ability Ability::CRIT_CHANCE(8, "Crit Chance",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::OCTOPUS(9, "Octopus",
+    { {"length", 250.f}, {"damage", 0.f}, {"tentacleCount", 4.f} },
+    [](Player* player, Ability* ability) {
+        constexpr long long fireRate = 10LL;
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate) {
+            const int projCount = ability->getParameter("tentacleCount");
+            const float angleIncrement = 360.f / projCount;
+            for (int i = 0; i < projCount; i++) {
+                const sf::Vector2f spawnPos(player->getPosition().x + PLAYER_WIDTH / 2, player->getPosition().y + PLAYER_HEIGHT / 2);
+                fireTargetedProjectile(
+                    degToRads(angleIncrement * i + (projCount == 4 ? 45.f : 0.f)), ProjectileDataManager::getData("_PROJECTILE_TENTACLE"), spawnPos, player, ability->getParameter("damage"), false
+                );
+            }
+
+            ability->_lastFireTimeMillis = currentTimeMillis();
+        }
+    },
+
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {
+        sf::Vector2f playerPos = player->getPosition();
+
+        const sf::Vector2i texturePos(8 << SPRITE_SHEET_SHIFT, 39 << SPRITE_SHEET_SHIFT);
+
+        constexpr int spriteHeight = 2;
+        int yOffset = player->isMoving() || player->isSwimming() ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+
+        sf::IntRect effectTextureRect(texturePos.x, texturePos.y, TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2));
+        int spriteY = effectTextureRect.top;
+
+        ability->_sprite.setTextureRect(sf::IntRect(
+            effectTextureRect.left + TILE_SIZE * player->_facingDir, spriteY + yOffset, TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2))
+        );
+
+        ability->_sprite.setPosition(sf::Vector2f(player->getSprite().getPosition().x, player->getSprite().getPosition().y));
+        surface.draw(ability->_sprite, player->isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
+    }
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
@@ -274,4 +313,8 @@ void Ability::update(Player* player, Ability* ability) {
 
 void Ability::draw(Player* player, Ability* ability, sf::RenderTexture& surface) {
     _draw(player, ability, surface);
+}
+
+void Ability::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+    _sprite.setTexture(*spriteSheet);
 }

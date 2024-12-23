@@ -15,6 +15,8 @@ public:
 
     static void updateAbilities(Player* player);
     static void drawAbilities(Player* player, sf::RenderTexture& surface);
+
+    static void loadSprites(std::shared_ptr<sf::Texture> spriteSheet);
 };
 
 #endif

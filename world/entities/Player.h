@@ -81,6 +81,7 @@ public:
     friend class World;
     friend class SaveManager;
     friend class PlayerVisualEffectManager;
+    friend class Ability;
 protected:
     virtual void damage(int damage);
 

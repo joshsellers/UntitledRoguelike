@@ -1,0 +1,22 @@
+hasAbility = player.hasAbility("Octopus");
+if: not hasAbility {
+    player.addAbility("Octopus");
+}
+
+if: hasAbility {
+    choice = random(0, 1);
+    numTentacles = player.getAbilityParameter("Octopus", "tentacleCount");
+
+    if: choice == 1 and numTentacles < 16 {
+        player.setAbilityParameter("Octopus", "tentacleCount", numTentacles + 2);
+        displayMessage("You've grown more tentacles", 5);
+    }
+
+    if: choice == 0 or choice == 1 and numTentacles >= 16 {
+        damage = player.getAbilityParameter("Octopus", "damage");
+        player.setAbilityParameter("Octopus", "damage", damage + 2);
+        displayMessage("Increased tentacle damage", 5);
+    }
+}
+
+return true;

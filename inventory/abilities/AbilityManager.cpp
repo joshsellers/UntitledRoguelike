@@ -47,3 +47,9 @@ void AbilityManager::drawAbilities(Player* player, sf::RenderTexture& surface) {
         }
     }
 }
+
+void AbilityManager::loadSprites(std::shared_ptr<sf::Texture> spriteSheet) {
+    for (const auto& ability : Ability::ABILITIES) {
+        ability->loadSprite(spriteSheet);
+    }
+}

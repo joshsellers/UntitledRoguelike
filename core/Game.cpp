@@ -101,6 +101,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
     _player->loadSprite(_spriteSheet);
     _world.loadSpriteSheet(_spriteSheet);
+    AbilityManager::loadSprites(_spriteSheet);
 
     _shopKeep = std::shared_ptr<ShopKeep>(new ShopKeep(sf::Vector2f(0, 0), &_shopManager, _spriteSheet));
     _world.setShopKeep(_shopKeep);
@@ -1261,6 +1262,9 @@ void Game::buttonPressed(std::string buttonCode) {
             const size_t numStartingGuns = startingGuns.size();
             startingItem = Item::ITEMS[startingGuns[randomInt(0, numStartingGuns - 1)]];
         }
+
+        constexpr float octopusChance = 0.01f;
+        if (randomChance(octopusChance)) startingItem = Item::ITEMS[Item::getIdFromName("Radioactive Octopus")];
 
         std::shared_ptr<DroppedItem> startingItemDropped 
             = std::shared_ptr<DroppedItem>(new DroppedItem(
