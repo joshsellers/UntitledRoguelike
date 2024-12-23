@@ -1,0 +1,5 @@
+weaponLoaded = player.weaponIsLoaded();
+if: weaponLoaded {
+    playSound("musket")
+    player.fireProjectile("_PROJECTILE_MUSKET_BALL", 1);
+}

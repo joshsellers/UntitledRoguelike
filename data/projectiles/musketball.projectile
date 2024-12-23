@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_MUSKET_BALL"
+hitBox = 6, 6, 6, 6
+rotate = true
+velocity = 4
+lifeTime = 5000

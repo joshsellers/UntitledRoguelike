@@ -1,0 +1,13 @@
+name = "Musket"
+description = "Slow reload but big damage"
+isBuyable = true
+shopChance = 4
+unlockWaveNumber = 3
+value = 21
+equipmentType = TOOL
+isGun = true
+reloadTime = 1250
+magazineSize = 1
+barrelPos = 41, 2
+textureRect = 124, 0, 1, 1
+functionName = "firemusket"
