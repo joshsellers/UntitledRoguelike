@@ -1,5 +1,5 @@
 itemName = "_PROJECTILE_TENTACLE"
 velocity = 14
-lifeTime = 150
+lifeTime = 140
 rotate = true
 hitBox = 6, 6, 6, 6
