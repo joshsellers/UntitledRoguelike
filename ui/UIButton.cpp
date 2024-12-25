@@ -98,6 +98,8 @@ void UIButton::update() {
         _sprite.setTexture(*_texture);
     }
 
+    if (!USING_MOUSE && !_mouseDown && !_isSelected) _sprite.setTexture(*_texture);
+
     if (pressWhenSelected && _isSelected && !_wasJustSelected) {
         _listener->buttonPressed(_buttonCode);
     }

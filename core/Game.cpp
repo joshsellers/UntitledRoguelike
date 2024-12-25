@@ -1664,7 +1664,13 @@ void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
 }
 
 void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
-    if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) {
+    if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
+        buttonPressed("virtkey:back");
+    } else if (button == GAMEPAD_BUTTON::Y && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
+        buttonPressed("virtkey:space");
+    } else if (button == GAMEPAD_BUTTON::START && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
+        buttonPressed("virtkey:done");
+    } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) {
         togglePauseMenu();
     } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY)) {
         toggleInventoryMenu();
@@ -1678,8 +1684,6 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
             _virtualKeyboardMenu_upper->hide();
             _virtualKeyboardMenu_lower->show();
         }
-    } else if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
-        buttonPressed("virtkey:back");
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
