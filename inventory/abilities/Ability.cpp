@@ -236,10 +236,14 @@ const Ability Ability::OCTOPUS(9, "Octopus",
         int yOffset = player->isMoving() || player->isSwimming() ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
 
         sf::IntRect effectTextureRect(texturePos.x, texturePos.y, TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2));
-        int spriteY = effectTextureRect.top;
+        int spriteY = player->isDodging() && player->isMoving() ? effectTextureRect.top - TILE_SIZE * 2 : effectTextureRect.top;
+
+        int xOffset = player->isDodging() ? ((player->_numSteps >> (player->_animSpeed / 2)) & 3) * TILE_SIZE : 0;
 
         ability->_sprite.setTextureRect(sf::IntRect(
-            effectTextureRect.left + TILE_SIZE * player->_facingDir, spriteY + yOffset, TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2))
+            effectTextureRect.left + (player->isDodging() && player->isMoving() ? xOffset : TILE_SIZE * player->_facingDir), 
+            spriteY + (player->isDodging() && player->isMoving() ? 0 : yOffset), 
+            TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2))
         );
 
         ability->_sprite.setPosition(sf::Vector2f(player->getSprite().getPosition().x, player->getSprite().getPosition().y));
