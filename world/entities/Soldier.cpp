@@ -269,13 +269,13 @@ void Soldier::damage(int damage) {
         getInventory().removeItem(getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL), 1);
 
         srand(currentTimeMillis());
-        constexpr float DROP_ARMOR_CHANCE = 0.05f;
+        constexpr float DROP_ARMOR_CHANCE = 0.02f;
         const bool dropHelmet = randomChance(DROP_ARMOR_CHANCE);
         const bool dropVest = randomChance(DROP_ARMOR_CHANCE);
         const bool dropPants = randomChance(DROP_ARMOR_CHANCE);
         const bool dropBoots = randomChance(DROP_ARMOR_CHANCE);
 
-        const bool dropWeapon = randomChance(0.03f);
+        const bool dropWeapon = randomChance(0.01f);
         if (dropWeapon) getInventory().addItem(Item::getIdFromName("Sniper Rifle"), 1);
 
         if (dropHelmet) getInventory().addItem(Item::getIdFromName("Military Helmet"), 1);

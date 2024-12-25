@@ -651,7 +651,7 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        // !TODO: increase the number in the if statement
+        // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
         if (_currentWaveNumber < 48) {
