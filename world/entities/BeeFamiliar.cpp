@@ -20,7 +20,10 @@ _orbiterAngle(orbiterAngle), _orbiterDistance(orbiterDistance)
 }
 
 void BeeFamiliar::update() {
-    if (_enemyTarget == nullptr || !_enemyTarget->isActive()) _hasSelectedEnemy = false;
+    if (_enemyTarget == nullptr || !_enemyTarget->isActive()) {
+        _hasSelectedEnemy = false;
+        _enemyTarget = nullptr;
+    }
 
     sf::Vector2f targetPos;
     const sf::Vector2f cLoc(getPosition().x, getPosition().y + (float)TILE_SIZE / 2.f);
