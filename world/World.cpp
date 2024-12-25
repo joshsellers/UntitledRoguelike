@@ -663,7 +663,7 @@ void World::onWaveCleared() {
 }
 
 void World::checkAltarSpawn() {
-    if (AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave") == 0.f) {
+    if (AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave") == 0.f && getCurrentWaveNumber() > 5) {
         AbilityManager::setParameter(
             Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage",
             AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") + 1.f
