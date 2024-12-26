@@ -48,9 +48,7 @@ protected:
     float _x, _y;
     float _width, _height;
 
-    std::shared_ptr<sf::Texture> _texture =
-        std::shared_ptr<sf::Texture>(new sf::Texture());
-    sf::Sprite _sprite;
+    sf::RectangleShape _shape;
 
     sf::Text _text;
     sf::Font _font;

@@ -15,13 +15,14 @@ UILabel::UILabel(const sf::String label, float x, float y, float characterSize, 
         if (!_spriteSheet->loadFromFile(splitString(_text.getString(), ":")[1])) {
             MessageManager::displayMessage(_text.getString() + " could not be loaded", 5, WARN);
         } else {
-            _sprite.setTexture(*_spriteSheet);
+            _shape.setTexture(_spriteSheet.get(), true);
+            _shape.setSize(sf::Vector2f(_shape.getTextureRect().width, _shape.getTextureRect().height));
             sf::Vector2f imageScale(
-                getRelativeWidth(imageWidth) / _sprite.getGlobalBounds().width, 
-                square ? getRelativeWidth(imageHeight) / _sprite.getGlobalBounds().height : getRelativeHeight(imageHeight) / _sprite.getGlobalBounds().height
+                getRelativeWidth(imageWidth) / _shape.getGlobalBounds().width, 
+                square ? getRelativeWidth(imageHeight) / _shape.getGlobalBounds().height : getRelativeHeight(imageHeight) / _shape.getGlobalBounds().height
             );
-            _sprite.setScale(imageScale);
-            _sprite.setPosition(_x, _y);
+            _shape.setScale(imageScale);
+            _shape.setPosition(_x, _y);
             _drawSprite = true;
             _drawText = false;
         }

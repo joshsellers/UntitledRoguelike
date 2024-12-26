@@ -320,35 +320,35 @@ void Game::initUI() {
     ));
 
     std::shared_ptr<UIButton> filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 10, 5, 3, "all", _font, inventoryInterface.get(), "filter_none"
+        26.5, 10, 5, 3, "all", _font, inventoryInterface.get(), "filter_none"
     ));
     filterNoneButton->pressWhenSelected = true;
     filterNoneButton->setSelectionId(0);
     _inventoryMenu->addElement(filterNoneButton);
 
     std::shared_ptr<UIButton> filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 16, 6, 3, "apparel", _font, inventoryInterface.get(), "filter_apparel"
+        26.5, 16, 6, 3, "apparel", _font, inventoryInterface.get(), "filter_apparel"
     ));
     filterApparelButton->pressWhenSelected = true;
     filterApparelButton->setSelectionId(1);
     _inventoryMenu->addElement(filterApparelButton);
 
     std::shared_ptr<UIButton> filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 22, 7, 3, "weapons", _font, inventoryInterface.get(), "filter_weapons"
+        26.5, 22, 7, 3, "weapons", _font, inventoryInterface.get(), "filter_weapons"
     ));
     filterWeaponsButton->pressWhenSelected = true;
     filterWeaponsButton->setSelectionId(2);
     _inventoryMenu->addElement(filterWeaponsButton);
 
     std::shared_ptr<UIButton> filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 28, 5, 3, "ammo", _font, inventoryInterface.get(), "filter_ammo"
+        26.5, 28, 5, 3, "ammo", _font, inventoryInterface.get(), "filter_ammo"
     ));
     filterAmmoButton->pressWhenSelected = true;
     filterAmmoButton->setSelectionId(3);
     //_inventoryMenu->addElement(filterAmmoButton);
 
     std::shared_ptr<UIButton> filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
+        26.5, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
     ));
     filterMiscButton->pressWhenSelected = true;
     filterMiscButton->setSelectionId(3);
@@ -372,35 +372,35 @@ void Game::initUI() {
     ));
 
     std::shared_ptr<UIButton> shop_filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 30, 5, 3, "all", _font, buyInterface.get(), "filter_none"
+        26.5, 30, 5, 3, "all", _font, buyInterface.get(), "filter_none"
     ));
     shop_filterNoneButton->pressWhenSelected = true;
     shop_filterNoneButton->setSelectionId(0);
     _shopMenu->addElement(shop_filterNoneButton);
 
     std::shared_ptr<UIButton> shop_filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 36, 6, 3, "apparel", _font, buyInterface.get(), "filter_apparel"
+        26.5, 36, 6, 3, "apparel", _font, buyInterface.get(), "filter_apparel"
     ));
     shop_filterApparelButton->pressWhenSelected = true;
     shop_filterApparelButton->setSelectionId(1);
     _shopMenu->addElement(shop_filterApparelButton);
 
     std::shared_ptr<UIButton> shop_filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 42, 7, 3, "weapons", _font, buyInterface.get(), "filter_weapons"
+        26.5, 42, 7, 3, "weapons", _font, buyInterface.get(), "filter_weapons"
     ));
     shop_filterWeaponsButton->pressWhenSelected = true;
     shop_filterWeaponsButton->setSelectionId(2);
     _shopMenu->addElement(shop_filterWeaponsButton);
 
     std::shared_ptr<UIButton> shop_filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
-        26, 48, 5, 3, "ammo", _font, buyInterface.get(), "filter_ammo"
+        26.5, 48, 5, 3, "ammo", _font, buyInterface.get(), "filter_ammo"
     ));
     shop_filterAmmoButton->pressWhenSelected = true;
     shop_filterAmmoButton->setSelectionId(3);
     //_shopMenu->addElement(shop_filterAmmoButton);
 
     std::shared_ptr<UIButton> shop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
+        26.5, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
     ));
     shop_filterMiscButton->pressWhenSelected = true;
     shop_filterMiscButton->setSelectionId(3);

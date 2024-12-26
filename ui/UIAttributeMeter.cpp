@@ -6,11 +6,11 @@ UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, f
     UIElement(x, y, width, height, false, false, font) {
 
     _disableAutomaticTextAlignment = true;
-    _sprite.setPosition(getRelativePos(sf::Vector2f(_x, _y)));
+    _shape.setPosition(getRelativePos(sf::Vector2f(_x, _y)));
 
     _bar.setSize(sf::Vector2f(_width * ((float)_attribute / (float)_attributeMax), _height));
     _bar.setFillColor(sf::Color(_barColor));
-    _bar.setPosition(_sprite.getPosition().x - _width / 2, _sprite.getPosition().y);
+    _bar.setPosition(_shape.getPosition().x - _width / 2, _shape.getPosition().y);
 
     float padding = getRelativeWidth(0.5f);
     _background.setPosition(_bar.getPosition().x - padding, _bar.getPosition().y - padding);
@@ -37,7 +37,7 @@ void UIAttributeMeter::update() {
         float padding = getRelativeWidth(0.5f);
         _width = textWidth + padding;
 
-        _bar.setPosition(_sprite.getPosition().x - _width / 2, _sprite.getPosition().y);
+        _bar.setPosition(_shape.getPosition().x - _width / 2, _shape.getPosition().y);
         _background.setPosition(_bar.getPosition().x - padding, _bar.getPosition().y - padding);
         _background.setSize(sf::Vector2f(_width + padding * 2, _height + padding * 2));
     }

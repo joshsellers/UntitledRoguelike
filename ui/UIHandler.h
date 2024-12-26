@@ -27,8 +27,12 @@ public:
 
     void textEntered(sf::Uint32 character);
 
+    static std::shared_ptr<sf::Texture> getUISpriteSheet();
+
 private:
     std::vector<std::shared_ptr<UIMenu>> _menus;
+
+    static inline std::shared_ptr<sf::Texture> _spriteSheet = std::shared_ptr<sf::Texture>(new sf::Texture());
 };
 
 #endif

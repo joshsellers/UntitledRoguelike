@@ -25,7 +25,7 @@ UIElement::UIElement(float x, float y, float width, float height,
 
     _font = font;
 
-    if (drawSprite) _sprite.setPosition(getRelativePos(sf::Vector2f(_x, _y)));
+    if (drawSprite) _shape.setPosition(getRelativePos(sf::Vector2f(_x, _y)));
 
     _width = WINDOW_WIDTH * (width / 100);
     _height = WINDOW_WIDTH * (height / 100);
@@ -34,11 +34,11 @@ UIElement::UIElement(float x, float y, float width, float height,
 void UIElement::render(sf::RenderTexture& surface, const sf::RenderStates& states) {
     if (!_disableAutomaticTextAlignment) {
         _text.setPosition(
-            _sprite.getPosition().x + _sprite.getGlobalBounds().width / 2 - _text.getGlobalBounds().width / 2,
-            _sprite.getPosition().y + _text.getGlobalBounds().height / 2
+            _shape.getPosition().x + _shape.getGlobalBounds().width / 2 - _text.getGlobalBounds().width / 2,
+            _shape.getPosition().y + _text.getGlobalBounds().height / 2
         );
     }
-    if (_drawSprite) surface.draw(_sprite, states);
+    if (_drawSprite) surface.draw(_shape, states);
     if (_drawText) surface.draw(_text);
 
     draw(surface);

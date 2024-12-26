@@ -42,7 +42,13 @@ private:
     UIButtonListener* _listener = nullptr;
 
     sf::RectangleShape _bar;
-    sf::RectangleShape _handle;
+    sf::RectangleShape _handle;    
+    
+    sf::IntRect _defaultTexture;
+    sf::IntRect _hoverTexture;
+    sf::IntRect _clickTexture;
+
+    sf::RenderTexture _rTexture;
 };
 
 #endif

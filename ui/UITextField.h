@@ -44,7 +44,13 @@ private:
 
     bool _isArmed = false;
 
-    UIButtonListener* _listener = nullptr;
+    UIButtonListener* _listener = nullptr;    
+    
+    sf::IntRect _defaultTexture;
+    sf::IntRect _hoverTexture;
+    sf::IntRect _clickTexture;
+
+    sf::RenderTexture _rTexture;
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "../core/MessageManager.h"
 #include "../core/SoundManager.h"
 #include "../core/gamepad/GamePad.h"
+#include "UIHandler.h"
 
 UISlider::UISlider(const std::string label, float x, float y, float width, sf::Font font, std::string id) : UIElement(x, y, width, 5, false, true, font) {
     _x = getRelativeWidth(x);
@@ -18,11 +19,48 @@ UISlider::UISlider(const std::string label, float x, float y, float width, sf::F
     _text.setPosition(_x, _y - getRelativeHeight(4.f));
     _disableAutomaticTextAlignment = true;
 
-    _handle.setSize(getRelativePos(1.5, 4));
-    _handle.setPosition(sf::Vector2f(_x, _y - getRelativeHeight(1.5f)));
-    _handle.setFillColor(sf::Color(BUTTON_COLOR[0], BUTTON_COLOR[1], BUTTON_COLOR[2], 0xFF));
-    _handle.setOutlineColor(sf::Color(BUTTON_COLOR_BORDER[0], BUTTON_COLOR_BORDER[1], BUTTON_COLOR_BORDER[2], 0xFF));
-    _handle.setOutlineThickness(getRelativeWidth(0.25f));
+    const float handleWidth = getRelativeWidth(1.5);
+    const float height = getRelativeHeight(4);
+    _rTexture.create(handleWidth, 16 * 3);
+    sf::RectangleShape center;
+    center.setPosition(16, 1);
+    center.setSize(sf::Vector2f(handleWidth - 16 * 2, 14));
+    center.setTexture(UIHandler::getUISpriteSheet().get());
+    center.setTextureRect(sf::IntRect(0, 17, 1, 14));
+    _rTexture.draw(center);
+    center.setPosition(16, 17);
+    _rTexture.draw(center);
+    center.setPosition(16, 34);
+    _rTexture.draw(center);
+
+    for (int i = 0; i < 3; i++) {
+        sf::RectangleShape borderLeft;
+        borderLeft.setPosition(0, 16 * i);
+        borderLeft.setSize(sf::Vector2f(16, 16));
+        borderLeft.setTexture(UIHandler::getUISpriteSheet().get());
+        borderLeft.setTextureRect(sf::IntRect(16 + 32 * i, 16, 4, 16));
+        _rTexture.draw(borderLeft);
+    }
+
+    for (int i = 0; i < 3; i++) {
+        sf::RectangleShape borderRight;
+        borderRight.setPosition(handleWidth - 16, 16 * i);
+        borderRight.setSize(sf::Vector2f(16, 16));
+        borderRight.setTexture(UIHandler::getUISpriteSheet().get());
+        borderRight.setTextureRect(sf::IntRect(32 + 32 * i, 16, 4, 16));
+        _rTexture.draw(borderRight);
+    }
+
+    _rTexture.display();
+
+    _defaultTexture = sf::IntRect(0, 0, handleWidth, 16);
+    _hoverTexture = sf::IntRect(0, 16, handleWidth, 16);
+    _clickTexture = sf::IntRect(0, 32, handleWidth, 16);
+
+    _shape.setSize(sf::Vector2f(handleWidth, height));
+    _shape.setTexture(&_rTexture.getTexture());
+    _shape.setTextureRect(sf::IntRect(0, 0, handleWidth, 16));
+    _shape.setPosition(sf::Vector2f(_x, _y - getRelativeHeight(1.5f)));
 
     _bar.setSize(getRelativePos(width, 1));
     _bar.setPosition(sf::Vector2f(_x, _y));
@@ -42,25 +80,22 @@ void UISlider::update() {
 
     const bool mouseDown = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 
-    if (((_handle.getGlobalBounds().contains(_mPos.x, _mPos.y) && !mouseDown))) {
-        _handle.setFillColor(sf::Color(BUTTON_COLOR[0], BUTTON_COLOR[1], BUTTON_COLOR[2], 0xFF));
-        _handle.setOutlineColor(sf::Color(BUTTON_COLOR_BORDER_HOVER[0], BUTTON_COLOR_BORDER_HOVER[1], BUTTON_COLOR_BORDER_HOVER[2], 0xFF));
-    } else if ((!mouseDown && !_handle.getGlobalBounds().contains(_mPos.x, _mPos.y) && !_isSelected)) {
-        _handle.setFillColor(sf::Color(BUTTON_COLOR[0], BUTTON_COLOR[1], BUTTON_COLOR[2], 0xFF));
-        _handle.setOutlineColor(sf::Color(BUTTON_COLOR_BORDER[0], BUTTON_COLOR_BORDER[1], BUTTON_COLOR_BORDER[2], 0xFF));
+    if (((_shape.getGlobalBounds().contains(_mPos.x, _mPos.y) && !mouseDown))) {
+        _shape.setTextureRect(_hoverTexture);
+    } else if ((!mouseDown && !_shape.getGlobalBounds().contains(_mPos.x, _mPos.y) && !_isSelected)) {
+        _shape.setTextureRect(_defaultTexture);
     } else if ((_mouseSelected) || _isSelected) {
-        _handle.setFillColor(sf::Color(BUTTON_COLOR_CLICK[0], BUTTON_COLOR_CLICK[1], BUTTON_COLOR_CLICK[2], 0xFF));
-        _handle.setOutlineColor(sf::Color(BUTTON_COLOR_CLICK[0], BUTTON_COLOR_CLICK[1], BUTTON_COLOR_CLICK[2], 0xFF));
+        _shape.setTextureRect(_clickTexture);
     }
 
     if (_mouseSelected) {
-        const float handleX = _handle.getPosition().x;
-        float newHandleX = _mPos.x - _handle.getGlobalBounds().width / 2;
-        if (newHandleX + _handle.getGlobalBounds().width / 2 < _x) newHandleX = _x - _handle.getGlobalBounds().width / 2;
-        else if (newHandleX + _handle.getGlobalBounds().width / 2 > _x + _width) newHandleX = _x + _width - _handle.getGlobalBounds().width / 2;
-        _handle.setPosition(newHandleX, _handle.getPosition().y);
+        const float handleX = _shape.getPosition().x;
+        float newHandleX = _mPos.x - _shape.getGlobalBounds().width / 2;
+        if (newHandleX + _shape.getGlobalBounds().width / 2 < _x) newHandleX = _x - _shape.getGlobalBounds().width / 2;
+        else if (newHandleX + _shape.getGlobalBounds().width / 2 > _x + _width) newHandleX = _x + _width - _shape.getGlobalBounds().width / 2;
+        _shape.setPosition(newHandleX, _shape.getPosition().y);
 
-        _value = std::min((_handle.getPosition().x + _handle.getGlobalBounds().width / 2 - _x) / _width, 1.f);
+        _value = std::min((_shape.getPosition().x + _shape.getGlobalBounds().width / 2 - _x) / _width, 1.f);
     }
 
     if (_value != _lastValue) {
@@ -71,12 +106,12 @@ void UISlider::update() {
 
 void UISlider::draw(sf::RenderTexture& surface) {
     surface.draw(_bar);
-    surface.draw(_handle);
+    surface.draw(_shape);
 }
 
 void UISlider::mouseButtonPressed(const int mx, const int my, const int button) {
     _mouseDown = true;
-    if (_handle.getGlobalBounds().contains(_mPos.x, _mPos.y)) _mouseSelected = true;
+    if (_shape.getGlobalBounds().contains(_mPos.x, _mPos.y)) _mouseSelected = true;
 }
 
 void UISlider::mouseButtonReleased(const int mx, const int my, const int button) {
@@ -111,7 +146,7 @@ void UISlider::textEntered(const sf::Uint32 character) {
 
 void UISlider::setValue(float value) {
     _value = value;
-    _handle.setPosition(_x + _width * value - _handle.getGlobalBounds().width / 2, _handle.getPosition().y);
+    _shape.setPosition(_x + _width * value - _shape.getGlobalBounds().width / 2, _shape.getPosition().y);
 }
 
 float UISlider::getValue() const {

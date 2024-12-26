@@ -40,23 +40,25 @@ public:
 
     virtual void show();
 protected:
-    std::shared_ptr<sf::Texture> getHoverTexture();
-    std::shared_ptr<sf::Texture> getClickTexture();
+    sf::IntRect getHoverTexture();
+    sf::IntRect getClickTexture();
+    sf::IntRect getDefaultTexture();
 
     sf::Vector2i getMousePos();
     bool _mouseDown = false;
 private:
     int _mx = 0, _my = 0;
 
-    std::shared_ptr<sf::Texture> _hoverTexture =
-        std::shared_ptr<sf::Texture>(new sf::Texture());
-    std::shared_ptr<sf::Texture> _clickTexture =
-        std::shared_ptr<sf::Texture>(new sf::Texture());
-
     UIButtonListener* _listener = nullptr;
     std::string _buttonCode = "";
 
     bool _wasJustSelected = false;
+
+    sf::IntRect _defaultTexture;
+    sf::IntRect _hoverTexture;
+    sf::IntRect _clickTexture;
+
+    sf::RenderTexture _rTexture;
 };
 
 #endif

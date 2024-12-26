@@ -13,19 +13,19 @@ void UIGamepadBindingButton::update() {
     _gamepadBinding = InputBindingManager::getGamepadBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getGamepadButtonName(_gamepadBinding));
 
-    sf::FloatRect bounds = _sprite.getGlobalBounds();
+    sf::FloatRect bounds = _shape.getGlobalBounds();
     if (!_mouseDown && (bounds.contains(getMousePos().x, getMousePos().y)) && !_isSelected) {
-        _sprite.setTexture(*getHoverTexture());
+        _shape.setTextureRect(getHoverTexture());
     } else if (_isSelected) {
-        _sprite.setTexture(*getClickTexture());
+        _shape.setTextureRect(getClickTexture());
     } else {
-        _sprite.setTexture(*_texture);
+        _shape.setTextureRect(getDefaultTexture());
     }    
 }
 
 void UIGamepadBindingButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
-    sf::FloatRect bounds = _sprite.getGlobalBounds();
+    sf::FloatRect bounds = _shape.getGlobalBounds();
     if (bounds.contains(mx, my)) {
         _isSelected = true;
     } else _isSelected = false;

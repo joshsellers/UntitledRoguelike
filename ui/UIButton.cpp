@@ -1,6 +1,7 @@
 #include "UIButton.h"
 #include <thread>
 #include <iostream>
+#include "UIHandler.h"
 
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
     UIButtonListener* listener, std::string buttonCode)
@@ -8,70 +9,45 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
         x, y, width, height, true, true, font
     ) {
 
-    int padding = getRelativeWidth(0.5f);
-    int w = (int)_width;
-    int h = (int)_height;
-    sf::Uint8* mainPixels = new sf::Uint8[w * h * 4];
-    for (int py = 0; py < h; py++) {
-        for (int px = 0; px < w; px++) {
-            if (px > padding / 2 && py > padding
-                && px < w - padding && py < h - padding) {
-                mainPixels[px * 4 + py * w * 4 + 0] = BUTTON_COLOR[0];
-                mainPixels[px * 4 + py * w * 4 + 1] = BUTTON_COLOR[1];
-                mainPixels[px * 4 + py * w * 4 + 2] = BUTTON_COLOR[2];
-                mainPixels[px * 4 + py * w * 4 + 3] = 0xFF;
-            } else {
-                mainPixels[px * 4 + py * w * 4 + 0] = BUTTON_COLOR_BORDER[0];
-                mainPixels[px * 4 + py * w * 4 + 1] = BUTTON_COLOR_BORDER[1];
-                mainPixels[px * 4 + py * w * 4 + 2] = BUTTON_COLOR_BORDER[2];
-                mainPixels[px * 4 + py * w * 4 + 3] = 0xFF;
-            }
-        }
+    _rTexture.create(_width, 16 * 3);
+    sf::RectangleShape center;
+    center.setPosition(16, 1);
+    center.setSize(sf::Vector2f(_width - 16 * 2, 14));
+    center.setTexture(UIHandler::getUISpriteSheet().get());
+    center.setTextureRect(sf::IntRect(0, 17, 1, 14));
+    _rTexture.draw(center);
+    center.setPosition(16, 17);
+    _rTexture.draw(center);
+    center.setPosition(16, 34);
+    _rTexture.draw(center);
+
+    for (int i = 0; i < 3; i++) {
+        sf::RectangleShape borderLeft;
+        borderLeft.setPosition(0, 16 * i);
+        borderLeft.setSize(sf::Vector2f(16, 16));
+        borderLeft.setTexture(UIHandler::getUISpriteSheet().get());
+        borderLeft.setTextureRect(sf::IntRect(16 + 32 * i, 16, 4, 16));
+        _rTexture.draw(borderLeft);
     }
 
-    sf::Uint8* hoverPixels = new sf::Uint8[w * h * 4];
-    for (int py = 0; py < h; py++) {
-        for (int px = 0; px < w; px++) {
-            if (px > padding && py > padding
-                && px < w - padding && py < h - padding) {
-                hoverPixels[px * 4 + py * w * 4 + 0] = BUTTON_COLOR[0];
-                hoverPixels[px * 4 + py * w * 4 + 1] = BUTTON_COLOR[1];
-                hoverPixels[px * 4 + py * w * 4 + 2] = BUTTON_COLOR[2];
-                hoverPixels[px * 4 + py * w * 4 + 3] = 0xFF;
-            } else {
-                hoverPixels[px * 4 + py * w * 4 + 0] =
-                    BUTTON_COLOR_BORDER_HOVER[0];
-                hoverPixels[px * 4 + py * w * 4 + 1] =
-                    BUTTON_COLOR_BORDER_HOVER[1];
-                hoverPixels[px * 4 + py * w * 4 + 2] =
-                    BUTTON_COLOR_BORDER_HOVER[2];
-                hoverPixels[px * 4 + py * w * 4 + 3] = 0xFF;
-            }
-        }
+    for (int i = 0; i < 3; i++) {
+        sf::RectangleShape borderRight;
+        borderRight.setPosition(_width - 16, 16 * i);
+        borderRight.setSize(sf::Vector2f(16, 16));
+        borderRight.setTexture(UIHandler::getUISpriteSheet().get());
+        borderRight.setTextureRect(sf::IntRect(32 + 32 * i, 16, 4, 16));
+        _rTexture.draw(borderRight);
     }
 
-    sf::Uint8* clickPixels = new sf::Uint8[w * h * 4];
-    for (int py = 0; py < h; py++) {
-        for (int px = 0; px < w; px++) {
-            clickPixels[px * 4 + py * w * 4 + 0] = BUTTON_COLOR_CLICK[0];
-            clickPixels[px * 4 + py * w * 4 + 1] = BUTTON_COLOR_CLICK[1];
-            clickPixels[px * 4 + py * w * 4 + 2] = BUTTON_COLOR_CLICK[2];
-            clickPixels[px * 4 + py * w * 4 + 3] = 0xFF;
-        }
-    }
+    _rTexture.display();
 
+    _defaultTexture = sf::IntRect(0, 0, _width, 16);
+    _hoverTexture = sf::IntRect(0, 16, _width, 16);
+    _clickTexture = sf::IntRect(0, 32, _width, 16);
 
-    _texture->create(_width, _height);
-    _texture->update(mainPixels);
-
-    _hoverTexture->create(_width, _height);
-    _hoverTexture->update(hoverPixels);
-
-    _clickTexture->create(_width, _height);
-    _clickTexture->update(clickPixels);
-
-    _sprite.setTexture(*_texture);
-
+    _shape.setSize(sf::Vector2f(_width, _height));
+    _shape.setTexture(&_rTexture.getTexture());
+    _shape.setTextureRect(sf::IntRect(0, 0, _width, 16));
 
     float fontSize = 1.5;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -80,25 +56,21 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
     _text.setFillColor(sf::Color::White);
     _text.setString(labelText);
 
-    delete[] mainPixels;
-    delete[] hoverPixels;
-    delete[] clickPixels;
-
     _buttonCode = buttonCode;
     _listener = listener;
 }
 
 void UIButton::update() {
-    sf::FloatRect bounds = _sprite.getGlobalBounds();
+    sf::FloatRect bounds = _shape.getGlobalBounds();
     if (!_mouseDown && (bounds.contains(_mx, _my) || _isSelected)) {
-        _sprite.setTexture(*_hoverTexture);
+        _shape.setTextureRect(_hoverTexture);
     } else if (bounds.contains(_mx, _my) || (_mouseDown && _isSelected)) {
-        _sprite.setTexture(*_clickTexture);
+        _shape.setTextureRect(_clickTexture);
     } else {
-        _sprite.setTexture(*_texture);
+        _shape.setTextureRect(_defaultTexture);
     }
 
-    if (!USING_MOUSE && !_mouseDown && !_isSelected) _sprite.setTexture(*_texture);
+    if (!USING_MOUSE && !_mouseDown && !_isSelected) _shape.setTextureRect(_defaultTexture);
 
     if (pressWhenSelected && _isSelected && !_wasJustSelected) {
         _listener->buttonPressed(_buttonCode);
@@ -129,7 +101,7 @@ void UIButton::mouseButtonPressed(const int mx, const int my, const int button) 
 
 void UIButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
-    sf::FloatRect bounds = _sprite.getGlobalBounds();
+    sf::FloatRect bounds = _shape.getGlobalBounds();
     if (bounds.contains(mx, my)) {
         /*std::thread callbackThread(
             &UIButtonListener::buttonPressed, _listener, _buttonCode
@@ -154,12 +126,16 @@ void UIButton::show() {
     _mouseDown = false;
 }
 
-std::shared_ptr<sf::Texture> UIButton::getHoverTexture() {
+sf::IntRect UIButton::getHoverTexture() {
     return _hoverTexture;
 }
 
-std::shared_ptr<sf::Texture> UIButton::getClickTexture() {
+sf::IntRect UIButton::getClickTexture() {
     return _clickTexture;
+}
+
+sf::IntRect UIButton::getDefaultTexture() {
+    return _defaultTexture;
 }
 
 sf::Vector2i UIButton::getMousePos() {
