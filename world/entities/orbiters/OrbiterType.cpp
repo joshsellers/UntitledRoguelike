@@ -5,6 +5,7 @@
 #include "Orbiter.h"
 #include "../../World.h"
 #include "../projectiles/ProjectileDataManager.h"
+#include "../BeeFamiliar.h"
 
 const OrbiterType OrbiterType::SLIME_BALL(0, "Slime Ball", sf::IntRect(6, 4, 1, 1), 2, 32, 
     OrbiterAttackMethod::PROJECTILE_CLOSEST_ENEMY, 1000LL, 0, false, "NONE", Item::DATA_PROJECTILE_SLIME_BALL);
@@ -152,6 +153,32 @@ const OrbiterType OrbiterType::BUBBLE(11, "Bubble", sf::IntRect(19, 13, 1, 1), 1
         }
         orbiterInstance->_lastFireTime = currentTimeMillis();
     }, false, true
+);
+
+const OrbiterType OrbiterType::BEE(12, "Bee", sf::IntRect(24, 13, 1, 1), 2.f, 16.f,
+    OrbiterAttackMethod::CUSTOM, 50LL, 0, false, "NONE", {},
+    [](Orbiter* orbiterInstance) {
+        orbiterInstance->_lastFireTime = currentTimeMillis();
+
+        constexpr float fireRange = 350.f * 350.f;
+        bool enemyWithinRange = false;
+        for (auto& entity : orbiterInstance->getWorld()->getEnemies()) {
+            if (entity->isEnemy() && entity->isActive() && (!entity->isInitiallyDocile() || entity->isHostile())) {
+                float dist = std::pow(orbiterInstance->_pos.x - entity->getPosition().x, 2) + std::pow(orbiterInstance->_pos.y - entity->getPosition().y, 2);
+                if (dist <= fireRange) {
+                    enemyWithinRange = true;
+                    break;
+                }
+            }
+        }
+        if (!enemyWithinRange) return;
+
+        const auto bee = std::shared_ptr<BeeFamiliar>(new BeeFamiliar(orbiterInstance->getPosition(), orbiterInstance->getAngle(), orbiterInstance->getDistance()));
+        bee->setWorld(orbiterInstance->getWorld());
+        bee->loadSprite(orbiterInstance->getWorld()->getSpriteSheet());
+        orbiterInstance->getWorld()->addEntity(bee);
+        orbiterInstance->deactivate();
+    }
 );
 
 

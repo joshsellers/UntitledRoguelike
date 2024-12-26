@@ -651,7 +651,7 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        // !TODO: increase the number in the if statement
+        // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
         if (_currentWaveNumber < 48) {
@@ -663,7 +663,7 @@ void World::onWaveCleared() {
 }
 
 void World::checkAltarSpawn() {
-    if (AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave") == 0.f) {
+    if (AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave") == 0.f && getCurrentWaveNumber() > 5) {
         AbilityManager::setParameter(
             Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage",
             AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") + 1.f

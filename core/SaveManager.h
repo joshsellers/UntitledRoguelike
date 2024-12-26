@@ -10,6 +10,7 @@
 #include "../statistics/StatManager.h"
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
+#include "../world/entities/BeeFamiliar.h"
 
 class SaveManager {
 public:
@@ -713,6 +714,11 @@ private:
                     break;
                 case BIG_SNOWMAN:
                     entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
+                    break;
+                case BEE_FAMILIAR:
+                    const float orbiterAngle = std::stof(data[4]);
+                    const float orbiterDistance = std::stof(data[5]);
+                    entity = std::shared_ptr<BeeFamiliar>(new BeeFamiliar(pos, orbiterAngle, orbiterDistance));
                     break;
             }
 

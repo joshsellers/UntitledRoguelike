@@ -218,13 +218,17 @@ bool UIInventoryInterface::isItemCorrectType(EQUIPMENT_TYPE type) {
             && (type == EQUIPMENT_TYPE::CLOTHING_HEAD
                 || type == EQUIPMENT_TYPE::CLOTHING_BODY
                 || type == EQUIPMENT_TYPE::CLOTHING_LEGS
-                || type == EQUIPMENT_TYPE::CLOTHING_FEET)) return true;
+                || type == EQUIPMENT_TYPE::CLOTHING_FEET
+                || type == EQUIPMENT_TYPE::ARMOR_HEAD
+                || type == EQUIPMENT_TYPE::ARMOR_BODY
+                || type == EQUIPMENT_TYPE::ARMOR_LEGS
+                || type == EQUIPMENT_TYPE::ARMOR_FEET)) return true;
         else if (getFilter() == FILTER_TYPE::WEAPONS
             && (type == EQUIPMENT_TYPE::TOOL)) return true;
         else if (getFilter() == FILTER_TYPE::AMMO
             && (type == EQUIPMENT_TYPE::AMMO)) return true;
         else if (getFilter() == FILTER_TYPE::MISC
-            && (type == EQUIPMENT_TYPE::NOT_EQUIPABLE)) return true;
+            && (type == EQUIPMENT_TYPE::NOT_EQUIPABLE || type == EQUIPMENT_TYPE::BOAT)) return true;
         else return false;
     }
 

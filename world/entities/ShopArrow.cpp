@@ -51,7 +51,8 @@ void ShopArrow::update() {
 }
 
 void ShopArrow::draw(sf::RenderTexture& surface) {
-    if (_isVisible && !_world->playerIsInShop() && (Tutorial::isCompleted() || (int)Tutorial::getCurrentStep() >= (int)TUTORIAL_STEP::BUY_BOW)) surface.draw(_sprite);
+    if (_isVisible && !_world->playerIsInShop() && (Tutorial::isCompleted() || (int)Tutorial::getCurrentStep() >= (int)TUTORIAL_STEP::BUY_BOW)
+        && _world->onEnemySpawnCooldown() && !_world->bossIsActive()) surface.draw(_sprite);
 }
 
 void ShopArrow::setWorld(World* world) {

@@ -1,0 +1,10 @@
+name = "Bee"
+description = "There's a bee??"
+isConsumable = true
+functionName = "usebee"
+isBuyable = true
+shopChance = 4
+unlockWaveNumber = 23
+value = 350
+isStartingItem = true
+textureRect = 24, 13, 1, 1

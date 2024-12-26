@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="world\entities\BabyBoss.cpp" />
+    <ClCompile Include="world\entities\BeeFamiliar.cpp" />
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
     <ClCompile Include="world\entities\FallingNuke.cpp" />
     <ClCompile Include="mod\byrgo\Bygro.cpp" />
@@ -189,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world\entities\BabyBoss.h" />
+    <ClInclude Include="world\entities\BeeFamiliar.h" />
     <ClInclude Include="world\entities\BigSnowMan.h" />
     <ClInclude Include="world\entities\FallingNuke.h" />
     <ClInclude Include="mod\byrgo\Bygro.h" />
