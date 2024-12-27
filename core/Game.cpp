@@ -1694,13 +1694,16 @@ void Game::gamepadDisconnected() {
 }
 
 void Game::togglePauseMenu() {
+    bool skipCooldownAdjustment = true;
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
+            skipCooldownAdjustment = false;
         } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
+            skipCooldownAdjustment = false;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
         else if (_controlsMenu->isActive()) buttonPressed("back_controls");
         else if (_inputBindingsMenu->isActive()) buttonPressed("back_bindings");
@@ -1708,6 +1711,8 @@ void Game::togglePauseMenu() {
         else if (_audioMenu->isActive()) buttonPressed("back_audio");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
+
+    if (skipCooldownAdjustment) return;
 
     if (_world.onEnemySpawnCooldown() && _isPaused && !_world.playerIsInShop()) {
         _pauseStartTimeMillis = currentTimeMillis();
