@@ -77,6 +77,7 @@ protected:
 
     FILTER_TYPE _filter = FILTER_TYPE::NONE;
     bool isItemCorrectType(EQUIPMENT_TYPE type);
+    bool _itemsOutsideWindow = false;
 
     virtual void useItem(int index);
     virtual void dropItem(int index);

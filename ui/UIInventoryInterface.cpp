@@ -66,6 +66,20 @@ void UIInventoryInterface::update() {
 
 void UIInventoryInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_background);
+    if (_itemsOutsideWindow) {
+        sf::RectangleShape edgeCover;
+        edgeCover.setPosition(getRelativePos(_x - 1.5f, 95.f));
+        edgeCover.setSize(sf::Vector2f(_background.getSize().x, getRelativeHeight(5.f)));
+        edgeCover.setTexture(UIHandler::getUISpriteSheet().get());
+        edgeCover.setTextureRect(sf::IntRect(0, 187, 80, 1));
+        surface.draw(edgeCover);
+        
+        edgeCover.setPosition(getRelativePos(_x - 1.5f, 0.f));
+        edgeCover.setTextureRect(sf::IntRect(0, 111, 80, 1));
+        surface.draw(edgeCover);
+
+        _headerBg.setTextureRect(sf::IntRect(80, 16, 80, 16));
+    } else _headerBg.setTextureRect(sf::IntRect(0, 16, 80, 16));
 
     int mousedOverItemIndex = -1;
     int filteredIndex = 0;
@@ -130,7 +144,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             mousedOverItemIndex = i;
     }
 
-    if (filteredIndex + 1 > 13) {
+    if (_itemsOutsideWindow = filteredIndex + 1 > 13) {
         constexpr float headerPadding = 12.f;
 
         sf::RectangleShape scrollBar;
