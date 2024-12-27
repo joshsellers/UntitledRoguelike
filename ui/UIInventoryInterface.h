@@ -73,6 +73,8 @@ protected:
     float _scrollBarPosY = 0.f;
     bool _mousedOverScrollbar = false;
 
+    sf::RenderTexture _scrollBarRTexture;
+
     FILTER_TYPE _filter = FILTER_TYPE::NONE;
     bool isItemCorrectType(EQUIPMENT_TYPE type);
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../core/gamepad/GamePad.h"
 #include "../world/entities/Entity.h"
+#include "UIHandler.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     UIInventoryInterface(2, 11, source, font, spriteSheet) {}
@@ -11,14 +12,14 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
 
     _disableAutomaticTextAlignment = true;
 
-    float fontSize = 4;
+    float fontSize = 3.f;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
     _text.setFont(_font);
     _text.setCharacterSize(relativeFontSize);
-    _text.setFillColor(sf::Color::White);
+    _text.setFillColor(sf::Color(0x81613DFF));
     _text.setString("INVENTORY");
-    sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x + 3, _y)));
-    _text.setPosition(basePos.x - _text.getGlobalBounds().width / 6, 0);
+    sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x - 1.5f, _y)));
+    _text.setPosition(basePos.x + getRelativeWidth(12.5f) - _text.getGlobalBounds().width / 2.f, getRelativeHeight(4.f));
 
     fontSize = 1;
     relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -30,21 +31,25 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     _tooltipBg.setOutlineColor(sf::Color(0xEEEEB9FF));
     _tooltipBg.setOutlineThickness(getRelativeWidth(0.25f));
 
-    _background.setFillColor(sf::Color(0x000044EE));
-    _background.setOutlineColor(sf::Color(0x000066EE));
-    _background.setOutlineThickness(getRelativeWidth(0.75f));
+    //_background.setFillColor(sf::Color(0x000044EE));
+    //_background.setOutlineColor(sf::Color(0x000066EE));
+    //_background.setOutlineThickness(getRelativeWidth(0.75f));
     _background.setPosition(getRelativePos(_x - 1.5f, 0.9f));
     _background.setSize(sf::Vector2f(getRelativeWidth(25.f), getRelativeHeight(98.3f)));
+    _background.setTexture(UIHandler::getUISpriteSheet().get());
+    _background.setTextureRect(sf::IntRect(0, 32, 80, 160));
 
-    _headerBg.setFillColor(sf::Color(0x000044FF));
+    //_headerBg.setFillColor(sf::Color(0x000044FF));
     _headerBg.setPosition(
         _background.getPosition().x,
-        0
+        getRelativeHeight(1.75f)
     );
     _headerBg.setSize(sf::Vector2f(
         _background.getSize().x,
         getRelativeHeight(8.f)
     ));
+    _headerBg.setTexture(UIHandler::getUISpriteSheet().get());
+    _headerBg.setTextureRect(sf::IntRect(0, 16, 80, 16));
 }
 
 void UIInventoryInterface::update() {
@@ -70,7 +75,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         const EQUIPMENT_TYPE itemType = item->getEquipmentType();
         if (!isItemCorrectType(itemType)) continue;
 
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex) + 1.f)));
 
         sf::Text label;
         float fontSize = 1.5;
@@ -92,35 +97,46 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         sf::RectangleShape bg(sf::Vector2f(_width + (_width / 8) * 2, _height + (_height / 8) * 2));
         bg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));
+        bg.setTexture(UIHandler::getUISpriteSheet().get());
+        bg.setTextureRect(sf::IntRect(96, 64, 24, 24));
 
         sf::Sprite itemSprite;
         itemSprite.setTexture(*_spriteSheet);
         itemSprite.setTextureRect(item->getTextureRect());
-        itemSprite.setScale(sf::Vector2f(_width / itemSprite.getGlobalBounds().width, _height / itemSprite.getGlobalBounds().height));
+        itemSprite.setScale(sf::Vector2f((_width) / itemSprite.getGlobalBounds().width, (_height) / itemSprite.getGlobalBounds().height));
         itemSprite.setPosition(itemPos);
 
-        if (bg.getGlobalBounds().contains(_mousePos) || filteredIndex == _gamepadSelectedItemIndex) {
-            bg.setFillColor(sf::Color(0x0000FFFF));
-        } else bg.setFillColor(sf::Color(0x000099FF));
+        const sf::FloatRect interactionBox(itemPos.x - (_width / 8), itemPos.y - (_width / 8), (_width + (_width / 8) * 2) * 5.5f, _height + (_height / 8) * 2);
+        const bool touchingItem = interactionBox.contains(_mousePos) || filteredIndex == _gamepadSelectedItemIndex;
 
-        surface.draw(labelBg);
+        if (touchingItem) {
+            //bg.setFillColor(sf::Color(0x0000FFFF));
+            bg.setTextureRect(sf::IntRect(128, 64, 24, 24));
+        } else {
+            //bg.setFillColor(sf::Color(0x000099FF));
+        }
+
+        if (_source.isEquipped(i) && touchingItem) bg.setTextureRect(sf::IntRect(192, 64, 24, 24));
+        else if (_source.isEquipped(i)) bg.setTextureRect(sf::IntRect(160, 64, 24, 24));
+
+        //surface.draw(labelBg);
         surface.draw(bg);
         surface.draw(itemSprite);
         surface.draw(label);
 
         filteredIndex++;
 
-        if (labelBg.getGlobalBounds().contains(_mousePos) || bg.getGlobalBounds().contains(_mousePos))
+        if (labelBg.getGlobalBounds().contains(_mousePos) || interactionBox.contains(_mousePos))
             mousedOverItemIndex = i;
     }
 
     if (filteredIndex + 1 > 13) {
-        constexpr float headerPadding = 8.f;
+        constexpr float headerPadding = 12.f;
 
         sf::RectangleShape scrollBar;
-        float scrollBarMinHeight = 2.f;
+        float scrollBarMinHeight = 8.f;
 
-        sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+        sf::Vector2f scrollBarPos = getRelativePos(_x + 21.5f, _originalY);
         float entryHeight = getRelativeHeight((float)ITEM_SPACING);
         float itemAmount = (float)filteredIndex + 1;
         float allItemsHeight = itemAmount * entryHeight;
@@ -146,16 +162,58 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             scrollBarPos.y = _scrollBarPosY;
         }
 
+        // scroll bar gfx
+        _scrollBarRTexture.create(6, handleHeight);
+        sf::RectangleShape handleCenter;
+        handleCenter.setPosition(0, 0);
+        handleCenter.setSize(sf::Vector2f(6, handleHeight));
+        handleCenter.setTexture(UIHandler::getUISpriteSheet().get());
+        handleCenter.setTextureRect(sf::IntRect(113, 32, 6, 2));
+        _scrollBarRTexture.draw(handleCenter);
+
+        //sf::RectangleShape handleTop;
+        //handleTop.setPosition(0, 0);
+        //handleTop.setSize(sf::Vector2f(6, 16));
+        //handleTop.setTexture(UIHandler::getUISpriteSheet().get());
+        //handleTop.setTextureRect(sf::IntRect(101, 32, 6, 3));
+        //handleTop.setScale(0, -1);
+        ////_scrollBarRTexture.draw(handleTop);
+
+        //sf::RectangleShape handleBottom;
+        //handleBottom.setPosition(0, 0);
+        //handleBottom.setSize(sf::Vector2f(6, 16));
+        //handleBottom.setTexture(UIHandler::getUISpriteSheet().get());
+        //handleBottom.setTextureRect(sf::IntRect(107, 32, 6, 3));
+        //_scrollBarRTexture.draw(handleBottom);
+        //
+        
+
         scrollBar.setPosition(scrollBarPos.x, scrollBarPos.y + getRelativeHeight(headerPadding));
-        scrollBar.setFillColor(sf::Color(_userIsDraggingScrollbar || _mousedOverScrollbar ? 0x0000FFEE : 0x0000FFAA));
+        //scrollBar.setFillColor(sf::Color(_userIsDraggingScrollbar || _mousedOverScrollbar ? 0x0000FFEE : 0x0000FFAA));
+        scrollBar.setTexture(&_scrollBarRTexture.getTexture());
+        scrollBar.setTextureRect(sf::IntRect(0, 0, 6, handleHeight));
+
+        sf::Sprite handleTop;
+        handleTop.setTexture(*UIHandler::getUISpriteSheet());
+        handleTop.setTextureRect(sf::IntRect(101, 32, 6, 3));
+        handleTop.setScale(scrollBar.getSize().x / 6.f, getRelativeHeight(1.f) / 3.f);
+        handleTop.setPosition(scrollBarPos.x, scrollBarPos.y + getRelativeHeight(headerPadding) - handleTop.getGlobalBounds().height);
+        
+        sf::Sprite handleBottom;
+        handleBottom.setTexture(*UIHandler::getUISpriteSheet());
+        handleBottom.setTextureRect(sf::IntRect(107, 32, 6, 3));
+        handleBottom.setScale(scrollBar.getSize().x / 6.f, getRelativeHeight(1.f) / 3.f);
+        handleBottom.setPosition(scrollBarPos.x, scrollBarPos.y + getRelativeHeight(headerPadding) + scrollBar.getGlobalBounds().height);
 
         sf::RectangleShape scrollBg;
-        scrollBg.setSize(getRelativePos(1.f, 91.f));
-        scrollBg.setPosition(getRelativePos(_x + 22.5f, 8.f));
-        scrollBg.setFillColor(sf::Color(0x000099AA));
+        scrollBg.setSize(getRelativePos(1.f, 83.f));
+        scrollBg.setPosition(getRelativePos(_x + 21.5f, 12.f));
+        scrollBg.setFillColor(sf::Color(0x000000FF));
 
-        surface.draw(scrollBg);
+        //surface.draw(scrollBg);
         surface.draw(scrollBar);
+        surface.draw(handleTop);
+        surface.draw(handleBottom);
     }
 
     surface.draw(_headerBg);
@@ -180,7 +238,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
             if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
-                sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+                sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex) + 1.f)));
                 pos.x = _background.getGlobalBounds().width;
                 if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
                 pos.y = itemPos.y;
@@ -363,12 +421,12 @@ void UIInventoryInterface::mouseButtonPressed(const int mx, const int my, const 
         }
 
         if (totalDisplayedItems + 1 > 13) {
-            constexpr float headerPadding = 8.f;
+            constexpr float headerPadding = 12.f;
 
             sf::FloatRect scrollBar;
-            float scrollBarMinHeight = 2.f;
+            float scrollBarMinHeight = 8.f;
 
-            sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+            sf::Vector2f scrollBarPos = getRelativePos(_x + 21.5f, _originalY);
             float entryHeight = getRelativeHeight((float)ITEM_SPACING);
             float itemAmount = (float)totalDisplayedItems + 1;
             float allItemsHeight = itemAmount * entryHeight;
@@ -403,7 +461,7 @@ void UIInventoryInterface::mouseButtonReleased(const int mx, const int my, const
     for (int i = 0; i < _source.getCurrentSize(); i++) {
         if (!isItemCorrectType(Item::ITEMS[_source.getItemIdAt(i)]->getEquipmentType())) continue;
 
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex))));
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex) + 1.f)));
         sf::IntRect itemBounds(itemPos.x - (_width / 8), itemPos.y - (_width / 8), (_width + (_width / 8) * 2) * 5.5f, _height + (_height / 8) * 2);
         filteredIndex++;
 
@@ -442,12 +500,12 @@ void UIInventoryInterface::mouseMoved(const int mx, const int my) {
 
     _mousedOverScrollbar = false;
     if (totalDisplayedItems + 1 > 13) {
-        constexpr float headerPadding = 8.f;
+        constexpr float headerPadding = 12.f;
 
         sf::FloatRect scrollBar;
-        float scrollBarMinHeight = 2.f;
+        float scrollBarMinHeight = 8.f;
 
-        sf::Vector2f scrollBarPos = getRelativePos(_x + 22.5f, _originalY);
+        sf::Vector2f scrollBarPos = getRelativePos(_x + 21.5f, _originalY);
         float entryHeight = getRelativeHeight((float)ITEM_SPACING);
         float itemAmount = (float)totalDisplayedItems + 1;
         float allItemsHeight = itemAmount * entryHeight;
