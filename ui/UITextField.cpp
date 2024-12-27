@@ -65,7 +65,7 @@ void UITextField::draw(sf::RenderTexture& surface) {
     center.setPosition(16, 1);
     center.setSize(sf::Vector2f(width - 16 * 2, 14));
     center.setTexture(UIHandler::getUISpriteSheet().get());
-    center.setTextureRect(sf::IntRect(112, 17, 1, 14));
+    center.setTextureRect(sf::IntRect(112, 1, 1, 14));
     _rTexture.draw(center);
     center.setPosition(16, 17);
     _rTexture.draw(center);
@@ -77,7 +77,7 @@ void UITextField::draw(sf::RenderTexture& surface) {
         borderLeft.setPosition(0, 16 * i);
         borderLeft.setSize(sf::Vector2f(16, 16));
         borderLeft.setTexture(UIHandler::getUISpriteSheet().get());
-        borderLeft.setTextureRect(sf::IntRect(128 + 32 * i, 16, 4, 16));
+        borderLeft.setTextureRect(sf::IntRect(128 + 32 * i, 0, 4, 16));
         _rTexture.draw(borderLeft);
     }
 
@@ -86,7 +86,7 @@ void UITextField::draw(sf::RenderTexture& surface) {
         borderRight.setPosition(width - 17, 16 * i);
         borderRight.setSize(sf::Vector2f(16, 16));
         borderRight.setTexture(UIHandler::getUISpriteSheet().get());
-        borderRight.setTextureRect(sf::IntRect(144 + 32 * i, 16, 4, 16));
+        borderRight.setTextureRect(sf::IntRect(144 + 32 * i, 0, 4, 16));
         _rTexture.draw(borderRight);
     }
 
