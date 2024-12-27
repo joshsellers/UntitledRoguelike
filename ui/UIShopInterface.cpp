@@ -6,7 +6,9 @@
 UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet)
     : UIInventoryInterface(buyMode ? 2 : 76, 11, source, font, spriteSheet), _shopManager(shopManager) {
     _buyMode = buyMode;
-    _text.setString(_buyMode ? "SHOP" : "INVENTORY");
+    _text.setString(_buyMode ? "SHOP" : "INVENTORY"); 
+    sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x - 1.5f, _y)));
+    _text.setPosition(basePos.x + getRelativeWidth(12.5f) - _text.getGlobalBounds().width / 2.f, getRelativeHeight(4.f));
 }
 
 void UIShopInterface::buttonPressed(std::string buttonCode) {
