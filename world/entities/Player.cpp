@@ -722,7 +722,7 @@ void Player::damage(int damage) {
 
     if (!isDodging() && !freeMove && !isTakingDamage()) {
         if (GamePad::isConnected()) {
-            int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getMaxHitPoints()), 1.f));
+            int vibrationAmount = ((float)MAX_CONTROLLER_VIBRATION * std::min(((float)damage / (float)getHitPoints()), 1.f));
             GamePad::vibrate(vibrationAmount, 250);
         }
         _timeDamageTaken = currentTimeMillis();
