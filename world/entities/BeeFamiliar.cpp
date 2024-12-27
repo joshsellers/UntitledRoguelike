@@ -77,6 +77,7 @@ void BeeFamiliar::update() {
 bool BeeFamiliar::searchForEnemies() {
     if (getWorld()->getEnemies().size() > 0) {
         _enemyTarget = getWorld()->getEnemies().at((size_t)randomInt(0, getWorld()->getEnemies().size() - 1));
+        if (_enemyTarget->getSaveId() == CACTOID && !_enemyTarget->isHostile()) return false;
         return true;
     }
 
