@@ -47,6 +47,7 @@
 #include "../world/entities/Soldier.h"
 #include "../world/entities/BabyBoss.h"
 #include "../world/entities/BigSnowMan.h"
+#include "../statistics/StatManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -923,6 +924,20 @@ private:
                 } else {
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
+            })
+        },
+
+        {
+            "resetstats",
+            Command("Reset overall player stats. Only run this function from the main menu.",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                for (const auto& statEntry : STAT_NAMES) {
+                    const auto& stat = statEntry.first;
+                    StatManager::increaseStat(stat, -StatManager::getOverallStat(stat));
+                }
+
+                StatManager::saveOverallStats();
+                return "Reset player stats.\nAlways restart the game after running this function.";
             })
         }
     };
