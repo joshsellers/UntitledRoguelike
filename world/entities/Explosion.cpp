@@ -13,11 +13,13 @@ Explosion::Explosion(sf::Vector2f pos, int damage, bool onlyDamagePlayer) : Enti
 
 void Explosion::init(sf::Vector2f pos, int damage) {
     _damage = damage;
+    setMaxHitPoints(100000000);
+    heal(getMaxHitPoints());
 
-    _hitBox.left = getPosition().x - (float)TILE_SIZE * 3.f / 2.f;
-    _hitBox.top = getPosition().y;
-    _hitBox.width = (float)TILE_SIZE * 3.f;
-    _hitBox.height = (float)TILE_SIZE * 3.f;
+    _hitBox.left = getPosition().x - (float)TILE_SIZE * 3.f / 2.f - (float) TILE_SIZE;
+    _hitBox.top = getPosition().y - (float)TILE_SIZE;
+    _hitBox.width = (float)TILE_SIZE * 5.f;
+    _hitBox.height = (float)TILE_SIZE * 5.f;
 
     _entityType = "explosion";
 

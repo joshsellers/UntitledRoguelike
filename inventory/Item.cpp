@@ -355,7 +355,7 @@ const Item Item::MATMURA_BOOTS(45, "Crypticus Boots", sf::IntRect(21, 43, 1, 1),
 
 const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
     "Chop chop",
-    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 79
+    EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 79, false
 );
 
 const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEET_SHIFT, 192 >> SPRITE_SHEET_SHIFT, 1, 1), true, 32, true,
