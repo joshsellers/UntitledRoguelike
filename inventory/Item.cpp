@@ -94,7 +94,7 @@ const Item Item::WHITE_TENNIS_SHOES(13, "White Tennis Shoes", sf::IntRect(20, 26
     EQUIPMENT_TYPE::CLOTHING_FEET, 0, 0, 0, sf::Vector2f(), false, 1
 );
 
-const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 16, true, 
+const Item Item::APPLE(14, "Apple", sf::IntRect(2, 10, 1, 1), true, 6, true, 
     "Something something an apple a day\n\nRestores 5 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 5, true,
     [](Entity* parent) {
@@ -200,7 +200,7 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
     }, 0, false, 0, 0, true
 );
 
-const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 5, true,
+const Item Item::BANANA(29, "Banana", sf::IntRect(5, 10, 1, 1), true, 2, true,
     "Kinda mushy but it makes me feel good\n\nRestores 10 HP",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 20, true, 
     [](Entity* parent) {
