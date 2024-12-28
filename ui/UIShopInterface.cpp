@@ -99,8 +99,8 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
 
 void UIShopInterface::darkenUnselectedMenu(sf::RenderTexture& surface) {
     sf::RectangleShape cover;
-    cover.setPosition(_background.getPosition().x, _background.getPosition().y);
-    cover.setSize(_background.getSize());
+    cover.setPosition(_background.getPosition().x, getRelativeHeight(0.f));
+    cover.setSize(sf::Vector2f(_background.getSize().x, getRelativeHeight(100.f)));
     cover.setFillColor(sf::Color(0x000000AA));
     surface.draw(cover);
 }
