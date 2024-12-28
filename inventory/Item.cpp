@@ -330,7 +330,7 @@ const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 12, t
 
 const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
     "Swing for slicing",
-    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 59
+    EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 59, false
 );
 
 const Item Item::MATMURA_HELMET(42, "Crypticus Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
