@@ -118,7 +118,7 @@ void Altar::onActivation() {
         }
         case HP:
         {
-            const int maxHpIncrease = randomInt(50, 75);
+            const int maxHpIncrease = randomInt(20, 50);
             player->setMaxHitPoints(player->getMaxHitPoints() + maxHpIncrease);
             player->heal(player->getMaxHitPoints());
 
@@ -127,8 +127,8 @@ void Altar::onActivation() {
         } 
         case STAMINA:
         {
-            const int maxStaminaIncrease = randomInt(500, 1000);
-            const int restoreIncrease = randomInt(20, 50);
+            const int maxStaminaIncrease = randomInt(200, 700);
+            const int restoreIncrease = randomInt(10, 20);
             player->setMaxStamina(player->getMaxStamina() + maxStaminaIncrease);
             player->increaseStaminaRefreshRate(restoreIncrease);
 
@@ -145,7 +145,7 @@ void Altar::onActivation() {
         }
         case BAD_VIBES:
         {
-            const int badVibesAmount = randomInt(15, 25);
+            const int badVibesAmount = randomInt(15, 20);
             player->getInventory().addItem(Item::BAD_VIBES_POTION.getId(), badVibesAmount);
 
             MessageManager::displayMessage(std::to_string(badVibesAmount) + " bottles of a powerful potion have been imparted unto you", 5);
