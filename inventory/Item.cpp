@@ -13,6 +13,7 @@
 #include "../mod/Interpreter.h"
 #include "../mod/ModManager.h"
 #include "../mod/ScriptExtensions.h"
+#include "effect/PlayerVisualEffectManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -241,6 +242,10 @@ const Item Item::STEROIDS(33, "Steroids", sf::IntRect(114 >> SPRITE_SHEET_SHIFT,
         parent->setMaxHitPoints(parent->getMaxHitPoints() + 5);
         parent->setMaxStamina(parent->getMaxStamina() + 100);
         parent->increaseDamageMultiplier(0.25f);
+
+        if (!PlayerVisualEffectManager::playerHasEffect("Muscles")) {
+            PlayerVisualEffectManager::addEffectToPlayer("Muscles");
+        }
         return true;
     }
 );
