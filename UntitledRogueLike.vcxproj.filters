@@ -519,6 +519,9 @@
     <ClCompile Include="world\entities\BeeFamiliar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\TeethBoss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -939,6 +942,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\BeeFamiliar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\TeethBoss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

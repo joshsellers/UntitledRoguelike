@@ -33,7 +33,8 @@ enum ENTITY_SAVE_ID {
     BABY_BOSS,
     SOLDIER,
     BIG_SNOWMAN,
-    BEE_FAMILIAR
+    BEE_FAMILIAR,
+    TEETH_BOSS
 };
 
 #endif

@@ -19,6 +19,7 @@ public:
     static const Ability EXPLOSIVE_ROUNDS;
     static const Ability CRIT_CHANCE;
     static const Ability OCTOPUS;
+    static const Ability ORDER_FORM;
 
     static std::vector<Ability*> ABILITIES;
 

@@ -1,0 +1,10 @@
+hasAbility = player.hasAbility("Order Form");
+if: not hasAbility {
+    player.addAbility("Order Form");
+    player.addEffect("Order Form");
+}
+
+currentCap = player.getAbilityParameter("Order Form", "capacity");
+player.setAbilityParameter("Order Form", "capacity", currentCap + 1);
+
+return true;

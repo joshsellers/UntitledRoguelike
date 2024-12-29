@@ -1,0 +1,9 @@
+name = "Order Form"
+description = "Fill out this document to increase\nthe shop's item capacity by 1."
+isConsumable = true
+isBuyable = true
+value = 1599
+unlockWaveNumber = 43
+shopChance = 6
+functionName = "orderform"
+textureRect = 26, 13, 1, 1

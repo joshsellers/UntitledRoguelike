@@ -3,6 +3,8 @@
 #include "../../core/Tutorial.h"
 #include "ShopKeepCorpse.h"
 #include "../../statistics/AchievementManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -40,7 +42,12 @@ void ShopKeep::initInventory() {
     getInventory().addItem(Item::PENNY.getId(), pennyCount);
 
    
-    constexpr int itemCount = 10;
+    int additionalCapacity = 0;
+    if (AbilityManager::playerHasAbility(Ability::ORDER_FORM.getId())) {
+        additionalCapacity = (int)AbilityManager::getParameter(Ability::ORDER_FORM.getId(), "capacity");
+    }
+
+    const int itemCount = 10 + additionalCapacity;
     constexpr int maxAttempts = 100;
     int attempts = 0;
 

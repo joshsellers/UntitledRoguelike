@@ -251,6 +251,12 @@ const Ability Ability::OCTOPUS(9, "Octopus",
     }
 );
 
+const Ability Ability::ORDER_FORM(10, "Order Form",
+    { {"capacity", 0.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

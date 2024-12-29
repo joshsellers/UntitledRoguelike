@@ -460,7 +460,7 @@ void ModManager::loadPlayerVisualEffect(std::ifstream& in) {
 
 std::vector<int> ModManager::getFunction(std::string functionName) {
     if (_functions.find(functionName) == _functions.end()) {
-        std::cout << "No function named: " + functionName << std::endl;
+        MessageManager::displayMessage("No function named: " + functionName, 5, WARN);
         return { 0x01, 0xFF, 0x00, 0x00, 0x00, 0x1F };
     }
     return _functions.at(functionName);
