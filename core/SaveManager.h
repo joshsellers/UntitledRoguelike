@@ -716,9 +716,14 @@ private:
                     entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
                     break;
                 case BEE_FAMILIAR:
+                {
                     const float orbiterAngle = std::stof(data[4]);
                     const float orbiterDistance = std::stof(data[5]);
                     entity = std::shared_ptr<BeeFamiliar>(new BeeFamiliar(pos, orbiterAngle, orbiterDistance));
+                    break;
+                }
+                case TEETH_BOSS:
+                    entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
                     break;
             }
 

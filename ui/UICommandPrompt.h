@@ -48,6 +48,7 @@
 #include "../world/entities/BabyBoss.h"
 #include "../world/entities/BigSnowMan.h"
 #include "../statistics/StatManager.h"
+#include "../world/entities/TeethBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -330,6 +331,8 @@ private:
                             entity = std::shared_ptr<BabyBoss>(new BabyBoss(pos));
                         } else if (entityName == "bigsnowman") {
                             entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
+                        } else if (entityName == "teethboss") {
+                            entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

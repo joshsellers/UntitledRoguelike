@@ -55,6 +55,7 @@
 #include "entities/MegaBombBoy.h"
 #include "entities/BabyBoss.h"
 #include "entities/BigSnowMan.h"
+#include "entities/TeethBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -654,7 +655,7 @@ void World::onWaveCleared() {
         // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
-        if (_currentWaveNumber < 48) {
+        if (_currentWaveNumber < 56) {
             MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
         }
     }
@@ -1319,6 +1320,9 @@ void World::spawnBoss(int currentWaveNumber) {
             break;
         case 48:
             boss = std::shared_ptr<BabyBoss>(new BabyBoss(spawnPos));
+            break;
+        case 56:
+            boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
     }
 
