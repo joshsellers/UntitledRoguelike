@@ -129,6 +129,7 @@ void ModManager::loadItem(std::ifstream& in) {
     bool isStartingItem = false;
     unsigned int shopChance = 2;
     std::vector<std::string> tags;
+    bool conditionalUnlock = false;
 
     std::string line;
     while (getline(in, line)) {
@@ -231,6 +232,8 @@ void ModManager::loadItem(std::ifstream& in) {
                         MessageManager::displayMessage("Bad tag syntax for item \"" + name + "\": " + currentToken, 5, ERR);
                     }
                 }
+            } else if (tokens.at(0) == "conditionalUnlock") {
+                conditionalUnlock = tokens.at(2) == "1";
             } else {
                 MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -261,7 +264,7 @@ void ModManager::loadItem(std::ifstream& in) {
         magazineSize,
         isAutomatic,
         fireRateMillis,
-        reloadTimeMillis, isStartingItem, true, functionName)));
+        reloadTimeMillis, isStartingItem, true, functionName, conditionalUnlock)));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
     Item::ITEM_SHOP_CHANCES[itemId] = shopChance;

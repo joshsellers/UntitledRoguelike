@@ -644,8 +644,11 @@ void World::onWaveCleared() {
     }
 
     int unlockedItemCount = 0;
-    for (const auto& item : Item::ITEMS) {
-        if (_currentWaveNumber == item->getRequiredWave()) unlockedItemCount++;
+    if (_currentWaveNumber > StatManager::getOverallStat(HIGHEST_WAVE_REACHED)) {
+        StatManager::increaseStat(HIGHEST_WAVE_REACHED, _currentWaveNumber - StatManager::getOverallStat(HIGHEST_WAVE_REACHED));
+        for (const auto& item : Item::ITEMS) {
+            if (_currentWaveNumber == item->getRequiredWave()) unlockedItemCount++;
+        }
     }
     if (unlockedItemCount > 0) {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);

@@ -17,6 +17,7 @@
 #include "../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../world/TerrainGenParameters.h"
 #include "../mod/ModManager.h"
+#include "../inventory/ConditionalUnlockManager.h"
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -169,6 +170,7 @@ int main() {
     AchievementManager::start();
 
     Item::initItems();
+    ConditionalUnlockManager::loadUnlockedItems();
 
     checkLocalLowExists();
 

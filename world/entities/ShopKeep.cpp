@@ -5,6 +5,7 @@
 #include "../../statistics/AchievementManager.h"
 #include "../../inventory/abilities/AbilityManager.h"
 #include "../../inventory/abilities/Ability.h"
+#include "../../statistics/StatManager.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -57,7 +58,7 @@ void ShopKeep::initInventory() {
         if (item->isBuyable()
             && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO
             && !stringStartsWith(item->getName(), "_")
-            && item->isUnlocked(getWorld()->getCurrentWaveNumber())
+            && item->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))
             && item->getId() != Item::PENNY.getId()) {
 
             const EQUIPMENT_TYPE equipType = item->getEquipmentType();

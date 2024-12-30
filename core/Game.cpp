@@ -1919,6 +1919,7 @@ void Game::autoSave() {
 
 void Game::generateStatsString(std::string& statsString, bool overall, bool useUnderscores) {
     for (int i = 0; i < StatManager::NUM_STATS; i++) {
+        if (!overall && (STATISTIC)i == HIGHEST_WAVE_REACHED) continue;
         const std::string statName = STAT_NAMES[(STATISTIC)i];
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
 

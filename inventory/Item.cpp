@@ -14,6 +14,7 @@
 #include "../mod/ModManager.h"
 #include "../mod/ScriptExtensions.h"
 #include "effect/PlayerVisualEffectManager.h"
+#include "ConditionalUnlockManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -611,7 +612,7 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
     const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
     const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds, const bool isStartingItem,
-    const bool isCustomItem, const std::string functionName) :
+    const bool isCustomItem, const std::string functionName, const bool conditionalUnlock) :
     _id(id), _name(name), _textureRect(
         sf::IntRect(
             textureRect.left << SPRITE_SHEET_SHIFT, 
@@ -619,12 +620,12 @@ Item::Item(const unsigned int id, const std::string name, const sf::IntRect text
             textureRect.width << SPRITE_SHEET_SHIFT,
             textureRect.height << SPRITE_SHEET_SHIFT
         )), 
-    _isStackable(isStackable), _stackLimit(stackLimit), 
+    _isStackable(isStackable), _stackLimit(stackLimit),  
     _isConsumable(isConsumable), _use(use), _description(description), 
     _equipType(equipType), _damage(damage), _hitBoxSize(hitBoxSize), _hitBoxPos(hitBoxPos), _barrelPos(barrelPos),
     _isGun(isGun), _magazineSize(magazineSize), _isAutomatic(isAutomatic), _fireRateMilliseconds(fireRateMilliseconds),
     _reloadTimeMilliseconds(reloadTimeMilliseconds), _value(value), _isBuyable(isBuyable), _isCustomItem(isCustomItem), _functionName(functionName),
-    _isStartingItem(isStartingItem) {
+    _isStartingItem(isStartingItem), _conditionalUnlock(conditionalUnlock) {
 
     for (const auto& item : ITEMS) {
         if (item->getId() == id) MessageManager::displayMessage("Duplicate item ID: " + std::to_string(id) + "\nCulprits:\n" + item->getName() + "\n" + name, 5, WARN);
@@ -641,10 +642,10 @@ void Item::createItem(const unsigned int id, const std::string name, const sf::I
     std::string description, EQUIPMENT_TYPE equipType, const int damage, const float hitBoxPos,
     const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value, const bool isBuyable, const std::function<bool(Entity*)> use, const int magazineSize,
     const bool isAutomatic, const unsigned int fireRateMilliseconds, const unsigned int reloadTimeMilliseconds, const bool isStartingItem,
-    const bool isCustomItem, const std::string functionName) {
+    const bool isCustomItem, const std::string functionName, const bool conditionalUnlock) {
     std::shared_ptr<Item> itemPtr = std::shared_ptr<Item>(new Item(id, name, textureRect, isStackable, stackLimit, isConsumable, 
         description, equipType, damage, hitBoxPos, hitBoxSize, barrelPos, isGun, value, isBuyable, use, magazineSize, isAutomatic, fireRateMilliseconds,
-        reloadTimeMilliseconds, isStartingItem, true, functionName));
+        reloadTimeMilliseconds, isStartingItem, true, functionName, conditionalUnlock));
     ITEMS.push_back(itemPtr);
 }
 
@@ -780,6 +781,10 @@ const bool Item::isBuyable() const {
     return _isBuyable;
 }
 
+const bool Item::conditionalUnlock() const {
+    return _conditionalUnlock;
+}
+
 /**
 * For consumable items, this returns whether or not one of the item
 * should be removed from the inventory upon use.
@@ -874,6 +879,8 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
+    if (conditionalUnlock()) return ConditionalUnlockManager::isUnlocked(getName());
+
     return waveNumber >= ITEM_UNLOCK_WAVE_NUMBERS.at(getId()) && isBuyable();
 }
 

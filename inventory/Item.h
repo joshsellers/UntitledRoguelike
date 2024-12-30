@@ -115,7 +115,8 @@ public:
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; }, 
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
-        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE");
+        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE",
+        const bool conditionalUnlock = false);
 
     static void createItem(const unsigned int id, const std::string name, const sf::IntRect textureRect,
         const bool isStackable, const unsigned int stackLimit, const bool isConsumable,
@@ -123,7 +124,8 @@ public:
         const float hitBoxPos, const int hitBoxSize, const sf::Vector2f barrelPos, const bool isGun, const int value = 1, const bool isBuyable = true,
         const std::function<bool(Entity*)> use = [](Entity* parent) { return false; },
         const int magazineSize = 0, const bool isAutomatic = false, const unsigned int fireRateMilliseconds = 0,
-        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE");
+        const unsigned int reloadTimeMilliseconds = 0, const bool isStartingItem = false, const bool isCustomItem = false, const std::string functionName = "NONE", 
+        const bool conditionalUnlock = false);
 
     static unsigned int getIdFromName(std::string name);
 
@@ -153,6 +155,8 @@ public:
 
     const int getValue() const;
     const bool isBuyable() const;
+
+    const bool conditionalUnlock() const;
 
     bool use(Entity* parent) const;
 
@@ -205,6 +209,8 @@ private:
 
     const int _value;
     const bool _isBuyable;
+
+    const bool _conditionalUnlock;
 
     const bool _isStartingItem;
 

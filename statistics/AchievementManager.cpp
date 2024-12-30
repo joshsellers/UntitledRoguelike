@@ -2,6 +2,7 @@
 #include "../core/MessageManager.h"
 #include "StatManager.h"
 #include "../core/Tutorial.h"
+#include "../inventory/ConditionalUnlockManager.h"
 
 void AchievementManagerInstance::start() {
     if (!STEAMAPI_INITIATED) return;

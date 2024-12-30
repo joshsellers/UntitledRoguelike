@@ -49,6 +49,7 @@
 #include "../world/entities/BigSnowMan.h"
 #include "../statistics/StatManager.h"
 #include "../world/entities/TeethBoss.h"
+#include "../inventory/ConditionalUnlockManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -941,6 +942,15 @@ private:
 
                 StatManager::saveOverallStats();
                 return "Reset player stats.\nAlways restart the game after running this function.";
+            })
+        },
+
+        {
+            "resetunlocks",
+            Command("Reset all conditional item unlocks",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                ConditionalUnlockManager::resetUnlocks();
+                return "Reset item unlocks";
             })
         }
     };
