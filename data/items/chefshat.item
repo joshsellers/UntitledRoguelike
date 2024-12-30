@@ -1,5 +1,8 @@
 name = "Chef's Hat"
 description = "Flaunt your culinary expertise\n\nMakes food items restore 25% more HP"
 equipmentType = CLOTHING_HEAD
-value = 250
+value = 499
 textureRect = 0, 83, 1, 1
+isBuyable = true
+conditionalUnlock = true
+shopChance = 12

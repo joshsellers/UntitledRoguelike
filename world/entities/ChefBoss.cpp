@@ -30,7 +30,6 @@ ChefBoss::ChefBoss(sf::Vector2f pos) : Boss(CHEF_BOSS, pos, 3.f, TILE_SIZE * 2, 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(2300, 3000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
-    getInventory().addItem(Item::getIdFromName("Chef's Hat"), 1);
 }
 
 void ChefBoss::subUpdate() {

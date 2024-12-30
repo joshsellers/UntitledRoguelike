@@ -4,7 +4,8 @@
 #include "../core/Util.h"
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
-    {"Cyclops Eye", 100}
+    {"Cyclops Eye", 100},
+    {"Chef's Hat", 5}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {
@@ -33,7 +34,7 @@ void ConditionalUnlockManager::increaseUnlockProgress(std::string itemName, floa
     if (isUnlocked(itemName)) return;
 
     if (_unlockProgress.find(itemName) == _unlockProgress.end()) {
-        MessageManager::displayMessage("No item progress stat for item name \"" + itemName + "\"", 5, WARN);
+        MessageManager::displayMessage("No item progress stat for item named \"" + itemName + "\"", 5, WARN);
         return;
     }
 

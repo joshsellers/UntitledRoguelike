@@ -56,6 +56,7 @@
 #include "entities/BabyBoss.h"
 #include "entities/BigSnowMan.h"
 #include "entities/TeethBoss.h"
+#include "../inventory/ConditionalUnlockManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1505,6 +1506,7 @@ void World::bossDefeated() {
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
             break;
         case BABY_BOSS:
             achievement = DEFEAT_BABYBOSS;
