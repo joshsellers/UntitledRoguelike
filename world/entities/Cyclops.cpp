@@ -1,6 +1,7 @@
 #include "Cyclops.h"
 #include "../../core/Util.h"
 #include "../World.h"
+#include "../../inventory/ConditionalUnlockManager.h"
 
 Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 4, false) {
     setMaxHitPoints(130);
@@ -25,7 +26,7 @@ Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE
     if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 
     constexpr int hasEyeChance = 199;
-    if (randomInt(0, hasEyeChance) == 0) getInventory().addItem(Item::CYCLOPS_EYE.getId(), 1);
+    if (randomInt(0, hasEyeChance) == 0) getInventory().addItem(Item::getIdFromName("Cyclops Eye"), 1);
 }
 
 void Cyclops::update() {
@@ -131,5 +132,7 @@ void Cyclops::damage(int damage) {
         for (int i = 0; i < getInventory().getCurrentSize(); i++) {
             getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
         }
+
+        ConditionalUnlockManager::increaseUnlockProgress("Cyclops Eye", 1);
     }
 }

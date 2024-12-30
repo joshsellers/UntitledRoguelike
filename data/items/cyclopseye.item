@@ -1,0 +1,10 @@
+name = "Cyclops Eye"
+description = "Equip it and it will cry for you"
+isConsumable = true
+textureRect = 1, 12, 1, 1
+isBuyable = true
+value = 250
+shopChance = 6
+conditionalUnlock = true
+functionName = "useeye"
+damage = 5

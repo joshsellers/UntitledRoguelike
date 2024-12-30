@@ -465,7 +465,7 @@ const Item Item::_PROJECTILE_TEAR_DROP(59, "_TEAR_DROP_PROJECTILE", sf::IntRect(
 
 const ProjectileData Item::DATA_PROJECTILE_TEAR_DROP(Item::_PROJECTILE_TEAR_DROP.getId(), 2.5f, sf::IntRect(4, 4, 12, 12), true, true);
 
-const Item Item::CYCLOPS_EYE(60, "Cyclops Eye", sf::IntRect(1, 12, 1, 1), false, 0, true,
+const Item Item::CYCLOPS_EYE(60, "_Cyclops Eye", sf::IntRect(1, 12, 1, 1), false, 0, true,
     "Equip it and it will cry for you",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 5, 0, 0, sf::Vector2f(), false, 250, false,
     [](Entity* parent) {
