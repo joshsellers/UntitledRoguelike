@@ -21,7 +21,7 @@ TeethBoss::TeethBoss(sf::Vector2f pos) : Boss(TEETH_BOSS, pos, 1.f, TILE_SIZE * 
     _canPickUpItems = false;
 
     _entityType = "teethboss";
-    _displayName = "";
+    _displayName = "Danny Smiles";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(6500, 7000);
