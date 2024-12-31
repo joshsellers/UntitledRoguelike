@@ -653,6 +653,7 @@ void World::onWaveCleared() {
     }
     if (unlockedItemCount > 0) {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
+        StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
     if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {

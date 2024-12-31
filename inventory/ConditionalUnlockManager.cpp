@@ -2,6 +2,7 @@
 #include "Item.h"
 #include "../core/MessageManager.h"
 #include "../core/Util.h"
+#include "../statistics/StatManager.h"
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
@@ -21,6 +22,7 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
     for (const auto& item : Item::ITEMS) {
         if (item->getName() == itemName) {
             _unlockedItems.push_back(itemName);
+            StatManager::increaseStat(ITEMS_UNLOCKED, 1);
             saveUnlockedItems();
             MessageManager::displayMessage("You've unlocked a new item!", 5);
             return;

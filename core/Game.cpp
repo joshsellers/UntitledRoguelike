@@ -871,12 +871,12 @@ void Game::initUI() {
 
     // Stats menu from pause
     _currentSaveStatsLabel = std::shared_ptr<UILabel>(new UILabel(
-        "", 15.f, 13.5f, 1.25f, _font
+        "", 15.f, 10.f, 1.25f, _font
     ));
     _statsMenu_pauseMenu->addElement(_currentSaveStatsLabel);
 
     _overallStatsLabel_pauseMenu = std::shared_ptr<UILabel>(new UILabel(
-        "", 45.f, 13.5f, 1.25f, _font
+        "", 45.f, 10.f, 1.25f, _font
     ));
     _statsMenu_pauseMenu->addElement(_overallStatsLabel_pauseMenu);
 
@@ -897,7 +897,7 @@ void Game::initUI() {
 
     // Stats menu from main
     _overallStatsLabel_mainMenu = std::shared_ptr<UILabel>(new UILabel(
-        "", 15.f, 15.f, 1.25f, _font
+        "", 15.f, 10.f, 1.25f, _font
     ));
     _statsMenu_mainMenu->addElement(_overallStatsLabel_mainMenu);
 
