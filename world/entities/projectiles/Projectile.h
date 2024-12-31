@@ -9,8 +9,10 @@ public:
     Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false, 
         int damageBoost = 0, bool addParentVelocity = true, EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA);
 
-    void update();
+    virtual void update();
     void draw(sf::RenderTexture& surface);
+
+    void setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -21,7 +23,7 @@ public:
     int passThroughCount = 1;
 
     friend class ProjectilePoolManager;
-private:
+protected:
     Entity* _parent;
 
     sf::Vector2f _originalPos;
@@ -48,6 +50,12 @@ private:
 
     int _entitiesPassedThrough = 0;
     std::vector<std::string> _hitEntities;
+
+    void split() const;
+    std::string _splitProjectileDataIdentifer = "";
+    bool _splitOnHit = false;
+    bool _splitOnDecay = false;
+    unsigned int _splitProjectileCount = 0;
 
     void reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false, 
         int damageBoost = 0, bool addParentVelocity = true, int passThroughCount = 1, EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA);

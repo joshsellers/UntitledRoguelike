@@ -751,7 +751,7 @@ private:
                         if (abilityName == parsedCommand[1]) {
                             for (const auto& parameter : ability->getParameters()) {
                                 std::string parameterName = parameter.first;
-                                boost::to_lower(parameterName);
+                                //boost::to_lower(parameterName);
                                 if (parameterName == parsedCommand[2]) {
                                     float value = 0.f;
                                     try {

@@ -257,6 +257,12 @@ const Ability Ability::ORDER_FORM(10, "Order Form",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::SPLITTING_PROJECTILES(11, "Split Shot",
+    { {"splitCount", 4.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

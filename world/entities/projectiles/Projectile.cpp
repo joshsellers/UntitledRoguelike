@@ -3,6 +3,8 @@
 #include "../../../statistics/StatManager.h"
 #include "../DroppedItem.h"
 #include "../../entities/Explosion.h"
+#include "ProjectileDataManager.h"
+#include "ProjectilePoolManager.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -49,6 +51,8 @@ void Projectile::update() {
             spawnExplosion();
         }
 
+        if (_splitOnDecay) split();
+
         return;
     }
 
@@ -64,6 +68,9 @@ void Projectile::update() {
                 if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
                     spawnExplosion();
                 }
+
+                if (_splitOnHit) split();
+
                 _isActive = false;
                 return;
             }
@@ -79,6 +86,8 @@ void Projectile::update() {
                             if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
                                 spawnExplosion();
                             }
+
+                            if (_splitOnHit) split();
                             _isActive = false;
                             return;
                         }
@@ -111,6 +120,8 @@ void Projectile::update() {
                             if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
                                 spawnExplosion();
                             }
+
+                            if (_splitOnHit) split();
                             _isActive = false;
                             return;
                         }
@@ -157,6 +168,28 @@ void Projectile::draw(sf::RenderTexture& surface) {
 
 
     surface.draw(_sprite);
+}
+
+void Projectile::setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount) {
+    _splitProjectileDataIdentifer = projectileDataIdentifier;
+    _splitOnHit = splitOnHit;
+    _splitOnDecay = splitOnDecay;
+    _splitProjectileCount = projectileCount;
+}
+
+void Projectile::split() const {
+    if (_splitProjectileDataIdentifer == "") {
+        MessageManager::displayMessage("split() was called on a projectile with an undefined split projectile identifier", 5, WARN);
+        return;
+    }
+
+    const float angleIncrement = 360.f / _splitProjectileCount;
+    for (int i = 0; i < _splitProjectileCount; i++) {
+        ProjectilePoolManager::addProjectile(
+            getPosition(), _parent, degToRads(angleIncrement * i), ProjectileDataManager::getData(_splitProjectileDataIdentifer).baseVelocity,
+            ProjectileDataManager::getData(_splitProjectileDataIdentifer), onlyDamagePlayer, _damageBoost, false, passThroughCount, _explosionBehavior
+        );
+    }
 }
 
 void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
@@ -228,4 +261,9 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _currentTime = 0;
 
     _isActive = true;
+
+    _splitProjectileDataIdentifer = "";
+    _splitOnHit = false;
+    _splitOnDecay = false;
+    _splitProjectileCount = 0;
 }

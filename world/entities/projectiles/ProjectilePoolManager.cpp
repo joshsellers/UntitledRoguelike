@@ -44,7 +44,7 @@ void ProjectilePoolManager::draw(sf::RenderTexture& surface) {
     }
 }
 
-void ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
+Projectile* ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
     bool onlyHitPlayer, int damageBoost, bool addParentVelocity, int passThroughCount, EXPLOSION_BEHAVIOR explosionBehavior) {
 
     bool foundAvailable = false;
@@ -54,7 +54,7 @@ void ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* parent, floa
             projectile->setWorld(parent->getWorld());
             projectile->reset(pos, parent, directionAngle, velocity, data, onlyHitPlayer, damageBoost, addParentVelocity, passThroughCount, explosionBehavior);
             foundAvailable = true;
-            return;
+            return projectile;
         }
         
         lastProjectile = projectile;
@@ -63,6 +63,7 @@ void ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* parent, floa
     if (!foundAvailable && lastProjectile != nullptr) {
         lastProjectile->setWorld(parent->getWorld());
         lastProjectile->reset(pos, parent, directionAngle, velocity, data, onlyHitPlayer, damageBoost, addParentVelocity, passThroughCount, explosionBehavior);
+        return lastProjectile;
     }
 }
 

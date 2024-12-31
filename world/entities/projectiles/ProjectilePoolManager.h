@@ -14,7 +14,7 @@ public:
 
     static void draw(sf::RenderTexture& surface);
 
-    static void addProjectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
+    static Projectile* addProjectile(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, 
         bool onlyHitPlayer = false, int damageBoost = 0, bool addParentVelocity = true, int passThroughCount = 1, EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA);
 
     static void removeAll();

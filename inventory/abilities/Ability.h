@@ -20,6 +20,7 @@ public:
     static const Ability CRIT_CHANCE;
     static const Ability OCTOPUS;
     static const Ability ORDER_FORM;
+    static const Ability SPLITTING_PROJECTILES;
 
     static std::vector<Ability*> ABILITIES;
 

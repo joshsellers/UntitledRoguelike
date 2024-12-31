@@ -4,7 +4,7 @@
 
 TeethBoss::TeethBoss(sf::Vector2f pos) : Boss(TEETH_BOSS, pos, 1.f, TILE_SIZE * 8, TILE_SIZE * 8,
     {
-        BossState(CHARGE, 10000, 10000)
+        BossState(CHARGE, 5000, 8000)
     }
 ) {
     setMaxHitPoints(30000);

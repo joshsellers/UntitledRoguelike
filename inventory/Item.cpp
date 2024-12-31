@@ -681,8 +681,13 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const int damageBoost = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage();
         const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
 
-        ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
+        Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
+
+        if (AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
+            const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");
+            firedProjectile->setSplitInto(ITEMS[projData.itemId]->getName(), true, false, splitCount);
+        }
 
         parent->decrementMagazine();
 
