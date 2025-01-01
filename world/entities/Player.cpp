@@ -317,11 +317,13 @@ void Player::drawEquipables(sf::RenderTexture& surface) {
     drawApparel(_armorHeadSprite, EQUIPMENT_TYPE::ARMOR_HEAD, surface);
 
     if (!isSwimming() || isInBoat()) {
-        drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
+        const bool hasSteroids = PlayerVisualEffectManager::playerHasEffect("Muscles");
+
+        if (!hasSteroids) drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
         drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
         drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
 
-        drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_BODY, surface);
+        if (!hasSteroids) drawApparel(_armorBodySprite, EQUIPMENT_TYPE::ARMOR_BODY, surface);
         drawApparel(_armorLegsSprite, EQUIPMENT_TYPE::ARMOR_LEGS, surface);
         drawApparel(_armorFeetSprite, EQUIPMENT_TYPE::ARMOR_FEET, surface);
     }
