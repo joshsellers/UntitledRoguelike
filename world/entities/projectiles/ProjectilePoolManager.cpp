@@ -65,6 +65,9 @@ Projectile* ProjectilePoolManager::addProjectile(sf::Vector2f pos, Entity* paren
         lastProjectile->reset(pos, parent, directionAngle, velocity, data, onlyHitPlayer, damageBoost, addParentVelocity, passThroughCount, explosionBehavior);
         return lastProjectile;
     }
+
+    MessageManager::displayMessage("Returning nullptr from addProjectile", 5, WARN);
+    return nullptr;
 }
 
 void ProjectilePoolManager::removeAll() {
