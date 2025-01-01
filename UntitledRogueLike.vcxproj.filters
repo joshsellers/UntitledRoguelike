@@ -525,6 +525,9 @@
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIItemCatalogue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -951,6 +954,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inventory\ConditionalUnlockManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIItemCatalogue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

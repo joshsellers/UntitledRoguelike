@@ -21,6 +21,7 @@
 #include "../world/entities/AltarArrow.h"
 #include "../ui/UISlider.h"
 #include "SoundManager.h"
+#include "../ui/UIItemCatalogue.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -897,7 +898,7 @@ void Game::initUI() {
 
     // Stats menu from main
     _overallStatsLabel_mainMenu = std::shared_ptr<UILabel>(new UILabel(
-        "", 15.f, 10.f, 1.25f, _font
+        "", 30.f, 10.f, 1.25f, _font
     ));
     _statsMenu_mainMenu->addElement(_overallStatsLabel_mainMenu);
 
@@ -907,13 +908,23 @@ void Game::initUI() {
     back_stats_mainButton->setSelectionId(0);
     _statsMenu_mainMenu->addElement(back_stats_mainButton);
 
+    std::shared_ptr<UIButton> unlockedItemsButton = std::shared_ptr<UIButton>(new UIButton(
+        15.f, 5.f, 12.f, 3.f, "item catalogue", _font, this, "unlocks"
+    ));
+    unlockedItemsButton->setSelectionId(1);
+    _statsMenu_mainMenu->addElement(unlockedItemsButton);
+
     _statsMenu_mainMenu->useGamepadConfiguration = true;
     _statsMenu_mainMenu->defineSelectionGrid(
         {
-            {back_stats_mainButton->getSelectionId()}
+            {back_stats_mainButton->getSelectionId(), unlockedItemsButton->getSelectionId()}
         }
     );
     _ui->addMenu(_statsMenu_mainMenu);
+
+    
+    // item catalogue
+    _ui->addMenu(_unlocksMenu);
 
    
     // Death screen
@@ -1194,6 +1205,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
+        StatManager::saveOverallStats();
         _window->close();
     } else if (buttonCode == "newgame") {
         if (!Tutorial::isCompleted() && _tips.size() > 0) {
@@ -1290,6 +1302,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
+        StatManager::saveOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
 
         _bossHUDMenu->hide();
@@ -1594,6 +1607,49 @@ void Game::buttonPressed(std::string buttonCode) {
         SoundManager::setSfxVolume(_sfxSlider->getValue());
     } else if (buttonCode == "musicslider") {
         SoundManager::setMusicVolume(_musicSlider->getValue());
+    } else if (buttonCode == "unlocks") {
+        _statsMenu_mainMenu->hide();
+
+        std::vector<unsigned int> unlockableItems;
+        std::vector<unsigned int> unlockedItems;
+        for (const auto& item : Item::ITEMS) {
+            if (!stringStartsWith(item->getName(), "_") && item->isBuyable() && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO 
+                && (item->getRequiredWave() != 0 || item->conditionalUnlock())) {
+                unlockableItems.push_back(item->getId());
+            }
+        }
+
+        for (unsigned int itemId : unlockableItems) {
+            if (Item::ITEMS[itemId]->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))) unlockedItems.push_back(itemId);
+        }
+
+        std::shared_ptr<UIButton> backButton = std::shared_ptr<UIButton>(new UIButton(
+            5.f, 5.f, 5.f, 3.f, "back", _font, this, "back_unlocks"
+        ));
+        backButton->setSelectionId(0);
+        _unlocksMenu->addElement(backButton);
+
+        Inventory inventory(nullptr);
+        for (unsigned int itemId : unlockedItems) {
+            inventory.addItem(itemId, 1);
+        }
+
+        std::shared_ptr<UIItemCatalogue> catalogue = std::shared_ptr<UIItemCatalogue>(new UIItemCatalogue(
+            39.f, 11.f, unlockedItems.size(), unlockableItems.size(), inventory, _font, _spriteSheet
+        ));
+        _unlocksMenu->addElement(catalogue);
+
+        _unlocksMenu->useGamepadConfiguration = true;
+        _unlocksMenu->defineSelectionGrid(
+            { 
+                { backButton->getSelectionId() }
+            }
+        );
+        _unlocksMenu->show();
+    } else if (buttonCode == "back_unlocks") {
+        _unlocksMenu->hide();
+        _unlocksMenu->clearElements();
+        _statsMenu_mainMenu->show();
     }
 }
 

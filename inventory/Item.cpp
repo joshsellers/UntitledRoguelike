@@ -46,7 +46,7 @@ const Item Item::AXE(5, "Axe", sf::IntRect(18, 4, 1, 1), false, 0, false,
     EQUIPMENT_TYPE::TOOL, 5, 18.f, 20, sf::Vector2f(), false, 6
 );
 
-const Item Item::DAGGER(6, "Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
+const Item Item::DAGGER(6, "_Dagger", sf::IntRect(18, 0, 1, 1), false, 0, false,
     "Careful! It's sharp",
     EQUIPMENT_TYPE::TOOL, 3, 12.f, 5, sf::Vector2f(), false, 20, false
 );
@@ -334,7 +334,7 @@ const Item Item::COIN_MAGNET(40, "Magnet", sf::IntRect(6, 12, 1, 1), true, 12, t
     }
 );
 
-const Item Item::SCYTHE(41, "Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
+const Item Item::SCYTHE(41, "_Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false,
     "Swing for slicing",
     EQUIPMENT_TYPE::TOOL, 15, 24, 10, sf::Vector2f(), false, 59, false
 );
@@ -359,7 +359,7 @@ const Item Item::MATMURA_BOOTS(45, "Crypticus Boots", sf::IntRect(21, 43, 1, 1),
     EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, true
 );
 
-const Item Item::BROADSWORD(46, "Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
+const Item Item::BROADSWORD(46, "_Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
     "Chop chop",
     EQUIPMENT_TYPE::TOOL, 10, 40, 20, sf::Vector2f(), false, 79, false
 );

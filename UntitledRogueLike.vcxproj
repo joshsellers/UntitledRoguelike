@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
+    <ClCompile Include="ui\UIItemCatalogue.cpp" />
     <ClCompile Include="world\entities\BabyBoss.cpp" />
     <ClCompile Include="world\entities\BeeFamiliar.cpp" />
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
@@ -192,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
+    <ClInclude Include="ui\UIItemCatalogue.h" />
     <ClInclude Include="world\entities\BabyBoss.h" />
     <ClInclude Include="world\entities\BeeFamiliar.h" />
     <ClInclude Include="world\entities\BigSnowMan.h" />

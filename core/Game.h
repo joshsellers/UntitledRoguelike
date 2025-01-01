@@ -87,6 +87,7 @@ private:
 	std::shared_ptr<UIMenu> _virtualKeyboardMenu_upper = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _deathMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _audioMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _unlocksMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UISlider> _musicSlider;
 	std::shared_ptr<UISlider> _sfxSlider;
