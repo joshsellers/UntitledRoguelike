@@ -893,20 +893,20 @@ unsigned int Item::getRequiredWave() const {
     return ITEM_UNLOCK_WAVE_NUMBERS.at(getId());
 }
 
-std::map<unsigned int, unsigned int> Item::ITEM_SHOP_CHANCES = {
-    {Item::PROTEIN_SHAKE.getId(), 4},
-    {Item::MATMURA_HELMET.getId(), 50},
-    {Item::MATMURA_CHESTPLATE.getId(), 50},
-    {Item::MATMURA_LEGGINGS.getId(), 50},
-    {Item::MATMURA_BOOTS.getId(), 50}
+std::map<unsigned int, float> Item::ITEM_SHOP_CHANCES = {
+    {Item::PROTEIN_SHAKE.getId(), 33.f},
+    {Item::MATMURA_HELMET.getId(), 1.9f},
+    {Item::MATMURA_CHESTPLATE.getId(), 1.9f},
+    {Item::MATMURA_LEGGINGS.getId(), 1.9f},
+    {Item::MATMURA_BOOTS.getId(), 1.9f}
 };
 
-unsigned int Item::getShopChance() const {
+float Item::getShopChance() const {
     if (ITEM_SHOP_CHANCES.find(getId()) != ITEM_SHOP_CHANCES.end()) {
         return ITEM_SHOP_CHANCES.at(getId());
     }
 
-    return 2;
+    return 100.f;
 }
 
 bool Item::isStartingItem() const {

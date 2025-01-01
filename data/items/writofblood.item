@@ -7,4 +7,4 @@ isBuyable = true
 isStackable = false
 textureRect = 6, 13, 1, 1
 isConsumable = true
-shopChance = 4
+shopChance = 33

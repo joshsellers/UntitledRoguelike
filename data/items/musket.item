@@ -1,7 +1,7 @@
 name = "Musket"
 description = "Slow reload but big damage"
 isBuyable = true
-shopChance = 6
+shopChance = 20
 unlockWaveNumber = 8
 value = 21
 equipmentType = TOOL

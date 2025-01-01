@@ -127,7 +127,7 @@ void ModManager::loadItem(std::ifstream& in) {
     unsigned int frameCount = 0;
     std::string ammoItemName = "";
     bool isStartingItem = false;
-    unsigned int shopChance = 2;
+    float shopChance = 100.f;
     std::vector<std::string> tags;
     bool conditionalUnlock = false;
 
@@ -219,7 +219,7 @@ void ModManager::loadItem(std::ifstream& in) {
             } else if (tokens.at(0) == "isStartingItem") {
                 isStartingItem = tokens.at(2) == "1";
             } else if (tokens.at(0) == "shopChance") {
-                shopChance = std::stoul(tokens.at(2));
+                shopChance = std::stof(tokens.at(2));
             } else if (tokens.at(0) == "tags") {
                 for (int i = 2; i < tokens.size(); i++) {
                     std::string currentToken = tokens.at(i);

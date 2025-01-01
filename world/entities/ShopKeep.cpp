@@ -81,14 +81,14 @@ void ShopKeep::initInventory() {
             unsigned int itemPos = randomInt(0, availableItems.size() - 1);
             const auto& item = Item::ITEMS[availableItems.at(itemPos)];
 
-            unsigned int spawnChance = item->getShopChance() - 1;
+            float spawnChance = item->getShopChance() / 100.f;
             const EQUIPMENT_TYPE equipType = item->getEquipmentType();
             if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
                 || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
                 || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance += 1;
+                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance -= 0.67f;
 
-            if (randomInt(0, spawnChance - 1) == 0) {
+            if (randomChance(spawnChance)) {
                 unsigned int itemAmount = 1;
                 if (item->isStackable()) itemAmount = randomInt(1, item->getStackLimit());
 

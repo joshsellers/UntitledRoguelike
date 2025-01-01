@@ -165,7 +165,7 @@ public:
     bool isUnlocked(unsigned int waveNumber) const;
     unsigned int getRequiredWave() const;
 
-    unsigned int getShopChance() const;
+    float getShopChance() const;
 
     bool isStartingItem() const;
 
@@ -183,7 +183,7 @@ private:
 
     static std::map<unsigned int, unsigned int> ITEM_UNLOCK_WAVE_NUMBERS;
     static std::map<unsigned int, WeaponAnimationConfig> ANIMATION_CONFIGS;
-    static std::map<unsigned int, unsigned int> ITEM_SHOP_CHANCES;
+    static std::map<unsigned int, float> ITEM_SHOP_CHANCES;
 
     const unsigned int _id;
     const std::string _name;
