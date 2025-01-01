@@ -771,7 +771,7 @@ void World::generateChunkScatters(Chunk& chunk) {
     int chX = chunk.pos.x;
     int chY = chunk.pos.y;
 
-    constexpr int altarSpawnRate = 45000;
+    constexpr int altarSpawnRate = 38000;
     const int shopSpawnRate = (HARD_MODE_ENABLED ? 19700 : 12000);
     constexpr int grassSpawnRate = 25;
     constexpr int smallTreeSpawnRate = 187;
@@ -816,7 +816,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                 }
             }
 
-            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH || terrainType == TERRAIN_TYPE::TUNDRA)) {
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
                 boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 18 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
