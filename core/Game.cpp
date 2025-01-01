@@ -1031,8 +1031,8 @@ void Game::update() {
 
                 _waveCounterMeter->setPercentFull(((float)cooldownTimeRemaining / (float)cooldownTimeAtStart));
 
-                if (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))
-                    || (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN)))) {
+                if (!_world.bossIsActive() && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))
+                    || (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))))) {
                     _world._cooldownStartTime -= _world.getEnemySpawnCooldownTimeMilliseconds() * 0.00657;
                 }
             } else if (!_world.playerIsInShop()) {
