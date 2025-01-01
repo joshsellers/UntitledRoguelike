@@ -1,0 +1,4 @@
+name = "_PROJECTILE_LARGE_TOOTH"
+description = "This item should not be obtainable."
+damage = 30
+textureRect = 143, 49, 2, 2

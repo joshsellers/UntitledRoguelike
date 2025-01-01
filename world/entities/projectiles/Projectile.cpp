@@ -38,7 +38,6 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
 
 void Projectile::update() {
     if (currentTimeMillis() - _spawnTime >= _lifeTime) {
-        _isActive = false;
         if (_data.dropOnExpire) {
             std::shared_ptr<DroppedItem> droppedItem = 
                 std::shared_ptr<DroppedItem>(new DroppedItem(getPosition(), 0, _data.itemId, 1, Item::ITEMS[_data.itemId]->getTextureRect()));
@@ -52,6 +51,7 @@ void Projectile::update() {
         }
 
         if (_splitOnDecay) split();
+        _isActive = false;
 
         return;
     }

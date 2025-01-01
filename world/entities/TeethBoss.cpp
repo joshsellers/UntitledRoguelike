@@ -1,10 +1,13 @@
 #include "TeethBoss.h"
 #include "../World.h"
 #include "../../core/Viewport.h"
+#include "projectiles/Projectile.h"
 
 TeethBoss::TeethBoss(sf::Vector2f pos) : Boss(TEETH_BOSS, pos, 1.f, TILE_SIZE * 8, TILE_SIZE * 8,
     {
-        BossState(CHARGE, 5000, 8000)
+        BossState(CHARGE, 5000, 8000),
+        BossState(EXPLODING_TEETH, 5000, 6000),
+        BossState(TEETH_LAZER, 2000, 3000)
     }
 ) {
     setMaxHitPoints(30000);
@@ -128,6 +131,8 @@ void TeethBoss::subUpdate() {
 void TeethBoss::onStateChange(const BossState previousState, const BossState newState) {
     if (newState.stateId == CHARGE) {
         resetChargeTarget();
+    } else if (newState.stateId == TEETH_LAZER) {
+        _fireAngle = 0.f;
     }
 }
 
@@ -154,6 +159,57 @@ void TeethBoss::runCurrentState() {
 
             if (distRat > 1.f) resetChargeTarget();
 
+            break;
+        }
+        case EXPLODING_TEETH:
+        {
+            constexpr long long fireRate = 750LL;
+            if (currentTimeMillis() - _lastFireTimeMillis >= fireRate) {
+                const sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 4);
+                sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+
+                const float dx = playerPos.x - cLoc.x;
+                const float dy = playerPos.y - cLoc.y;
+                const float angleRads = radsToDeg(std::atan2(dy, dx));
+
+                Projectile* projectile = fireTargetedProjectile(
+                    degToRads(angleRads), ProjectileDataManager::getData("_PROJECTILE_LARGE_TOOTH"), "NONE", true, false, { 0, 0 }, false
+                );
+                projectile->setSplitInto("_PROJECTILE_SMALL_TOOTH", false, true, 8);
+
+                constexpr float centerOffsetAngle = 45.f;
+
+                projectile = fireTargetedProjectile(
+                    degToRads(angleRads - centerOffsetAngle), ProjectileDataManager::getData("_PROJECTILE_LARGE_TOOTH"), "NONE", true, false, { 0, 0 }, false
+                );
+                projectile->setSplitInto("_PROJECTILE_SMALL_TOOTH", false, true, 8);
+
+                projectile = fireTargetedProjectile(
+                    degToRads(angleRads + centerOffsetAngle), ProjectileDataManager::getData("_PROJECTILE_LARGE_TOOTH"), "NONE", true, false, { 0, 0 }, false
+                );
+                projectile->setSplitInto("_PROJECTILE_SMALL_TOOTH", false, true, 8);
+
+                _lastFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+        case TEETH_LAZER:
+        {
+            _fireAngle += 4.f;
+            if (_fireAngle > 360.f) _fireAngle = 0;
+
+            constexpr long long fireRate = 25LL;
+            if (currentTimeMillis() - _lastFireTimeMillis >= fireRate) {
+                constexpr int dirNumber = 2;
+                for (int i = 0; i < dirNumber; i++) {
+                    float currentAngle = _fireAngle + 180.f * i;
+                    if (currentAngle >= 360.f) currentAngle -= 360.f;
+
+                    float fireAngleRads = currentAngle * ((float)PI / 180.f);
+                    fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_SMALL_TOOTH"), "NONE", true, false, {8, 0}, false);
+                }
+                _lastFireTimeMillis = currentTimeMillis();
+            }
             break;
         }
     }

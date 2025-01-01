@@ -19,6 +19,8 @@ enum MOVING_DIRECTION {
     RIGHT = 3
 };
 
+class Projectile;
+
 class Entity {
 public:
     Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp);
@@ -178,9 +180,9 @@ protected:
     bool _isInitiallyDocile = false;
     bool _isHostile = false;
 
-    void fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
+    Projectile* fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
         bool displayProjectileOnTop = false, sf::Vector2f centerOffset = { 0, 0 }, bool addParentVelocity = true);
-    void fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
+    Projectile* fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName = "NONE", bool onlyDamagePlayer = false, 
         bool displayProjectileOnTop = false, sf::Vector2f centerOffset = {0, 0}, bool addParentVelocity = true);
 
     Inventory _inventory = Inventory(this);

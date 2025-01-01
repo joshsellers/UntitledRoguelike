@@ -18,12 +18,15 @@ protected:
     enum BEHAVIOR_STATE {
         CHARGE,
         EXPLODING_TEETH,
-        SWEEPING_TEETH
+        TEETH_LAZER
     };
 private:
     sf::Sprite _wavesSprite;
 
     long long _lastContactDamageTimeMillis = 0LL;
+
+    long long _lastFireTimeMillis = 0LL;
+    float _fireAngle;
 
     sf::Vector2f _chargeTarget;
     void resetChargeTarget();

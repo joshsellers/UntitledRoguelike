@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_SMALL_TOOTH"
+velocity = 2.0
+rotate = true
+hitBox = 3, 3, 12, 12
+onlyHitEnemies = false
+lifeTime = 15000
