@@ -5,4 +5,4 @@ value = 499
 textureRect = 0, 83, 1, 1
 isBuyable = true
 conditionalUnlock = true
-shopChance = 9
+shopChance = 13
