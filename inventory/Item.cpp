@@ -894,11 +894,11 @@ unsigned int Item::getRequiredWave() const {
 }
 
 std::map<unsigned int, float> Item::ITEM_SHOP_CHANCES = {
-    {Item::PROTEIN_SHAKE.getId(), 33.f},
-    {Item::MATMURA_HELMET.getId(), 1.9f},
-    {Item::MATMURA_CHESTPLATE.getId(), 1.9f},
-    {Item::MATMURA_LEGGINGS.getId(), 1.9f},
-    {Item::MATMURA_BOOTS.getId(), 1.9f}
+    {Item::PROTEIN_SHAKE.getId(), 50.f},
+    {Item::MATMURA_HELMET.getId(), 1.f},
+    {Item::MATMURA_CHESTPLATE.getId(), 1.f},
+    {Item::MATMURA_LEGGINGS.getId(), 1.f},
+    {Item::MATMURA_BOOTS.getId(), 1.f}
 };
 
 float Item::getShopChance() const {
