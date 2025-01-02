@@ -44,8 +44,13 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
     else transactionWasSuccessful = _shopManager.sell(_source.getItemIdAt(index), amount);
 
     if (transactionWasSuccessful) {
-        _source.addItem(Item::PENNY.getId(), Item::ITEMS[_source.getItemIdAt(index)]->getValue() * amount);
-        if (!_buyMode) StatManager::increaseStat(PENNIES_COLLECTED, Item::ITEMS[_source.getItemIdAt(index)]->getValue() * amount);
+        float discount = 0.f;
+        const unsigned int itemId = _source.getItemIdAt(index);
+        if (itemId == _shopManager.getDiscount().first) discount = _shopManager.getDiscount().second;
+        int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
+
+        _source.addItem(Item::PENNY.getId(), price);
+        if (!_buyMode) StatManager::increaseStat(PENNIES_COLLECTED, price);
         _source.removeItemAt(index, amount);
     }
 }
@@ -61,9 +66,17 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
 
     float textXOffset = (float)WINDOW_WIDTH * (2.f / 100);
 
+    int price = item->getValue();
+    bool discount = false;
+    if (item->getId() == _shopManager.getDiscount().first) {
+        price = price - ((float)price * _shopManager.getDiscount().second);
+
+        if (_buyMode && _shopManager.getDiscount().second != 0.f) discount = true;
+    }
+
     std::string ttText = item->getId() == Item::PENNY.getId() ? 
         "The shopkeep can use these to buy\nstuff you want to sell him"
-        : "PRICE: " + std::to_string(item->getValue()) + "¢\n\n" + item->getDescription();
+        : "PRICE: " + std::to_string(price) + "¢" + (discount ? " (" + std::to_string((int)(_shopManager.getDiscount().second * 100)) + "% OFF!)" : "") + "\n\n" + item->getDescription();
     if (!_buyMode && item->getId() == Item::PENNY.getId()) ttText = "Use these to buy stuff";
 
     _tooltipText.setString(ttText);

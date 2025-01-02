@@ -18,6 +18,9 @@ public:
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
 
+    void setDiscount(unsigned int itemId, float percentOff);
+    std::pair<unsigned int, float> getDiscount() const;
+
     friend class SaveManager;
 private:
     std::shared_ptr<UIShopInterface> _buyInterface;
@@ -25,6 +28,8 @@ private:
 
     // seed: {transactionNumber: itemId: amount}
     std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> _shopLedger;
+
+    std::pair<unsigned int, float> _discount;
 };
 
 #endif

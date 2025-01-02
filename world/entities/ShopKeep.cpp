@@ -126,6 +126,19 @@ void ShopKeep::initInventory() {
 
     if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
 
+    constexpr float discountChance = 0.75f;
+    if (randomChance(discountChance)) {
+        const unsigned int itemId = getInventory().getItemIdAt(randomInt(0, getInventory().getCurrentSize() - 1));
+        const float discountAmount = (float)randomInt(25, 90) / 100.f;
+
+        if (itemId != Item::PENNY.getId()) _shopManager->setDiscount(itemId, discountAmount); 
+        else {
+            _shopManager->setDiscount(0, 0.f);
+        }
+    } else {
+        _shopManager->setDiscount(0, 0.f);
+    }
+
     // apparel
     std::vector<std::vector<int>> clothingOptions = {
         {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED},

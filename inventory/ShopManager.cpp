@@ -13,7 +13,9 @@ void ShopManager::setSellInterface(std::shared_ptr<UIShopInterface> sellInterfac
 }
 
 bool ShopManager::buy(int itemId, int amount) {
-    int price = Item::ITEMS[itemId]->getValue() * amount;
+    float discount = 0.f;
+    if (itemId == _discount.first) discount = _discount.second;
+    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
     if (_sellInterface->getSource().hasItem(Item::PENNY.getId())
         && _sellInterface->getSource().getItemAmountAt(_sellInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _sellInterface->addItem(itemId, amount);
@@ -43,7 +45,9 @@ bool ShopManager::buy(int itemId, int amount) {
 }
 
 bool ShopManager::sell(int itemId, int amount) {
-    int price = Item::ITEMS[itemId]->getValue() * amount;
+    float discount = 0.f;
+    if (itemId == _discount.first) discount = _discount.second;
+    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
     if (_buyInterface->getSource().hasItem(Item::PENNY.getId())
         && _buyInterface->getSource().getItemAmountAt(_buyInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _buyInterface->addItem(itemId, amount);
@@ -91,4 +95,12 @@ void ShopManager::controllerButtonReleased(GAMEPAD_BUTTON button) {
         _buyInterface->blockControllerInput = false;
         _sellInterface->blockControllerInput = true;
     }
+}
+
+void ShopManager::setDiscount(unsigned int itemId, float percentOff) {
+    _discount = std::pair<unsigned int, float>(itemId, percentOff);
+}
+
+std::pair<unsigned int, float> ShopManager::getDiscount() const {
+    return _discount;
 }
