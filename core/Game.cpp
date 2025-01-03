@@ -1345,7 +1345,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;
-        _shopManager.clearLedger();
+        _shopManager.reset();
 
         _player->_pos = sf::Vector2f(0, 0);
         _player->_movingDir = DOWN;

@@ -227,6 +227,15 @@ private:
                 out << std::endl;
             }
         }
+
+        if (_shopManager->_discountHistory.size() != 0) {
+            const auto& discountHist = _shopManager->_discountHistory;
+            out << "DISCOUNTS";
+            for (auto& discountEntry : discountHist) {
+                out << ":" << discountEntry.first << "," << discountEntry.second.first << "," << discountEntry.second.second;
+            }
+            out << std::endl;
+        }
     }
 
     static void savePlayerData(std::ofstream& out) {
@@ -466,6 +475,16 @@ private:
                 int amount = std::stoi(parsedData[2]);
 
                 _shopManager->_shopLedger[seed][transactionNumber] = std::make_pair(itemId, amount);
+            }
+        } else if (header == "DISCOUNTS") {
+            for (const auto& discountEntryRaw : data) {
+                const std::vector<std::string> parsedEntry = splitString(discountEntryRaw, ",");
+
+                const unsigned int shopSeed = std::stoul(parsedEntry[0]);
+                const unsigned int itemId = std::stoul(parsedEntry[1]);
+                const float discount = std::stof(parsedEntry[2]);
+
+                _shopManager->_discountHistory[shopSeed] = { itemId, discount };
             }
         } else if (header == "PLAYER") {
             auto& player = _world->getPlayer();

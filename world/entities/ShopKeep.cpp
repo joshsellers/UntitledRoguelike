@@ -103,16 +103,7 @@ void ShopKeep::initInventory() {
         else if (availableItems.size() == 0) break;
     }
 
-    /*for (int i = 0; i < getInventory().getCurrentSize(); i++) {
-        std::shared_ptr<const Item> item = Item::ITEMS[getInventory().getItemIdAt(i)];
-        if (item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_HEAD
-            || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_BODY
-            || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_LEGS
-            || item->getEquipmentType() == EQUIPMENT_TYPE::CLOTHING_FEET) {
-            getInventory().equip(i, item->getEquipmentType());
-        }
-    }*/
-
+    // ledger
     for (unsigned int i = 0; i < _shopManager->getShopLedger()[seed].size(); i++) {
         auto& ledger = _shopManager->getShopLedger()[seed][i];
         unsigned int itemId = ledger.first;
@@ -123,21 +114,26 @@ void ShopKeep::initInventory() {
             getInventory().removeItem(itemId, -amount);
         }
     }
+    //
 
-    if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
-
-    constexpr float discountChance = 0.75f;
+    // discount
+    constexpr float discountChance = 0.5f;
     if (randomChance(discountChance)) {
         const unsigned int itemId = getInventory().getItemIdAt(randomInt(0, getInventory().getCurrentSize() - 1));
-        const float discountAmount = (float)randomInt(25, 90) / 100.f;
+        constexpr float freeChance = 0.02f;
+        const float discountAmount = randomChance(freeChance) ? 1.f : ((float)randomInt(25, 95) / 100.f);
 
-        if (itemId != Item::PENNY.getId()) _shopManager->setDiscount(itemId, discountAmount); 
-        else {
-            _shopManager->setDiscount(0, 0.f);
+        if (itemId != Item::PENNY.getId()) {
+            _shopManager->setDiscount(seed, itemId, discountAmount);
+        } else {
+            _shopManager->setDiscount(seed, 0, 0.f);
         }
     } else {
-        _shopManager->setDiscount(0, 0.f);
+        _shopManager->setDiscount(seed, 0, 0.f);
     }
+    //
+
+    if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
 
     // apparel
     std::vector<std::vector<int>> clothingOptions = {

@@ -47,7 +47,9 @@ void UIShopInterface::attemptTransaction(int index, int amount) {
         float discount = 0.f;
         const unsigned int itemId = _source.getItemIdAt(index);
         if (itemId == _shopManager.getDiscount().first) discount = _shopManager.getDiscount().second;
-        int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
+        int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount));
+        if (discount < 1.f && price == 0) price = 1;
+        price *= amount;
 
         _source.addItem(Item::PENNY.getId(), price);
         if (!_buyMode) StatManager::increaseStat(PENNIES_COLLECTED, price);
@@ -70,13 +72,14 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
     bool discount = false;
     if (item->getId() == _shopManager.getDiscount().first) {
         price = price - ((float)price * _shopManager.getDiscount().second);
+        if (price == 0 && _shopManager.getDiscount().second < 1.f) price = 1;
 
         if (_buyMode && _shopManager.getDiscount().second != 0.f) discount = true;
     }
 
     std::string ttText = item->getId() == Item::PENNY.getId() ? 
         "The shopkeep can use these to buy\nstuff you want to sell him"
-        : "PRICE: " + std::to_string(price) + "¢" + (discount ? " (" + std::to_string((int)(_shopManager.getDiscount().second * 100)) + "% OFF!)" : "") + "\n\n" + item->getDescription();
+        : "PRICE: " + std::to_string(price) + "¢" + (discount ? " (" + std::to_string((int)(_shopManager.getDiscount().second * 100)) + "% discount!)" : "") + "\n\n" + item->getDescription();
     if (!_buyMode && item->getId() == Item::PENNY.getId()) ttText = "Use these to buy stuff";
 
     _tooltipText.setString(ttText);
@@ -108,6 +111,9 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
     if (blockControllerInput) {
         darkenUnselectedMenu(surface);
     }
+
+    if (_buyMode && _shopManager.getDiscount().second != 0.f) _discountedItemId = _shopManager.getDiscount().first;
+    else _discountedItemId = -1;
 }
 
 void UIShopInterface::darkenUnselectedMenu(sf::RenderTexture& surface) {

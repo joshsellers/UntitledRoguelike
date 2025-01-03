@@ -96,7 +96,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
         label.setFont(_font);
         label.setCharacterSize(relativeFontSize);
-        label.setFillColor(sf::Color::White);
+        label.setFillColor(_discountedItemId == item->getId() ? sf::Color::Red : sf::Color::White);
         label.setPosition(itemPos.x - (_width / 8) + _width + (_width / 8) * 3, itemPos.y + _height / 6);
         std::string itemName = item->getName();
         if (item->getId() == Item::PENNY.getId() && _source.getParent()->getEntityType() == "shopkeep") itemName = "Shopkeep's pennies";

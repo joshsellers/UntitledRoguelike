@@ -15,7 +15,10 @@ void ShopManager::setSellInterface(std::shared_ptr<UIShopInterface> sellInterfac
 bool ShopManager::buy(int itemId, int amount) {
     float discount = 0.f;
     if (itemId == _discount.first) discount = _discount.second;
-    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
+    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount));
+    if (discount < 1.f && price == 0) price = 1;
+    price *= amount;
+
     if (_sellInterface->getSource().hasItem(Item::PENNY.getId())
         && _sellInterface->getSource().getItemAmountAt(_sellInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _sellInterface->addItem(itemId, amount);
@@ -39,6 +42,7 @@ bool ShopManager::buy(int itemId, int amount) {
 
         return true;
     } else {
+        if (discount == 1.f && price == 0) return true;
         MessageManager::displayMessage("You do not have enough pennies to buy this item!", 5);
         return false;
     }
@@ -47,7 +51,10 @@ bool ShopManager::buy(int itemId, int amount) {
 bool ShopManager::sell(int itemId, int amount) {
     float discount = 0.f;
     if (itemId == _discount.first) discount = _discount.second;
-    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount)) * amount;
+    int price = (Item::ITEMS[itemId]->getValue() - ((float)Item::ITEMS[itemId]->getValue() * discount));
+    if (discount < 1.f && price == 0) price = 1;
+    price *= amount;
+
     if (_buyInterface->getSource().hasItem(Item::PENNY.getId())
         && _buyInterface->getSource().getItemAmountAt(_buyInterface->getSource().findItem(Item::PENNY.getId())) >= price) {
         _buyInterface->addItem(itemId, amount);
@@ -71,8 +78,10 @@ bool ShopManager::sell(int itemId, int amount) {
     }
 }
 
-void ShopManager::clearLedger() {
+void ShopManager::reset() {
     _shopLedger.clear();
+    _discountHistory.clear();
+    _discount = { 0, 0.f };
 }
 
 std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> ShopManager::getShopLedger() const {
@@ -97,8 +106,14 @@ void ShopManager::controllerButtonReleased(GAMEPAD_BUTTON button) {
     }
 }
 
-void ShopManager::setDiscount(unsigned int itemId, float percentOff) {
-    _discount = std::pair<unsigned int, float>(itemId, percentOff);
+void ShopManager::setDiscount(unsigned int shopSeed, unsigned int itemId, float percentOff) {
+    const bool useRecordedDiscount = _discountHistory.find(shopSeed) != _discountHistory.end();
+
+    _discount = useRecordedDiscount ? 
+        _discountHistory.at(shopSeed) :
+        std::pair<unsigned int, float>(itemId, percentOff);
+
+    if (!useRecordedDiscount && percentOff > 0.f) _discountHistory[shopSeed] = {itemId, percentOff};
 }
 
 std::pair<unsigned int, float> ShopManager::getDiscount() const {

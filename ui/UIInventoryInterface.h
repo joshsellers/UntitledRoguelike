@@ -86,6 +86,8 @@ protected:
     void gamepadScrollDown();
     void gamepadScrollUp();
     void unfilterGamepadIndex();
+
+    int _discountedItemId = -1;
 };
 
 #endif

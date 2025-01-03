@@ -13,12 +13,12 @@ public:
     bool buy(int itemId, int amount);
     bool sell(int itemId, int amount);
 
-    void clearLedger();
+    void reset();
     std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> getShopLedger() const;
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
 
-    void setDiscount(unsigned int itemId, float percentOff);
+    void setDiscount(unsigned int shopSeed, unsigned int itemId, float percentOff);
     std::pair<unsigned int, float> getDiscount() const;
 
     friend class SaveManager;
@@ -28,6 +28,9 @@ private:
 
     // seed: {transactionNumber: itemId: amount}
     std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> _shopLedger;
+
+    // seed: itemId, discount
+    std::map<unsigned int, std::pair<unsigned int, float>> _discountHistory;
 
     std::pair<unsigned int, float> _discount;
 };
