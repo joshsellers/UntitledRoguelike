@@ -121,7 +121,7 @@ void ShopKeep::initInventory() {
     if (randomChance(discountChance)) {
         const unsigned int itemId = getInventory().getItemIdAt(randomInt(0, getInventory().getCurrentSize() - 1));
         constexpr float freeChance = 0.02f;
-        const float discountAmount = randomChance(freeChance) ? 1.f : ((float)randomInt(25, 95) / 100.f);
+        const float discountAmount = randomChance(freeChance) ? 1.f : ((float)randomInt(25, 90) / 100.f);
 
         if (itemId != Item::PENNY.getId()) {
             _shopManager->setDiscount(seed, itemId, discountAmount);
