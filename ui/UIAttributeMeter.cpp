@@ -1,4 +1,5 @@
 #include "UIAttributeMeter.h"
+#include "UIHandler.h"
 
 UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, float width, float height, 
     int& attribute, int& attributeMax, sf::Font font) : 
@@ -27,6 +28,29 @@ UIAttributeMeter::UIAttributeMeter(const sf::String attName, float x, float y, f
         _background.getPosition().x + _background.getSize().x / 2 - _text.getGlobalBounds().width / 2,
         _background.getPosition().y + _text.getGlobalBounds().width / 2
     );
+
+    _rTexture.create(_width, 14);
+    sf::RectangleShape centerShape;
+    centerShape.setPosition(0, 0);
+    centerShape.setSize(sf::Vector2f(_width, 14));
+    centerShape.setTexture(UIHandler::getUISpriteSheet().get());
+    centerShape.setTextureRect(sf::IntRect(192, 17, 1, 14));
+    _rTexture.draw(centerShape);
+
+    _center.setPosition(_bar.getPosition().x, _background.getPosition().y);
+    _center.setSize(sf::Vector2f(_width, _background.getSize().y));
+    _center.setTexture(&_rTexture.getTexture());
+    _center.setTextureRect(sf::IntRect(0, 0, _width, 14));
+
+    _leftPad.setTexture(*UIHandler::getUISpriteSheet());
+    _leftPad.setTextureRect(sf::IntRect(161, 17, 3, 14));
+    _leftPad.setScale(getRelativeWidth(0.5f) / 3.f, _center.getSize().y / 14.f);
+    _leftPad.setPosition(_bar.getPosition().x + padding - _leftPad.getGlobalBounds().width * 2, _center.getPosition().y);
+
+    _rightPad.setTexture(*UIHandler::getUISpriteSheet());
+    _rightPad.setTextureRect(sf::IntRect(176, 17, 3, 14));
+    _rightPad.setScale(getRelativeWidth(0.5f) / 3.f, _center.getSize().y / 14.f);
+    _rightPad.setPosition(_bar.getPosition().x - padding + _width + _rightPad.getGlobalBounds().width, _center.getPosition().y);
 }
 
 void UIAttributeMeter::update() {
@@ -50,12 +74,16 @@ void UIAttributeMeter::update() {
     if (_useDefaultLabel) _text.setString(_attName + ": " + std::to_string(_attribute) + "/" + std::to_string(_attributeMax));
     _text.setPosition(
         _background.getPosition().x + _background.getSize().x / 2 - _text.getGlobalBounds().width / 2,
-        _background.getPosition().y + _background.getSize().y / 2 - _text.getGlobalBounds().height / 2
+        _background.getPosition().y + _background.getSize().y / 2 - _text.getGlobalBounds().height / 1.5
     );
 }
 
 void UIAttributeMeter::draw(sf::RenderTexture& surface) {
-    surface.draw(_background);
+
+    surface.draw(_center);
+    surface.draw(_leftPad);
+    surface.draw(_rightPad);
+    //surface.draw(_background);
     surface.draw(_bar);
     if (_showText) surface.draw(_text);
 }

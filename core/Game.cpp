@@ -278,38 +278,38 @@ void Game::initUI() {
 
     // HUD
     std::shared_ptr<UIAttributeMeter> playerHpMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "HP", 50, 92, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
+        "HP", 50, 91.5, 24, 1.5f, _player->getHitPointsRef(), _player->getMaxHitPointsRef(), _font
     ));
-    playerHpMeter->setColor(0xCC0000FF);
+    playerHpMeter->setColor(0xD21919FF);
     playerHpMeter->setBackgroundColor(0x9A0000FF);
     _HUDMenu->addElement(playerHpMeter);
 
     _magazineMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "", 90, 92, 6, 3.f, _player->getMagazineContentsPercentage(), _maxMagPercentage, _font
+        "", 90, 92, 6, 1.5f, _player->getMagazineContentsPercentage(), _maxMagPercentage, _font
     ));
     _magazineMeter->setBackgroundColor(0x55555599);
-    _magazineMeter->setColor(0x99999999);
+    _magazineMeter->setColor(0x787878FF);
     _magazineMeter->useDefaultLabel(false);
-    _magazineMeter->fitWidthToText(true);
+    //_magazineMeter->fitWidthToText(true);
     _magazineMeter->setCharacterSize(2);
     _HUDMenu->addElement(_magazineMeter);
 
     _staminaMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "STAMINA", 50.25f, 87, 18, 1.3f, _player->getStaminaRef(), _player->getMaxStaminaRef(), _font
+        "STAMINA", 50.25f, 86.5, 18, 1.3f, _player->getStaminaRef(), _player->getMaxStaminaRef(), _font
     ));
-    _staminaMeter->setColor(0x00CC00FF);
+    _staminaMeter->setColor(0x00BC2DFF);
     _staminaMeter->setBackgroundColor(0x00AA00FF);
     _HUDMenu->addElement(_staminaMeter);
 
     int placeholder = 0;
     _waveCounterMeter = std::shared_ptr<UIAttributeMeter>(new UIAttributeMeter(
-        "", 50.f, 97.f, 14.f, 0.75f, placeholder, placeholder, _font
+        "", 50.f, 96.5f, 14.f, 1.3f, placeholder, placeholder, _font
     ));
     _waveCounterMeter->setBackgroundColor(0x555555BB);
-    _waveCounterMeter->setColor(0x999999BB);
+    _waveCounterMeter->setColor(0x787878FF);
     _waveCounterMeter->useDefaultLabel(false);
     _waveCounterMeter->useAttributes(false);
-    _waveCounterMeter->fitWidthToText(true);
+    //_waveCounterMeter->fitWidthToText(true);
     _HUDMenu->addElement(_waveCounterMeter);
 
     _ui->addMenu(_HUDMenu);

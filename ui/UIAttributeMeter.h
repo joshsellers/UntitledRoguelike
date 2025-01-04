@@ -51,6 +51,11 @@ private:
     bool _useAttributes = true;
 
     bool _fitWidthToText = false;
+
+    sf::RenderTexture _rTexture;
+    sf::RectangleShape _center;
+    sf::Sprite _leftPad;
+    sf::Sprite _rightPad;
 };
 
 #endif
