@@ -683,6 +683,7 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
 
         Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
+        firedProjectile->setCrit(crit);
 
         if (AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
             const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");

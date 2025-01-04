@@ -7,7 +7,7 @@ constexpr long long DAMAGE_PARTICLE_LIFETIME = 500LL;
 
 class DamageParticle : public Entity {
 public:
-    DamageParticle(sf::Vector2f pos, unsigned int damageAmount);
+    DamageParticle(sf::Vector2f pos, unsigned int damageAmount, bool crit);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
@@ -19,6 +19,8 @@ private:
     const unsigned int _amount;
 
     std::vector<sf::Sprite> _sprites;
+
+    const bool _crit;
 };
 
 #endif

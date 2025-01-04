@@ -94,7 +94,7 @@ public:
     void setMaxHitPoints(int maxHitPoints);
     int getMaxHitPoints() const;
     int& getMaxHitPointsRef();
-    virtual void takeDamage(int damage);
+    virtual void takeDamage(int damage, bool crit = false);
     void heal(int hitPoints);
     int getHitPoints() const;
     int& getHitPointsRef();

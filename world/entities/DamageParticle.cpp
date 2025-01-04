@@ -1,7 +1,8 @@
 #include "DamageParticle.h"
 #include "../../core/Util.h"
 
-DamageParticle::DamageParticle(sf::Vector2f pos, unsigned int damageAmount) : Entity(NO_SAVE, pos, 0, 0, 0, false), _amount(damageAmount) {
+DamageParticle::DamageParticle(sf::Vector2f pos, unsigned int damageAmount, bool crit) : Entity(NO_SAVE, pos, 0, 0, 0, false), 
+_amount(damageAmount), _crit(crit) {
     _entityType = "damageparticle";
     _spawnTimeMillis = currentTimeMillis();
 }
@@ -30,7 +31,7 @@ void DamageParticle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
         );
         sprite.setPosition(getPosition().x + 12 * i - (damageString.length() * 12), getPosition().y - TILE_SIZE);
         
-        sprite.setColor(sf::Color(0xF50000FF));
+        sprite.setColor(sf::Color((_crit ? 0xA700E0FF : 0xF50000FF)));
 
         _sprites.push_back(sprite);
     }

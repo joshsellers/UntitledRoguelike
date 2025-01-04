@@ -64,7 +64,7 @@ void Projectile::update() {
     if (!_data.noCollide) {
         if (onlyDamagePlayer) {
             if (_world->getPlayer()->getHitBox().intersects(getHitBox())) {
-                _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage());
+                _world->getPlayer()->takeDamage(Item::ITEMS[_itemId]->getDamage(), _criticalHit);
                 if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
                     spawnExplosion();
                 }
@@ -80,7 +80,7 @@ void Projectile::update() {
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
                     && entity->getEntityType() != _parent->getEntityType()) {
                     if (entity->getHitBox().intersects(_hitBox)) {
-                        entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier());
+                        entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier(), _criticalHit);
                         _entitiesPassedThrough++;
                         if (_entitiesPassedThrough >= passThroughCount) {
                             if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
@@ -111,7 +111,7 @@ void Projectile::update() {
                         if (alreadyHitThisEntity) continue;
 
                         int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
-                        entity->takeDamage(damage);
+                        entity->takeDamage(damage, _criticalHit);
                         StatManager::increaseStat(DAMAGE_DEALT, damage);
 
                         _entitiesPassedThrough++;
@@ -185,11 +185,17 @@ void Projectile::split() const {
 
     const float angleIncrement = 360.f / _splitProjectileCount;
     for (int i = 0; i < _splitProjectileCount; i++) {
-        ProjectilePoolManager::addProjectile(
+        const auto& proj = ProjectilePoolManager::addProjectile(
             getPosition(), _parent, degToRads(angleIncrement * i), ProjectileDataManager::getData(_splitProjectileDataIdentifer).baseVelocity,
             ProjectileDataManager::getData(_splitProjectileDataIdentifer), onlyDamagePlayer, _damageBoost, false, passThroughCount, _explosionBehavior
         );
+
+        proj->setCrit(_criticalHit);
     }
+}
+
+void Projectile::setCrit(const bool crit) {
+    _criticalHit = crit;
 }
 
 void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
