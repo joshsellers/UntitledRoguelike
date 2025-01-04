@@ -16,7 +16,7 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
     _text.setFont(_font);
     _text.setCharacterSize(relativeFontSize);
-    _text.setFillColor(sf::Color(0x81613DFF));
+    _text.setFillColor(sf::Color(0xe0ae84FF));
     _text.setString("INVENTORY");
     sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x - 1.5f, _y)));
     _text.setPosition(basePos.x + getRelativeWidth(12.5f) - _text.getGlobalBounds().width / 2.f, getRelativeHeight(4.f));
