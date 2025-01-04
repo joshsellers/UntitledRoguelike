@@ -1,0 +1,10 @@
+name = "Stem Cells"
+description = "Adaptive cells, to be administered to the\ndamage-dealing parts of your body.\n\nIncreases damage multiplier."
+isConsumable = true
+functionName = "stemcells"
+isStackable = true
+stackLimit = 5
+isBuyable = true
+unlockWaveNumber = 27
+value = 20
+textureRect = 27, 13, 1, 1

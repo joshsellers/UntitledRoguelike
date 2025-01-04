@@ -1,0 +1,9 @@
+damageMultiplier = player.getDamageMultiplier();
+player.setDamageMultiplier(damageMultiplier + 1 / 5);
+
+hasEffect = player.hasEffect("Stem Cells");
+if: not hasEffect {
+    player.addEffect("Stem Cells");
+}
+
+return true;
