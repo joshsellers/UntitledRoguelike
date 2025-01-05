@@ -376,7 +376,7 @@ void Player::drawTool(sf::RenderTexture& surface) {
             int spriteY = itemTextureRect.top;
             if (equippedTool->isGun()) {
                 int ammoId = equippedTool->getAmmoId();
-                if (getMagazineAmmoType() != ammoId || getMagazineContents() == 0) {
+                if (getMagazineAmmoType() != ammoId || getMagazineContents() == 0 || isReloading()) {
                     spriteX += TILE_SIZE * 3;
                 } else if (_isFiringAutomaticWeapon && equippedTool->isAnimated()) {
                     const WeaponAnimationConfig* animConfig = &equippedTool->getAnimationConfig();
