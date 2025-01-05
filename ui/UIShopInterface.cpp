@@ -88,7 +88,7 @@ void UIShopInterface::drawAdditionalTooltip(sf::RenderTexture& surface, int mous
     sf::Vector2f pos(_mousePos.x + textXOffset, _mousePos.y - textHeight / 2);
 
     if (_gamepadShowTooltip && GamePad::isConnected() && mousedOverItemIndex == -1) {
-        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex))));
+        sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex) + 1.f)));
         pos.x = _background.getGlobalBounds().width;
         if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
         pos.y = itemPos.y;
