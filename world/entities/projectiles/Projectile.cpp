@@ -272,4 +272,6 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitOnHit = false;
     _splitOnDecay = false;
     _splitProjectileCount = 0;
+
+    _criticalHit = false;
 }
