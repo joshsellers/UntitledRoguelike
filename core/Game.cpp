@@ -1662,7 +1662,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     switch (key) {
     case sf::Keyboard::F3:
         _showDebug = !_showDebug;
-        ProjectilePoolManager::setDebug(_showDebug);
+        break;
+    case sf::Keyboard::F4:
+        _world.toggleShowHitBoxes();
+        ProjectilePoolManager::setDebug(_world._showHitBoxes);
         break;
     case sf::Keyboard::F10:
         if (_commandMenu->isActive()) {

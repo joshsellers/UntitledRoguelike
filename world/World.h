@@ -188,6 +188,8 @@ private:
     void sortEntities();
 
     bool& _showDebug;
+    bool _showHitBoxes = false;
+    void toggleShowHitBoxes();
 
     bool _isPlayerInShop = false;
     long long _shopEntranceTimeMillis = 0LL;

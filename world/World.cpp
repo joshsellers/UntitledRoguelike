@@ -189,7 +189,7 @@ void World::draw(sf::RenderTexture& surface) {
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "barber")) entity->draw(surface);
         
-        if (showDebug() && entity->isDamageable()) {
+        if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
             sf::FloatRect box = entity->getHitBox();
             hitBox.setPosition(box.left, box.top);
@@ -1194,6 +1194,10 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
 
 bool World::showDebug() const {
     return _showDebug;
+}
+
+void World::toggleShowHitBoxes() {
+    _showHitBoxes = !_showHitBoxes;
 }
 
 std::shared_ptr<Player> World::getPlayer() const {
