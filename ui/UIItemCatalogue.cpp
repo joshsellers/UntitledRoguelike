@@ -254,7 +254,7 @@ void UIItemCatalogue::draw(sf::RenderTexture& surface) {
                 sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * _gamepadSelectedItemIndex) + 1.f)));
                 pos.x = _background.getGlobalBounds().width;
                 if (_x != 2) pos.x = getRelativeWidth(_x) - textWidth - getRelativeWidth(2.25f);
-                pos.y = itemPos.y + ;
+                pos.y = itemPos.y;
             }
 
             _tooltipText.setPosition(pos);
