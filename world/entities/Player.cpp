@@ -280,19 +280,27 @@ void Player::draw(sf::RenderTexture& surface) {
         }
         noToolFaceDir = _facingDir;
 
+        const bool drawEffectsAndApparel = !AbilityManager::playerHasAbility(Ability::OCTOPUS.getId()) || _world->playerIsInShop();
         if (_facingDir == UP || _facingDir == LEFT) {
             drawTool(surface);
             if (noToolAim) _facingDir = noToolFaceDir;
 
             surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
-            PlayerVisualEffectManager::drawEffects(this, surface);
 
-            if (!isDodging() || !isMoving()) drawEquipables(surface);
+            if (drawEffectsAndApparel) {
+                PlayerVisualEffectManager::drawEffects(this, surface);
+
+                if (!isDodging() || !isMoving()) drawEquipables(surface);
+            }
         } else if (_facingDir == DOWN || _facingDir == RIGHT) {
             surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
-            PlayerVisualEffectManager::drawEffects(this, surface);
 
-            if (!isDodging() || !isMoving()) drawEquipables(surface);
+            if (drawEffectsAndApparel) {
+                PlayerVisualEffectManager::drawEffects(this, surface);
+
+                if (!isDodging() || !isMoving()) drawEquipables(surface);
+            }
+
             drawTool(surface);
             if (noToolAim) _facingDir = noToolFaceDir;
         }
