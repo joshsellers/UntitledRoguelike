@@ -15,7 +15,6 @@ struct UnlockProgressTracker {
 class ConditionalUnlockManager {
 public:
     static const bool isUnlocked(std::string itemName);
-    static void unlockItem(std::string itemName);
     static void increaseUnlockProgress(std::string itemName, float progress);
 
     static void loadUnlockedItems();
@@ -24,6 +23,8 @@ public:
     static void resetUnlocks();
 private:
     static inline std::vector<std::string> _unlockedItems;
+
+    static void unlockItem(std::string itemName);
 
     static std::map<std::string, UnlockProgressTracker> _unlockProgress;
 };
