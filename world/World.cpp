@@ -652,7 +652,7 @@ void World::onWaveCleared() {
         }
     }
     if (unlockedItemCount > 0) {
-        MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
+        MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked!", 8, SPECIAL);
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 

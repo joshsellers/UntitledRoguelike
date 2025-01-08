@@ -24,7 +24,7 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
             _unlockedItems.push_back(itemName);
             StatManager::increaseStat(ITEMS_UNLOCKED, 1);
             saveUnlockedItems();
-            MessageManager::displayMessage("You've unlocked a new item!", 5);
+            MessageManager::displayMessage("You've unlocked a new item!", 5, SPECIAL);
             return;
         }
     }
