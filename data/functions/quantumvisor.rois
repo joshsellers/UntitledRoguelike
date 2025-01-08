@@ -1,0 +1,24 @@
+hasAbility = player.hasAbility("Split Shot");
+
+if: not hasAbility {
+    player.addAbility("Split Shot");
+    player.addEffect("Quantum Visor");
+}
+
+if: hasAbility {
+    choice = random(0, 1);
+    splitChance = player.getAbilityParameter("Split Shot", "chance");
+
+    if: choice == 0 and splitChance < 1 {
+        player.setAbilityParameter("Split Shot", "chance", splitChance + 1 / 10);
+        displayMessage("Increased split chance", 5);
+    }
+
+    if: choice == 1 or splitChance >= 1 {
+        splitCount = player.getAbilityParameter("Split Shot", "splitCount");
+        player.setAbilityParameter("Split Shot", "splitCount", splitCount + 1);
+        displayMessage("Increased split amount", 5);
+    }
+}
+
+return true;

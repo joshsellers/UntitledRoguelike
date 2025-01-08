@@ -92,6 +92,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         unlock(EXTERMINATOR);
     } else if (stat == SHOTS_FIRED && valueThisSave == 1000) {
         unlock(TRIGGER_HAPPY);
+        ConditionalUnlockManager::unlockItem("Quantum Visor");
     } else if (stat == DAMAGE_TAKEN) {
         _wavesWithoutDamage = 0;
         _tookDamageThisWave = true;

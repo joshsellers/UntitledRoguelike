@@ -258,7 +258,7 @@ const Ability Ability::ORDER_FORM(10, "Order Form",
 );
 
 const Ability Ability::SPLITTING_PROJECTILES(11, "Split Shot",
-    { {"splitCount", 4.f} },
+    { {"splitCount", 4.f}, {"chance", 0.10f} },
     [](Player* player, Ability* ability) {},
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
