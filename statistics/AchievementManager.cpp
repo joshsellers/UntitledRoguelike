@@ -83,7 +83,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
         && StatManager::getOverallStat(ITEMS_PURCHASED) >= 1000 && StatManager::getOverallStat(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
-        ConditionalUnlockManager::unlockItem("Order Form");
+        ConditionalUnlockManager::increaseUnlockProgress("Order Form", 1);
     } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
         unlock(TENACIOUS);
     } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
