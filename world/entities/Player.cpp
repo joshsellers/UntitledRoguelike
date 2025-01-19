@@ -106,12 +106,25 @@ void Player::update() {
         }
     }
 
+    if (GamePad::isConnected()) {
+        const float angle = std::atan2(yAxis, xAxis);
+
+        const float absX = std::abs(xAxis);
+        const float absY = std::abs(yAxis);
+        const float mag = std::min(100.f, std::sqrt(xAxis * xAxis + yAxis * yAxis)) / 100.f;
+
+        if (xAxis > 20.f || xAxis < -20.f) xa = getBaseSpeed() * std::cos(angle) * mag;
+        if (yAxis > 20.f || yAxis < -20.f) ya = getBaseSpeed() * std::sin(angle) * mag;
+
+        _animSpeed = std::round(-2.f * mag + 4.f);
+    }
+
     if (!isInBoat() && !isSwimming()) {
         xa *= 1.f + getSpeedMultiplier();
         ya *= 1.f + getSpeedMultiplier();
     }
 
-    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
+    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya && GamePad::isLeftStickDeadZoned()) {
         constexpr float diagonalMultiplier = 0.707107; // 0.785398
         xa *= diagonalMultiplier;
         ya *= diagonalMultiplier;
@@ -124,7 +137,7 @@ void Player::update() {
         xa *= _slowMoveMultiplier;
         ya *= _slowMoveMultiplier;
         _animSpeed = 3;
-    } else if (!isSwimming() && isMoving() || isInBoat()) {
+    } else if (!isSwimming() && isMoving() && GamePad::isLeftStickDeadZoned()  || isInBoat()) {
         _animSpeed = 2;
     } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
         _animSpeed = 4;
