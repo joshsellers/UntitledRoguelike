@@ -1983,14 +1983,22 @@ void Game::generateStatsString(std::string& statsString, bool overall, bool useU
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
 
         std::string unit = "";
+        std::string distString = "";
         if (stringStartsWith(statName, "Distance")) {
             unit = " meters";
             if (statValue >= 1000) {
                 statValue /= 1000;
                 unit = " kilometers";
             }
+
+            std::string intString = splitString(std::to_string(statValue), ".")[0];
+            const std::string fracString = splitString(std::to_string(statValue), ".")[1];
+            if (fracString.length() > 1) {
+                intString += "." + std::string(1, fracString[0]);
+            }
+            distString = intString;
         }
-        const std::string statString = unit != "" ? trimString(std::to_string(statValue)) : std::to_string((int)statValue);
+        const std::string statString = unit != "" ? distString : std::to_string((int)statValue);
 
         statsString += statName + ":  " + statString + unit + (useUnderscores ? "\n_______________\n" : "\n\n");
     }

@@ -106,6 +106,25 @@ float radsToDeg(float angle) {
     return angle * 180.f / M_PI;
 }
 
+// fast pow for int, credit to https://stackoverflow.com/a/101613/13188071
+int ipow(int base, int exp) {
+    int result = 1;
+    while (true) {
+        if (exp & 1)
+            result *= base;
+        exp >>= 1;
+        if (exp == 0)
+            break;
+        base *= base;
+    }
+
+    return result;
+}
+
+double round_prec(double n, int prec) {
+    return std::round(n * ipow(10, prec)) / ipow(10, prec);
+}
+
 std::string generateUID() {
     static std::random_device              rd;
     static std::mt19937                    gen(rd());
