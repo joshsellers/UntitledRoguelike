@@ -1045,7 +1045,8 @@ void Game::update() {
             }
         }
 
-        displayEnemyWaveCountdownUpdates();
+        if (!sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))
+            && !GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN))) displayEnemyWaveCountdownUpdates();
         _shopArrow.update();
         AltarArrow::update();
 
