@@ -3,6 +3,6 @@ description = "See into alternate dimensions and use quantum tunnling to\nsummon
 isConsumable = true
 functionName = "quantumvisor"
 isBuyable = true
-value = 999
+value = 500
 conditionalUnlock = true
 textureRect = 24, 14, 1, 1
