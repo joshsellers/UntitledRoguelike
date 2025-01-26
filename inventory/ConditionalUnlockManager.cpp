@@ -6,7 +6,7 @@
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
-    {"Chef's Hat", 5},
+    {"Chef's Hat", 3},
     {"Order Form", 1},
     {"Quantum Visor", 1}
 };
