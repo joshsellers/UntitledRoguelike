@@ -21,6 +21,7 @@ public:
     static const Ability OCTOPUS;
     static const Ability ORDER_FORM;
     static const Ability SPLITTING_PROJECTILES;
+    static const Ability FEAR;
 
     static std::vector<Ability*> ABILITIES;
 

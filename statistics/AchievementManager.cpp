@@ -90,6 +90,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         unlock(TRIAL_AND_ERROR);
     } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
         unlock(EXTERMINATOR);
+        ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Tail", 1);
     } else if (stat == SHOTS_FIRED && valueThisSave == 1000) {
         unlock(TRIGGER_HAPPY);
         ConditionalUnlockManager::increaseUnlockProgress("Quantum Visor", 1);

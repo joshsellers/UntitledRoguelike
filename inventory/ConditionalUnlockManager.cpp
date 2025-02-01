@@ -8,7 +8,8 @@ std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockPr
     {"Cyclops Eye", 100},
     {"Chef's Hat", 3},
     {"Order Form", 1},
-    {"Quantum Visor", 1}
+    {"Quantum Visor", 1},
+    {"Cassidy's Tail", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {
