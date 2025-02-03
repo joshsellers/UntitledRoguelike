@@ -3,6 +3,7 @@ hasAbility = player.hasAbility("Fear");
 if: not hasAbility {
     player.addAbility("Fear");
     player.addEffect("Cassidy's Tail");
+    return true;
 }
 
 if: hasAbility {

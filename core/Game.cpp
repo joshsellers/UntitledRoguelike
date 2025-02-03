@@ -1331,6 +1331,7 @@ void Game::buttonPressed(std::string buttonCode) {
         AbilityManager::resetAbilities();
         PlayerVisualEffectManager::clearPlayerEffects();
         StatManager::resetStatsForThisSave();
+        for (int i = 0; i < 3; i++) ConditionalUnlockManager::_catItems[i] = 0;
 
         PLAYER_SCORE = 1.f;
         _world.setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);

@@ -1,0 +1,16 @@
+hasEffect = player.hasEffect("Cassidy's Paw");
+if: not hasEffect {
+    player.addEffect("Cassidy's Paw");
+}
+
+currentMultiplier = player.getSpeedMultiplier();
+
+if: currentMultiplier < 1 {
+    newMultiplier = currentMultiplier + (1 / 10);
+    player.setSpeedMultiplier(newMultiplier);
+}
+
+currentDamage = player.getDamageMultiplier();
+player.setDamageMultiplier(currentDamage + 1 / 3);
+
+return true;

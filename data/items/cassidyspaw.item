@@ -1,0 +1,9 @@
+name = "Cassidy's Paw"
+description = "Speed and damage up"
+isConsumable = true
+textureRect = 25, 14, 1, 1
+functionName = "cassidyspaw"
+isBuyable = true
+value = 299
+unlockWaveNumber = 50
+tags = "cat"

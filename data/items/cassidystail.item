@@ -6,3 +6,4 @@ value = 310
 textureRect = 27, 14, 1, 1
 functionName = "cassidystail"
 conditionalUnlock = true
+tags = "cat"
