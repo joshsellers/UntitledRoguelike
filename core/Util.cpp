@@ -14,6 +14,7 @@ int randomInt(int min, int max) {
 }
 
 bool randomChance(float probability) {
+    if (probability >= 1.0f) return true;
     const int range = (int)(1.f / probability);
     const int min = 0;
     const int max = range - 1;
