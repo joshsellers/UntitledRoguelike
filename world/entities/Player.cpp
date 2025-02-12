@@ -909,12 +909,30 @@ bool Player::reloadWeapon() {
             );*/
 
             if (/*getMagazineContents() == 0 && */!isReloading()) {
+                const int previousMagContents = _magazineContents;
                 _magazineContents = 0;
                 std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
                 std::shared_ptr<const Item> ammo = Item::ITEMS[weapon->getAmmoId()];
-                const unsigned int removeAmount = 
+                unsigned int removeAmount = 
                     (unsigned int)weapon->getMagazineSize();
-                //getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
+
+                // penny cannon
+                if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Penny Cannon")) {
+                    const unsigned int pennyId = Item::PENNY.getId();
+                    if (!getInventory().hasItem(pennyId)) {
+                        _magazineContents = previousMagContents;
+                        return false;
+                    }
+                    unsigned int pennyAmt = removeAmount - previousMagContents;
+                    const unsigned int playerPennies = getInventory().getItemAmountAt(getInventory().findItem(pennyId));
+                    if (playerPennies < pennyAmt) {
+                        pennyAmt = playerPennies;
+                        removeAmount = pennyAmt;
+                    }
+                    getInventory().removeItem(pennyId, pennyAmt);
+                }
+                //
+
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;
