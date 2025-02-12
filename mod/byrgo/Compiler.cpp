@@ -60,7 +60,8 @@ std::string Compiler::compile(std::string assembly) {
         {"player.setStaminaRestoreRate",    INSTRUCTION::PLSETSTAMINARESTORE},
         {"player.getStaminaRestoreRate",    INSTRUCTION::PLGETSTAMINARESTORE},
         {"player.setSpeedMultiplier",       INSTRUCTION::PLSETSPEEDMULT},
-        {"player.getSpeedMultiplier",       INSTRUCTION::PLGETSPEEDMULT}
+        {"player.getSpeedMultiplier",       INSTRUCTION::PLGETSPEEDMULT},
+        {"player.removeItem",               INSTRUCTION::PLRMITEM}
     };
 
     std::vector<int> bytecode;
