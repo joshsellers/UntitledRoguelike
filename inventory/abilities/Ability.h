@@ -23,6 +23,7 @@ public:
     static const Ability SPLITTING_PROJECTILES;
     static const Ability FEAR;
     static const Ability CASSIDYS_HEAD;
+    static const Ability BLESSING;
 
     static std::vector<Ability*> ABILITIES;
 

@@ -213,6 +213,11 @@ void Player::draw(sf::RenderTexture& surface) {
         TERRAIN_TYPE terrainType = getCurrentTerrain();
         _isSwimming = terrainType == TERRAIN_TYPE::WATER;
 
+        if (_isSwimming && AbilityManager::playerHasAbility(Ability::BLESSING.getId())) {
+            _isSwimming = false;
+            terrainType = TERRAIN_TYPE::EMPTY;
+        }
+
         if (getWorld()->playerIsInShop()) {
             _isSwimming = false;
             terrainType = TERRAIN_TYPE::EMPTY;

@@ -109,7 +109,10 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             if (HARD_MODE_ENABLED) unlock(HARDMODE_SLIPPERY);
         } else if (_wavesWithoutDamage == 10) {
             unlock(UNTOUCHABLE);
-            if (HARD_MODE_ENABLED) unlock(HARDMODE_UNTOUCHABLE);
+            if (HARD_MODE_ENABLED) {
+                unlock(HARDMODE_UNTOUCHABLE);
+                ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
+            }
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
         unlock(HUMAN_BOULDER);
