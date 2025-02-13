@@ -57,6 +57,7 @@
 #include "entities/BigSnowMan.h"
 #include "entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "entities/ShopATM.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -151,7 +152,8 @@ void World::update() {
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barberext"
                 || entity->getEntityType() == "barbercounter"
-                || entity->getEntityType() == "barberchair") entity->update();
+                || entity->getEntityType() == "barberchair"
+                || entity->getEntityType() == "shopatm") entity->update();
         }
     }
 }
@@ -180,14 +182,15 @@ void World::draw(sf::RenderTexture& surface) {
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
         if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
-            || (_isPlayerInShop && entity->getEntityType() == "shopint" 
+            || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 
                 || entity->getEntityType() == "shopkeep"
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
-                || entity->getEntityType() == "barber")) entity->draw(surface);
+                || entity->getEntityType() == "barber"
+                || entity->getEntityType() == "shopatm"))) entity->draw(surface);
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -1415,6 +1418,13 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
             std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getSpriteSheet()));
             corpse->setWorld(this);
             addEntity(corpse);
+        }
+
+        constexpr float atmChance = 0.15f;
+        if (randomChance(atmChance)) {
+            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
+            shopAtm->setWorld(this);
+            addEntity(shopAtm);
         }
 
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;

@@ -528,6 +528,9 @@
     <ClCompile Include="ui\UIItemCatalogue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\ShopATM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -957,6 +960,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIItemCatalogue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\ShopATM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

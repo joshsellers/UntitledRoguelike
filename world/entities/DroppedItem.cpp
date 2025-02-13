@@ -96,6 +96,14 @@ std::string DroppedItem::getSaveData() const {
     return std::to_string(_itemId) + ":" + std::to_string(_amount);
 }
 
+unsigned int DroppedItem::getItemId() const {
+    return _itemId;
+}
+
+unsigned int DroppedItem::getAmount() const {
+    return _amount;
+}
+
 void DroppedItem::moveTowardPlayer() {
     if (getWorld()->getPlayer()->getCoinMagnetCount() > 0) {
         const sf::Vector2f playerPos(

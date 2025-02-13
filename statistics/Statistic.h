@@ -20,7 +20,8 @@ enum STATISTIC {
     ITEMS_PURCHASED,
     ITEMS_SOLD,
     HIGHEST_WAVE_REACHED,
-    ITEMS_UNLOCKED
+    ITEMS_UNLOCKED,
+    ATM_AMOUNT
 };
 
 inline std::map<STATISTIC, std::string> STAT_NAMES = {
@@ -39,7 +40,8 @@ inline std::map<STATISTIC, std::string> STAT_NAMES = {
     {ITEMS_PURCHASED,       "Items bought"},
     {ITEMS_SOLD,            "Items sold"},
     {HIGHEST_WAVE_REACHED,  "Highest wave reached"},
-    {ITEMS_UNLOCKED,        "Items unlocked"}
+    {ITEMS_UNLOCKED,        "Items unlocked"},
+    {ATM_AMOUNT,            "ATM Balance"}
 };
 
 #endif

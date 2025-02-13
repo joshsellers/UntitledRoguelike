@@ -990,6 +990,20 @@ void Game::update() {
             }
         }
 
+        constexpr long long withdrawInterval = 75LL;
+        constexpr long long interactHoldTime = 500LL;
+        if (_world.playerIsInShop() && !_interactReleased && currentTimeMillis() - _lastWithdrawTime >= withdrawInterval && currentTimeMillis() - _interactPressTime >= interactHoldTime) {
+            for (auto& entity : _world.getEntities()) {
+                if (entity->isActive() && entity->getEntityType() == "shopatm") {
+                    if (_player->getHitBox().intersects(entity->getHitBox())) {
+                        atmWithdraw();
+                        _lastWithdrawTime = currentTimeMillis();
+                        break;
+                    }
+                }
+            }
+        }
+
         if (_world.playerIsInShop() && !_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
         _world.update();
 
@@ -1658,6 +1672,11 @@ void Game::buttonPressed(std::string buttonCode) {
 void Game::keyPressed(sf::Keyboard::Key& key) {
     _ui->keyPressed(key);
     _player->keyPressed(key);
+
+    if (_interactReleased && key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
+        _interactPressTime = currentTimeMillis();
+        _interactReleased = false;
+    }
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
@@ -1698,7 +1717,10 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
 
     if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) togglePauseMenu();
     else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY)) toggleInventoryMenu();
-    else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) toggleShopMenu();
+    else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
+        _interactReleased = true;
+        toggleShopMenu();
+    }
 
     _ui->keyReleased(key);
     _player->keyReleased(key);
@@ -1722,6 +1744,10 @@ void Game::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll)
 }
 
 void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
+    if (_interactReleased && button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
+        _interactPressTime = currentTimeMillis();
+        _interactReleased = false;
+    }
 }
 
 void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
@@ -1736,6 +1762,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY)) {
         toggleInventoryMenu();
     } else if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
+        _interactReleased = true;
         toggleShopMenu();
     } else if (button == GAMEPAD_BUTTON::LEFT_STICK || button == GAMEPAD_BUTTON::RIGHT_STICK) {
         if (_virtualKeyboardMenu_lower->isActive()) {
@@ -1809,11 +1836,27 @@ void Game::toggleShopMenu() {
                     if (GamePad::isConnected()) MessageManager::displayMessage("Use the bumpers to switch between buying and selling", 8);
                     break;
                 }
+            } else if (entity->isActive() && entity->getEntityType() == "shopatm") {
+                if (_player->getHitBox().intersects(entity->getHitBox())) {
+                    atmWithdraw();
+                    break;
+                }
             }
         }
     } else if (_shopMenu->isActive()) {
         _shopMenu->hide();
     } else if (!_shopMenu->isActive() && _inventoryMenu->isActive()) {
+        if (_world.playerIsInShop()) {
+            for (auto& entity : _world.getEntities()) {
+                if (entity->isActive() && entity->getEntityType() == "shopatm") {
+                    if (_player->getHitBox().intersects(entity->getHitBox())) {
+                        atmWithdraw();
+                        return;
+                    }
+                }
+            }
+        }
+
         toggleInventoryMenu();
     }
 
@@ -1825,6 +1868,14 @@ void Game::interruptPause() {
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
         togglePauseMenu();
+    }
+}
+
+void Game::atmWithdraw() const {
+    if ((unsigned int)StatManager::getOverallStat(ATM_AMOUNT) > 0) {
+        StatManager::setOverallStat(ATM_AMOUNT, (unsigned int)StatManager::getOverallStat(ATM_AMOUNT) - 1);
+        _player->getInventory().addItem(Item::PENNY.getId(), 1);
+        SoundManager::playSound("coinpickup");
     }
 }
 
@@ -1980,7 +2031,7 @@ void Game::autoSave() {
 
 void Game::generateStatsString(std::string& statsString, bool overall, bool useUnderscores) {
     for (int i = 0; i < StatManager::NUM_STATS; i++) {
-        if (!overall && (STATISTIC)i == HIGHEST_WAVE_REACHED) continue;
+        if (!overall && ((STATISTIC)i == HIGHEST_WAVE_REACHED || (STATISTIC)i == ATM_AMOUNT)) continue;
         const std::string statName = STAT_NAMES[(STATISTIC)i];
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
 

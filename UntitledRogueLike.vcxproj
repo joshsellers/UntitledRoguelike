@@ -37,6 +37,7 @@
     <ClCompile Include="ui\UISlider.cpp" />
     <ClCompile Include="world\entities\ChefBoss.cpp" />
     <ClCompile Include="mod\ScriptExtensions.cpp" />
+    <ClCompile Include="world\entities\ShopATM.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
     <ClCompile Include="world\entities\Lightning.cpp" />
     <ClCompile Include="world\entities\AltarArrow.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="world\entities\ChefBoss.h" />
     <ClInclude Include="mod\ScriptExtensions.h" />
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
+    <ClInclude Include="world\entities\ShopATM.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
     <ClInclude Include="world\entities\AltarArrow.h" />
