@@ -24,7 +24,7 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
                 float height = messageText.getGlobalBounds().height;
 
                 float x = getRelativeWidth(50.f) - width / 2;
-                float y = getRelativeHeight(1.5f) + lastHeight;
+                float y = getRelativeHeight(1.5f) + lastHeight + (special ? getRelativeHeight(0.25f) : 0.f);
                 messageText.setPosition(sf::Vector2f(x, y));
 
                 sf::RectangleShape background; 

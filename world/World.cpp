@@ -59,6 +59,7 @@
 #include "../inventory/ConditionalUnlockManager.h"
 #include "entities/ShopATM.h"
 #include "entities/MushroomBoss.h"
+#include "../core/SoundManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -657,6 +658,7 @@ void World::onWaveCleared() {
     }
     if (unlockedItemCount > 0) {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked!", 8, SPECIAL);
+        SoundManager::playSound("itemunlock");
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
