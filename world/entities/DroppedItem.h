@@ -14,6 +14,9 @@ public:
 
     virtual std::string getSaveData() const;
 
+    unsigned int getItemId() const;
+    unsigned int getAmount() const;
+
 private:
     const unsigned int _itemId;
     unsigned int _amount;

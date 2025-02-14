@@ -71,6 +71,7 @@ void AchievementManagerInstance::onAchievementStored(UserAchievementStored_t* pC
 void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave) {
     if (stat == PENNIES_COLLECTED && valueThisSave >= 1000000) {
         unlock(MILLIONAIRE);
+        ConditionalUnlockManager::increaseUnlockProgress("Penny Cannon", 1);
     } else if ((stat == DIST_TRAVELLED || stat == DIST_SWAM || stat == DIST_SAILED)
         && StatManager::getOverallStat(DIST_TRAVELLED) >= 20000
         && StatManager::getOverallStat(DIST_SWAM) >= 20000
@@ -83,15 +84,17 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if ((stat == ITEMS_PURCHASED || stat == ITEMS_SOLD)
         && StatManager::getOverallStat(ITEMS_PURCHASED) >= 1000 && StatManager::getOverallStat(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
-        ConditionalUnlockManager::unlockItem("Order Form");
+        ConditionalUnlockManager::increaseUnlockProgress("Order Form", 1);
     } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
         unlock(TENACIOUS);
     } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
         unlock(TRIAL_AND_ERROR);
     } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
         unlock(EXTERMINATOR);
+        ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Tail", 1);
     } else if (stat == SHOTS_FIRED && valueThisSave == 1000) {
         unlock(TRIGGER_HAPPY);
+        ConditionalUnlockManager::increaseUnlockProgress("Quantum Visor", 1);
     } else if (stat == DAMAGE_TAKEN) {
         _wavesWithoutDamage = 0;
         _tookDamageThisWave = true;
@@ -107,9 +110,15 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             if (HARD_MODE_ENABLED) unlock(HARDMODE_SLIPPERY);
         } else if (_wavesWithoutDamage == 10) {
             unlock(UNTOUCHABLE);
-            if (HARD_MODE_ENABLED) unlock(HARDMODE_UNTOUCHABLE);
+            if (HARD_MODE_ENABLED) {
+                unlock(HARDMODE_UNTOUCHABLE);
+                ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
+            }
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
         unlock(HUMAN_BOULDER);
+    } else if (stat == ATM_AMOUNT && StatManager::getOverallStat(ATM_AMOUNT) == 999) {
+        unlock(ECONOMICAL);
+        ConditionalUnlockManager::increaseUnlockProgress("Debit Card", 1);
     }
 }

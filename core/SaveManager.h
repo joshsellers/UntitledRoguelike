@@ -288,6 +288,12 @@ private:
             out << ":" << std::to_string(StatManager::getStatThisSave((STATISTIC)i));
         }
         out << std::endl;
+
+        out << "CAT";
+        for (int i = 0; i < 3; i++) {
+            out << ":" << ConditionalUnlockManager::_catItems[i];
+        }
+        out << std::endl;
     }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
@@ -417,6 +423,10 @@ private:
         } else if (header == "STATS") {
             for (int i = 0; i < data.size(); i++) {
                 StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+            }
+        } else if (header == "CAT") {
+            for (int i = 0; i < data.size() && i < 3; i++) {
+                ConditionalUnlockManager::_catItems[i] = std::stoul(data[i]);
             }
         } else if (header == "ABILITY") {
             const unsigned int id = std::stoul(data[0]);
@@ -743,6 +753,9 @@ private:
                 }
                 case TEETH_BOSS:
                     entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
+                    break;
+                case MUSHROOM_BOSS:
+                    entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
                     break;
             }
 

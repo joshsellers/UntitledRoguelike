@@ -57,6 +57,8 @@
 #include "entities/BigSnowMan.h"
 #include "entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "entities/ShopATM.h"
+#include "entities/MushroomBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -151,7 +153,8 @@ void World::update() {
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barberext"
                 || entity->getEntityType() == "barbercounter"
-                || entity->getEntityType() == "barberchair") entity->update();
+                || entity->getEntityType() == "barberchair"
+                || entity->getEntityType() == "shopatm") entity->update();
         }
     }
 }
@@ -180,14 +183,15 @@ void World::draw(sf::RenderTexture& surface) {
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
         if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
-            || (_isPlayerInShop && entity->getEntityType() == "shopint" 
+            || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 
                 || entity->getEntityType() == "shopkeep"
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
-                || entity->getEntityType() == "barber")) entity->draw(surface);
+                || entity->getEntityType() == "barber"
+                || entity->getEntityType() == "shopatm"))) entity->draw(surface);
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -660,7 +664,7 @@ void World::onWaveCleared() {
         // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
-        if (_currentWaveNumber < 56) {
+        if (_currentWaveNumber < 64) {
             MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
         }
     }
@@ -1333,6 +1337,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 56:
             boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
+        case 64:
+            boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1415,6 +1422,17 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
             std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getSpriteSheet()));
             corpse->setWorld(this);
             addEntity(corpse);
+        }
+
+        float atmChance = 0.05f;
+        if (AbilityManager::playerHasAbility(Ability::DEBIT_CARD.getId())) {
+            atmChance += AbilityManager::getParameter(Ability::DEBIT_CARD.getId(), "chance");
+        }
+
+        if (randomChance(atmChance)) {
+            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
+            shopAtm->setWorld(this);
+            addEntity(shopAtm);
         }
 
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
@@ -1518,6 +1536,9 @@ void World::bossDefeated() {
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
+            break;
+        case MUSHROOM_BOSS:
+            achievement = DEFEAT_SHROOMBOSS;
             break;
     }
 

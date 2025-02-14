@@ -1,0 +1,19 @@
+hasAbility = player.hasAbility("Fear");
+
+if: not hasAbility {
+    player.addAbility("Fear");
+    player.addEffect("Cassidy's Tail");
+    return true;
+}
+
+if: hasAbility {
+    currentChance = player.getAbilityParameter("Fear", "chance");
+
+    if: currentChance < 1 {
+        player.setAbilityParameter("Fear", "chance", currentChance + 1 / 20);
+        return true;
+    }
+
+    displayMessage("You can't use any more of these.", 5);
+    return false;
+}

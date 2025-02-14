@@ -106,12 +106,25 @@ void Player::update() {
         }
     }
 
+    if (GamePad::isConnected()) {
+        const float angle = std::atan2(yAxis, xAxis);
+
+        const float absX = std::abs(xAxis);
+        const float absY = std::abs(yAxis);
+        const float mag = std::min(100.f, std::sqrt(xAxis * xAxis + yAxis * yAxis)) / 100.f;
+
+        if (xAxis > 20.f || xAxis < -20.f) xa = getBaseSpeed() * std::cos(angle) * mag;
+        if (yAxis > 20.f || yAxis < -20.f) ya = getBaseSpeed() * std::sin(angle) * mag;
+
+        _animSpeed = std::round(-2.f * mag + 4.f);
+    }
+
     if (!isInBoat() && !isSwimming()) {
         xa *= 1.f + getSpeedMultiplier();
         ya *= 1.f + getSpeedMultiplier();
     }
 
-    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
+    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya && GamePad::isLeftStickDeadZoned()) {
         constexpr float diagonalMultiplier = 0.707107; // 0.785398
         xa *= diagonalMultiplier;
         ya *= diagonalMultiplier;
@@ -124,7 +137,7 @@ void Player::update() {
         xa *= _slowMoveMultiplier;
         ya *= _slowMoveMultiplier;
         _animSpeed = 3;
-    } else if (!isSwimming() && isMoving() || isInBoat()) {
+    } else if (!isSwimming() && isMoving() && GamePad::isLeftStickDeadZoned()  || isInBoat()) {
         _animSpeed = 2;
     } else if (isSwimming() && !(NO_MOVEMENT_RESTRICIONS || freeMove)) {
         _animSpeed = 4;
@@ -199,6 +212,11 @@ void Player::draw(sf::RenderTexture& surface) {
     if (_isVisible) {
         TERRAIN_TYPE terrainType = getCurrentTerrain();
         _isSwimming = terrainType == TERRAIN_TYPE::WATER;
+
+        if (_isSwimming && AbilityManager::playerHasAbility(Ability::BLESSING.getId())) {
+            _isSwimming = false;
+            terrainType = TERRAIN_TYPE::EMPTY;
+        }
 
         if (getWorld()->playerIsInShop()) {
             _isSwimming = false;
@@ -891,12 +909,30 @@ bool Player::reloadWeapon() {
             );*/
 
             if (/*getMagazineContents() == 0 && */!isReloading()) {
+                const int previousMagContents = _magazineContents;
                 _magazineContents = 0;
                 std::shared_ptr<const Item> weapon = Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)];
                 std::shared_ptr<const Item> ammo = Item::ITEMS[weapon->getAmmoId()];
-                const unsigned int removeAmount = 
+                unsigned int removeAmount = 
                     (unsigned int)weapon->getMagazineSize();
-                //getInventory().removeItemAt(getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO), removeAmount);
+
+                // penny cannon
+                if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Penny Cannon")) {
+                    const unsigned int pennyId = Item::PENNY.getId();
+                    if (!getInventory().hasItem(pennyId)) {
+                        _magazineContents = previousMagContents;
+                        return false;
+                    }
+                    unsigned int pennyAmt = removeAmount - previousMagContents;
+                    const unsigned int playerPennies = getInventory().getItemAmountAt(getInventory().findItem(pennyId));
+                    if (playerPennies < pennyAmt) {
+                        pennyAmt = playerPennies;
+                        removeAmount = pennyAmt;
+                    }
+                    getInventory().removeItem(pennyId, pennyAmt);
+                }
+                //
+
                 _magazineAmmoType = ammo->getId();
                 _magazineSize = weapon->getMagazineSize();
                 _magazineContents = (int)removeAmount;

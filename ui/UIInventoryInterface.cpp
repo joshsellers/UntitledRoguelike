@@ -3,6 +3,7 @@
 #include "../core/gamepad/GamePad.h"
 #include "../world/entities/Entity.h"
 #include "UIHandler.h"
+#include "../inventory/ConditionalUnlockManager.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     UIInventoryInterface(2, 11, source, font, spriteSheet) {}
@@ -319,6 +320,10 @@ void UIInventoryInterface::useItem(int index) {
         if (hpAfterUse > hpBeforeUse && item->hasTag("food") && _source.getEquippedItemId(EQUIPMENT_TYPE::CLOTHING_HEAD) == Item::getIdFromName("Chef's Hat")) {
             const int healAmount = hpAfterUse - hpBeforeUse;
             _source.getParent()->heal((float)healAmount * 0.25);
+        }
+
+        if (item->hasTag("cat")) {
+            ConditionalUnlockManager::catItemUsed(item->getId());
         }
     } else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) {
         if (_source.isEquipped(index)) {

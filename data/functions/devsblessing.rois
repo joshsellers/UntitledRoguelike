@@ -1,0 +1,19 @@
+hasAbility = player.hasAbility("Dev's Blessing");
+if: not hasAbility {
+    player.addAbility("Dev's Blessing");
+    player.addEffect("Dev's Blessing");
+}
+
+currentMultiplier = player.getSpeedMultiplier();
+
+if: currentMultiplier >= 1 and hasAbility {
+    displayMessage("You can't take any more of these", 5);
+    return false;
+}
+
+if: currentMultiplier < 1 {
+    newMultiplier = currentMultiplier + (1 / 8);
+    player.setSpeedMultiplier(newMultiplier);
+}
+
+return true;

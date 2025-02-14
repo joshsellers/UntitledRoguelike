@@ -50,6 +50,8 @@
 #include "../statistics/StatManager.h"
 #include "../world/entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "../world/entities/MushroomBoss.h"
+#include "../world/entities/SwellingShroom.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -334,6 +336,10 @@ private:
                             entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
                         } else if (entityName == "teethboss") {
                             entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
+                        } else if (entityName == "shroomboss") {
+                            entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
+                        } else if (entityName == "swellingshroom") {
+                            entity = std::shared_ptr<SwellingShroom>(new SwellingShroom(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

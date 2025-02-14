@@ -1,0 +1,10 @@
+name = "Cassidy's Head"
+description = "Tap into your inner feline\n\nChance to double the value of coin drops"
+isConsumable = true
+textureRect = 26, 14, 1, 1
+isBuyable = true
+value = 240
+shopChance = 50
+unlockWaveNumber = 64
+functionName = "cassidyshead"
+tags = "cat"

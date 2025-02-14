@@ -69,6 +69,10 @@ void StatManager::setStatThisSave(STATISTIC stat, float val) {
     _STATS_THIS_SAVE[stat] = val;
 }
 
+void StatManager::setOverallStat(STATISTIC stat, float val) {
+    _STATS_OVERALL[stat] = val;
+}
+
 void StatManager::resetStatsForThisSave() {
     for (int i = 0; i < NUM_STATS; i++) {
         setStatThisSave((STATISTIC)i, 0);

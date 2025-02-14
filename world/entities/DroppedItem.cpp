@@ -3,6 +3,8 @@
 #include "../../core/SoundManager.h"
 #include "../../core/Tutorial.h"
 #include "../../statistics/StatManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
 
 DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int itemId, unsigned int amount, sf::IntRect textureRect, bool droppedByPlayer) :
     _itemId(itemId), _amount(amount), _textureRect(textureRect), _minY(pos.y - _hoverDist), _originalY(pos.y),
@@ -19,6 +21,11 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
     if (!HARD_MODE_ENABLED && !droppedByPlayer && _itemId == Item::PENNY.getId()) {
         _amount = _amount + ((float)_amount * 0.75f);
+    }
+
+    if (!droppedByPlayer && _itemId == Item::PENNY.getId() && AbilityManager::playerHasAbility(Ability::CASSIDYS_HEAD.getId())) {
+        const float chance = AbilityManager::getParameter(Ability::CASSIDYS_HEAD.getId(), "chance");
+        if (chance >= 1.f || randomChance(chance)) _amount *= 2;
     }
 }
 
@@ -87,6 +94,14 @@ void DroppedItem::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 
 std::string DroppedItem::getSaveData() const {
     return std::to_string(_itemId) + ":" + std::to_string(_amount);
+}
+
+unsigned int DroppedItem::getItemId() const {
+    return _itemId;
+}
+
+unsigned int DroppedItem::getAmount() const {
+    return _amount;
 }
 
 void DroppedItem::moveTowardPlayer() {

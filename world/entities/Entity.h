@@ -220,6 +220,9 @@ protected:
 
     virtual void damage(int damage);
 
+    bool _checkedFear = false;
+    bool _isScared = false;
+
 private:
     const ENTITY_SAVE_ID _saveId;
     std::string _uid;

@@ -1,0 +1,13 @@
+currentCritChance = player.getAbilityParameter("Crit Chance", "chance");
+if: currentCritChance < 1 {
+    increaseAmount = 1 / 20;
+    if: currentCritChance + increaseAmount > 1 {
+        increaseAmount = 1 - currentCritChance;
+    }
+    player.setAbilityParameter("Crit Chance", "chance", currentCritChance + increaseAmount);
+
+    return true;
+}
+
+displayMessage("You can't take any more of these.", 5);
+return false;

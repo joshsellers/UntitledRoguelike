@@ -6,7 +6,14 @@
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
-    {"Chef's Hat", 5}
+    {"Chef's Hat", 3},
+    {"Order Form", 1},
+    {"Quantum Visor", 1},
+    {"Cassidy's Tail", 1},
+    {"Cassidy's Brain Cell", 1},
+    {"Dev's Blessing", 1},
+    {"Penny Cannon", 1},
+    {"Debit Card", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {
@@ -110,4 +117,17 @@ void ConditionalUnlockManager::resetUnlocks() {
         unlockProgress.second.progress = 0.f;
     }
     saveUnlockedItems();
+}
+
+void ConditionalUnlockManager::catItemUsed(unsigned int itemId) {
+    for (int i = 0; i < 3; i++) {
+        const unsigned int id = _catItems[i];
+        if (id == itemId) return;
+
+        if (id == 0) {
+            _catItems[i] = itemId;
+            if (i == 2) increaseUnlockProgress("Cassidy's Brain Cell", 1);
+            return;
+        }
+    }
 }

@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_LARGE_SHROOM"
+velocity = 16
+lifeTime = 3000
+hitBox = 7, 7, 20, 20
+rotate = true
+onlyHitEnemies = false

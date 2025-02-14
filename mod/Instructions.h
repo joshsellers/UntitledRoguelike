@@ -68,7 +68,9 @@ enum class INSTRUCTION {
     PLSETSPEEDMULT = 0x3D,
     PLGETSPEEDMULT = 0x3E,
 
-    NOT = 0x3F
+    NOT = 0x3F,
+
+    PLRMITEM = 0x40
 };
 
 #endif

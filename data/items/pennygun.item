@@ -1,0 +1,14 @@
+name = "Penny Cannon"
+description = "For when you have money to burn"
+equipmentType = TOOL
+barrelPos = 33, 1
+isGun = true
+isAutomatic = true
+magazineSize = 100
+fireRate = 125
+reloadTime = 2250
+conditionalUnlock = true
+isBuyable = true
+value = 569
+functionName = "firepennygun"
+textureRect = 131, 0, 1, 1

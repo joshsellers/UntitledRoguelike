@@ -1,0 +1,16 @@
+hasAbility = player.hasAbility("Cassidy's Head");
+if: not hasAbility {
+    player.addAbility("Cassidy's Head");
+    player.addEffect("Cassidy's Head");
+
+    return true;
+}
+
+currentChance = player.getAbilityParameter("Cassidy's Head", "chance");
+if: currentChance < 1 {
+    player.setAbilityParameter("Cassidy's Head", "chance", currentChance + 1 / 25);
+    return true;
+}
+
+displayMessage("You can't take any more of these.", 5);
+return false;

@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_PENNY"
+velocity = 9
+lifeTime = 2500
+hitBox = 0, 0, 16, 16
+rotate = true
