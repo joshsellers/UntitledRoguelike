@@ -1424,7 +1424,11 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
             addEntity(corpse);
         }
 
-        constexpr float atmChance = 0.15f;
+        float atmChance = 0.05f;
+        if (AbilityManager::playerHasAbility(Ability::DEBIT_CARD.getId())) {
+            atmChance += AbilityManager::getParameter(Ability::DEBIT_CARD.getId(), "chance");
+        }
+
         if (randomChance(atmChance)) {
             std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
             shopAtm->setWorld(this);

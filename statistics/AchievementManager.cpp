@@ -117,5 +117,8 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
         unlock(HUMAN_BOULDER);
+    } else if (stat == ATM_AMOUNT && StatManager::getOverallStat(ATM_AMOUNT) == 999) {
+        unlock(ECONOMICAL);
+        ConditionalUnlockManager::increaseUnlockProgress("Debit Card", 1);
     }
 }

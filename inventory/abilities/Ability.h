@@ -24,6 +24,7 @@ public:
     static const Ability FEAR;
     static const Ability CASSIDYS_HEAD;
     static const Ability BLESSING;
+    static const Ability DEBIT_CARD;
 
     static std::vector<Ability*> ABILITIES;
 
