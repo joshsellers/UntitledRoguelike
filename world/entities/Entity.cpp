@@ -348,8 +348,8 @@ Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const Project
     bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
-    double x = (double)(targetPos.x - centerPoint.x + centerOffset.x);
-    double y = (double)(targetPos.y - centerPoint.y + centerOffset.y);
+    double x = (double)(targetPos.x - (centerPoint.x + centerOffset.x));
+    double y = (double)(targetPos.y - (centerPoint.y + centerOffset.y));
 
     float angle = (float)((std::atan2(y, x)));
     return fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset, addParentVelocity);

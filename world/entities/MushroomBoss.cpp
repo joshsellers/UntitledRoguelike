@@ -1,9 +1,12 @@
 #include "MushroomBoss.h"
 #include "../World.h"
+#include "SwellingShroom.h"
 
 MushroomBoss::MushroomBoss(sf::Vector2f pos) : Boss(MUSHROOM_BOSS, pos, 1.f, 8 * TILE_SIZE, 9 * TILE_SIZE, 
     {
-        BossState(SPAWN_SHROOMS, 5000, 5000)
+        BossState(SPAWN_SHROOMS, 5000, 5000),
+        BossState(RAPID_FIRE_SHROOMS, 5000, 7000),
+        BossState(BIGSHROOM_SNIPE, 1000, 1000)
     }
 ) {
     setMaxHitPoints(41500);
@@ -46,10 +49,10 @@ void MushroomBoss::draw(sf::RenderTexture& surface) {
     }
 
     const int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 9 : 0;
-    const int xOffset = 0;
+    const int xOffset = _currentState.stateId == BIGSHROOM_SNIPE ? 11 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        (150 << SPRITE_SHEET_SHIFT) + xOffset, (40 << SPRITE_SHEET_SHIFT) + yOffset, TILE_SIZE * 8, isSwimming() ? (float)TILE_SIZE * 4.5f : TILE_SIZE * 9
+        ((150 + xOffset) << SPRITE_SHEET_SHIFT), (40 << SPRITE_SHEET_SHIFT) + yOffset, TILE_SIZE * 8, isSwimming() ? (float)TILE_SIZE * 4.5f : TILE_SIZE * 9
     ));
 
     surface.draw(_sprite);
@@ -133,7 +136,53 @@ void MushroomBoss::subUpdate() {
 }
 
 void MushroomBoss::onStateChange(const BossState previousState, const BossState newState) {
+    if (previousState.stateId == SPAWN_SHROOMS) {
+        _numShroomsSpawned = 0;
+    }
 }
 
 void MushroomBoss::runCurrentState() {
+    switch (_currentState.stateId) {
+        case SPAWN_SHROOMS:
+        {
+            constexpr long long spawnDelay = 500LL;
+            constexpr int shroomCount = 6;
+            if (currentTimeMillis() - _lastShroomSpawnTime >= spawnDelay && _numShroomsSpawned < 6) {
+                const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
+
+                auto& shroom = std::shared_ptr<SwellingShroom>(new SwellingShroom(sf::Vector2f(playerPos.x + randomInt(-32, 32), playerPos.y + randomInt(-32, 32))));
+                shroom->setWorld(getWorld());
+                shroom->loadSprite(getWorld()->getSpriteSheet());
+                getWorld()->addEntity(shroom);
+
+                _numShroomsSpawned++;
+                _lastShroomSpawnTime = currentTimeMillis();
+            }
+            break;
+        }
+        case RAPID_FIRE_SHROOMS:
+        {
+            constexpr long long fireRate = 90LL;
+            if (currentTimeMillis() - _lastFireTimeMillis >= fireRate) {
+                float angle = 0;
+                constexpr int projCount = 90;
+                for (int i = 0; i < projCount; i++) {
+                    angle = i * (360.f / (float)projCount);
+                    fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_SMALL_SHROOM"), "NONE", true);
+                }
+                _lastFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+        case BIGSHROOM_SNIPE:
+        {
+            constexpr long long fireRate = 333LL;
+            if (currentTimeMillis() - _lastFireTimeMillis >= fireRate) {
+                const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
+                fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_LARGE_SHROOM"), "basicprojlaunch", true, false, {0, 50});
+                _lastFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+    }
 }

@@ -754,6 +754,9 @@ private:
                 case TEETH_BOSS:
                     entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
                     break;
+                case MUSHROOM_BOSS:
+                    entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

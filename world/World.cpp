@@ -58,6 +58,7 @@
 #include "entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
 #include "entities/ShopATM.h"
+#include "entities/MushroomBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -663,7 +664,7 @@ void World::onWaveCleared() {
         // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
-        if (_currentWaveNumber < 56) {
+        if (_currentWaveNumber < 64) {
             MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
         }
     }
@@ -1336,6 +1337,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 56:
             boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
+        case 64:
+            boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1528,6 +1532,9 @@ void World::bossDefeated() {
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
+            break;
+        case MUSHROOM_BOSS:
+            achievement = DEFEAT_SHROOMBOSS;
             break;
     }
 

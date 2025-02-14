@@ -16,7 +16,9 @@ protected:
     void runCurrentState();
 
     enum BEHAVIOR_STATE {
-        SPAWN_SHROOMS
+        SPAWN_SHROOMS,
+        RAPID_FIRE_SHROOMS,
+        BIGSHROOM_SNIPE
     };
 private:
     sf::Sprite _wavesSprite;
@@ -25,6 +27,9 @@ private:
 
     long long _lastFireTimeMillis = 0LL;
     float _fireAngle;
+
+    long long _lastShroomSpawnTime = 0LL;
+    int _numShroomsSpawned = 0;
 };
 
 #endif
