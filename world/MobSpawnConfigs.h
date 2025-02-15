@@ -3,7 +3,7 @@
 
 #include "MobSpawnData.h"
 
-const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
+const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {
         //MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
     }),
@@ -30,7 +30,9 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[8] = {
         MobSpawnData(MOB_TYPE::FROG, 6, 2, 4, 0)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
+    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {})
 };
 
 constexpr int CHEESE_BOSS_CHANCE = 18;
@@ -39,7 +41,7 @@ constexpr int BOMB_BOY_WAVE = 20;
 constexpr int MEGA_BOMB_BOY_WAVE = 32;
 constexpr int BOMB_ENEMY_CHANCE = 16;
 
-const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
+const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
@@ -92,7 +94,9 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[8] = {
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {})
+    BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
+
+    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {})
 };
 
 #endif

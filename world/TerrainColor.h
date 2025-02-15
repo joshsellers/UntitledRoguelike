@@ -22,6 +22,7 @@ enum class TERRAIN_COLOR : sf::Uint32 {
     DESERT = 0xFDE898,
 
     FLESH = 0xEEC39A,
+    FUNGUS = 0x9B7B6C,
 
     FOREST = 0x55A51A
 };

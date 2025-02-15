@@ -60,6 +60,8 @@
 #include "entities/ShopATM.h"
 #include "entities/MushroomBoss.h"
 #include "../core/SoundManager.h"
+#include "entities/SmallMushroom.h"
+#include "entities/LargeMushroom.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -787,6 +789,8 @@ void World::generateChunkScatters(Chunk& chunk) {
     constexpr int smallTundraTreeSpawnRate = 1500;
     constexpr int fingerTreeSpawnRate = 875;
     constexpr int forestSmallTreeSpawnRate = 20;
+    constexpr int smallShroomSpawnRate = 40;
+    constexpr int largeShroomSpawnRate = 850;
 
     bool spawnedShopThisChunk = false;
     bool spawnedAltarThisChunk = false;
@@ -891,6 +895,20 @@ void World::generateChunkScatters(Chunk& chunk) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _scatterBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::FUNGUS) {
+                boost::random::uniform_int_distribution<> smallDist(0, smallShroomSpawnRate);
+                boost::random::uniform_int_distribution<> largeDist(0, largeShroomSpawnRate);
+                if (smallDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<SmallMushroom> shroom = std::shared_ptr<SmallMushroom>(new SmallMushroom(sf::Vector2f(x, y), _spriteSheet));
+                    shroom->setWorld(this);
+                    _scatterBuffer.push_back(shroom);
+                }
+
+                if (largeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<LargeMushroom> shroom = std::shared_ptr<LargeMushroom>(new LargeMushroom(sf::Vector2f(x, y), _spriteSheet));
+                    shroom->setWorld(this);
+                    _scatterBuffer.push_back(shroom);
                 }
             }
         }
@@ -1033,10 +1051,18 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const sf::Vector2f fleshTemp = TerrainGenInitializer::getParameters()->fleshTemp;
             const sf::Vector2f fleshPrec = TerrainGenInitializer::getParameters()->fleshPrec;
 
+            const sf::Vector2f fungusTemp = TerrainGenInitializer::getParameters()->fungusTemp;
+            const sf::Vector2f fungusPrec = TerrainGenInitializer::getParameters()->fungusPrec;
+
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
+            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y&& rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y;
+
             if (_seed == 124959026) flesh = true;
+            else if (_seed == 4134632056) fungus = true;
             if (flesh && _seed != 124959026) {
                 AchievementManager::unlock(FLESHY);
+            } else if (fungus && _seed != 4134632056) {
+                AchievementManager::unlock(SHROOMY);
             }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
@@ -1059,6 +1085,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 if (flesh) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::FLESH;
                     rgb = (sf::Uint32)TERRAIN_COLOR::FLESH;
+                } else if (fungus) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::FUNGUS;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::FUNGUS;
                 }
             }
             terrainType = data[dX + dY * CHUNK_SIZE];

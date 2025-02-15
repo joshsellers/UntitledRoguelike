@@ -540,6 +540,12 @@
     <ClCompile Include="world\entities\Spore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\SmallMushroom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\LargeMushroom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -981,6 +987,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\Spore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\SmallMushroom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\LargeMushroom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
