@@ -1540,6 +1540,7 @@ void World::bossDefeated() {
             break;
         case BABY_BOSS:
             achievement = DEFEAT_BABYBOSS;
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Minigun", 1);
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
