@@ -287,6 +287,12 @@ const Ability Ability::DEBIT_CARD(15, "Debit Card",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::COUPON(16, "Coupon",
+    { {"chance", 0.0f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

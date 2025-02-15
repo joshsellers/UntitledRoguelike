@@ -110,6 +110,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             if (HARD_MODE_ENABLED) unlock(HARDMODE_SLIPPERY);
         } else if (_wavesWithoutDamage == 10) {
             unlock(UNTOUCHABLE);
+            ConditionalUnlockManager::increaseUnlockProgress("Coupon", 1);
             if (HARD_MODE_ENABLED) {
                 unlock(HARDMODE_UNTOUCHABLE);
                 ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);

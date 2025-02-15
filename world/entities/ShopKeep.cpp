@@ -117,7 +117,10 @@ void ShopKeep::initInventory() {
     //
 
     // discount
-    constexpr float discountChance = 0.5f;
+    float discountChance = 0.25f;
+    if (AbilityManager::playerHasAbility(Ability::COUPON.getId())) {
+        discountChance += AbilityManager::getParameter(Ability::COUPON.getId(), "chance");
+    }
     if (randomChance(discountChance)) {
         const unsigned int itemId = getInventory().getItemIdAt(randomInt(0, getInventory().getCurrentSize() - 1));
         constexpr float freeChance = 0.02f;
