@@ -20,6 +20,8 @@ public:
 
     bool onlyDamagePlayer = false;
 
+    bool optimizedExplosions = false;
+
     int passThroughCount = 1;
 
     void setCrit(const bool crit);

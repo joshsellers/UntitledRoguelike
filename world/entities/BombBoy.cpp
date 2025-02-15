@@ -75,7 +75,7 @@ void BombBoy::update() {
 void BombBoy::explode() const {
     constexpr int damage = 15;
     const sf::Vector2f spawnPos(getPosition().x, getPosition().y + TILE_SIZE - (TILE_SIZE * 3 / 2));
-    const auto explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, damage));
+    const auto explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, damage, true, true));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);

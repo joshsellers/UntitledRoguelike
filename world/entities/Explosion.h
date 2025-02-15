@@ -5,8 +5,8 @@
 
 class Explosion : public Entity {
 public:
-    Explosion(sf::Vector2f pos, bool onlyDamagePlayer = false);
-    Explosion(sf::Vector2f pos, int damage, bool onlyDamagePlayer = false);
+    Explosion(sf::Vector2f pos, bool onlyDamagePlayer = false, bool onlyDamageEnemies = false);
+    Explosion(sf::Vector2f pos, int damage, bool onlyDamagePlayer = false, bool onlyDamageEnemies = false);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
@@ -21,6 +21,7 @@ private:
     int _currentFrame = 0;
 
     const bool _onlyDamagePlayer;
+    const bool _onlyDamageEnemies;
 };
 
 #endif

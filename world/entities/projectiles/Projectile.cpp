@@ -145,7 +145,7 @@ void Projectile::update() {
 
 void Projectile::spawnExplosion() const {
     const sf::Vector2f spawnPos(_sprite.getGlobalBounds().left + _sprite.getGlobalBounds().width / 2, _sprite.getGlobalBounds().top - (3.f * (float)TILE_SIZE / 2.f));
-    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage()));
+    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), optimizedExplosions, optimizedExplosions));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);
@@ -272,6 +272,8 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitOnHit = false;
     _splitOnDecay = false;
     _splitProjectileCount = 0;
+
+    optimizedExplosions = false;
 
     _criticalHit = false;
 }
