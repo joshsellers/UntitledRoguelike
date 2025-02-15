@@ -1443,10 +1443,12 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
         _player->_pos.y = shopCounter->getPosition().y + 46;
 
-        if (GamePad::isConnected()) {
-            MessageManager::displayMessage("Approach the shopkeep and press X to see what he's got", 6);
-        } else {
-            MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+        if (!Tutorial::isCompleted()) {
+            if (GamePad::isConnected()) {
+                MessageManager::displayMessage("Approach the shopkeep and press X to see what he's got", 6);
+            } else {
+                MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+            }
         }
     } else if (buildingID == "barber") {
         std::shared_ptr<BarberInterior> barberInterior = std::shared_ptr<BarberInterior>(new BarberInterior(buildingPos, getSpriteSheet()));
