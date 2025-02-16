@@ -5,6 +5,7 @@
 #include "../../entities/Explosion.h"
 #include "ProjectileDataManager.h"
 #include "ProjectilePoolManager.h"
+#include "../../../core/Viewport.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -132,8 +133,31 @@ void Projectile::update() {
         }
     }
 
-    _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
-    _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
+    if (bounceOffViewport) {
+        _baseSpeed = 1;
+        move(_velocityComponents.x, _velocityComponents.y);
+        sf::Vector2i spriteSize(_hitBox.width, _hitBox.height);
+
+        const sf::FloatRect viewport = Viewport::getBounds();
+        if (_pos.x <= viewport.left) {
+            _pos.x = viewport.left;
+            _velocityComponents.x = -_velocityComponents.x;
+        } else if (_pos.x + spriteSize.x >= viewport.left + viewport.width) {
+            _pos.x = viewport.left + viewport.width - spriteSize.x;
+            _velocityComponents.x = -_velocityComponents.x;
+        }
+
+        if (_pos.y - (float)spriteSize.y / 2 <= viewport.top) {
+            _pos.y = viewport.top + (float)spriteSize.y / 2;
+            _velocityComponents.y = -_velocityComponents.y;
+        } else if (_pos.y + (float)spriteSize.y / 2 >= viewport.top + viewport.height) {
+            _pos.y = viewport.top + viewport.height - (float)spriteSize.y / 2;
+            _velocityComponents.y = -_velocityComponents.y;
+        }
+    } else {
+        _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
+        _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
+    }
 
     _sprite.setPosition(_pos);
 
@@ -191,6 +215,7 @@ void Projectile::split() const {
         );
 
         proj->setCrit(_criticalHit);
+        proj->bounceOffViewport = bounceOffViewport;
     }
 }
 
@@ -276,4 +301,7 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     optimizedExplosions = false;
 
     _criticalHit = false;
+
+    bounceOffViewport = false;
+    _baseSpeed = 0;
 }

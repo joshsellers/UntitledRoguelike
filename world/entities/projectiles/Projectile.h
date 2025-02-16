@@ -24,6 +24,8 @@ public:
 
     int passThroughCount = 1;
 
+    bool bounceOffViewport = false;
+
     void setCrit(const bool crit);
 
     friend class ProjectilePoolManager;

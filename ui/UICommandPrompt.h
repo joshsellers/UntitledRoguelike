@@ -52,6 +52,7 @@
 #include "../inventory/ConditionalUnlockManager.h"
 #include "../world/entities/MushroomBoss.h"
 #include "../world/entities/SwellingShroom.h"
+#include "../world/entities/Bouncer.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -340,6 +341,8 @@ private:
                             entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
                         } else if (entityName == "swellingshroom") {
                             entity = std::shared_ptr<SwellingShroom>(new SwellingShroom(pos));
+                        } else if (entityName == "bouncer") {
+                            entity = std::shared_ptr<Bouncer>(new Bouncer(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
