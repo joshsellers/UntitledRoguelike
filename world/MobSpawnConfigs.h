@@ -32,7 +32,9 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {})
+    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {
+        MobSpawnData(MOB_TYPE::MUSHROID, 10, 1, 1, 0)
+    })
 };
 
 constexpr int CHEESE_BOSS_CHANCE = 18;

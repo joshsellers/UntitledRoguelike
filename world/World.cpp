@@ -63,6 +63,7 @@
 #include "entities/SmallMushroom.h"
 #include "entities/LargeMushroom.h"
 #include "entities/Blinker.h"
+#include "entities/Mushroid.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -293,6 +294,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::SHARK:
                                 mob = std::shared_ptr<Shark>(new Shark(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::MUSHROID:
+                                mob = std::shared_ptr<Mushroid>(new Mushroid(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -1246,14 +1250,14 @@ std::shared_ptr<Player> World::getPlayer() const {
 int World::getMobCount() const {
     int count = 0;
     for (auto& entity : getEntities())
-        if (entity->isMob() && (!entity->isEnemy() || entity->getEntityType() == "cactoid") && entity->isActive()) count++;
+        if (entity->isMob() && (!entity->isEnemy() || entity->getSaveId() == CACTOID || entity->getSaveId() == MUSHROID) && entity->isActive()) count++;
     return count;
 }
 
 int World::getEnemyCount() const {
     int count = 0;
     for (auto& entity : getEnemies())
-        if (entity->isEnemy() && entity->getEntityType() != "cactoid" && entity->isActive()) count++;
+        if (entity->isEnemy() && entity->getSaveId() != CACTOID  && entity->getSaveId() != MUSHROID && entity->isActive()) count++;
     return count;
 }
 

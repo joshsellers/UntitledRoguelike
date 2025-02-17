@@ -39,6 +39,7 @@
     <ClCompile Include="ui\UISlider.cpp" />
     <ClCompile Include="world\entities\ChefBoss.cpp" />
     <ClCompile Include="mod\ScriptExtensions.cpp" />
+    <ClCompile Include="world\entities\Mushroid.cpp" />
     <ClCompile Include="world\entities\MushroomBoss.cpp" />
     <ClCompile Include="world\entities\ShopATM.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="ui\UISlider.h" />
     <ClInclude Include="world\entities\ChefBoss.h" />
     <ClInclude Include="mod\ScriptExtensions.h" />
+    <ClInclude Include="world\entities\Mushroid.h" />
     <ClInclude Include="world\entities\MushroomBoss.h" />
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
     <ClInclude Include="world\entities\ShopATM.h" />

@@ -759,11 +759,21 @@ private:
                     entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
                     break;
                 case BLINKER:
+                {
                     entity = std::shared_ptr<Blinker>(new Blinker(pos));
                     const float angle = std::stof(data[4]);
                     Blinker* blinker = dynamic_cast<Blinker*>(entity.get());
                     blinker->_angle = angle;
                     break;
+                }
+                case MUSHROID:
+                {
+                    bool isAggro = data[4] == "1";
+                    std::shared_ptr<Mushroid> mushroid = std::shared_ptr<Mushroid>(new Mushroid(pos));
+                    mushroid->_isAggro = isAggro;
+                    entity = mushroid;
+                    break;
+                }
             }
 
             if (entityLoadedSuccessfully) {

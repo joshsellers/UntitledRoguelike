@@ -53,6 +53,7 @@
 #include "../world/entities/MushroomBoss.h"
 #include "../world/entities/SwellingShroom.h"
 #include "../world/entities/Blinker.h"
+#include "../world/entities/Mushroid.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -343,6 +344,8 @@ private:
                             entity = std::shared_ptr<SwellingShroom>(new SwellingShroom(pos));
                         } else if (entityName == "blinker") {
                             entity = std::shared_ptr<Blinker>(new Blinker(pos));
+                        } else if (entityName == "mushroid") {
+                            entity = std::shared_ptr<Mushroid>(new Mushroid(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

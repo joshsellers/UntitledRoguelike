@@ -36,7 +36,8 @@ enum ENTITY_SAVE_ID {
     BEE_FAMILIAR,
     TEETH_BOSS,
     MUSHROOM_BOSS,
-    BLINKER
+    BLINKER,
+    MUSHROID
 };
 
 #endif
