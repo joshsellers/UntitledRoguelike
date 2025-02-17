@@ -154,6 +154,17 @@ void Projectile::update() {
             _pos.y = viewport.top + viewport.height - (float)spriteSize.y / 2;
             _velocityComponents.y = -_velocityComponents.y;
         }
+
+        const bool bounced = 
+               _pos.x <= viewport.left
+            || _pos.x + spriteSize.x >= viewport.left + viewport.width
+            || _pos.y - (float)spriteSize.y / 2 <= viewport.top
+            || _pos.y + (float)spriteSize.y / 2 >= viewport.top + viewport.height;
+        if (bounced) {
+            const float angle = radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x));
+            _sprite.setRotation(angle);
+        }
+
     } else {
         _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
         _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
