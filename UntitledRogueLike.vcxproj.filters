@@ -549,6 +549,9 @@
     <ClCompile Include="world\entities\Bouncer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\Blinker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -999,6 +1002,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\Bouncer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\Blinker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

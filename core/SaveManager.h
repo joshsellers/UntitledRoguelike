@@ -11,6 +11,7 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "../world/entities/BeeFamiliar.h"
+#include "../world/entities/Blinker.h"
 
 class SaveManager {
 public:
@@ -756,6 +757,12 @@ private:
                     break;
                 case MUSHROOM_BOSS:
                     entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
+                    break;
+                case BLINKER:
+                    entity = std::shared_ptr<Blinker>(new Blinker(pos));
+                    const float angle = std::stof(data[4]);
+                    Blinker* blinker = dynamic_cast<Blinker*>(entity.get());
+                    blinker->_angle = angle;
                     break;
             }
 

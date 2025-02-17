@@ -2,6 +2,7 @@
 #define _VIEWPORT_H
 
 #include "SFML/Graphics/View.hpp"
+#include "Globals.h"
 
 class Viewport {
 public:

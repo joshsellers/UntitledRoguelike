@@ -62,6 +62,7 @@
 #include "../core/SoundManager.h"
 #include "entities/SmallMushroom.h"
 #include "entities/LargeMushroom.h"
+#include "entities/Blinker.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -390,6 +391,9 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::BIG_SNOW_MAN:
                                 mob = std::shared_ptr<BigSnowMan>(new BigSnowMan(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BLINKER:
+                                mob = std::shared_ptr<Blinker>(new Blinker(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;

@@ -56,6 +56,7 @@
     <ClCompile Include="world\entities\Spore.cpp" />
     <ClCompile Include="world\entities\SwellingShroom.cpp" />
     <ClCompile Include="world\entities\TeethBoss.cpp" />
+    <ClCompile Include="world\entities\Blinker.cpp" />
     <ClCompile Include="world\entities\TreeBoss.cpp" />
     <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp" />
     <ClCompile Include="world\entities\TulipMonster.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="world\entities\Spore.h" />
     <ClInclude Include="world\entities\SwellingShroom.h" />
     <ClInclude Include="world\entities\TeethBoss.h" />
+    <ClInclude Include="world\entities\Blinker.h" />
     <ClInclude Include="world\entities\TreeBoss.h" />
     <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h" />
     <ClInclude Include="world\entities\TulipMonster.h" />

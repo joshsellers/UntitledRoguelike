@@ -5,12 +5,16 @@
 
 class Bouncer : public Entity {
 public:
-    Bouncer(sf::Vector2f pos);
+    Bouncer(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const float angle);
 
     void update();
-    void draw(sf::RenderTexture& surface);
 
-    void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+    std::string getSaveData() const;
+
+    friend class SaveManager;
+protected:
+    virtual void preupdate() = 0;
+    float _angle;
 private:
 
 };
