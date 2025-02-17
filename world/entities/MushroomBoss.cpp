@@ -23,7 +23,7 @@ MushroomBoss::MushroomBoss(sf::Vector2f pos) : Boss(MUSHROOM_BOSS, pos, 1.f, 8 *
     _canPickUpItems = false;
 
     _entityType = "shroomboss";
-    _displayName = "Anita Amanita";
+    _displayName = "Anita";
 
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(8500, 10000);
