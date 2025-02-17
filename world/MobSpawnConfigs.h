@@ -43,6 +43,7 @@ constexpr int BOMB_BOY_WAVE = 20;
 constexpr int MEGA_BOMB_BOY_WAVE = 32;
 constexpr int BOMB_ENEMY_CHANCE = 16;
 constexpr int BLINKER_CHANCE = 55;
+constexpr int BLINKER_WAVE = 5;
 
 const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {}),
@@ -53,7 +54,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         MobSpawnData(MOB_TYPE::TULIP_MONSTER, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
@@ -63,7 +64,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         //MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
@@ -72,7 +73,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         MobSpawnData(MOB_TYPE::BOULDER_BEAST, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
@@ -81,7 +82,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         MobSpawnData(MOB_TYPE::LOG_MONSTER, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
@@ -90,7 +91,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         //MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
@@ -100,12 +101,18 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
         MobSpawnData(MOB_TYPE::LOG_MONSTER, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
         MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
-        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, 5)
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {})
+    BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {
+        MobSpawnData(MOB_TYPE::FUNGUY, 0, 4, 10, 0),
+        MobSpawnData(MOB_TYPE::FUNGUS_MAN, 3, 1, 2, PROJ_ENEMIES_WAVE),
+        MobSpawnData(MOB_TYPE::BOMB_BOY, BOMB_ENEMY_CHANCE, 4, 8, BOMB_BOY_WAVE),
+        MobSpawnData(MOB_TYPE::MEGA_BOMB_BOY, BOMB_ENEMY_CHANCE, 1, 4, MEGA_BOMB_BOY_WAVE),
+        MobSpawnData(MOB_TYPE::BLINKER, BLINKER_CHANCE, 5, 6, BLINKER_WAVE)
+    })
 };
 
 #endif

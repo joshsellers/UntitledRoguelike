@@ -774,6 +774,12 @@ private:
                     entity = mushroid;
                     break;
                 }
+                case FUNGUY:
+                    entity = std::shared_ptr<Funguy>(new Funguy(pos));
+                    break;
+                case FUNGUS_MAN:
+                    entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

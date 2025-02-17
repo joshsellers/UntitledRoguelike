@@ -1,0 +1,4 @@
+name = "_PROJECTILE_SPORE_SHOT"
+description = "This item should not be obtainable."
+damage = 15
+textureRect = 160, 43, 1, 1

@@ -555,6 +555,12 @@
     <ClCompile Include="world\entities\Mushroid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\FungusMan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\Funguy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1011,6 +1017,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\Mushroid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\FungusMan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\Funguy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

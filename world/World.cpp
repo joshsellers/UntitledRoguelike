@@ -64,6 +64,8 @@
 #include "entities/LargeMushroom.h"
 #include "entities/Blinker.h"
 #include "entities/Mushroid.h"
+#include "entities/Funguy.h"
+#include "entities/FungusMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -398,6 +400,12 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::BLINKER:
                                 mob = std::shared_ptr<Blinker>(new Blinker(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FUNGUY:
+                                mob = std::shared_ptr<Funguy>(new Funguy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FUNGUS_MAN:
+                                mob = std::shared_ptr<FungusMan>(new FungusMan(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
