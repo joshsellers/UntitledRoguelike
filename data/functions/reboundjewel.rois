@@ -1,0 +1,8 @@
+hasAbility = player.hasAbility("Bouncing Projectiles");
+if: not hasAbility {
+    player.addAbility("Bouncing Projectiles");
+    player.addEffect("Rebound Jewel");
+    return true;
+}
+
+return false;

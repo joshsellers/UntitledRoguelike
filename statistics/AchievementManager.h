@@ -6,7 +6,7 @@
 #include <string>
 #include "Statistic.h"
 
-constexpr int NUM_ACHIEVEMENTS = 38;
+constexpr int NUM_ACHIEVEMENTS = 39;
 enum ACHIEVEMENT {
     MILLIONAIRE,
     DEFEAT_CHEESEBOSS,
@@ -45,7 +45,8 @@ enum ACHIEVEMENT {
     DEFEAT_SHROOMBOSS,
     HARDMODE_DEFEAT_SHROOMBOSS,
     ECONOMICAL,
-    SHROOMY
+    SHROOMY,
+    SLAUGHTERER
 };
 
 class AchievementManagerInstance {
@@ -111,7 +112,8 @@ public:
         "ACH_SHROOMBOSS",
         "ACH_HARDMODE_SHROOMBOSS",
         "ACH_ECONOMICAL",
-        "ACH_SHROOMY"
+        "ACH_SHROOMY",
+        "ACH_SLAUGHTERER"
     };
 
     static void start() {
