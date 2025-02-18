@@ -1,7 +1,7 @@
 #include "Blinker.h"
 #include "../World.h"
 
-Blinker::Blinker(sf::Vector2f pos) : Bouncer(BLINKER, pos, 2, TILE_SIZE, TILE_SIZE, randomInt(0, 359)) {
+Blinker::Blinker(sf::Vector2f pos) : Bouncer(BLINKER, pos, 2.5f, TILE_SIZE, TILE_SIZE, randomInt(0, 359)) {
     _isEnemy = true;
     _entityType = "blinker";
 

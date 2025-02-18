@@ -24,7 +24,7 @@ void Entity::move(float xa, float ya) {
     xa *= _baseSpeed;
     ya *= _baseSpeed;
 
-    if (isSwimming()) {
+    if (isSwimming() && !_isEnemy) {
         xa /= 2;
         ya /= 2;
     }

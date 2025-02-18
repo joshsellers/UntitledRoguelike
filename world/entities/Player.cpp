@@ -242,6 +242,7 @@ void Player::draw(sf::RenderTexture& surface) {
 
         int xOffset = isDodging() ? ((_numSteps >> (_animSpeed / 2)) & 3) * 16 : 0;
         int yOffset = isMoving() || (isSwimming() && !isInBoat()) ? ((_numSteps >> _animSpeed) & 3) * 32 : 0;
+        if (AbilityManager::playerHasAbility(Ability::BLESSING.getId())) yOffset = 0;
         _sprite.setTextureRect(sf::IntRect(
             isDodging() && isMoving() ? xOffset : 16 * _facingDir, (_isBlinking ? 592 : 0) +
             (isDodging() && isMoving() ? 128 : 0 + yOffset),
