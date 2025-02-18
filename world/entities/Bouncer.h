@@ -16,7 +16,7 @@ protected:
     virtual void preupdate() = 0;
     float _angle;
 private:
-
+    bool _checkedPlayerCollision = false;
 };
 
 #endif

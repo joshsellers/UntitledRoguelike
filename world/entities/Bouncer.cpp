@@ -1,5 +1,5 @@
 #include "Bouncer.h"
-#include "../../core/Util.h"
+#include "../World.h"
 #include "../../core/Viewport.h"
 
 Bouncer::Bouncer(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const float angle) : 
@@ -25,6 +25,15 @@ Bouncer::Bouncer(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const
 }
 
 void Bouncer::update() {
+    if (_isEnemy && getWorld() != nullptr && !_checkedPlayerCollision) {
+        _hitBox.left = _pos.x + _hitBoxXOffset;
+        _hitBox.top = _pos.y + _hitBoxYOffset;
+        if (getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
+            deactivate();
+        }
+        _checkedPlayerCollision = true;
+    }
+
     preupdate();
 
     sf::FloatRect viewport = Viewport::getBounds();
