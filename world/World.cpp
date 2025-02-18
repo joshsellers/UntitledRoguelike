@@ -1592,6 +1592,7 @@ void World::bossDefeated() {
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
     }
 

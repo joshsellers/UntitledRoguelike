@@ -5,6 +5,6 @@ textureRect = 26, 14, 1, 1
 isBuyable = true
 value = 240
 shopChance = 50
-unlockWaveNumber = 64
+conditionalUnlock = true
 functionName = "cassidyshead"
 tags = "cat"
