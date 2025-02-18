@@ -4,6 +4,6 @@ isConsumable = true
 textureRect = 26, 15, 1, 1
 isBuyable = true
 value = 299
-shopChance = 50
+shopChance = 10
 conditionalUnlock = true
 functionName = "devsblessing"
