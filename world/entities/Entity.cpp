@@ -84,7 +84,7 @@ void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, flo
         _velocity.y /= size;
     }
 
-    if (isSwimming()) {
+    if (isSwimming() && !_isEnemy) {
         _velocity.x /= 2.f;
         _velocity.y /= 2.f;
     }
