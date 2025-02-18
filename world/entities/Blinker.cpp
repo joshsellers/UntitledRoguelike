@@ -8,7 +8,7 @@ Blinker::Blinker(sf::Vector2f pos) : Bouncer(BLINKER, pos, 2.5f, TILE_SIZE, TILE
     _hitBox.width = TILE_SIZE;
     _hitBox.height = TILE_SIZE;
 
-    setMaxHitPoints(20);
+    setMaxHitPoints(30);
     heal(getMaxHitPoints());
 
     if (randomChance(0.5f)) {
