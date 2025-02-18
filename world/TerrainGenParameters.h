@@ -43,6 +43,9 @@ struct TerrainGenParameters {
 
     sf::Vector2f fleshTemp;
     sf::Vector2f fleshPrec;
+
+    sf::Vector2f fungusTemp;
+    sf::Vector2f fungusPrec;
 };
 
 class TerrainGenInitializer {
@@ -174,6 +177,8 @@ public:
                     else if (parameterString == "forestPrec") _terrainGenParameters.forestPrec = vector;
                     else if (parameterString == "fleshTemp") _terrainGenParameters.fleshTemp = vector;
                     else if (parameterString == "fleshPrec") _terrainGenParameters.fleshPrec = vector;
+                    else if (parameterString == "fungusTemp") _terrainGenParameters.fungusTemp = vector;
+                    else if (parameterString == "fungusPrec") _terrainGenParameters.fungusPrec = vector;
                     else {
                         MessageManager::displayMessage("Unknown biome dist parameter: " + parameterString, 5, DEBUG);
                     }

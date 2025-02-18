@@ -180,6 +180,11 @@ private:
 
 	void generateStatsString(std::string& statsString, bool overall, bool useUnderscores = true);
 
+	void atmWithdraw() const;
+	long long _interactPressTime = 0LL;
+	long long _lastWithdrawTime = 0LL;
+	bool _interactReleased = true;
+
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };
 

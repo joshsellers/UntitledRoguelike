@@ -133,7 +133,18 @@ void ModManager::loadItem(std::ifstream& in) {
 
     std::string line;
     while (getline(in, line)) {
-        const std::vector<std::string> tokens = tokenize(line);
+        const std::vector<std::string> unmergedTokens = tokenize(line);
+        std::vector<std::string> tokens;
+        for (int i = 0; i < unmergedTokens.size(); i++) {
+            const std::string token = unmergedTokens.at(i);
+            if (i < unmergedTokens.size() - 1 && token == "-" && isNumber(unmergedTokens.at(i + 1))) {
+                tokens.push_back("-" + unmergedTokens.at(i + 1));
+                i++;
+                continue;
+            }
+
+            tokens.push_back(token);
+        }
 
         if (tokens.size() > 2 && tokens.at(1) == "=") {
             if (tokens.at(0) == "name") {

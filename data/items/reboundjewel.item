@@ -1,0 +1,9 @@
+name = "Rebound Jewel"
+description = "A gem that holds mysterious power..."
+conditionalUnlock = true
+isBuyable = true
+value = 500
+shopChance = 50
+isConsumable = true
+functionName = "reboundjewel"
+textureRect = 24, 16, 1, 1

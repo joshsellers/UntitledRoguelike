@@ -1,0 +1,8 @@
+name = "Coupon"
+description = "Increases the chance for shops to\nhave a discount by 10%"
+isConsumable = true
+functionName = "usecoupon"
+conditionalUnlock = true
+isBuyable = true
+value = 300
+textureRect = 24, 15, 1, 1

@@ -6,6 +6,8 @@
 #include "../../core/SoundManager.h"
 #include "../../statistics/StatManager.h"
 #include "projectiles/ProjectilePoolManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
 
 Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const int spriteWidth, const int spriteHeight, const bool isProp) : 
     _spriteWidth(spriteWidth), _spriteHeight(spriteHeight), _isProp(isProp), _saveId(saveId) {
@@ -22,7 +24,7 @@ void Entity::move(float xa, float ya) {
     xa *= _baseSpeed;
     ya *= _baseSpeed;
 
-    if (isSwimming()) {
+    if (isSwimming() && !_isEnemy) {
         xa /= 2;
         ya /= 2;
     }
@@ -42,6 +44,26 @@ void Entity::move(float xa, float ya) {
 }
 
 void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, float visionRange) {
+    if (_isScared) return;
+
+    if (_isEnemy && !_checkedFear && AbilityManager::playerHasAbility(Ability::FEAR.getId())) {
+        const float distSquared = 150 * 150;
+        const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+        const sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + getSpriteSize().y / 2);
+        const float dist = std::pow(playerPos.x - cLoc.x, 2) + std::pow(playerPos.y - cLoc.y, 2);
+
+        if (dist <= distSquared) {
+            _checkedFear = true;
+            const float chance = AbilityManager::getParameter(Ability::FEAR.getId(), "chance");
+            if (chance >= 1.f) {
+                _isScared = true;
+                return;
+            }
+            _isScared = randomChance(chance);
+            if (_isScared) return;
+        }
+    }
+
     sf::Vector2f acceleration(xa, ya);
 
     sf::Vector2f visionSum(0, 0);
@@ -62,7 +84,7 @@ void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, flo
         _velocity.y /= size;
     }
 
-    if (isSwimming()) {
+    if (isSwimming() && !_isEnemy) {
         _velocity.x /= 2.f;
         _velocity.y /= 2.f;
     }
@@ -326,8 +348,8 @@ Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const Project
     bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
-    double x = (double)(targetPos.x - centerPoint.x + centerOffset.x);
-    double y = (double)(targetPos.y - centerPoint.y + centerOffset.y);
+    double x = (double)(targetPos.x - (centerPoint.x + centerOffset.x));
+    double y = (double)(targetPos.y - (centerPoint.y + centerOffset.y));
 
     float angle = (float)((std::atan2(y, x)));
     return fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset, addParentVelocity);
@@ -335,6 +357,8 @@ Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const Project
 
 Projectile* Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
     bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
+    if (_isScared) return nullptr;
+
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
     sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2 + centerOffset.x, centerPoint.y + centerOffset.y);
 

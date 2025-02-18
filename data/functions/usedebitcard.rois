@@ -1,0 +1,14 @@
+hasAbility = player.hasAbility("Debit Card");
+if: not hasAbility {
+    player.addAbility("Debit Card");
+}
+
+currentChance = player.getAbilityParameter("Debit Card", "chance");
+if: currentChance < 1 {
+    increase = 1 / 20;
+    player.setAbilityParameter("Debit Card", "chance", currentChance + increase);
+    return true;
+}
+
+displayMessage("You can't use any more of these (ATM chance is 100%!)", 5);
+return false;

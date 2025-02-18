@@ -5,6 +5,7 @@
 #include "../../entities/Explosion.h"
 #include "ProjectileDataManager.h"
 #include "ProjectilePoolManager.h"
+#include "../../../core/Viewport.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -132,8 +133,42 @@ void Projectile::update() {
         }
     }
 
-    _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
-    _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
+    if (bounceOffViewport) {
+        _baseSpeed = 1;
+        move(_velocityComponents.x, _velocityComponents.y);
+        sf::Vector2i spriteSize(_hitBox.width, _hitBox.height);
+
+        const sf::FloatRect viewport = Viewport::getBounds();
+        if (_pos.x <= viewport.left) {
+            _pos.x = viewport.left;
+            _velocityComponents.x = -_velocityComponents.x;
+        } else if (_pos.x + spriteSize.x >= viewport.left + viewport.width) {
+            _pos.x = viewport.left + viewport.width - spriteSize.x;
+            _velocityComponents.x = -_velocityComponents.x;
+        }
+
+        const bool bounced =
+            _pos.x <= viewport.left
+            || _pos.x + spriteSize.x >= viewport.left + viewport.width
+            || _pos.y - (float)spriteSize.y / 2 <= viewport.top
+            || _pos.y + (float)spriteSize.y / 2 >= viewport.top + viewport.height;
+
+        if (_pos.y - (float)spriteSize.y / 2 <= viewport.top) {
+            _pos.y = viewport.top + (float)spriteSize.y / 2;
+            _velocityComponents.y = -_velocityComponents.y;
+        } else if (_pos.y + (float)spriteSize.y / 2 >= viewport.top + viewport.height) {
+            _pos.y = viewport.top + viewport.height - (float)spriteSize.y / 2;
+            _velocityComponents.y = -_velocityComponents.y;
+        }
+
+        if (bounced) {
+            const float angle = radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x));
+            _sprite.setRotation(angle);
+        }
+    } else {
+        _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
+        _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
+    }
 
     _sprite.setPosition(_pos);
 
@@ -145,7 +180,7 @@ void Projectile::update() {
 
 void Projectile::spawnExplosion() const {
     const sf::Vector2f spawnPos(_sprite.getGlobalBounds().left + _sprite.getGlobalBounds().width / 2, _sprite.getGlobalBounds().top - (3.f * (float)TILE_SIZE / 2.f));
-    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage()));
+    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), optimizedExplosions, optimizedExplosions));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);
@@ -191,6 +226,7 @@ void Projectile::split() const {
         );
 
         proj->setCrit(_criticalHit);
+        proj->bounceOffViewport = bounceOffViewport;
     }
 }
 
@@ -273,5 +309,10 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitOnDecay = false;
     _splitProjectileCount = 0;
 
+    optimizedExplosions = false;
+
     _criticalHit = false;
+
+    bounceOffViewport = false;
+    _baseSpeed = 0;
 }

@@ -12,8 +12,10 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
         int lastHeight = getRelativeHeight(3.f);
         for (auto& message : MessageManager::getMessages()) {
             if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) {
+                const bool special = message->messageType == SPECIAL;
+
                 sf::Text messageText(message->text, _font);
-                float fontSize = 1.f;
+                float fontSize = special ? 2.f : 1.f;
                 int relativeFontSize = getRelativeWidth(fontSize);
                 messageText.setCharacterSize(relativeFontSize);
                 messageText.setFillColor(sf::Color(MESSAGE_TYPES[message->messageType].color));
@@ -22,15 +24,15 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
                 float height = messageText.getGlobalBounds().height;
 
                 float x = getRelativeWidth(50.f) - width / 2;
-                float y = getRelativeHeight(1.5f) + lastHeight;
+                float y = getRelativeHeight(1.5f) + lastHeight + (special ? getRelativeHeight(0.25f) : 0.f);
                 messageText.setPosition(sf::Vector2f(x, y));
 
-                sf::RectangleShape background;
-                background.setFillColor(sf::Color(0x2D2D3099));
-                background.setOutlineColor(sf::Color(0x3E3E4199));
+                sf::RectangleShape background; 
+                background.setFillColor(sf::Color(special ? 0xD1B000FF : 0x2D2D3099));
+                background.setOutlineColor(sf::Color(special ? 0xA38A00FF : 0x3E3E4199));
                 background.setOutlineThickness(getRelativeWidth(0.25f));
 
-                float padding = getRelativeWidth(0.25f);
+                float padding = getRelativeWidth(special ? 0.5f : 0.25f);
                 background.setPosition(sf::Vector2f(x - padding, y - padding));
                 background.setSize(sf::Vector2f(width + padding * 2, height + padding * 2));
                 lastHeight = y - padding + height + padding * 2;

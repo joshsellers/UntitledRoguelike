@@ -1,0 +1,5 @@
+weaponLoaded = player.weaponIsLoaded();
+if: weaponLoaded {
+    playSound("minigun");
+    player.fireProjectile("Rifle Round", 1);
+}

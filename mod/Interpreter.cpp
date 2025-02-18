@@ -327,6 +327,27 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 MessageManager::displayMessage("player.giveItem() requires a string parameter", 5, ERR);
             }
             i++;
+        } else if (inst == INSTRUCTION::PLRMITEM) {
+            if (_strStackSize > 0) {
+                if (entity != nullptr) {
+                    const std::string itemName = strPop();
+                    const int amount = pop();
+
+                    bool foundItem = false;
+                    for (const auto& item : Item::ITEMS) {
+                        if (item->getName() == itemName) {
+                            entity->getInventory().removeItem(item->getId(), amount);
+                            foundItem = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundItem) MessageManager::displayMessage("No item named \"" + itemName + "\"", 5, WARN);
+                }
+            } else {
+                MessageManager::displayMessage("player.removeItem() requires a string parameter", 5, ERR);
+            }
+            i++;
         } else if (inst == INSTRUCTION::PLHASITEM) {
             if (_strStackSize > 0) {
                 if (entity != nullptr) {

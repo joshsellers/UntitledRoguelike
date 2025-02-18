@@ -2,6 +2,7 @@
 #include "../World.h"
 #include "Explosion.h"
 #include "projectiles/ProjectileDataManager.h"
+#include "projectiles/Projectile.h"
 
 MegaBombBoy::MegaBombBoy(sf::Vector2f pos) : Entity(MEGA_BOMB_BOY, pos, 4.f, 3 * TILE_SIZE, 3 * TILE_SIZE, false) {
     setMaxHitPoints(275);
@@ -76,7 +77,7 @@ void MegaBombBoy::update() {
 void MegaBombBoy::explode() {
     constexpr int damage = 15;
     const sf::Vector2f spawnPos(getPosition().x, getPosition().y + ((float)TILE_SIZE * 3.f / 2.f) - ((float)TILE_SIZE * 3 / 2));
-    const auto explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, damage));
+    const auto explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, damage, true, true));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);
@@ -88,7 +89,8 @@ void MegaBombBoy::explode() {
         if (fireAngle >= 360.f) fireAngle -= 360.f;
 
         const float fireAngleRads = fireAngle * ((float)PI / 180.f);
-        fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_BOMB"), "NONE", true, false, {0, 0}, false);
+        Projectile* proj = fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_BOMB"), "NONE", true, false, {0, 0}, false);
+        proj->optimizedExplosions = true;
     }
 }
 

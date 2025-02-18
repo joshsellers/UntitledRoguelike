@@ -1,0 +1,4 @@
+name = "_PROJECTILE_PENNY"
+description = "This item should not be obtainable."
+damage = 10
+textureRect = 131, 3, 1, 1

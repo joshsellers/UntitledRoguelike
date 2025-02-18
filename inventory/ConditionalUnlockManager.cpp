@@ -3,11 +3,22 @@
 #include "../core/MessageManager.h"
 #include "../core/Util.h"
 #include "../statistics/StatManager.h"
+#include "../core/SoundManager.h"
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
-    {"Chef's Hat", 5},
-    {"Order Form", 1}
+    {"Chef's Hat", 1},
+    {"Order Form", 1},
+    {"Quantum Visor", 1},
+    {"Cassidy's Tail", 1},
+    {"Cassidy's Brain Cell", 1},
+    {"Dev's Blessing", 1},
+    {"Penny Cannon", 1},
+    {"Debit Card", 1},
+    {"Coupon", 1},
+    {"Minigun", 1},
+    {"Rebound Jewel", 1},
+    {"Cassidy's Head", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {
@@ -25,7 +36,8 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
             _unlockedItems.push_back(itemName);
             StatManager::increaseStat(ITEMS_UNLOCKED, 1);
             saveUnlockedItems();
-            MessageManager::displayMessage("You've unlocked a new item!", 5);
+            MessageManager::displayMessage("New item unlocked: " + itemName, 8, SPECIAL);
+            SoundManager::playSound("itemunlock");
             return;
         }
     }
@@ -111,4 +123,17 @@ void ConditionalUnlockManager::resetUnlocks() {
         unlockProgress.second.progress = 0.f;
     }
     saveUnlockedItems();
+}
+
+void ConditionalUnlockManager::catItemUsed(unsigned int itemId) {
+    for (int i = 0; i < 3; i++) {
+        const unsigned int id = _catItems[i];
+        if (id == itemId) return;
+
+        if (id == 0) {
+            _catItems[i] = itemId;
+            if (i == 2) increaseUnlockProgress("Cassidy's Brain Cell", 1);
+            return;
+        }
+    }
 }

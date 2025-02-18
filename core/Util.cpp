@@ -14,6 +14,7 @@ int randomInt(int min, int max) {
 }
 
 bool randomChance(float probability) {
+    if (probability >= 1.0f) return true;
     const int range = (int)(1.f / probability);
     const int min = 0;
     const int max = range - 1;
@@ -104,6 +105,25 @@ float degToRads(float angle) {
 
 float radsToDeg(float angle) {
     return angle * 180.f / M_PI;
+}
+
+// fast pow for int, credit to https://stackoverflow.com/a/101613/13188071
+int ipow(int base, int exp) {
+    int result = 1;
+    while (true) {
+        if (exp & 1)
+            result *= base;
+        exp >>= 1;
+        if (exp == 0)
+            break;
+        base *= base;
+    }
+
+    return result;
+}
+
+double round_prec(double n, int prec) {
+    return std::round(n * ipow(10, prec)) / ipow(10, prec);
 }
 
 std::string generateUID() {

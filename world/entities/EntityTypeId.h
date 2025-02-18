@@ -34,7 +34,12 @@ enum ENTITY_SAVE_ID {
     SOLDIER,
     BIG_SNOWMAN,
     BEE_FAMILIAR,
-    TEETH_BOSS
+    TEETH_BOSS,
+    MUSHROOM_BOSS,
+    BLINKER,
+    MUSHROID,
+    FUNGUS_MAN,
+    FUNGUY
 };
 
 #endif

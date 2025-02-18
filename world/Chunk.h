@@ -21,7 +21,8 @@ enum class TERRAIN_TYPE : unsigned int {
     SAVANNA       = 9,
     FLESH         = 10,
     GRASS_FOREST  = 11,
-    RIVER         = 12
+    RIVER         = 12,
+    FUNGUS        = 13
 };
 
 struct Chunk {

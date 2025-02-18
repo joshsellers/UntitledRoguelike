@@ -11,6 +11,7 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "../world/entities/BeeFamiliar.h"
+#include "../world/entities/Blinker.h"
 
 class SaveManager {
 public:
@@ -288,6 +289,12 @@ private:
             out << ":" << std::to_string(StatManager::getStatThisSave((STATISTIC)i));
         }
         out << std::endl;
+
+        out << "CAT";
+        for (int i = 0; i < 3; i++) {
+            out << ":" << ConditionalUnlockManager::_catItems[i];
+        }
+        out << std::endl;
     }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
@@ -417,6 +424,10 @@ private:
         } else if (header == "STATS") {
             for (int i = 0; i < data.size(); i++) {
                 StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+            }
+        } else if (header == "CAT") {
+            for (int i = 0; i < data.size() && i < 3; i++) {
+                ConditionalUnlockManager::_catItems[i] = std::stoul(data[i]);
             }
         } else if (header == "ABILITY") {
             const unsigned int id = std::stoul(data[0]);
@@ -743,6 +754,31 @@ private:
                 }
                 case TEETH_BOSS:
                     entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
+                    break;
+                case MUSHROOM_BOSS:
+                    entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
+                    break;
+                case BLINKER:
+                {
+                    entity = std::shared_ptr<Blinker>(new Blinker(pos));
+                    const float angle = std::stof(data[4]);
+                    Blinker* blinker = dynamic_cast<Blinker*>(entity.get());
+                    blinker->_angle = angle;
+                    break;
+                }
+                case MUSHROID:
+                {
+                    bool isAggro = data[4] == "1";
+                    std::shared_ptr<Mushroid> mushroid = std::shared_ptr<Mushroid>(new Mushroid(pos));
+                    mushroid->_isAggro = isAggro;
+                    entity = mushroid;
+                    break;
+                }
+                case FUNGUY:
+                    entity = std::shared_ptr<Funguy>(new Funguy(pos));
+                    break;
+                case FUNGUS_MAN:
+                    entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
                     break;
             }
 

@@ -1,0 +1,9 @@
+name = "Cassidy's Tail"
+description = "Strike fear into your enemies\n\nUse more of these to increase fear chance"
+isConsumable = true
+isBuyable = true
+value = 310
+textureRect = 27, 14, 1, 1
+functionName = "cassidystail"
+conditionalUnlock = true
+tags = "cat"

@@ -31,6 +31,9 @@ void rtrim(std::string& s);
 float degToRads(float angle);
 float radsToDeg(float angle);
 
+int ipow(int base, int exp);
+double round_prec(double n, int prec);
+
 std::string generateUID();
 
 std::string getLocalLowPath();

@@ -20,7 +20,11 @@ public:
 
     bool onlyDamagePlayer = false;
 
+    bool optimizedExplosions = false;
+
     int passThroughCount = 1;
+
+    bool bounceOffViewport = false;
 
     void setCrit(const bool crit);
 

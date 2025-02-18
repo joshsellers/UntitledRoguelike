@@ -21,12 +21,19 @@ public:
     static void saveUnlockedItems();
 
     static void resetUnlocks();
+
+    static void catItemUsed(unsigned int itemId);
+
+    friend class Game;
+    friend class SaveManager;
 private:
     static inline std::vector<std::string> _unlockedItems;
 
     static void unlockItem(std::string itemName);
 
     static std::map<std::string, UnlockProgressTracker> _unlockProgress;
+
+    static inline unsigned int _catItems[3] = { 0, 0, 0 };
 };
 
 #endif

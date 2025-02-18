@@ -1,0 +1,13 @@
+hasAbility = player.hasAbility("Coupon");
+if: not hasAbility {
+    player.addAbility("Coupon");
+}
+
+currentChance = player.getAbilityParameter("Coupon", "chance");
+if: currentChance < 1 {
+    player.setAbilityParameter("Coupon", "chance", currentChance + 1 / 10);
+    return true;
+}
+
+displayMessage("You can't use any more of these.", 5);
+return false;

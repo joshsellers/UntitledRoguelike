@@ -50,6 +50,12 @@
 #include "../statistics/StatManager.h"
 #include "../world/entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "../world/entities/MushroomBoss.h"
+#include "../world/entities/SwellingShroom.h"
+#include "../world/entities/Blinker.h"
+#include "../world/entities/Mushroid.h"
+#include "../world/entities/FungusMan.h"
+#include "../world/entities/Funguy.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -334,6 +340,18 @@ private:
                             entity = std::shared_ptr<BigSnowMan>(new BigSnowMan(pos));
                         } else if (entityName == "teethboss") {
                             entity = std::shared_ptr<TeethBoss>(new TeethBoss(pos));
+                        } else if (entityName == "shroomboss") {
+                            entity = std::shared_ptr<MushroomBoss>(new MushroomBoss(pos));
+                        } else if (entityName == "swellingshroom") {
+                            entity = std::shared_ptr<SwellingShroom>(new SwellingShroom(pos));
+                        } else if (entityName == "blinker") {
+                            entity = std::shared_ptr<Blinker>(new Blinker(pos));
+                        } else if (entityName == "mushroid") {
+                            entity = std::shared_ptr<Mushroid>(new Mushroid(pos));
+                        } else if (entityName == "fungusman") {
+                            entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
+                        } else if (entityName == "funguy") {
+                            entity = std::shared_ptr<Funguy>(new Funguy(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

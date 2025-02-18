@@ -258,7 +258,43 @@ const Ability Ability::ORDER_FORM(10, "Order Form",
 );
 
 const Ability Ability::SPLITTING_PROJECTILES(11, "Split Shot",
-    { {"splitCount", 4.f} },
+    { {"splitCount", 4.f}, {"chance", 0.10f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::FEAR(12, "Fear",
+    { {"chance", 0.05f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::CASSIDYS_HEAD(13, "Cassidy's Head",
+    { {"chance", 0.04f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::BLESSING(14, "Dev's Blessing",
+    { },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::DEBIT_CARD(15, "Debit Card",
+    { {"chance", 0.0f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::COUPON(16, "Coupon",
+    { {"chance", 0.0f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::BOUNCING_PROJECTILES(17, "Bouncing Projectiles",
+    {},
     [](Player* player, Ability* ability) {},
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );

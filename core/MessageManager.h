@@ -28,11 +28,13 @@ constexpr int NORMAL = 0;
 constexpr int WARN = 1;
 constexpr int ERR = 2;
 constexpr int DEBUG = 3;
-const MessageType MESSAGE_TYPES[4] = {
+constexpr int SPECIAL = 4;
+const MessageType MESSAGE_TYPES[5] = {
     MessageType("NORMAL", 0xFFFFFFFF),
     MessageType("WARN", 0xFFFF00FF),
     MessageType("ERR", 0xFF0000FF),
-    MessageType("DEBUG", 0x00FF00FF)
+    MessageType("DEBUG", 0x00FF00FF),
+    MessageType("SPECIAL", 0xFFD700FF)
 };
 
 struct Message {
@@ -68,7 +70,7 @@ public:
     }
 
     static void displayMessage(std::string text, int timeout, int messageType = NORMAL) {
-        if (messageType != NORMAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
+        if (messageType != NORMAL && messageType != SPECIAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
         std::cout << text << std::endl;
         Logger::log(text);
 

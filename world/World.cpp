@@ -57,6 +57,15 @@
 #include "entities/BigSnowMan.h"
 #include "entities/TeethBoss.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "entities/ShopATM.h"
+#include "entities/MushroomBoss.h"
+#include "../core/SoundManager.h"
+#include "entities/SmallMushroom.h"
+#include "entities/LargeMushroom.h"
+#include "entities/Blinker.h"
+#include "entities/Mushroid.h"
+#include "entities/Funguy.h"
+#include "entities/FungusMan.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -151,7 +160,8 @@ void World::update() {
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barberext"
                 || entity->getEntityType() == "barbercounter"
-                || entity->getEntityType() == "barberchair") entity->update();
+                || entity->getEntityType() == "barberchair"
+                || entity->getEntityType() == "shopatm") entity->update();
         }
     }
 }
@@ -180,14 +190,15 @@ void World::draw(sf::RenderTexture& surface) {
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
         if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
-            || (_isPlayerInShop && entity->getEntityType() == "shopint" 
+            || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 
                 || entity->getEntityType() == "shopkeep"
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
-                || entity->getEntityType() == "barber")) entity->draw(surface);
+                || entity->getEntityType() == "barber"
+                || entity->getEntityType() == "shopatm"))) entity->draw(surface);
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -286,6 +297,9 @@ void World::spawnMobs() {
                             case MOB_TYPE::SHARK:
                                 mob = std::shared_ptr<Shark>(new Shark(sf::Vector2f(xi, yi)));
                                 break;
+                            case MOB_TYPE::MUSHROID:
+                                mob = std::shared_ptr<Mushroid>(new Mushroid(sf::Vector2f(xi, yi)));
+                                break;
                             default:
                                 return;
                         }
@@ -383,6 +397,15 @@ void World::spawnEnemies() {
                                 break;
                             case MOB_TYPE::BIG_SNOW_MAN:
                                 mob = std::shared_ptr<BigSnowMan>(new BigSnowMan(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::BLINKER:
+                                mob = std::shared_ptr<Blinker>(new Blinker(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FUNGUY:
+                                mob = std::shared_ptr<Funguy>(new Funguy(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::FUNGUS_MAN:
+                                mob = std::shared_ptr<FungusMan>(new FungusMan(sf::Vector2f(xi, yi)));
                                 break;
                             default:
                                 return;
@@ -652,7 +675,8 @@ void World::onWaveCleared() {
         }
     }
     if (unlockedItemCount > 0) {
-        MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked", 8);
+        MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked!", 8, SPECIAL);
+        SoundManager::playSound("itemunlock");
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
@@ -660,7 +684,7 @@ void World::onWaveCleared() {
         // !TODO: increase the number in the if statement below
         // as new bosses are added, remove the if statement
         // once all bosses are added
-        if (_currentWaveNumber < 56) {
+        if (_currentWaveNumber < 64) {
             MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
         }
     }
@@ -781,6 +805,8 @@ void World::generateChunkScatters(Chunk& chunk) {
     constexpr int smallTundraTreeSpawnRate = 1500;
     constexpr int fingerTreeSpawnRate = 875;
     constexpr int forestSmallTreeSpawnRate = 20;
+    constexpr int smallShroomSpawnRate = 40;
+    constexpr int largeShroomSpawnRate = 850;
 
     bool spawnedShopThisChunk = false;
     bool spawnedAltarThisChunk = false;
@@ -885,6 +911,20 @@ void World::generateChunkScatters(Chunk& chunk) {
                     std::shared_ptr<SmallTree> tree = std::shared_ptr<SmallTree>(new SmallTree(sf::Vector2f(x, y), _spriteSheet));
                     tree->setWorld(this);
                     _scatterBuffer.push_back(tree);
+                }
+            } else if (terrainType == TERRAIN_TYPE::FUNGUS) {
+                boost::random::uniform_int_distribution<> smallDist(0, smallShroomSpawnRate);
+                boost::random::uniform_int_distribution<> largeDist(0, largeShroomSpawnRate);
+                if (smallDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<SmallMushroom> shroom = std::shared_ptr<SmallMushroom>(new SmallMushroom(sf::Vector2f(x, y), _spriteSheet));
+                    shroom->setWorld(this);
+                    _scatterBuffer.push_back(shroom);
+                }
+
+                if (largeDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
+                    std::shared_ptr<LargeMushroom> shroom = std::shared_ptr<LargeMushroom>(new LargeMushroom(sf::Vector2f(x, y), _spriteSheet));
+                    shroom->setWorld(this);
+                    _scatterBuffer.push_back(shroom);
                 }
             }
         }
@@ -1027,10 +1067,18 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const sf::Vector2f fleshTemp = TerrainGenInitializer::getParameters()->fleshTemp;
             const sf::Vector2f fleshPrec = TerrainGenInitializer::getParameters()->fleshPrec;
 
+            const sf::Vector2f fungusTemp = TerrainGenInitializer::getParameters()->fungusTemp;
+            const sf::Vector2f fungusPrec = TerrainGenInitializer::getParameters()->fungusPrec;
+
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
+            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y&& rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y;
+
             if (_seed == 124959026) flesh = true;
+            else if (_seed == 4134632056) fungus = true;
             if (flesh && _seed != 124959026) {
                 AchievementManager::unlock(FLESHY);
+            } else if (fungus && _seed != 4134632056) {
+                AchievementManager::unlock(SHROOMY);
             }
 
             TERRAIN_TYPE terrainType = data[dX + dY * CHUNK_SIZE];
@@ -1053,6 +1101,9 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 if (flesh) {
                     data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::FLESH;
                     rgb = (sf::Uint32)TERRAIN_COLOR::FLESH;
+                } else if (fungus) {
+                    data[dX + dY * CHUNK_SIZE] = TERRAIN_TYPE::FUNGUS;
+                    rgb = (sf::Uint32)TERRAIN_COLOR::FUNGUS;
                 }
             }
             terrainType = data[dX + dY * CHUNK_SIZE];
@@ -1207,14 +1258,14 @@ std::shared_ptr<Player> World::getPlayer() const {
 int World::getMobCount() const {
     int count = 0;
     for (auto& entity : getEntities())
-        if (entity->isMob() && (!entity->isEnemy() || entity->getEntityType() == "cactoid") && entity->isActive()) count++;
+        if (entity->isMob() && (!entity->isEnemy() || entity->getSaveId() == CACTOID || entity->getSaveId() == MUSHROID) && entity->isActive()) count++;
     return count;
 }
 
 int World::getEnemyCount() const {
     int count = 0;
     for (auto& entity : getEnemies())
-        if (entity->isEnemy() && entity->getEntityType() != "cactoid" && entity->isActive()) count++;
+        if (entity->isEnemy() && entity->getSaveId() != CACTOID  && entity->getSaveId() != MUSHROID && entity->isActive()) count++;
     return count;
 }
 
@@ -1333,6 +1384,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 56:
             boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
+        case 64:
+            boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1417,13 +1471,29 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
             addEntity(corpse);
         }
 
+        float atmChance = 0.1f;
+        if (AbilityManager::playerHasAbility(Ability::DEBIT_CARD.getId())) {
+            atmChance += AbilityManager::getParameter(Ability::DEBIT_CARD.getId(), "chance");
+        }
+
+        const sf::Vector2f shopkeepPos = _shopKeep->getPosition();
+        const unsigned int seed = shopkeepPos.x + shopkeepPos.y * (shopkeepPos.x - shopkeepPos.y);
+        srand(seed);
+        if (randomChance(atmChance)) {
+            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
+            shopAtm->setWorld(this);
+            addEntity(shopAtm);
+        }
+
         _player->_pos.x = shopCounter->getPosition().x + 90 - 16;
         _player->_pos.y = shopCounter->getPosition().y + 46;
 
-        if (GamePad::isConnected()) {
-            MessageManager::displayMessage("Approach the shopkeep and press X to see what he's got", 6);
-        } else {
-            MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+        if (!Tutorial::isCompleted()) {
+            if (GamePad::isConnected()) {
+                MessageManager::displayMessage("Approach the shopkeep and press X to see what he's got", 6);
+            } else {
+                MessageManager::displayMessage("Approach the shopkeep and press E to see what he's got", 6);
+            }
         }
     } else if (buildingID == "barber") {
         std::shared_ptr<BarberInterior> barberInterior = std::shared_ptr<BarberInterior>(new BarberInterior(buildingPos, getSpriteSheet()));
@@ -1511,13 +1581,18 @@ void World::bossDefeated() {
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
-            ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
             break;
         case BABY_BOSS:
             achievement = DEFEAT_BABYBOSS;
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Minigun", 1);
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
+            break;
+        case MUSHROOM_BOSS:
+            achievement = DEFEAT_SHROOMBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
     }
 

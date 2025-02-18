@@ -70,6 +70,8 @@ void ShopKeep::initInventory() {
 
             if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
             else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
+            if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) continue;
+
             availableItems.push_back(item->getId());
         }
     }
@@ -117,7 +119,10 @@ void ShopKeep::initInventory() {
     //
 
     // discount
-    constexpr float discountChance = 0.5f;
+    float discountChance = 0.25f;
+    if (AbilityManager::playerHasAbility(Ability::COUPON.getId())) {
+        discountChance += AbilityManager::getParameter(Ability::COUPON.getId(), "chance");
+    }
     if (randomChance(discountChance)) {
         const unsigned int itemId = getInventory().getItemIdAt(randomInt(0, getInventory().getCurrentSize() - 1));
         constexpr float freeChance = 0.02f;

@@ -11,7 +11,7 @@
 #include "../../core/Util.h"
 #include "../../core/MessageManager.h"
 
-const std::string BYGRO_VERSION = "1.14";
+const std::string BYGRO_VERSION = "1.15";
 
 void Bygro::loadAndCompile(std::string filePath, bool debug) {
     MessageManager::displayMessage("Bygro version " + BYGRO_VERSION, 5, DEBUG);

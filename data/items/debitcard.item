@@ -1,0 +1,8 @@
+name = "Debit Card"
+description = "Increases ATM spawn chance by 5%"
+conditionalUnlock = true
+isBuyable = true
+value = 250
+isConsumable = true
+functionName = "usedebitcard"
+textureRect = 27, 15, 1, 1

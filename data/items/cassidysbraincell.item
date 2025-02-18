@@ -1,0 +1,8 @@
+name = "Cassidy's Brain Cell"
+description = "Increases critical hit chance"
+isConsumable = true
+conditionalUnlock = true
+isBuyable = true
+value = 289
+textureRect = 25, 15, 1, 1
+functionName = "cassidysbraincell"

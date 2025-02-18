@@ -684,10 +684,13 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
         firedProjectile->setCrit(crit);
+        if (AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
 
         if (AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
             const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");
-            firedProjectile->setSplitInto(ITEMS[projData.itemId]->getName(), true, false, splitCount);
+            const float chance = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "chance");
+
+            if (randomChance(chance)) firedProjectile->setSplitInto(ITEMS[projData.itemId]->getName(), true, false, splitCount);
         }
 
         parent->decrementMagazine();

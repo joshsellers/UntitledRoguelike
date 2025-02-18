@@ -1,0 +1,5 @@
+weaponLoaded = player.weaponIsLoaded();
+if: weaponLoaded {
+    playSound("coinpickup");
+    player.fireProjectile("_PROJECTILE_PENNY", 1);
+}
