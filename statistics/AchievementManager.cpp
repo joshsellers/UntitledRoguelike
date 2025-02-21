@@ -10,7 +10,7 @@ void AchievementManagerInstance::start() {
 }
 
 void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
-    if (!STEAMAPI_INITIATED || !_achievementsReady) return;
+    if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return;
     else if (isUnlocked(achievement)) {
         return;
     }
@@ -25,7 +25,7 @@ void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
 }
 
 void AchievementManagerInstance::resetAchievements() {
-    if (!STEAMAPI_INITIATED || !_achievementsReady) return;
+    if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return;
 
     if (!SteamUserStats()->ResetAllStats(true)) {
         MessageManager::displayMessage("Failed to reset achievements", 5, WARN);
@@ -36,7 +36,7 @@ void AchievementManagerInstance::resetAchievements() {
 }
 
 bool AchievementManagerInstance::isUnlocked(ACHIEVEMENT achievement) {
-    if (!STEAMAPI_INITIATED || !_achievementsReady) return false;
+    if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return false;
 
     return _achievementStats[achievement];
 }

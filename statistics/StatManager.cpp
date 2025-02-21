@@ -13,6 +13,8 @@ float StatManager::getStatThisSave(STATISTIC stat) {
 }
 
 void StatManager::increaseStat(STATISTIC stat, float amt) {
+    if (DISABLE_STATS) return;
+
     _STATS_OVERALL[stat] += amt;
     _STATS_THIS_SAVE[stat] += amt;
 
@@ -44,6 +46,8 @@ void StatManager::loadOverallStats() {
 }
 
 void StatManager::saveOverallStats() {
+    if (DISABLE_STATS) return;
+
     std::string path = getLocalLowPath() + "\\stats.config";
 
     try {
@@ -66,10 +70,14 @@ void StatManager::saveOverallStats() {
 }
 
 void StatManager::setStatThisSave(STATISTIC stat, float val) {
+    if (DISABLE_STATS) return;
+
     _STATS_THIS_SAVE[stat] = val;
 }
 
 void StatManager::setOverallStat(STATISTIC stat, float val) {
+    if (DISABLE_STATS) return;
+
     _STATS_OVERALL[stat] = val;
 }
 

@@ -970,6 +970,55 @@ private:
                 ConditionalUnlockManager::resetUnlocks();
                 return "Reset item unlocks";
             })
+        },
+
+        {
+            "toggleach",
+            Command("Toggle achievements",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISABLE_ACHIEVEMENTS = !DISABLE_ACHIEVEMENTS;
+                return (std::string)(DISABLE_ACHIEVEMENTS ? "Disabled" : "Enabled") + " achievements";
+            })
+        }, 
+
+        {
+            "togglestats",
+            Command("Toggle stats",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISABLE_STATS = !DISABLE_STATS;
+                return (std::string)(DISABLE_STATS ? "Disabled" : "Enabled") + " stats";
+            })
+        },
+
+        {
+            "toggleunlocks",
+            Command("Toggle unlocks",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISABLE_UNLOCKS = !DISABLE_UNLOCKS;
+                return (std::string)(DISABLE_UNLOCKS ? "Disabled" : "Enabled") + " unlocks";
+            })
+        },
+
+        {
+            "disableprog",
+            Command("Disable progress persistence (achievements, stats, and item unlocks)",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISABLE_ACHIEVEMENTS = true;
+                DISABLE_STATS = true;
+                DISABLE_UNLOCKS = true;
+                return "Disabled progress persistence";
+            })
+        },
+
+        {
+            "enableprog",
+            Command("Enable progress persistence (achievements, stats, and item unlocks)",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                DISABLE_ACHIEVEMENTS = false;
+                DISABLE_STATS = false;
+                DISABLE_UNLOCKS = false;
+                return "Enabled progress persistence";
+            })
         }
     };
 };

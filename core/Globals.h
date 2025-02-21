@@ -1,7 +1,7 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
 
-//#define DBGBLD
+#define DBGBLD
 
 extern unsigned int WINDOW_WIDTH, WINDOW_HEIGHT;
 extern float RELATIVE_WINDOW_SIZE;
@@ -21,6 +21,10 @@ extern bool AUTOSAVE_ENABLED;
 extern long long AUTOSAVE_INTERVAL_SECONDS;
 
 extern bool BACKUP_ENABLED;
+
+extern bool DISABLE_ACHIEVEMENTS;
+extern bool DISABLE_STATS;
+extern bool DISABLE_UNLOCKS;
 
 extern bool HARD_MODE_ENABLED;
 

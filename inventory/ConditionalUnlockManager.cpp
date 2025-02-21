@@ -29,6 +29,8 @@ const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {
 }
 
 void ConditionalUnlockManager::unlockItem(std::string itemName) {
+    if (DISABLE_UNLOCKS) return;
+
     if (isUnlocked(itemName)) return;
 
     for (const auto& item : Item::ITEMS) {
@@ -46,6 +48,8 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
 }
 
 void ConditionalUnlockManager::increaseUnlockProgress(std::string itemName, float progress) {
+    if (DISABLE_UNLOCKS) return;
+
     if (isUnlocked(itemName)) return;
 
     if (_unlockProgress.find(itemName) == _unlockProgress.end()) {
@@ -96,6 +100,8 @@ void ConditionalUnlockManager::loadUnlockedItems() {
 }
 
 void ConditionalUnlockManager::saveUnlockedItems() {
+    if (DISABLE_UNLOCKS) return;
+
     std::string path = getLocalLowPath() + "\\unlocks.config";
 
     try {
@@ -126,6 +132,8 @@ void ConditionalUnlockManager::resetUnlocks() {
 }
 
 void ConditionalUnlockManager::catItemUsed(unsigned int itemId) {
+    if (DISABLE_UNLOCKS) return;
+
     for (int i = 0; i < 3; i++) {
         const unsigned int id = _catItems[i];
         if (id == itemId) return;

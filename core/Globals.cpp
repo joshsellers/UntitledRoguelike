@@ -21,6 +21,10 @@ long long AUTOSAVE_INTERVAL_SECONDS = 30;
 
 bool BACKUP_ENABLED = false;
 
+bool DISABLE_ACHIEVEMENTS = false;
+bool DISABLE_STATS = false;
+bool DISABLE_UNLOCKS = false;
+
 bool HARD_MODE_ENABLED = false;
 
 bool BENCHMARK_TERRAIN_AND_BIOME_GEN = false;
