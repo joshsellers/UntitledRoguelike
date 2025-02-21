@@ -669,7 +669,7 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const float angle = (float)((std::atan2(y, x)));
 
         EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
-        if (AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
 
         const int projDamage = ITEMS[projData.itemId]->getDamage();
         const float critChance = AbilityManager::getParameter(Ability::CRIT_CHANCE.getId(), "chance");
@@ -684,9 +684,9 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
         firedProjectile->setCrit(crit);
-        if (AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
 
-        if (AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
             const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");
             const float chance = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "chance");
 
