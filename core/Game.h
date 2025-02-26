@@ -132,8 +132,11 @@ private:
 	std::string _textSeed = "NONE";
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
-	sf::Text _coinMagnetCountLabel;
 	sf::Text _hardModeEnabledLabel;
+	sf::Text _achEnabledLabel;
+	sf::Text _statEnabledLabel;
+	sf::Text _unlocksEnabledLabel;
+	sf::Text _progStatusSeparatorsLabel;
 
 	sf::Text _loadingStatusLabel;
 	std::vector<std::string> _loadingScreenMessages;

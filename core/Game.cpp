@@ -78,16 +78,34 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _currentBiomeLabel.setCharacterSize(24);
     _currentBiomeLabel.setString("biome: ");
     _currentBiomeLabel.setPosition(0, 200);
-
-    _coinMagnetCountLabel.setFont(_font);
-    _coinMagnetCountLabel.setCharacterSize(24);
-    _coinMagnetCountLabel.setString("magnets: ");
-    _coinMagnetCountLabel.setPosition(0, 225);
     
     _hardModeEnabledLabel.setFont(_font);
     _hardModeEnabledLabel.setCharacterSize(24);
     _hardModeEnabledLabel.setString("hardmode: ");
-    _hardModeEnabledLabel.setPosition(0, 250);
+    _hardModeEnabledLabel.setPosition(0, 225);
+
+    // prog toggles 
+    _achEnabledLabel.setFont(_font);
+    _achEnabledLabel.setCharacterSize(24);
+    _achEnabledLabel.setString("ACH");
+    _achEnabledLabel.setPosition(0, 250);
+
+    _statEnabledLabel.setFont(_font);
+    _statEnabledLabel.setCharacterSize(24);
+    _statEnabledLabel.setString("         STAT");
+    _statEnabledLabel.setPosition(0, 250);
+
+    _unlocksEnabledLabel.setFont(_font);
+    _unlocksEnabledLabel.setCharacterSize(24);
+    _unlocksEnabledLabel.setString("                   UNLK");
+    _unlocksEnabledLabel.setPosition(0, 250);
+
+    _progStatusSeparatorsLabel.setFont(_font);
+    _progStatusSeparatorsLabel.setCharacterSize(24);
+    _progStatusSeparatorsLabel.setString("        |         |");
+    _progStatusSeparatorsLabel.setPosition(0, 250);
+
+    //
 
     _loadingStatusLabel.setFont(_font);
     _loadingStatusLabel.setCharacterSize(UIElement::getRelativeWidth(3.f));
@@ -1180,7 +1198,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(_fpsLabel);
 
         int chunkCount = _world.getActiveChunkCount();
-        _activeChunksLabel.setString(std::to_string(chunkCount) + " active chunk" + (chunkCount != 1 ? "s" : ""));
+        _activeChunksLabel.setString(std::to_string(chunkCount) + " chunk" + (chunkCount != 1 ? "s" : ""));
         surface.draw(_activeChunksLabel);
         
         int entityCount = _world.getEntities().size();
@@ -1192,8 +1210,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
         surface.draw(_enemyCountLabel);
 
         bool spawnCooldown = _world.onEnemySpawnCooldown();
-        _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "enemy spawn cooldown active - " : "enemy spawn cooldown expired - ") 
-            + std::to_string(_world.getMaxActiveEnemies()) + " - " + std::to_string((int)PLAYER_SCORE) 
+        _onEnemySpawnCooldownLabel.setString((spawnCooldown ? "cooldown active - " : "cooldown expired - ") 
+            + std::to_string(_world.getMaxActiveEnemies()) + " | " + std::to_string((int)PLAYER_SCORE) 
             + " (" + std::to_string(_world.getTimeUntilNextEnemyWave() / 1000) + "s)");
         surface.draw(_onEnemySpawnCooldownLabel);
 
@@ -1208,11 +1226,16 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _currentBiomeLabel.setString("current biome: " + std::to_string((int)currentBiome));
         surface.draw(_currentBiomeLabel);
 
-        _coinMagnetCountLabel.setString("magnets: " + std::to_string(_player->getCoinMagnetCount()));
-        surface.draw(_coinMagnetCountLabel);
-
         _hardModeEnabledLabel.setString("hardmode: " + (std::string)(HARD_MODE_ENABLED ? "1" : "0"));
         surface.draw(_hardModeEnabledLabel);
+
+        _achEnabledLabel.setColor(DISABLE_ACHIEVEMENTS ? sf::Color::Red : sf::Color::Green);
+        _statEnabledLabel.setColor(DISABLE_STATS ? sf::Color::Red : sf::Color::Green);
+        _unlocksEnabledLabel.setColor(DISABLE_UNLOCKS ? sf::Color::Red : sf::Color::Green);
+        surface.draw(_progStatusSeparatorsLabel);
+        surface.draw(_achEnabledLabel);
+        surface.draw(_statEnabledLabel);
+        surface.draw(_unlocksEnabledLabel);
 
         _frameCounter++;
     }
