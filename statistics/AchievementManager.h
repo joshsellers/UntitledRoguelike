@@ -56,6 +56,8 @@ public:
     void unlock(ACHIEVEMENT achievement);
 
     void resetAchievements();
+
+    bool achievementsReady() const;
 private:
     bool isUnlocked(ACHIEVEMENT achievement);
 
@@ -126,6 +128,10 @@ public:
 
     static void resetAchievements() {
         getInstance().resetAchievements();
+    }
+
+    static bool achievementsReady() {
+        return getInstance().achievementsReady();
     }
 
     static void checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave);

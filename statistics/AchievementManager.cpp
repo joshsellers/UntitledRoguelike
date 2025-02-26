@@ -35,6 +35,10 @@ void AchievementManagerInstance::resetAchievements() {
     }
 }
 
+bool AchievementManagerInstance::achievementsReady() const {
+    return _achievementsReady;
+}
+
 bool AchievementManagerInstance::isUnlocked(ACHIEVEMENT achievement) {
     if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return false;
 

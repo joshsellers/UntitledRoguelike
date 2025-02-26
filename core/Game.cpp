@@ -1229,7 +1229,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _hardModeEnabledLabel.setString("hardmode: " + (std::string)(HARD_MODE_ENABLED ? "1" : "0"));
         surface.draw(_hardModeEnabledLabel);
 
-        _achEnabledLabel.setColor(DISABLE_ACHIEVEMENTS ? sf::Color::Red : sf::Color::Green);
+        _achEnabledLabel.setColor((DISABLE_ACHIEVEMENTS || !AchievementManager::achievementsReady()) ? sf::Color::Red : sf::Color::Green);
         _statEnabledLabel.setColor(DISABLE_STATS ? sf::Color::Red : sf::Color::Green);
         _unlocksEnabledLabel.setColor(DISABLE_UNLOCKS ? sf::Color::Red : sf::Color::Green);
         surface.draw(_progStatusSeparatorsLabel);
