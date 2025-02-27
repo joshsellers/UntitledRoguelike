@@ -130,6 +130,7 @@ void ModManager::loadItem(std::ifstream& in) {
     float shopChance = 100.f;
     std::vector<std::string> tags;
     bool conditionalUnlock = false;
+    unsigned int rarityTier = 0;
 
     std::string line;
     while (getline(in, line)) {
@@ -245,6 +246,8 @@ void ModManager::loadItem(std::ifstream& in) {
                 }
             } else if (tokens.at(0) == "conditionalUnlock") {
                 conditionalUnlock = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "rarityTier") {
+                rarityTier = std::stoul(tokens.at(2));
             } else {
                 MessageManager::displayMessage("Unrecognized item parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -278,6 +281,13 @@ void ModManager::loadItem(std::ifstream& in) {
         reloadTimeMillis, isStartingItem, true, functionName, conditionalUnlock)));
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
+
+    if (rarityTier != 0 && rarityTier < 4) {
+        constexpr float tierChances[3] = { 100.f, 50.f, 10.f };
+        shopChance = tierChances[rarityTier - 1];
+    } else if (rarityTier >= 4) {
+        MessageManager::displayMessage("Invalid rarity tier for item \"" + name + "\":" + std::to_string(rarityTier), 5, WARN);
+    }
     Item::ITEM_SHOP_CHANCES[itemId] = shopChance;
 
     for (std::string tag : tags) {
