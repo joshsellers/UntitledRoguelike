@@ -181,7 +181,7 @@ void ModManager::loadItem(std::ifstream& in) {
             } else if (tokens.at(0) == "equipmentType") {
                 std::string strEquipType = tokens.at(2);
                 if (equipNames.find(strEquipType) == equipNames.end()) {
-                    MessageManager::displayMessage("Invalid equipment type for item \"" + name + "\": \"" + strEquipType + "\"", 5, ERR);
+                    MessageManager::displayMessage("Invalid equipment type for item \"" + name + "\": \"" + strEquipType + "\"", 5, WARN);
                 } else {
                     equipType = equipNames.at(strEquipType);
                 }
@@ -241,7 +241,7 @@ void ModManager::loadItem(std::ifstream& in) {
                             tags.push_back(currentToken);
                         }
                     } else {
-                        MessageManager::displayMessage("Bad tag syntax for item \"" + name + "\": " + currentToken, 5, ERR);
+                        MessageManager::displayMessage("Bad tag syntax for item \"" + name + "\": " + currentToken, 5, WARN);
                     }
                 }
             } else if (tokens.at(0) == "conditionalUnlock") {
