@@ -561,6 +561,12 @@
     <ClCompile Include="world\entities\Funguy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\MiniMapGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIMiniMapInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1023,6 +1029,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\Funguy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\MiniMapGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIMiniMapInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

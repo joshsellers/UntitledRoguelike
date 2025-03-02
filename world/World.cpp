@@ -66,6 +66,7 @@
 #include "entities/Mushroid.h"
 #include "entities/Funguy.h"
 #include "entities/FungusMan.h"
+#include "MiniMapGenerator.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -767,6 +768,9 @@ void World::buildChunk(sf::Vector2f pos) {
 
     _mutex.unlock();
 
+    std::thread minimapThread(&MiniMapGenerator::blitChunk, chunk);
+    minimapThread.detach();
+
     if (!disablePropGeneration) {
         std::thread scatterSpawnThread(&World::generateChunkScatters, this, chunk);
         scatterSpawnThread.detach();
@@ -837,6 +841,8 @@ void World::generateChunkScatters(Chunk& chunk) {
                         if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
                             MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                             shopSeenAt(sf::Vector2f(x, y));
+
+                            MiniMapGenerator::markPoi(sf::Vector2f(x, y));
                         }
                     }
                 }

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
     <ClCompile Include="ui\UIItemCatalogue.cpp" />
+    <ClCompile Include="ui\UIMiniMapInterface.cpp" />
     <ClCompile Include="world\entities\BabyBoss.cpp" />
     <ClCompile Include="world\entities\BeeFamiliar.cpp" />
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
@@ -200,11 +201,13 @@
     <ClCompile Include="world\entities\TallGrass.cpp" />
     <ClCompile Include="world\entities\Turtle.cpp" />
     <ClCompile Include="world\entities\Yeti.cpp" />
+    <ClCompile Include="world\MiniMapGenerator.cpp" />
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
     <ClInclude Include="ui\UIItemCatalogue.h" />
+    <ClInclude Include="ui\UIMiniMapInterface.h" />
     <ClInclude Include="world\entities\BabyBoss.h" />
     <ClInclude Include="world\entities\BeeFamiliar.h" />
     <ClInclude Include="world\entities\BigSnowMan.h" />
@@ -350,6 +353,7 @@
     <ClInclude Include="world\entities\TallGrass.h" />
     <ClInclude Include="world\entities\Turtle.h" />
     <ClInclude Include="world\entities\Yeti.h" />
+    <ClInclude Include="world\MiniMapGenerator.h" />
     <ClInclude Include="world\MobSpawnConfigs.h" />
     <ClInclude Include="world\MobSpawnData.h" />
     <ClInclude Include="world\ParticleSystem.h" />

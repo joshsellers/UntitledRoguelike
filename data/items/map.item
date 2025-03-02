@@ -1,0 +1,6 @@
+name = "Map"
+description = "Record your findings\n\nPress (Y) on gamepad or M on keyboard to\nopen/close."
+isBuyable = true
+value = 300
+rarityTier = 2
+textureRect = 25, 16, 1, 1

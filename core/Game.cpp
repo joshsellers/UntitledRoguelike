@@ -22,6 +22,7 @@
 #include "../ui/UISlider.h"
 #include "SoundManager.h"
 #include "../ui/UIItemCatalogue.h"
+#include "../world/MiniMapGenerator.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -170,6 +171,13 @@ void Game::initUI() {
 
     // Load game menu
     _ui->addMenu(_loadGameMenu);
+
+
+    // Mini map menu
+    auto miniMapInterface = std::shared_ptr<UIMiniMapInterface>(new UIMiniMapInterface(_player.get(), _font));
+    _miniMapMenu->addElement(miniMapInterface);
+    _ui->addMenu(_miniMapMenu);
+    //
 
 
     // Pause menu
@@ -1343,6 +1351,9 @@ void Game::buttonPressed(std::string buttonCode) {
         StatManager::saveOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
 
+        _miniMapMenu->hide();
+        MiniMapGenerator::reset();
+
         _bossHUDMenu->hide();
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
@@ -1736,6 +1747,12 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     case sf::Keyboard::Equal:
         if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(0.5);
         break;
+    case sf::Keyboard::M:
+        if (_player->getInventory().hasItem(Item::getIdFromName("Map"))) {
+            if (_miniMapMenu->isActive()) _miniMapMenu->hide();
+            else _miniMapMenu->show();
+        }
+        break;
     }
 
     if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE)) togglePauseMenu();
@@ -1795,6 +1812,9 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
             _virtualKeyboardMenu_upper->hide();
             _virtualKeyboardMenu_lower->show();
         }
+    } else if (button == GAMEPAD_BUTTON::Y && _player->getInventory().hasItem(Item::getIdFromName("Map"))) {
+        if (_miniMapMenu->isActive()) _miniMapMenu->hide();
+        else _miniMapMenu->show();
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
