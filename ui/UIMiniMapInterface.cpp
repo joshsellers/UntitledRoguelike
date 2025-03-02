@@ -27,7 +27,7 @@ _dispSize(getRelativeWidth(4)), _dispScale(getRelativeWidth(0.25f)) {
 
     _pinIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _pinIcon.setTextureRect(sf::IntRect(32, 224, 32, 32));
-    _pinIcon.setSize(sf::Vector2f(getRelativeWidth(2.f), getRelativeWidth(2.f)));
+    _pinIcon.setSize(sf::Vector2f(getRelativeWidth(2.5f), getRelativeWidth(2.5f)));
 
     _playerIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _playerIcon.setTextureRect(sf::IntRect(64, 224, 32, 32));
@@ -123,7 +123,7 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
     }
 
     for (const auto& location : convertedPinLocations) {
-        _pinIcon.setPosition((float)(location.x) - _pinIcon.getSize().x / 2.f + (float)_dispScale / 2.f, (float)(location.y) - _pinIcon.getSize().y / 2.f + (float)_dispScale / 2.f);
+        _pinIcon.setPosition((float)(location.x) - _pinIcon.getSize().x / 2.f + (float)_dispScale / 2.f, (float)(location.y) - _pinIcon.getSize().y + (float)_dispScale / 2.f);
         surface.draw(_pinIcon);
     }
 
