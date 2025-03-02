@@ -20,12 +20,13 @@ public:
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 private:
-    const int _dispSize;
-    const int _dispScale;
+    int _dispSize;
+    int _dispScale;
     unsigned int _cameraX = 0;
     unsigned int _cameraY = 0;
 
     sf::RectangleShape _shopIcon;
+    sf::RectangleShape _pinIcon;
     sf::RectangleShape _playerIcon;
 
     Player* _player;
@@ -35,6 +36,9 @@ private:
     bool _middleButtonPressed = false;
 
     void centerOnPlayer();
+    void zoom(float factor);
+
+    long long _lastDpadPressTime = 0LL;
 };
 
 #endif

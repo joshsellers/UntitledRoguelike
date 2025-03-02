@@ -768,8 +768,10 @@ void World::buildChunk(sf::Vector2f pos) {
 
     _mutex.unlock();
 
-    std::thread minimapThread(&MiniMapGenerator::blitChunk, chunk);
-    minimapThread.detach();
+    if (getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+        std::thread minimapThread(&MiniMapGenerator::blitChunk, chunk);
+        minimapThread.detach();
+    }
 
     if (!disablePropGeneration) {
         std::thread scatterSpawnThread(&World::generateChunkScatters, this, chunk);
@@ -842,7 +844,9 @@ void World::generateChunkScatters(Chunk& chunk) {
                             MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                             shopSeenAt(sf::Vector2f(x, y));
 
-                            MiniMapGenerator::markPoi(sf::Vector2f(x, y));
+                            if (getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+                                MiniMapGenerator::markPoi(sf::Vector2f(x, y));
+                            }
                         }
                     }
                 }
@@ -1428,6 +1432,10 @@ bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
     for (auto& altar : _activatedAltars)
         if (altar.x == pos.x && altar.y == pos.y) return true;
     return false;
+}
+
+std::vector<Chunk>& World::getChunks() {
+    return _chunks;
 }
 
 void World::altarActivatedAt(sf::Vector2f pos) {

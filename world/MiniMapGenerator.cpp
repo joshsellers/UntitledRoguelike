@@ -44,6 +44,16 @@ void MiniMapGenerator::markPoi(sf::Vector2f worldPos) {
     _poiLocations.push_back(mapLocation);
 }
 
+void MiniMapGenerator::dropPin(sf::Vector2f worldPos) {
+    const int centerX = ((float)CHUNK_SIZE_SCALED * (float)MAP_SIZE_DEFAULT_CHUNKS) / 2.f;
+    const int centerY = centerX;
+
+    const float scale = ((float)CHUNK_SIZE_SCALED / (float)CHUNK_SIZE);
+
+    const sf::Vector2i mapLocation(worldPos.x * scale + centerX, worldPos.y * scale + centerY);
+    _markerLocations.push_back(mapLocation);
+}
+
 TERRAIN_TYPE MiniMapGenerator::getData(int index) {
     if (index < CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS * CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS && index >= 0) {
         return _data[index];
@@ -52,6 +62,10 @@ TERRAIN_TYPE MiniMapGenerator::getData(int index) {
 
 std::vector<sf::Vector2i>& MiniMapGenerator::getPoiLocations() {
     return _poiLocations;
+}
+
+std::vector<sf::Vector2i>& MiniMapGenerator::getPinLocations() {
+    return _markerLocations;
 }
 
 void MiniMapGenerator::reset() {

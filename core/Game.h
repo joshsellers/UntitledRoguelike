@@ -168,6 +168,7 @@ private:
 	void togglePauseMenu();
 	void toggleInventoryMenu();
 	void toggleShopMenu();
+	void toggleMiniMapMenu();
 
 	void interruptPause();
 

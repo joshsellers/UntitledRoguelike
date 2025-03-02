@@ -25,6 +25,10 @@ _dispSize(getRelativeWidth(4)), _dispScale(getRelativeWidth(0.25f)) {
     _shopIcon.setTextureRect(sf::IntRect(96, 240, 16, 16));
     _shopIcon.setSize(sf::Vector2f(getRelativeWidth(0.75f), getRelativeWidth(0.75f)));
 
+    _pinIcon.setTexture(UIHandler::getUISpriteSheet().get());
+    _pinIcon.setTextureRect(sf::IntRect(32, 224, 32, 32));
+    _pinIcon.setSize(sf::Vector2f(getRelativeWidth(2.f), getRelativeWidth(2.f)));
+
     _playerIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _playerIcon.setTextureRect(sf::IntRect(64, 224, 32, 32));
     _playerIcon.setSize(sf::Vector2f(getRelativeWidth(2.4f), getRelativeWidth(2.4f)));
@@ -45,6 +49,12 @@ void UIMiniMapInterface::update() {
         if (xAxis > 20.f || xAxis < -20.f) _cameraX += panSpeed * std::cos(angle) * mag;
         if (yAxis > 20.f || yAxis < -20.f) _cameraY += panSpeed * std::sin(angle) * mag;
         
+        constexpr long long dpadHoldInterval = 100LL;
+        if (currentTimeMillis() - _lastDpadPressTime >= dpadHoldInterval) {
+            if (GamePad::isButtonPressed(GAMEPAD_BUTTON::DPAD_UP)) zoom(1.f);
+            else if (GamePad::isButtonPressed(GAMEPAD_BUTTON::DPAD_DOWN)) zoom(-1.f);
+            _lastDpadPressTime = currentTimeMillis();
+        }
     }
 }
 
@@ -52,6 +62,7 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
     surface.draw(_shape);
 
     std::vector<sf::Vector2i> convertedPoiLocations; 
+    std::vector<sf::Vector2i> convertedPinLocations;
     for (int y = 0; y < _dispSize; y++) {
         for (int x = 0; x < _dispSize; x++) {
             TERRAIN_TYPE terrainType = MiniMapGenerator::getData((_cameraX + x) + (_cameraY + y) * (MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS * MiniMapGenerator::CHUNK_SIZE_SCALED));
@@ -97,12 +108,23 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
                     convertedPoiLocations.push_back(sf::Vector2i(_x + x * _dispScale, _y + y * _dispScale));
                 }
             }
+
+            for (const auto& location : MiniMapGenerator::getPinLocations()) {
+                if (location.x == _cameraX + x && location.y == _cameraY + y) {
+                    convertedPinLocations.push_back(sf::Vector2i(_x + x * _dispScale, _y + y * _dispScale));
+                }
+            }
         }
     }
 
     for (const auto& location : convertedPoiLocations) {
-        _shopIcon.setPosition((float)(location.x) - _shopIcon.getSize().x / 4.f, (float)(location.y) - _shopIcon.getSize().y / 4.f);
+        _shopIcon.setPosition((float)(location.x) - _shopIcon.getSize().x / 2.f + (float)_dispScale / 2.f, (float)(location.y) - _shopIcon.getSize().y / 2.f + (float)_dispScale / 2.f);
         surface.draw(_shopIcon);
+    }
+
+    for (const auto& location : convertedPinLocations) {
+        _pinIcon.setPosition((float)(location.x) - _pinIcon.getSize().x / 2.f + (float)_dispScale / 2.f, (float)(location.y) - _pinIcon.getSize().y / 2.f + (float)_dispScale / 2.f);
+        surface.draw(_pinIcon);
     }
 
     const int centerX = ((float)MiniMapGenerator::CHUNK_SIZE_SCALED * (float)MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS) / 2.f;
@@ -130,6 +152,8 @@ void UIMiniMapInterface::controllerButtonPressed(GAMEPAD_BUTTON button) {
 void UIMiniMapInterface::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (button == GAMEPAD_BUTTON::RIGHT_STICK) {
         centerOnPlayer();
+    } else if (button == GAMEPAD_BUTTON::LEFT_STICK) {
+        MiniMapGenerator::dropPin(_player->getPosition());
     }
 }
 
@@ -161,6 +185,7 @@ void UIMiniMapInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIMiniMapInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
+    zoom(mouseWheelScroll.delta);
 }
 
 void UIMiniMapInterface::textEntered(const sf::Uint32 character) {
@@ -173,4 +198,17 @@ void UIMiniMapInterface::centerOnPlayer() {
     const sf::Vector2f playerPos = _player->getPosition();
     _cameraX = playerPos.x * scale - ((float)_dispSize / 2) + centerX;
     _cameraY = playerPos.y * scale - ((float)_dispSize / 2) + centerY;
+}
+
+void UIMiniMapInterface::zoom(float factor) {
+    _dispScale += factor;
+
+    const int oldDispSize = _dispSize;
+    const float padding = getRelativeWidth(1.f);
+    _dispSize = (_shape.getSize().x - padding * 2) / _dispScale;
+
+    const int previousCenterX = _cameraX + oldDispSize / 2;
+    const int previousCenterY = _cameraY + oldDispSize / 2;
+    _cameraX = previousCenterX - _dispSize / 2;
+    _cameraY = previousCenterY - _dispSize / 2;
 }

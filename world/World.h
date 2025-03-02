@@ -101,6 +101,8 @@ public:
     void altarActivatedAt(sf::Vector2f pos);
     bool altarHasBeenActivatedAt(sf::Vector2f pos) const;
 
+    std::vector<Chunk>& getChunks();
+
     friend class Game;
     friend class SaveManager;
     friend class UICommandPrompt;

@@ -12,6 +12,7 @@
 #include "../inventory/abilities/Ability.h"
 #include "../world/entities/BeeFamiliar.h"
 #include "../world/entities/Blinker.h"
+#include "../world/MiniMapGenerator.h"
 
 class SaveManager {
 public:
@@ -64,6 +65,7 @@ public:
             saveEffects(out);
             saveShopData(out);
             saveEntityData(out);
+            saveMiniMapData(out);
 
             out.close();
 
@@ -191,6 +193,25 @@ private:
                 out << ":" << std::to_string(seed);
             }
             out << std::endl;
+        }
+    }
+
+    static void saveMiniMapData(std::ofstream& out) {
+        out << "MAPDATA";
+        const int dataSize = 
+            MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS * MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS;
+        for (int i = 0; i < dataSize; i++) {
+            out << ":" << std::to_string((int)MiniMapGenerator::getData(i));
+        }
+
+        out << std::endl << "MAPPOIS";
+        for (const auto& location : MiniMapGenerator::getPoiLocations()) {
+            out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+        }
+
+        out << std::endl << "MAPPINS";
+        for (const auto& location : MiniMapGenerator::getPinLocations()) {
+            out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
         }
     }
 
@@ -417,6 +438,20 @@ private:
             }
 
             _world->init(seed);
+        } else if (header == "MAPDATA") {
+            for (int i = 0; i < data.size(); i++) {
+                MiniMapGenerator::_data[i] = (TERRAIN_TYPE)std::stoi(data[i]);
+            }
+        } else if (header == "MAPPOIS") {
+            for (const auto& rawLocation : data) {
+                const auto splitData = splitString(rawLocation, ",");
+                MiniMapGenerator::_poiLocations.push_back(sf::Vector2i(std::stoi(splitData[0]), std::stoi(splitData[1])));
+            }
+        } else if (header == "MAPPINS") {
+            for (const auto& rawLocation : data) {
+                const auto splitData = splitString(rawLocation, ",");
+                MiniMapGenerator::_markerLocations.push_back(sf::Vector2i(std::stoi(splitData[0]), std::stoi(splitData[1])));
+            }
         } else if (header == "HARD") {
             HARD_MODE_ENABLED = true;
         } else if (header == "SCORE") {

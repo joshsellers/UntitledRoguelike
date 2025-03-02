@@ -1748,10 +1748,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(0.5);
         break;
     case sf::Keyboard::M:
-        if (_player->getInventory().hasItem(Item::getIdFromName("Map"))) {
-            if (_miniMapMenu->isActive()) _miniMapMenu->hide();
-            else _miniMapMenu->show();
-        }
+        toggleMiniMapMenu();
         break;
     }
 
@@ -1813,8 +1810,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
             _virtualKeyboardMenu_lower->show();
         }
     } else if (button == GAMEPAD_BUTTON::Y && _player->getInventory().hasItem(Item::getIdFromName("Map"))) {
-        if (_miniMapMenu->isActive()) _miniMapMenu->hide();
-        else _miniMapMenu->show();
+        toggleMiniMapMenu();
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
@@ -2097,6 +2093,18 @@ void Game::generateStatsString(std::string& statsString, bool overall, bool useU
         const std::string statString = unit != "" ? distString : std::to_string((int)statValue);
 
         statsString += statName + ":  " + statString + unit + (useUnderscores ? "\n_______________\n" : "\n\n");
+    }
+}
+
+void Game::toggleMiniMapMenu() {
+    if (_player->getInventory().hasItem(Item::getIdFromName("Map"))) {
+        if (_miniMapMenu->isActive()) _miniMapMenu->hide();
+        else {
+            _miniMapMenu->show();
+            for (auto& chunk : _world.getChunks()) {
+                MiniMapGenerator::blitChunk(chunk);
+            }
+        }
     }
 }
 
