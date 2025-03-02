@@ -171,6 +171,8 @@ void UIMiniMapInterface::mouseButtonReleased(const int mx, const int my, const i
         _middleButtonPressed = false;
     } else if (button == sf::Mouse::Right) {
         centerOnPlayer();
+    } else if (button == sf::Mouse::Left) {
+        MiniMapGenerator::dropPin(_player->getPosition());
     }
 }
 

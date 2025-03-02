@@ -169,6 +169,7 @@ private:
 	void toggleInventoryMenu();
 	void toggleShopMenu();
 	void toggleMiniMapMenu();
+	bool _firstTimeOpeningMap = true;
 
 	void interruptPause();
 

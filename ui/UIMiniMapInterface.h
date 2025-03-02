@@ -19,6 +19,8 @@ public:
     void mouseMoved(const int mx, const int my);
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
+
+    void centerOnPlayer();
 private:
     int _dispSize;
     int _dispScale;
@@ -35,7 +37,6 @@ private:
     sf::Vector2i _cameraPosOnClick;
     bool _middleButtonPressed = false;
 
-    void centerOnPlayer();
     void zoom(float factor);
 
     long long _lastDpadPressTime = 0LL;

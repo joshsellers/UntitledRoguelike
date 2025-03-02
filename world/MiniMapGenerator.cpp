@@ -51,6 +51,19 @@ void MiniMapGenerator::dropPin(sf::Vector2f worldPos) {
     const float scale = ((float)CHUNK_SIZE_SCALED / (float)CHUNK_SIZE);
 
     const sf::Vector2i mapLocation(worldPos.x * scale + centerX, worldPos.y * scale + centerY);
+    bool alreadyMarked = false;
+    bool* alreadyMarkedP = &alreadyMarked;
+    _markerLocations.erase(std::remove_if(_markerLocations.begin(), _markerLocations.end(),
+        [mapLocation, alreadyMarkedP](sf::Vector2i location) {
+            if (location == mapLocation) {
+                *alreadyMarkedP = true;
+                return true;
+            }
+            return false; 
+        }), _markerLocations.end());
+
+    if (alreadyMarked) return;
+
     _markerLocations.push_back(mapLocation);
 }
 

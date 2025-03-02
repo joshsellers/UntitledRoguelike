@@ -197,21 +197,55 @@ private:
     }
 
     static void saveMiniMapData(std::ofstream& out) {
-        out << "MAPDATA";
-        const int dataSize = 
-            MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS * MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS;
-        for (int i = 0; i < dataSize; i++) {
-            out << ":" << std::to_string((int)MiniMapGenerator::getData(i));
-        }
+        if (_world->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+            out << "MAPDATA";
+            const std::map<TERRAIN_TYPE, std::string> encoding =
+            {
+                {TERRAIN_TYPE::EMPTY, "0"},
+                {TERRAIN_TYPE::MOUNTAIN_LOW, "1"},
+                {TERRAIN_TYPE::MOUNTAIN_MID, "2"},
+                {TERRAIN_TYPE::MOUNTAIN_HIGH, "3"},
+                {TERRAIN_TYPE::SAND, "4"},
+                {TERRAIN_TYPE::WATER, "5"},
+                {TERRAIN_TYPE::GRASS, "6"},
+                {TERRAIN_TYPE::TUNDRA, "8"},
+                {TERRAIN_TYPE::DESERT, "9"},
+                {TERRAIN_TYPE::SAVANNA, "A"},
+                {TERRAIN_TYPE::FLESH, "B"},
+                {TERRAIN_TYPE::GRASS_FOREST, "C"},
+                {TERRAIN_TYPE::RIVER, "D"},
+                {TERRAIN_TYPE::FUNGUS, "E"}
+            };
 
-        out << std::endl << "MAPPOIS";
-        for (const auto& location : MiniMapGenerator::getPoiLocations()) {
-            out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
-        }
+            const int mapSize = MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS;
+            const int chunkSize = MiniMapGenerator::CHUNK_SIZE_SCALED;
+            for (int y = 0; y < mapSize - chunkSize; y += chunkSize) {
+                for (int x = 0; x < mapSize - chunkSize; x += chunkSize) {
+                    const TERRAIN_TYPE firstSubChunk = MiniMapGenerator::getData(x + y * mapSize);
+                    if (firstSubChunk != TERRAIN_TYPE::EMPTY) {
+                        out << ":" << std::to_string(x) << "," << std::to_string(y) << ".";
+                        for (int ya = y; ya < y + chunkSize; ya++) {
+                            for (int xa = x; xa < x + chunkSize; xa++) {
+                                out << encoding.at(MiniMapGenerator::getData(xa + ya * mapSize));
+                            }
+                        }
+                    }
+                }
+            }
 
-        out << std::endl << "MAPPINS";
-        for (const auto& location : MiniMapGenerator::getPinLocations()) {
-            out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+            if (!MiniMapGenerator::getPoiLocations().empty()) {
+                out << std::endl << "MAPPOIS";
+                for (const auto& location : MiniMapGenerator::getPoiLocations()) {
+                    out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+                }
+            }
+
+            if (!MiniMapGenerator::getPinLocations().empty()) {
+                out << std::endl << "MAPPINS";
+                for (const auto& location : MiniMapGenerator::getPinLocations()) {
+                    out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+                }
+            }
         }
     }
 
@@ -439,8 +473,37 @@ private:
 
             _world->init(seed);
         } else if (header == "MAPDATA") {
-            for (int i = 0; i < data.size(); i++) {
-                MiniMapGenerator::_data[i] = (TERRAIN_TYPE)std::stoi(data[i]);
+            const std::map<char, TERRAIN_TYPE> encoding =
+            {
+                {'0', TERRAIN_TYPE::EMPTY},
+                {'1', TERRAIN_TYPE::MOUNTAIN_LOW},
+                {'2', TERRAIN_TYPE::MOUNTAIN_MID},
+                {'3', TERRAIN_TYPE::MOUNTAIN_HIGH},
+                {'4', TERRAIN_TYPE::SAND},
+                {'5', TERRAIN_TYPE::WATER},
+                {'6', TERRAIN_TYPE::GRASS},
+                {'8', TERRAIN_TYPE::TUNDRA},
+                {'9', TERRAIN_TYPE::DESERT},
+                {'A', TERRAIN_TYPE::SAVANNA},
+                {'B', TERRAIN_TYPE::FLESH},
+                {'C', TERRAIN_TYPE::GRASS_FOREST},
+                {'D', TERRAIN_TYPE::RIVER},
+                {'E', TERRAIN_TYPE::FUNGUS}
+            };
+
+            for (const std::string& chunk : data) {
+                const auto rawChunkData = splitString(chunk, ".");
+                const auto rawCoordData = splitString(rawChunkData[0], ",");
+                const std::string& rawSubChunkData = rawChunkData[1];
+
+                const sf::Vector2i coords(std::stoi(rawCoordData[0]), std::stoi(rawCoordData[1]));
+                const int chunkSize = MiniMapGenerator::CHUNK_SIZE_SCALED;
+                for (int y = 0; y < chunkSize; y++) {
+                    for (int x = 0; x < chunkSize; x++) {
+                        const char& subChunk = rawSubChunkData.at(x + y * chunkSize);
+                        MiniMapGenerator::_data[(coords.x + x) + (coords.y + y) * chunkSize * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS] = encoding.at(subChunk);
+                    }
+                }
             }
         } else if (header == "MAPPOIS") {
             for (const auto& rawLocation : data) {

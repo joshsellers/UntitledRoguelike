@@ -1353,6 +1353,7 @@ void Game::buttonPressed(std::string buttonCode) {
 
         _miniMapMenu->hide();
         MiniMapGenerator::reset();
+        _firstTimeOpeningMap = true;
 
         _bossHUDMenu->hide();
 
@@ -1516,6 +1517,13 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (stringStartsWith(buttonCode, "load:")) {
         if (SaveManager::loadGame(splitString(buttonCode, ":")[1])) {
             SaveManager::setCurrentSaveFileName(splitString(buttonCode, ":")[1]);
+
+            if (_player->getInventory().hasItem(Item::getIdFromName("Map")) && !_miniMapMenu->getElements().empty()) {
+                const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+                miniMapInterface->centerOnPlayer();
+
+                _firstTimeOpeningMap = false;
+            }
 
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
@@ -1852,7 +1860,10 @@ void Game::togglePauseMenu() {
 void Game::toggleInventoryMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive() && !_pauseMenu->isActive()) {
         if (_inventoryMenu->isActive()) _inventoryMenu->hide();
-        else _inventoryMenu->show();
+        else {
+            _miniMapMenu->hide();
+            _inventoryMenu->show();
+        }
 
         _player->_inventoryMenuIsOpen = _inventoryMenu->isActive();
 
@@ -1866,6 +1877,7 @@ void Game::toggleShopMenu() {
         for (auto& entity : _world.getEntities()) {
             if (entity->isActive() && entity->getEntityType() == "shopkeep") {
                 if (_player->getHitBox().intersects(entity->getHitBox())) {
+                    _miniMapMenu->hide();
                     _shopMenu->show();
 
                     std::string controlsMsg = "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25";
@@ -2097,13 +2109,28 @@ void Game::generateStatsString(std::string& statsString, bool overall, bool useU
 }
 
 void Game::toggleMiniMapMenu() {
-    if (_player->getInventory().hasItem(Item::getIdFromName("Map"))) {
+    if (_player->getInventory().hasItem(Item::getIdFromName("Map")) && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_miniMapMenu->isActive()) _miniMapMenu->hide();
         else {
             _miniMapMenu->show();
-            for (auto& chunk : _world.getChunks()) {
-                MiniMapGenerator::blitChunk(chunk);
+
+            if (_firstTimeOpeningMap) {
+                for (auto& chunk : _world.getChunks()) {
+                    MiniMapGenerator::blitChunk(chunk);
+                }
+
+                if (!_miniMapMenu->getElements().empty()) {
+                    const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+                    miniMapInterface->centerOnPlayer();
+                }
+                _firstTimeOpeningMap = false;
             }
+
+            const std::string keyboardMsg = 
+                "Hold mousewheel button and drag to look around\nRight click to center on player\nLeft click to drop/remove a pin\nScroll mousewheel to zoom in/out";
+            const std::string gamepadMsg = 
+                "Use the right joystick to look around\nPress the right joystick to center on player\nPress the left joystick to drop/remove a pin\nPress up/down on the d-pad to zoom in/out";
+            MessageManager::displayMessage(GamePad::isConnected() ? gamepadMsg : keyboardMsg, 8);
         }
     }
 }
