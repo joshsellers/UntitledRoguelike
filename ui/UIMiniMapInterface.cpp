@@ -204,6 +204,7 @@ void UIMiniMapInterface::centerOnPlayer() {
 
 void UIMiniMapInterface::zoom(float factor) {
     _dispScale += factor;
+    if (_dispScale < 1) _dispScale = 1;
 
     const int oldDispSize = _dispSize;
     const float padding = getRelativeWidth(1.f);
