@@ -44,7 +44,12 @@ void Entity::move(float xa, float ya) {
 }
 
 void Entity::hoardMove(float xa, float ya, bool sameTypeOnly, float minDist, float visionRange) {
-    if (_isScared) return;
+    if (_isScared) {
+        constexpr int fearTime = 60 * 5;
+        if (_fearTimer >= fearTime) _isScared = false;
+        _fearTimer++;
+        return;
+    }
 
     if (_isEnemy && !_checkedFear && AbilityManager::playerHasAbility(Ability::FEAR.getId())) {
         const float distSquared = 150 * 150;
