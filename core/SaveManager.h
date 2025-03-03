@@ -224,9 +224,23 @@ private:
                     const TERRAIN_TYPE firstSubChunk = MiniMapGenerator::getData(x + y * mapSize);
                     if (firstSubChunk != TERRAIN_TYPE::EMPTY) {
                         out << ":" << std::to_string(x) << "," << std::to_string(y) << ".";
+                        bool sameTerrainType = true;
                         for (int ya = y; ya < y + chunkSize; ya++) {
                             for (int xa = x; xa < x + chunkSize; xa++) {
-                                out << encoding.at(MiniMapGenerator::getData(xa + ya * mapSize));
+                                const TERRAIN_TYPE currentSubChunk = MiniMapGenerator::getData(xa + ya * mapSize);
+                                if (currentSubChunk == firstSubChunk && sameTerrainType) {
+                                    if (xa == x && ya == y) out << encoding.at(currentSubChunk);
+                                    continue;
+                                } else {
+                                    if (sameTerrainType) {
+                                        for (int i = 0; i < (xa - x) + (ya - y) * chunkSize - 1; i++) {
+                                            out << encoding.at(firstSubChunk);
+                                        }
+                                    }
+
+                                    out << encoding.at(currentSubChunk);
+                                    sameTerrainType = false;
+                                }
                             }
                         }
                     }
@@ -500,7 +514,7 @@ private:
                 const int chunkSize = MiniMapGenerator::CHUNK_SIZE_SCALED;
                 for (int y = 0; y < chunkSize; y++) {
                     for (int x = 0; x < chunkSize; x++) {
-                        const char& subChunk = rawSubChunkData.at(x + y * chunkSize);
+                        const char& subChunk = rawSubChunkData.size() == 1 ? rawSubChunkData.at(0) : rawSubChunkData.at(x + y * chunkSize);
                         MiniMapGenerator::_data[(coords.x + x) + (coords.y + y) * chunkSize * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS] = encoding.at(subChunk);
                     }
                 }
