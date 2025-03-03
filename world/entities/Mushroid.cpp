@@ -36,7 +36,7 @@ void Mushroid::update() {
     sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
     sf::Vector2f cLoc(((int)getPosition().x), ((int)getPosition().y) + TILE_SIZE * 2);
 
-    const float AGGRO_DIST = 90.f;
+    constexpr float AGGRO_DIST = 80.f;
     if (!playerIsDead && !_isAggro && !_isTransforming && std::sqrt(std::pow(playerPos.x - cLoc.x, 2) + std::pow(playerPos.y - cLoc.y, 2)) < AGGRO_DIST) {
         _isTransforming = true;
     } else if (playerIsDead && (_isAggro || _isTransforming)) {
@@ -108,7 +108,7 @@ void Mushroid::draw(sf::RenderTexture& surface) {
             36 * TILE_SIZE + xOffset, 37 * TILE_SIZE, TILE_SIZE * 2, isSwimming() ? TILE_SIZE : TILE_SIZE * 2
         ));
     } else if (_isTransforming) {
-        constexpr int ticksPerFrame = 2;
+        constexpr int ticksPerFrame = 4;
         constexpr int frameCount = 6;
         const int frame = ((_animCounter / ticksPerFrame) % frameCount);
 
@@ -122,7 +122,7 @@ void Mushroid::draw(sf::RenderTexture& surface) {
         }
     } else {
         _sprite.setTextureRect(sf::IntRect(
-            158 * TILE_SIZE, 43 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2
+            158 * TILE_SIZE, 39 * TILE_SIZE, TILE_SIZE * 2, TILE_SIZE * 2
         ));
     }
 
