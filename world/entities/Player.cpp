@@ -362,6 +362,7 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
 
         constexpr int spriteHeight = 3;
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+        if (AbilityManager::playerHasAbility(Ability::BLESSING.getId())) yOffset = 0;
 
         if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
             sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
@@ -375,7 +376,8 @@ void Player::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rende
             surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     } else {
-        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
+        int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0; 
+        if (AbilityManager::playerHasAbility(Ability::BLESSING.getId())) yOffset = 0;
 
         if (getInventory().getEquippedItemId(equipType) != NOTHING_EQUIPPED) {
             sf::IntRect itemTextureRect = Item::ITEMS[getInventory().getEquippedItemId(equipType)]->getTextureRect();
