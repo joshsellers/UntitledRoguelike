@@ -840,13 +840,15 @@ void World::generateChunkScatters(Chunk& chunk) {
                         _scatterBuffer.push_back(shop);
                         spawnedShopThisChunk = true;
 
-                        if (!shopHasBeenSeenAt(sf::Vector2f(x, y)) && onEnemySpawnCooldown() && !bossIsActive()) {
+                        const bool alreadySeenShop = shopHasBeenSeenAt(sf::Vector2f(x, y));
+                        if (!alreadySeenShop && onEnemySpawnCooldown() && !bossIsActive()) {
                             MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                            shopSeenAt(sf::Vector2f(x, y)); 
+                        }
+                        
+                        if (!alreadySeenShop && getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+                            MiniMapGenerator::markPoi(sf::Vector2f(x, y));
                             shopSeenAt(sf::Vector2f(x, y));
-
-                            if (getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
-                                MiniMapGenerator::markPoi(sf::Vector2f(x, y));
-                            }
                         }
                     }
                 }
