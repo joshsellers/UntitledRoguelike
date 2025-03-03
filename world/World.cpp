@@ -840,7 +840,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                         _scatterBuffer.push_back(shop);
                         spawnedShopThisChunk = true;
 
-                        if (!shopHasBeenSeenAt(sf::Vector2f(x, y))) {
+                        if (!shopHasBeenSeenAt(sf::Vector2f(x, y)) && onEnemySpawnCooldown() && !bossIsActive()) {
                             MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                             shopSeenAt(sf::Vector2f(x, y));
 

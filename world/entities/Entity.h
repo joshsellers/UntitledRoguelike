@@ -222,6 +222,7 @@ protected:
 
     bool _checkedFear = false;
     bool _isScared = false;
+    int _fearTimer = 0;
 
 private:
     const ENTITY_SAVE_ID _saveId;
