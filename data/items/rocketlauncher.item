@@ -2,7 +2,6 @@ name = "Rocket Launcher"
 description = "Launches rockets"
 value = 599
 isBuyable = true
-shopChance = 100
 unlockWaveNumber = 32
 isGun = true
 isAutomatic = false

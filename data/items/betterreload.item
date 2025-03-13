@@ -6,5 +6,5 @@ functionName = "betterreload"
 isBuyable = true
 value = 405
 unlockWaveNumber = 21
-shopChance = 50
+rarityTier = 2
 textureRect = 16, 13, 1, 1

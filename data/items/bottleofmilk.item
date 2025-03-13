@@ -5,6 +5,5 @@ textureRect = 5, 11, 1, 1
 isBuyable = true
 value = 25
 unlockWaveNumber = 5
-shopChance = 100
 functionName = "bottleofmilk"
 tags = "food"

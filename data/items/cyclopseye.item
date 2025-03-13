@@ -4,7 +4,6 @@ isConsumable = true
 textureRect = 1, 12, 1, 1
 isBuyable = true
 value = 275
-shopChance = 100
 conditionalUnlock = true
 functionName = "useeye"
 damage = 5

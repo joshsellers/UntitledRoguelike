@@ -5,6 +5,5 @@ isStackable = false
 isBuyable = true
 value = 249
 unlockWaveNumber = 15
-shopChance = 100
 functionName = "wristwatch"
 textureRect = 15, 13, 1, 1
