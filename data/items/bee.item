@@ -3,7 +3,6 @@ description = "There's a bee??"
 isConsumable = true
 functionName = "usebee"
 isBuyable = true
-shopChance = 100
 unlockWaveNumber = 23
 value = 350
 isStartingItem = true

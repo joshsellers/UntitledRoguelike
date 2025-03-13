@@ -4,7 +4,6 @@ isStackable = false
 isConsumable = true
 value = 300
 isBuyable = true
-shopChance = 100
 unlockWaveNumber = 10
 functionName = "lightningitem"
 textureRect = 7, 13, 1, 1

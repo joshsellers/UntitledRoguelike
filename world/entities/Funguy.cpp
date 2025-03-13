@@ -114,7 +114,7 @@ void Funguy::damage(int damage) {
             getInventory().dropItem(getInventory().getItemIdAt(i), getInventory().getItemAmountAt(i));
         }
 
-        const int sporeCount = randomInt(50, 100);
+        const int sporeCount = randomInt(10, 25);
         constexpr int cloudRadius = 16;
 
         for (int i = 0; i < sporeCount; i++) {

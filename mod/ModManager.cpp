@@ -283,7 +283,7 @@ void ModManager::loadItem(std::ifstream& in) {
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 
     if (rarityTier != 0 && rarityTier < 4) {
-        constexpr float tierChances[3] = { 100.f, 50.f, 10.f };
+        constexpr float tierChances[3] = { 100.f, 50.f, 5.f };
         shopChance = tierChances[rarityTier - 1];
     } else if (rarityTier >= 4) {
         MessageManager::displayMessage("Invalid rarity tier for item \"" + name + "\":" + std::to_string(rarityTier), 5, WARN);
