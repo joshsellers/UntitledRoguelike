@@ -162,11 +162,21 @@ void MushroomBoss::runCurrentState() {
         }
         case RAPID_FIRE_SHROOMS:
         {
-            constexpr long long fireRate = 90LL;
+            constexpr long long fireRate = 500LL;
             if (currentTimeMillis() - _lastFireTimeMillis >= fireRate) {
                 float angle = 0;
                 constexpr int projCount = 90;
+                bool skippedLast = false;
                 for (int i = 0; i < projCount; i++) {
+                    if (skippedLast) {
+                        skippedLast = false;
+                        continue;
+                    }
+
+                    if (randomChance(0.25f)) {
+                        skippedLast = true;
+                        continue;
+                    }
                     angle = i * (360.f / (float)projCount);
                     fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_SMALL_SHROOM"), "NONE", true);
                 }

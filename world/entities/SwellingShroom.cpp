@@ -18,7 +18,7 @@ void SwellingShroom::update() {
 
     constexpr long long popDelay = 1500LL;
     if (currentTimeMillis() - _spawnTime >= popDelay) {
-        const int sporeCount = randomInt(500, 600);
+        const int sporeCount = randomInt(50, 100);
         constexpr int cloudRadius = 32;
 
         for (int i = 0; i < sporeCount; i++) {
