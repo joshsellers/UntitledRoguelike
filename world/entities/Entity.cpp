@@ -360,6 +360,11 @@ Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const Project
     return fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset, addParentVelocity);
 }
 
+/**
+* THIS CAN RETURN NULLPTR
+* Always make sure Projectile* is not nullptr before doing anything with it
+* why do I do things like this
+*/
 Projectile* Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
     bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
     if (_isScared) return nullptr;
