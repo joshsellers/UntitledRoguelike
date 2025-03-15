@@ -3,6 +3,7 @@
 #include "../../world/entities/projectiles/ProjectilePoolManager.h"
 #include "../../world/entities/Lightning.h"
 #include "../../core/ShaderManager.h"
+#include "../effect/PlayerVisualEffectManager.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
@@ -234,6 +235,7 @@ const Ability Ability::OCTOPUS(9, "Octopus",
 
         constexpr int spriteHeight = 2;
         int yOffset = player->isMoving() || player->isSwimming() ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+        if (PlayerVisualEffectManager::playerHasEffect("Dev's Blessing")) yOffset = 0;
 
         sf::IntRect effectTextureRect(texturePos.x, texturePos.y, TILE_SIZE, (player->isSwimming() ? TILE_SIZE : TILE_SIZE * 2));
         int spriteY = player->isDodging() && player->isMoving() ? effectTextureRect.top - TILE_SIZE * 2 : effectTextureRect.top;
