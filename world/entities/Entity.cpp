@@ -350,14 +350,14 @@ void Entity::swimWander(sf::Vector2f feetPos, boost::random::mt19937& generator,
 }
 
 Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
-    bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
+    bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity, bool fireIfScared) {
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
 
     double x = (double)(targetPos.x - (centerPoint.x + centerOffset.x));
     double y = (double)(targetPos.y - (centerPoint.y + centerOffset.y));
 
     float angle = (float)((std::atan2(y, x)));
-    return fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset, addParentVelocity);
+    return fireTargetedProjectile(angle, projData, soundName, onlyDamagePlayer, displayProjectileOnTop, centerOffset, addParentVelocity, fireIfScared);
 }
 
 /**
@@ -366,8 +366,8 @@ Projectile* Entity::fireTargetedProjectile(sf::Vector2f targetPos, const Project
 * why do I do things like this
 */
 Projectile* Entity::fireTargetedProjectile(float angle, const ProjectileData projData, std::string soundName, bool onlyDamagePlayer, 
-    bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity) {
-    if (_isScared) return nullptr;
+    bool displayProjectileOnTop, sf::Vector2f centerOffset, bool addParentVelocity, bool fireIfScared) {
+    if (_isScared && !fireIfScared) return nullptr;
 
     const sf::Vector2f centerPoint(getPosition().x, getPosition().y + _spriteHeight / 2);
     sf::Vector2f spawnPos(centerPoint.x - TILE_SIZE / 2 + centerOffset.x, centerPoint.y + centerOffset.y);
