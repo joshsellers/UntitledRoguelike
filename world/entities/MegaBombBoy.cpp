@@ -89,7 +89,7 @@ void MegaBombBoy::explode() {
         if (fireAngle >= 360.f) fireAngle -= 360.f;
 
         const float fireAngleRads = fireAngle * ((float)PI / 180.f);
-        Projectile* proj = fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_BOMB"), "NONE", true, false, {0, 0}, false);
+        Projectile* proj = fireTargetedProjectile(fireAngleRads, ProjectileDataManager::getData("_PROJECTILE_BOMB"), "NONE", true, false, {0, 0}, false, true);
         proj->optimizedExplosions = true;
     }
 }
