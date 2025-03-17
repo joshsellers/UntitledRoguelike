@@ -96,6 +96,40 @@ void Projectile::update() {
                     }
                 }
             }
+        } else if (_data.onlyHitEnemies) {
+            for (auto& entity : getWorld()->getEnemies()) {
+                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
+                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getEntityType() == "player" && entity->getEntityType() == "dontblockplayershots")
+                    && entity->getEntityType() != _parent->getEntityType()) {
+                    if (entity->getHitBox().intersects(_hitBox)) {
+                        bool alreadyHitThisEntity = false;
+                        for (const std::string& uid : _hitEntities) {
+                            if (uid == entity->getUID()) {
+                                alreadyHitThisEntity = true;
+                                break;
+                            }
+                        }
+                        if (alreadyHitThisEntity) continue;
+
+                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
+                        entity->takeDamage(damage, _criticalHit);
+                        StatManager::increaseStat(DAMAGE_DEALT, damage);
+
+                        _entitiesPassedThrough++;
+                        _hitEntities.push_back(entity->getUID());
+                        if (_entitiesPassedThrough >= passThroughCount) {
+                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+                                spawnExplosion();
+                            }
+
+                            if (_splitOnHit) split();
+                            _isActive = false;
+                            return;
+                        }
+                        break;
+                    }
+                }
+            }
         } else {
             for (auto& entity : getWorld()->getEntities()) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
