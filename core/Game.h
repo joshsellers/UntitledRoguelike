@@ -133,6 +133,7 @@ private:
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
 	sf::Text _hardModeEnabledLabel;
+	sf::Text _perfBoostEnabledLabel;
 	sf::Text _achEnabledLabel;
 	sf::Text _statEnabledLabel;
 	sf::Text _unlocksEnabledLabel;

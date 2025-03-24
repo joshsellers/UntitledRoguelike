@@ -28,6 +28,8 @@ extern bool DISABLE_UNLOCKS;
 
 extern bool HARD_MODE_ENABLED;
 
+extern bool MID_GAME_PERF_BOOST;
+
 extern bool BENCHMARK_TERRAIN_AND_BIOME_GEN;
 
 extern bool STEAMAPI_INITIATED;

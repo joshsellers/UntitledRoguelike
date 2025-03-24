@@ -84,26 +84,31 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     _hardModeEnabledLabel.setString("hardmode: ");
     _hardModeEnabledLabel.setPosition(0, 225);
 
+    _perfBoostEnabledLabel.setFont(_font);
+    _perfBoostEnabledLabel.setCharacterSize(24);
+    _perfBoostEnabledLabel.setString("mgpb: ");
+    _perfBoostEnabledLabel.setPosition(0, 250);
+
     // prog toggles 
     _achEnabledLabel.setFont(_font);
     _achEnabledLabel.setCharacterSize(24);
     _achEnabledLabel.setString("ACH");
-    _achEnabledLabel.setPosition(0, 250);
+    _achEnabledLabel.setPosition(0, 275);
 
     _statEnabledLabel.setFont(_font);
     _statEnabledLabel.setCharacterSize(24);
     _statEnabledLabel.setString("         STAT");
-    _statEnabledLabel.setPosition(0, 250);
+    _statEnabledLabel.setPosition(0, 275);
 
     _unlocksEnabledLabel.setFont(_font);
     _unlocksEnabledLabel.setCharacterSize(24);
     _unlocksEnabledLabel.setString("                   UNLK");
-    _unlocksEnabledLabel.setPosition(0, 250);
+    _unlocksEnabledLabel.setPosition(0, 275);
 
     _progStatusSeparatorsLabel.setFont(_font);
     _progStatusSeparatorsLabel.setCharacterSize(24);
     _progStatusSeparatorsLabel.setString("        |         |");
-    _progStatusSeparatorsLabel.setPosition(0, 250);
+    _progStatusSeparatorsLabel.setPosition(0, 275);
 
     //
 
@@ -1229,6 +1234,9 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _hardModeEnabledLabel.setString("hardmode: " + (std::string)(HARD_MODE_ENABLED ? "1" : "0"));
         surface.draw(_hardModeEnabledLabel);
 
+        _perfBoostEnabledLabel.setString("mgpb: " + (std::string)(MID_GAME_PERF_BOOST ? "1" : "0"));
+        surface.draw(_perfBoostEnabledLabel);
+
         _achEnabledLabel.setColor((DISABLE_ACHIEVEMENTS || !AchievementManager::achievementsReady()) ? sf::Color::Red : sf::Color::Green);
         _statEnabledLabel.setColor(DISABLE_STATS ? sf::Color::Red : sf::Color::Green);
         _unlocksEnabledLabel.setColor(DISABLE_UNLOCKS ? sf::Color::Red : sf::Color::Green);
@@ -1349,6 +1357,8 @@ void Game::buttonPressed(std::string buttonCode) {
         if (_shopMenu->isActive()) toggleShopMenu();
         HARD_MODE_ENABLED = false;
         _hardModeToggleButton->setLabelText("hard mode: off");
+
+        MID_GAME_PERF_BOOST = false;
 
         _gameStarted = false;
         _gameLoading = false;
