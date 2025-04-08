@@ -1753,6 +1753,12 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
         _interactReleased = true;
         toggleShopMenu();
+    } else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
+        if (_gameStarted && !_isPaused && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
+            _magazineMeter->setColor(0xD21919FF);
+        } else if (_gameStarted && !_isPaused) {
+            _magazineMeter->setColor(0x787878FF);
+        }
     }
 
     _ui->keyReleased(key);
@@ -1804,6 +1810,14 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         } else if (_virtualKeyboardMenu_upper->isActive()) {
             _virtualKeyboardMenu_upper->hide();
             _virtualKeyboardMenu_lower->show();
+        }
+    }
+    
+    if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
+        if (_gameStarted && !_isPaused && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
+            _magazineMeter->setColor(0xD21919FF);
+        } else if (_gameStarted && !_isPaused) {
+            _magazineMeter->setColor(0x787878FF);
         }
     }
 

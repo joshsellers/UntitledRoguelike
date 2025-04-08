@@ -1,15 +1,6 @@
-playerHp = player.getHp();
-
 weaponLoaded = player.weaponIsLoaded();
 
-if: weaponLoaded and playerHp > 1 {
+if: weaponLoaded {
     #playSound("basicprojlaunch");
     player.fireProjectile("_PROJECTILE_BLOOD_GUN", 2);
-
-    damage = 1;
-    newHp = playerHp - damage;
-    if: newHp < 1 {
-        newHp = 1;
-    }
-    player.setHp(newHp);
 }
