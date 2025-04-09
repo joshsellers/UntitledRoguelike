@@ -73,7 +73,7 @@ void AchievementManagerInstance::onAchievementStored(UserAchievementStored_t* pC
 }
 
 void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave) {
-    if (stat == PENNIES_COLLECTED && valueThisSave >= 1000000) {
+    if (stat == PENNIES_COLLECTED && StatManager::getOverallStat(PENNIES_COLLECTED) >= 1000000) {
         unlock(MILLIONAIRE);
         ConditionalUnlockManager::increaseUnlockProgress("Penny Cannon", 1);
     } else if ((stat == DIST_TRAVELLED || stat == DIST_SWAM || stat == DIST_SAILED)
