@@ -176,6 +176,8 @@ private:
 
 	void displayStartupMessages() const;
 
+	void runStartupCommands() const;
+
 	void startLoading();
 
 	void autoSave();

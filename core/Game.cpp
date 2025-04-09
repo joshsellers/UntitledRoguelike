@@ -142,6 +142,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     SaveManager::init(&_world, &_shopManager);
 
     initUI();
+    runStartupCommands();
 
     loadLoadingScreenMessages();
     loadTips();
@@ -2097,6 +2098,23 @@ void Game::textEntered(sf::Uint32 character) {
 
 void Game::displayStartupMessages() const {
 
+}
+
+void Game::runStartupCommands() const {
+    std::string path = "startupcommands.plc";
+    std::ifstream in(path);
+    if (!in.good()) {
+        MessageManager::displayMessage("Did not find startupcommands.plc", 5, DEBUG);
+        in.close();
+        return;
+    }
+
+    std::string line;
+    while (getline(in, line)) {
+        MessageManager::displayMessage(_cmdPrompt->processCommand(line), 5, DEBUG);
+    }
+
+    in.close();
 }
 
 void Game::autoSave() {
