@@ -2101,10 +2101,10 @@ void Game::displayStartupMessages() const {
 }
 
 void Game::runStartupCommands() const {
-    std::string path = "startupcommands.plc";
+    std::string path = "startup.plc";
     std::ifstream in(path);
     if (!in.good()) {
-        MessageManager::displayMessage("Did not find startupcommands.plc", 5, DEBUG);
+        MessageManager::displayMessage("Did not find " + path, 5, DEBUG);
         in.close();
         return;
     }

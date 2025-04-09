@@ -439,4 +439,4 @@ settings.config
 resource.h
 soloud/
 
-startupcommands.plc
+startup.plc
