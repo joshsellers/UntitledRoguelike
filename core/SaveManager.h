@@ -669,6 +669,13 @@ private:
                     } else {
                         entityLoadedSuccessfully = false;
                         MessageManager::displayMessage("Did not find parent for Dog " + uid + "\nParent UID: " + parentUID, 5, WARN);
+
+                        std::shared_ptr<Dog> dog = std::shared_ptr<Dog>(new Dog(pos));
+                        if (hasOwner) {
+                            dog->setWorld(_world);
+                            dog->setParent(_world->getPlayer().get());
+                        }
+                        entity = dog;
                     }
                     break;
                 }
