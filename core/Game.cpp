@@ -1754,11 +1754,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         _interactReleased = true;
         toggleShopMenu();
     } else if (key == InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
-        if (_gameStarted && !_isPaused && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
-            _magazineMeter->setColor(0xD21919FF);
-        } else if (_gameStarted && !_isPaused) {
-            _magazineMeter->setColor(0x787878FF);
-        }
+        changeMagMeterColor();
     }
 
     _ui->keyReleased(key);
@@ -1814,11 +1810,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     }
     
     if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
-        if (_gameStarted && !_isPaused && _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
-            _magazineMeter->setColor(0xD21919FF);
-        } else if (_gameStarted && !_isPaused) {
-            _magazineMeter->setColor(0x787878FF);
-        }
+        changeMagMeterColor();
     }
 
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
@@ -1923,6 +1915,18 @@ void Game::atmWithdraw() const {
         StatManager::setOverallStat(ATM_AMOUNT, (unsigned int)StatManager::getOverallStat(ATM_AMOUNT) - 1);
         _player->getInventory().addItem(Item::PENNY.getId(), 1);
         SoundManager::playSound("coinpickup");
+    }
+}
+
+void Game::changeMagMeterColor() {
+    if (_gameStarted && !_isPaused) {
+        if (_player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
+            _magazineMeter->setColor(0xD21919FF);
+        } else if (_player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Penny Cannon")) {
+            _magazineMeter->setColor(0xFFD700FF);
+        }
+    } else if (_gameStarted && !_isPaused) {
+        _magazineMeter->setColor(0x787878FF);
     }
 }
 

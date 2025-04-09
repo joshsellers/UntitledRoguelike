@@ -189,6 +189,8 @@ private:
 	long long _lastWithdrawTime = 0LL;
 	bool _interactReleased = true;
 
+	void changeMagMeterColor();
+
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };
 
