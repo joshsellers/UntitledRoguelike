@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_THROWN_KNIFE"
+velocity = 4
+lifeTime = 1000
+rotate = true
+hitBox = 5, 5, 8, 8

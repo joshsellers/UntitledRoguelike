@@ -656,7 +656,10 @@ void World::onWaveCleared() {
         MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
 
-        if (getPlayer()->getHitPoints() < 10) AchievementManager::unlock(SURVIVOR);
+        if (getPlayer()->getHitPoints() < 10) {
+            AchievementManager::unlock(SURVIVOR);
+            ConditionalUnlockManager::increaseUnlockProgress("Knife", 1);
+        }
 
         checkAltarSpawn();
     }

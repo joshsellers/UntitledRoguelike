@@ -1313,6 +1313,8 @@ void Game::buttonPressed(std::string buttonCode) {
                 startingItems.push_back(item->getId());
             }
         }
+        if (Item::ITEMS[Item::getIdFromName("Knife")]->isUnlocked(0)) startingItems.push_back(Item::getIdFromName("Knife"));
+
         const size_t numStartingItems = startingItems.size();
 
         std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::SLIME_BALL.getId()]);
@@ -2111,6 +2113,7 @@ void Game::runStartupCommands() const {
 
     std::string line;
     while (getline(in, line)) {
+        if (stringStartsWith(line, "#")) continue;
         MessageManager::displayMessage(_cmdPrompt->processCommand(line), 5, DEBUG);
     }
 
