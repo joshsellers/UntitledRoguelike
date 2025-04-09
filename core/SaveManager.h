@@ -195,6 +195,13 @@ private:
             }
             out << std::endl;
         }
+
+        if (_world->_shopsWithDoorBlownOpen.size() != 0) {
+            out << "BLOWNUPSHOPS";
+            for (auto& shop : _world->_shopsWithDoorBlownOpen) {
+                out << ":" << std::to_string(shop.x) << "," << std::to_string(shop.y);
+            }
+        }
     }
 
     static void saveMiniMapData(std::ofstream& out) {
@@ -587,6 +594,12 @@ private:
                 std::vector<std::string> parsedData = splitString(altarPosData, ",");
                 sf::Vector2f altarPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->altarActivatedAt(altarPos);
+            }
+        } else if (header == "BLOWNUPSHOPS") {
+            for (auto& shopDoorData : data) {
+                std::vector<std::string> parsedData = splitString(shopDoorData, ",");
+                sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
+                _world->shopDoorBlownUpAt(shopPos);
             }
         } else if (header == "DEADSHOPKEEPS") {
             for (auto& seedData : data) {

@@ -1,10 +1,12 @@
 #include "ShopExterior.h"
 #include "../World.h"
 #include "ShopInterior.h"
+#include "../../core/SoundManager.h"
 
-ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
+ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool doorBlownOpen) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
     _pos = pos;
     loadSprite(spriteSheet);
+    _doorBlownOpen = doorBlownOpen;
 
     _hitBoxXOffset = 80;
     _hitBoxYOffset = 64;
@@ -46,10 +48,11 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 void ShopExterior::update() {
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
-        if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive()) {
+        if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive() || _doorBlownOpen) {
             auto& entity = getWorld()->getPlayer();
             if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
                 getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48));
+                if (_doorBlownOpen) getWorld()->getPlayer()->takeDamage(5);
             }
             _colliders.at(2).height = 17;
         } else {
@@ -60,7 +63,8 @@ void ShopExterior::update() {
 
 void ShopExterior::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
-    if (!getWorld()->onEnemySpawnCooldown() || getWorld()->bossIsActive()) surface.draw(_closedSprite);
+    if ((!getWorld()->onEnemySpawnCooldown() || getWorld()->bossIsActive()) && !_doorBlownOpen) surface.draw(_closedSprite);
+    else if (_doorBlownOpen) surface.draw(_blownUpSprite);
 }
 
 void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
@@ -75,4 +79,23 @@ void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
         sf::IntRect(57 * TILE_SIZE, 27 * TILE_SIZE, 3 * TILE_SIZE, 3 * TILE_SIZE)
     );
     _closedSprite.setPosition(getPosition().x + 72, getPosition().y + 65);
+
+    _blownUpSprite.setTexture(*spriteSheet);
+    _blownUpSprite.setTextureRect(
+        sf::IntRect(60 * TILE_SIZE, 27 * TILE_SIZE, 2 * TILE_SIZE, 2 * TILE_SIZE)
+    );
+    _blownUpSprite.setPosition(_pos.x + TILE_SIZE * 5, _pos.y + TILE_SIZE * 4);
+}
+
+void ShopExterior::blowOpenDoor() {
+    if (_doorBlownOpen) return;
+    /*const sf::FloatRect doorHitBox(_pos.x + TILE_SIZE * 5, _pos.y + TILE_SIZE * 4, TILE_SIZE * 2, TILE_SIZE * 2);
+    _doorBlownOpen = doorHitBox.contains(explosionPos);*/
+    _doorBlownOpen = true;
+    getWorld()->shopDoorBlownUpAt(getPosition());
+    SoundManager::playSound("glass");
+}
+
+void ShopExterior::damage(int damage) {
+    if (damage == 25) blowOpenDoor();
 }

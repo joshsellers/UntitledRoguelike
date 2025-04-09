@@ -840,7 +840,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     const TERRAIN_TYPE shopDoorTerrain = getTerrainDataAt(&chunk, sf::Vector2f(x + 192 / 2, y + 96));
                     if (shopDoorTerrain != TERRAIN_TYPE::WATER && shopDoorTerrain != TERRAIN_TYPE::EMPTY) {
-                        std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
+                        std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet, shopDoorIsBlownOpenAt(sf::Vector2f(x, y))));
                         shop->setWorld(this);
                         _scatterBuffer.push_back(shop);
                         spawnedShopThisChunk = true;
@@ -1438,6 +1438,16 @@ void World::shopSeenAt(sf::Vector2f pos) {
 bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
     for (auto& altar : _activatedAltars)
         if (altar.x == pos.x && altar.y == pos.y) return true;
+    return false;
+}
+
+void World::shopDoorBlownUpAt(sf::Vector2f pos) {
+    _shopsWithDoorBlownOpen.push_back(pos);
+}
+
+bool World::shopDoorIsBlownOpenAt(sf::Vector2f pos) const {
+    for (auto& shop : _shopsWithDoorBlownOpen)
+        if (shop.x == pos.x && shop.y == pos.y) return true;
     return false;
 }
 

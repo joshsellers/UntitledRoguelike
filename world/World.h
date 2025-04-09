@@ -101,6 +101,9 @@ public:
     void altarActivatedAt(sf::Vector2f pos);
     bool altarHasBeenActivatedAt(sf::Vector2f pos) const;
 
+    void shopDoorBlownUpAt(sf::Vector2f pos);
+    bool shopDoorIsBlownOpenAt(sf::Vector2f pos) const;
+
     std::vector<Chunk>& getChunks();
 
     friend class Game;
@@ -137,6 +140,8 @@ private:
     std::vector<unsigned int> _deadShopKeeps;
 
     std::vector<sf::Vector2f> _activatedAltars;
+
+    std::vector<sf::Vector2f> _shopsWithDoorBlownOpen;
 
     void spawnMobs();
     void spawnEnemies();

@@ -1406,6 +1406,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._seenShops.clear();
         _world._activatedAltars.clear();
         _world._deadShopKeeps.clear();
+        _world._shopsWithDoorBlownOpen.clear();
         _world._bossIsActive = false;
 
         _world._isPlayerInShop = false;
