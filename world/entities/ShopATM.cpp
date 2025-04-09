@@ -24,9 +24,9 @@ ShopATM::ShopATM(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : E
     collider.height = 10;
     _colliders.push_back(collider);*/
 
-    _hitBox.left = _pos.x;
+    _hitBox.left = _pos.x - 8;
     _hitBox.top = _pos.y;
-    _hitBox.width = 32;
+    _hitBox.width = 48;
     _hitBox.height = 96;
 
     setMaxHitPoints(1000000000);
