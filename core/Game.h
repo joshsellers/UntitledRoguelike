@@ -135,6 +135,7 @@ private:
 	sf::Text _playerPosLabel;
 	sf::Text _currentBiomeLabel;
 	sf::Text _hardModeEnabledLabel;
+	sf::Text _perfBoostEnabledLabel;
 	sf::Text _achEnabledLabel;
 	sf::Text _statEnabledLabel;
 	sf::Text _unlocksEnabledLabel;
@@ -191,6 +192,8 @@ private:
 	long long _interactPressTime = 0LL;
 	long long _lastWithdrawTime = 0LL;
 	bool _interactReleased = true;
+
+	void changeMagMeterColor();
 
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };

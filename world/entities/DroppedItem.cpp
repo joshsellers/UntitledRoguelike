@@ -15,7 +15,7 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
     _usesDormancyRules = true;
     _maxTimeOutOfChunk = 60;
-    _dormancyTimeout = 60 * 5 * 60;
+    _dormancyTimeout = MID_GAME_PERF_BOOST ? 60 * 30 : 60 * 5 * 60;
 
     _entityType = "droppeditem";
 

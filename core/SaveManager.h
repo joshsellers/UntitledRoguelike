@@ -58,6 +58,7 @@ public:
             out << "TS:" << std::to_string(currentTimeMillis()) << std::endl;
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
             if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
+            if (MID_GAME_PERF_BOOST) out << "PERF:" + std::to_string(MID_GAME_PERF_BOOST) << std::endl;
             saveStats(out);
             savePlayerData(out);
             saveWorldData(out);
@@ -531,6 +532,8 @@ private:
             }
         } else if (header == "HARD") {
             HARD_MODE_ENABLED = true;
+        } else if (header == "PERF") {
+            MID_GAME_PERF_BOOST = true;
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {
@@ -778,6 +781,13 @@ private:
                     } else {
                         entityLoadedSuccessfully = false;
                         MessageManager::displayMessage("Did not find parent for Dog " + uid + "\nParent UID: " + parentUID, 5, WARN);
+
+                        std::shared_ptr<Dog> dog = std::shared_ptr<Dog>(new Dog(pos));
+                        if (hasOwner) {
+                            dog->setWorld(_world);
+                            dog->setParent(_world->getPlayer().get());
+                        }
+                        entity = dog;
                     }
                     break;
                 }

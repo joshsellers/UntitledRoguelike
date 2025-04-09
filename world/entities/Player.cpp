@@ -933,6 +933,22 @@ bool Player::reloadWeapon() {
                         removeAmount = pennyAmt;
                     }
                     getInventory().removeItem(pennyId, pennyAmt);
+                } 
+                //
+      
+                // blood gun
+                else if (getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
+                    if (getHitPoints() <= 1) {
+                        _magazineContents = previousMagContents;
+                        return false;
+                    }
+                    unsigned int hpAmount = removeAmount - previousMagContents;
+                    const unsigned int playerHp = getHitPoints();
+                    if (playerHp <= hpAmount) {
+                        hpAmount = playerHp - 1;
+                        removeAmount = hpAmount;
+                    }
+                    takeDamage(hpAmount);
                 }
                 //
 
