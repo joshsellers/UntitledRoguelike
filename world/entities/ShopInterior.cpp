@@ -1,7 +1,8 @@
 #include "ShopInterior.h"
 #include "../World.h"
 
-ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT, false) {
+ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool shopDoorBlownUp) 
+    : Entity(NO_SAVE, pos, 0, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT, false), _doorBlownUp(shopDoorBlownUp) {
     loadSprite(spriteSheet);
     int posY = _pos.y;
     _pos.y -= 176 * 2;
@@ -62,6 +63,7 @@ void ShopInterior::update() {
     auto& entity = getWorld()->getPlayer();
     if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
         getWorld()->exitBuilding();
+        if (_doorBlownUp) getWorld()->getPlayer()->takeDamage(5);
         deactivate();
     }
 }

@@ -51,7 +51,7 @@ void ShopExterior::update() {
         if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive() || _doorBlownOpen) {
             auto& entity = getWorld()->getPlayer();
             if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
-                getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48));
+                getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48), _doorBlownOpen);
                 if (_doorBlownOpen) getWorld()->getPlayer()->takeDamage(5);
             }
             _colliders.at(2).height = 17;

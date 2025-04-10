@@ -1477,12 +1477,12 @@ void World::resetChunks() {
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 
-void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
+void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp) {
     _isPlayerInShop = true;
     if (buildingID == "shop") {
         MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
 
-        std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet()));
+        std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet(), doorBlownUp));
         shopInterior->setWorld(this);
         addEntity(shopInterior);
 

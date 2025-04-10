@@ -8,12 +8,15 @@ constexpr int SHOP_INTERIOR_HEIGHT = 176;
 
 class ShopInterior : public Entity {
 public:
-    ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet);
+    ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool shopDoorBlownUp = false);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
 
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
+private:
+    const bool _doorBlownUp;
 };
 
 #endif

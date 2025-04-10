@@ -81,7 +81,7 @@ public:
 
     void resetChunks();
 
-    void enterBuilding(std::string buildingID, sf::Vector2f buildingPos);
+    void enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp = false);
     void exitBuilding();
     bool playerIsInShop() const;
 
