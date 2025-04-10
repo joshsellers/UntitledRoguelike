@@ -1,5 +1,6 @@
 #include "ShopInterior.h"
 #include "../World.h"
+#include "../../inventory/effect/PlayerVisualEffectManager.h"
 
 ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool shopDoorBlownUp) 
     : Entity(NO_SAVE, pos, 0, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT, false), _doorBlownUp(shopDoorBlownUp) {
@@ -63,7 +64,7 @@ void ShopInterior::update() {
     auto& entity = getWorld()->getPlayer();
     if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
         getWorld()->exitBuilding();
-        if (_doorBlownUp) getWorld()->getPlayer()->takeDamage(5);
+        if (_doorBlownUp && !PlayerVisualEffectManager::playerHasEffect("Heavy Duty Boots")) getWorld()->getPlayer()->takeDamage(5);
         deactivate();
     }
 }

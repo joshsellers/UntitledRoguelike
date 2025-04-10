@@ -3,6 +3,7 @@
 #include "ShopInterior.h"
 #include "../../core/SoundManager.h"
 #include "../../statistics/StatManager.h"
+#include "../../inventory/effect/PlayerVisualEffectManager.h"
 
 ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool doorBlownOpen) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
     _pos = pos;
@@ -53,7 +54,7 @@ void ShopExterior::update() {
             auto& entity = getWorld()->getPlayer();
             if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
                 getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48), _doorBlownOpen);
-                if (_doorBlownOpen) getWorld()->getPlayer()->takeDamage(5);
+                if (_doorBlownOpen && !PlayerVisualEffectManager::playerHasEffect("Heavy Duty Boots")) getWorld()->getPlayer()->takeDamage(5);
             }
             _colliders.at(2).height = 17;
         } else {
