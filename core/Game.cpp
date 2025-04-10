@@ -2133,6 +2133,15 @@ void Game::autoSave() {
 void Game::generateStatsString(std::string& statsString, bool overall, bool useUnderscores) {
     for (int i = 0; i < StatManager::NUM_STATS; i++) {
         if (!overall && ((STATISTIC)i == HIGHEST_WAVE_REACHED || (STATISTIC)i == ATM_AMOUNT)) continue;
+        bool statIsHidden = false;
+        for (STATISTIC stat : HIDDEN_STATS) {
+            if (stat == (STATISTIC)i) {
+                statIsHidden = true;
+                break;
+            }
+        }
+        if (statIsHidden) continue;
+
         const std::string statName = STAT_NAMES[(STATISTIC)i];
         float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
 

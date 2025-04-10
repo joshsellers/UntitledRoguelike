@@ -1,0 +1,8 @@
+name = "Heavy Duty Boots"
+description = "BOOTS FOR MEN\nPROTECT YOUR FEET FROM BROKEN GLASS\nREDUCE 5% OF INCOMING DAMAGE\n\nWarning: these boots fit very tightly, and you may not\nbe able to take them off.\nThey may also reduce your movement speed."
+isBuyable = true
+value = 200
+conditionalUnlock = true
+textureRect = 26, 16, 1, 1
+functionName = "wearheavydutyboots"
+isConsumable = true

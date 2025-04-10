@@ -5,7 +5,7 @@
 
 class StatManager {
 public:
-    inline const static unsigned int NUM_STATS = 17;
+    inline const static unsigned int NUM_STATS = 18;
 
     static float getOverallStat(STATISTIC stat);
     static float getStatThisSave(STATISTIC stat);

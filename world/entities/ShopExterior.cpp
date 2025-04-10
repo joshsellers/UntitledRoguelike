@@ -2,6 +2,7 @@
 #include "../World.h"
 #include "ShopInterior.h"
 #include "../../core/SoundManager.h"
+#include "../../statistics/StatManager.h"
 
 ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool doorBlownOpen) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
     _pos = pos;
@@ -94,6 +95,8 @@ void ShopExterior::blowOpenDoor() {
     _doorBlownOpen = true;
     getWorld()->shopDoorBlownUpAt(getPosition());
     SoundManager::playSound("glass");
+
+    StatManager::increaseStat(SHOPS_BLOWN_UP, 1);
 }
 
 void ShopExterior::damage(int damage) {

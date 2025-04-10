@@ -301,6 +301,12 @@ const Ability Ability::BOUNCING_PROJECTILES(17, "Bouncing Projectiles",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::PERMANENT_ARMOR(18, "Permanent Armor",
+    { {"protection", 0.0f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

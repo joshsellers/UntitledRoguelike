@@ -129,5 +129,9 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == ATM_AMOUNT && StatManager::getOverallStat(ATM_AMOUNT) == 999) {
         unlock(ECONOMICAL);
         ConditionalUnlockManager::increaseUnlockProgress("Debit Card", 1);
+    } else if (stat == SHOPS_BLOWN_UP && StatManager::getOverallStat(SHOPS_BLOWN_UP) == 10) {
+        unlock(BREAKING_AND_ENTERING);
+        ConditionalUnlockManager::increaseUnlockProgress("Ski Mask", 1);
+        ConditionalUnlockManager::increaseUnlockProgress("Heavy Duty Boots", 1);
     }
 }

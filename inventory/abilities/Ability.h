@@ -27,6 +27,7 @@ public:
     static const Ability DEBIT_CARD;
     static const Ability COUPON;
     static const Ability BOUNCING_PROJECTILES;
+    static const Ability PERMANENT_ARMOR;
 
     static std::vector<Ability*> ABILITIES;
 

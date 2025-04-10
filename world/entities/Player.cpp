@@ -803,6 +803,10 @@ float Player::getTotalArmorCoefficient() {
 
     total += getArmorCoefficient(helmetId) + getArmorCoefficient(chestplateId) + getArmorCoefficient(leggingsId) + getArmorCoefficient(bootsId);
 
+    if (AbilityManager::playerHasAbility(Ability::PERMANENT_ARMOR.getId())) {
+        total += AbilityManager::getParameter(Ability::PERMANENT_ARMOR.getId(), "protection") / 100.f;
+    }
+
     if (total >= 1.0f) {
         total = 1.0f;
         MessageManager::displayMessage("High total armor coefficient: \n"
