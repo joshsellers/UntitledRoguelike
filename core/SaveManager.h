@@ -201,6 +201,7 @@ private:
             for (auto& shop : _world->_shopsWithDoorBlownOpen) {
                 out << ":" << std::to_string(shop.x) << "," << std::to_string(shop.y);
             }
+            out << std::endl;
         }
     }
 
