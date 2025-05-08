@@ -16,8 +16,9 @@ Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const i
     _baseSpeed = baseSpeed;
 
     _wanderTargetPos = _pos;
-
-    _uid = generateUID();
+                                                          
+    if (saveId == PLAYER) _uid = "abadbabe-beef-beef-beef-abadbabed00d";
+    else _uid = generateUID();
 }
 
 void Entity::move(float xa, float ya) {
