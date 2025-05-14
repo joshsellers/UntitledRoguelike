@@ -8,7 +8,7 @@ class ShopKeep : public Entity {
 public:
     ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet);
 
-    void initInventory();
+    void initInventory(bool visited);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);

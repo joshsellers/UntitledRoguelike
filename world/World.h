@@ -131,6 +131,7 @@ private:
     std::vector<sf::Vector2f> _seenShops;
     bool shopHasBeenSeenAt(sf::Vector2f pos) const;
     void shopSeenAt(sf::Vector2f pos);
+    std::vector<bool> _visitedShops;
 
     std::vector<unsigned int> _deadShopKeeps;
 

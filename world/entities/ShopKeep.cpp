@@ -27,7 +27,7 @@ ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<s
     deactivate();
 }
 
-void ShopKeep::initInventory() {
+void ShopKeep::initInventory(bool visited) {
     while (getInventory().getCurrentSize() != 0) {
         getInventory().removeItemAt(0, getInventory().getItemAmountAt(0));
     }
@@ -60,6 +60,19 @@ void ShopKeep::initInventory() {
             && !stringStartsWith(item->getName(), "_")
             && item->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))
             && item->getId() != Item::PENNY.getId()) {
+
+            if (!visited) {
+                const EQUIPMENT_TYPE equipType = item->getEquipmentType();
+                bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+                bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
+
+                if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
+                else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
+                if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) continue;
+            }
 
             availableItems.push_back(item->getId());
         }
@@ -94,6 +107,36 @@ void ShopKeep::initInventory() {
         else if (availableItems.size() == 0) break;
     }
 
+    if (visited) {
+        unsigned int currentInvSize = getInventory().getCurrentSize();
+        for (int i = 0; i < currentInvSize; i++) {
+            const auto& item = Item::ITEMS[getInventory().getItemIdAt(i)];
+
+            const EQUIPMENT_TYPE equipType = item->getEquipmentType();
+            bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
+                || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
+                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+            bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
+
+            bool remove = false;
+            if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) remove = true;
+            else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) remove = true;
+            if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) remove = true;
+
+            if (remove) {
+                const unsigned int itemIndex = getInventory().findItem(item->getId());
+                if (itemIndex == NO_ITEM) {
+                    MessageManager::displayMessage("findItem returned NO_ITEM for item ID " + std::to_string(item->getId()), 5, WARN);
+                    continue;
+                }
+                getInventory().removeItemAt(itemIndex, getInventory().getItemAmountAt(itemIndex));
+                currentInvSize = getInventory().getCurrentSize();
+                i--;
+            }
+        }
+    }
+
     // ledger
     for (unsigned int i = 0; i < _shopManager->getShopLedger()[seed].size(); i++) {
         auto& ledger = _shopManager->getShopLedger()[seed][i];
@@ -106,34 +149,6 @@ void ShopKeep::initInventory() {
         }
     }
     //
-
-    unsigned int currentInvSize = getInventory().getCurrentSize();
-    for (int i = 0; i < currentInvSize; i++) {
-        const auto& item = Item::ITEMS[getInventory().getItemIdAt(i)];
-
-        const EQUIPMENT_TYPE equipType = item->getEquipmentType();
-        bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
-            || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
-            || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-            || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
-        bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
-        
-        bool remove = false;
-        if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) remove = true;
-        else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) remove = true;
-        if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) remove = true;
-
-        if (remove) {
-            const unsigned int itemIndex = getInventory().findItem(item->getId());
-            if (itemIndex == NO_ITEM) {
-                MessageManager::displayMessage("findItem returned NO_ITEM for item ID " + std::to_string(item->getId()), 5, WARN);
-                continue;
-            }
-            getInventory().removeItemAt(itemIndex, getInventory().getItemAmountAt(itemIndex));
-            currentInvSize = getInventory().getCurrentSize();
-            i--;
-        }
-    }
 
     // discount
     float discountChance = 0.25f;

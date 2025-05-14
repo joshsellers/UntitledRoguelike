@@ -178,6 +178,14 @@ private:
             out << std::endl;
         }
 
+        if (_world->_visitedShops.size() != 0) {
+            out << "VISITEDSHOPS";
+            for (auto& shop : _world->_visitedShops) {
+                out << ":" << (shop ? "1" : "0");
+            }
+            out << std::endl;
+        }
+
         if (_world->_activatedAltars.size() != 0) {
             out << "ALTARS";
             for (auto& altar : _world->_activatedAltars) {
@@ -469,6 +477,18 @@ private:
                 std::vector<std::string> parsedData = splitString(shopPosData, ",");
                 sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->shopSeenAt(shopPos);
+            }
+        } else if (header == "VISITEDSHOPS") {
+            for (int i = 0; i < data.size(); i++) {
+                if (i >= _world->_visitedShops.size()) {
+                    MessageManager::displayMessage(
+                        "Visited shop data discrepency\nWorld visited shops: " + std::to_string(_world->_visitedShops.size()) + "\nSave data visited shops: " + std::to_string(data.size()), 
+                        5, WARN
+                    );
+                    break;
+                }
+
+                _world->_visitedShops.at(i) = data.at(i) == "1";
             }
         } else if (header == "ALTARS") {
             for (auto& altarPosData : data) {
