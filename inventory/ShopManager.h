@@ -21,6 +21,9 @@ public:
     void setDiscount(unsigned int shopSeed, unsigned int itemId, float percentOff);
     std::pair<unsigned int, float> getDiscount() const;
 
+    void addItemToInitialInventory(unsigned int shopSeed, unsigned int itemId, unsigned int amount);
+    std::vector<std::pair<unsigned int, unsigned int>> getInitialInventory(unsigned int shopSeed);
+
     friend class SaveManager;
 private:
     std::shared_ptr<UIShopInterface> _buyInterface;
@@ -33,6 +36,9 @@ private:
     std::map<unsigned int, std::pair<unsigned int, float>> _discountHistory;
 
     std::pair<unsigned int, float> _discount;
+
+    // seed: itemId, amount
+    std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> _initialShopInventories;
 };
 
 #endif

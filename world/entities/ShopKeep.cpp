@@ -42,26 +42,42 @@ void ShopKeep::initInventory(bool visited) {
     int pennyCount = randomInt(100, 500);
     getInventory().addItem(Item::PENNY.getId(), pennyCount);
 
-   
-    int additionalCapacity = 0;
-    if (AbilityManager::playerHasAbility(Ability::ORDER_FORM.getId())) {
-        additionalCapacity = (int)AbilityManager::getParameter(Ability::ORDER_FORM.getId(), "capacity");
-    }
-
-    const int itemCount = 10 + additionalCapacity;
-    constexpr int maxAttempts = 100;
-    int attempts = 0;
-
-    std::vector<unsigned int> availableItems;
+    // apparel
+    std::vector<std::vector<int>> clothingOptions = {
+        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED},
+        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED}
+    };
 
     for (const auto& item : Item::ITEMS) {
-        if (item->isBuyable()
-            && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO
-            && !stringStartsWith(item->getName(), "_")
-            && item->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))
-            && item->getId() != Item::PENNY.getId()) {
+        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()) {
+            clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
+        }
+    }
 
-            if (!visited) {
+    for (int i = 0; i < clothingOptions.size(); i++) {
+        _equippedApparel[i] = clothingOptions.at(i).at((size_t)randomInt(0, clothingOptions.at(i).size() - 1));
+    }
+
+   
+    if (!visited) {
+        int additionalCapacity = 0;
+        if (AbilityManager::playerHasAbility(Ability::ORDER_FORM.getId())) {
+            additionalCapacity = (int)AbilityManager::getParameter(Ability::ORDER_FORM.getId(), "capacity");
+        }
+
+        const int itemCount = 10 + additionalCapacity;
+        constexpr int maxAttempts = 100;
+        int attempts = 0;
+
+        std::vector<unsigned int> availableItems;
+
+        for (const auto& item : Item::ITEMS) {
+            if (item->isBuyable()
+                && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO
+                && !stringStartsWith(item->getName(), "_")
+                && item->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))
+                && item->getId() != Item::PENNY.getId()) {
+
                 const EQUIPMENT_TYPE equipType = item->getEquipmentType();
                 bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
                     || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
@@ -72,42 +88,47 @@ void ShopKeep::initInventory(bool visited) {
                 if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
                 else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
                 if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) continue;
-            }
 
-            availableItems.push_back(item->getId());
-        }
-    }
-
-    while (getInventory().getCurrentSize() != itemCount + 1) {
-        int currentInvSize = getInventory().getCurrentSize();
-
-        for (int i = 0; i < (itemCount + 1) - currentInvSize; i++) {
-            unsigned int itemPos = randomInt(0, availableItems.size() - 1);
-            const auto& item = Item::ITEMS[availableItems.at(itemPos)];
-
-            float spawnChance = item->getShopChance() / 100.f;
-            const EQUIPMENT_TYPE equipType = item->getEquipmentType();
-            if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
-                || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
-                || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-                || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance -= 0.67f;
-
-            if (randomChance(spawnChance)) {
-                unsigned int itemAmount = 1;
-                if (item->isStackable()) itemAmount = randomInt(1, item->getStackLimit());
-
-                getInventory().addItem(item->getId(), itemAmount);
-                availableItems.erase(availableItems.begin() + itemPos);
-                if (availableItems.size() == 0) break;
+                availableItems.push_back(item->getId());
             }
         }
 
-        attempts++;
-        if (attempts >= maxAttempts && getInventory().getCurrentSize() > 1) break;
-        else if (availableItems.size() == 0) break;
-    }
+        while (getInventory().getCurrentSize() != itemCount + 1) {
+            int currentInvSize = getInventory().getCurrentSize();
 
-    if (visited) {
+            for (int i = 0; i < (itemCount + 1) - currentInvSize; i++) {
+                unsigned int itemPos = randomInt(0, availableItems.size() - 1);
+                const auto& item = Item::ITEMS[availableItems.at(itemPos)];
+
+                float spawnChance = item->getShopChance() / 100.f;
+                const EQUIPMENT_TYPE equipType = item->getEquipmentType();
+                if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance -= 0.67f;
+
+                if (randomChance(spawnChance)) {
+                    unsigned int itemAmount = 1;
+                    if (item->isStackable()) itemAmount = randomInt(1, item->getStackLimit());
+
+                    getInventory().addItem(item->getId(), itemAmount);
+                    _shopManager->addItemToInitialInventory(seed, item->getId(), itemAmount);
+                    availableItems.erase(availableItems.begin() + itemPos);
+                    if (availableItems.size() == 0) break;
+                }
+            }
+
+            attempts++;
+            if (attempts >= maxAttempts && getInventory().getCurrentSize() > 1) break;
+            else if (availableItems.size() == 0) break;
+        }
+    } else {
+        const std::vector<std::pair<unsigned int, unsigned int>>& initialInventory = _shopManager->getInitialInventory(seed);
+
+        for (const auto& item : initialInventory) {
+            getInventory().addItem(item.first, item.second);
+        }
+
         unsigned int currentInvSize = getInventory().getCurrentSize();
         for (int i = 0; i < currentInvSize; i++) {
             const auto& item = Item::ITEMS[getInventory().getItemIdAt(i)];
@@ -171,22 +192,6 @@ void ShopKeep::initInventory(bool visited) {
     //
 
     if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
-
-    // apparel
-    std::vector<std::vector<int>> clothingOptions = {
-        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED},
-        {NOTHING_EQUIPPED}, {NOTHING_EQUIPPED}
-    };
-
-    for (const auto& item : Item::ITEMS) {
-        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()) {
-            clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
-        }
-    }
-
-    for (int i = 0; i < clothingOptions.size(); i++) {
-        _equippedApparel[i] = clothingOptions.at(i).at((size_t)randomInt(0, clothingOptions.at(i).size() - 1));
-    }
 }
 
 void ShopKeep::update() {
