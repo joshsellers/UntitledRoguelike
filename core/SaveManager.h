@@ -180,6 +180,14 @@ private:
             out << std::endl;
         }
 
+        if (_world->_visitedShops.size() != 0) {
+            out << "VISITEDSHOPS";
+            for (auto& shop : _world->_visitedShops) {
+                out << ":" << (shop ? "1" : "0");
+            }
+            out << std::endl;
+        }
+
         if (_world->_activatedAltars.size() != 0) {
             out << "ALTARS";
             for (auto& altar : _world->_activatedAltars) {
@@ -312,6 +320,18 @@ private:
             out << "DISCOUNTS";
             for (auto& discountEntry : discountHist) {
                 out << ":" << discountEntry.first << "," << discountEntry.second.first << "," << discountEntry.second.second;
+            }
+            out << std::endl;
+        }
+
+        if (_shopManager->_initialShopInventories.size() != 0) {
+            const auto& inventories = _shopManager->_initialShopInventories;
+            out << "SHOPINITS";
+            for (const auto& inventory : inventories) {
+                out << ":" << inventory.first;
+                for (const auto& item : inventory.second) {
+                    out << "." << std::to_string(item.first) << "," << std::to_string(item.second);
+                }
             }
             out << std::endl;
         }
@@ -590,6 +610,18 @@ private:
                 sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->shopSeenAt(shopPos);
             }
+        } else if (header == "VISITEDSHOPS") {
+            for (int i = 0; i < data.size(); i++) {
+                if (i >= _world->_visitedShops.size()) {
+                    MessageManager::displayMessage(
+                        "Visited shop data discrepency\nWorld visited shops: " + std::to_string(_world->_visitedShops.size()) + "\nSave data visited shops: " + std::to_string(data.size()), 
+                        5, WARN
+                    );
+                    break;
+                }
+
+                _world->_visitedShops.at(i) = data.at(i) == "1";
+            }
         } else if (header == "ALTARS") {
             for (auto& altarPosData : data) {
                 std::vector<std::string> parsedData = splitString(altarPosData, ",");
@@ -625,6 +657,18 @@ private:
                 const float discount = std::stof(parsedEntry[2]);
 
                 _shopManager->_discountHistory[shopSeed] = { itemId, discount };
+            }
+        } else if (header == "SHOPINITS") {
+            for (const auto& initEntryRaw : data) {
+                const std::vector<std::string> parsedEntry = splitString(initEntryRaw, ".");
+                const unsigned int seed = std::stoul(parsedEntry.at(0));
+                for (int i = 1; i < parsedEntry.size(); i++) {
+                    const std::vector<std::string> parsedItem = splitString(parsedEntry.at(i), ",");
+                    const unsigned int itemId = std::stoul(parsedItem.at(0));
+                    const unsigned int amount = std::stoul(parsedItem.at(1));
+
+                    _shopManager->addItemToInitialInventory(seed, itemId, amount);
+                }
             }
         } else if (header == "PLAYER") {
             auto& player = _world->getPlayer();

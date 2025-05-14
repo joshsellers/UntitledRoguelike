@@ -60,7 +60,7 @@ void BeeFamiliar::update() {
     const float dx = targetPos.x - cLoc.x;
     const float dy = targetPos.y - cLoc.y;
     const float angle = std::atan2(dy, dx);
-    constexpr float speed = 2.f;
+    constexpr float speed = 4.f;
     const float xa = speed * std::cos(angle);
     const float ya = speed * std::sin(angle);
 

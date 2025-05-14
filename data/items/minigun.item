@@ -16,3 +16,4 @@ isAnimated = true
 ticksPerFrame = 10
 frameCount = 2
 damage = -4
+rarityTier = 3

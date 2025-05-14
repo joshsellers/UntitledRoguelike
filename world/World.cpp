@@ -845,14 +845,16 @@ void World::generateChunkScatters(Chunk& chunk) {
                         _scatterBuffer.push_back(shop);
                         spawnedShopThisChunk = true;
 
-                        const bool alreadySeenShop = shopHasBeenSeenAt(sf::Vector2f(x, y));
-                        if (!alreadySeenShop && onEnemySpawnCooldown() && !bossIsActive()) {
+                        const bool shopSeen = shopHasBeenSeenAt(sf::Vector2f(x, y));
+                        if (!shopSeen && onEnemySpawnCooldown() && !bossIsActive()) {
                             MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                             shopSeenAt(sf::Vector2f(x, y)); 
                         }
                         
-                        if (!alreadySeenShop && getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+                        if (!shopSeen && getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
                             MiniMapGenerator::markPoi(sf::Vector2f(x, y));
+                            shopSeenAt(sf::Vector2f(x, y));
+                        } else if (!shopSeen) {
                             shopSeenAt(sf::Vector2f(x, y));
                         }
                     }
@@ -1433,6 +1435,7 @@ bool World::shopHasBeenSeenAt(sf::Vector2f pos) const {
 
 void World::shopSeenAt(sf::Vector2f pos) {
     _seenShops.push_back(pos);
+    _visitedShops.push_back(false);
 }
 
 bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
@@ -1480,6 +1483,22 @@ void World::resetChunks() {
 void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp) {
     _isPlayerInShop = true;
     if (buildingID == "shop") {
+        bool visitedShop = false;
+
+        int shopIndex = -1;
+        const sf::Vector2f offsetBuildingPos(buildingPos.x - 16, buildingPos.y + 48);
+        for (int i = 0; i < _seenShops.size(); i++) {
+            if (_seenShops.at(i) == offsetBuildingPos) {
+                shopIndex = i;
+                break;
+            }
+        }
+
+        if (shopIndex == -1) MessageManager::displayMessage("Player entered unseen shop", 5, WARN);
+        else if (shopIndex >= _visitedShops.size()) MessageManager::displayMessage("Shop seen but visited status not recorded", 5, WARN);
+        else if (_visitedShops.at(shopIndex)) visitedShop = true;
+        else if (!_visitedShops.at(shopIndex)) _visitedShops.at(shopIndex) = true;
+
         MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
 
         std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet(), doorBlownUp));
@@ -1491,7 +1510,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
         addEntity(shopCounter);
 
         _shopKeep->setPosition(sf::Vector2f(buildingPos.x + 32, buildingPos.y + 80 - 12));
-        _shopKeep->initInventory();
+        _shopKeep->initInventory(visitedShop);
         if (!isShopKeepDead(_shopKeep->getPosition().x + _shopKeep->getPosition().y * (_shopKeep->getPosition().x - _shopKeep->getPosition().y))) {
             _shopKeep->activate();
             addEntity(_shopKeep);

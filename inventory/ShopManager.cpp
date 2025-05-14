@@ -82,6 +82,7 @@ void ShopManager::reset() {
     _shopLedger.clear();
     _discountHistory.clear();
     _discount = { 0, 0.f };
+    _initialShopInventories.clear();
 }
 
 std::map<unsigned int, std::map<unsigned int, std::pair<unsigned int, int>>> ShopManager::getShopLedger() const {
@@ -118,4 +119,21 @@ void ShopManager::setDiscount(unsigned int shopSeed, unsigned int itemId, float 
 
 std::pair<unsigned int, float> ShopManager::getDiscount() const {
     return _discount;
+}
+
+void ShopManager::addItemToInitialInventory(unsigned int shopSeed, unsigned int itemId, unsigned int amount) {
+    if (_initialShopInventories.find(shopSeed) == _initialShopInventories.end()) {
+        _initialShopInventories[shopSeed].push_back({ itemId, amount });
+        return;
+    }
+    _initialShopInventories.at(shopSeed).push_back({ itemId, amount });
+}
+
+std::vector<std::pair<unsigned int, unsigned int>> ShopManager::getInitialInventory(unsigned int shopSeed) {
+    if (_initialShopInventories.find(shopSeed) == _initialShopInventories.end()) {
+        MessageManager::displayMessage("No initial inventory for shop " + std::to_string(shopSeed), 5, ERR);
+        return {};
+    }
+
+    return _initialShopInventories.at(shopSeed);
 }
