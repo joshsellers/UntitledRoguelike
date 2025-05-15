@@ -6,6 +6,7 @@
 class LocalAchievementManager {
 public:
     static void unlock(ACHIEVEMENT achievement);
+    static bool isUnlocked(ACHIEVEMENT achievement);
 
     static void loadLocalAchievements();
     static void saveLocalAchievements();
@@ -17,7 +18,6 @@ public:
 
     friend class AchievementManagerInstance;
 private:
-    static bool isUnlocked(ACHIEVEMENT achievement);
     static bool isReady();
 
     inline static bool _unlockedAchievements[NUM_ACHIEVEMENTS];

@@ -92,6 +92,12 @@ private:
 	std::shared_ptr<UIMenu> _miniMapMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _saveSelectionMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _saveStartMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _progressMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _achievementsMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _confirmationMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UILabel> _confirmationLabel;
+	std::string _confirmationCode = "NONE";
 
 	std::shared_ptr<UILabel> _selectSaveSlotLabel;
 	std::shared_ptr<UILabel> _selectedSlotLabel;
@@ -202,6 +208,8 @@ private:
 	bool _interactReleased = true;
 
 	void changeMagMeterColor();
+
+	void openConfirmationScreen(std::string msg, std::string confirmationCode);
 
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };

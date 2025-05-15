@@ -24,6 +24,7 @@
 #include "../ui/UIItemCatalogue.h"
 #include "../world/MiniMapGenerator.h"
 #include "../statistics/LocalAchievementManager.h"
+#include "../ui/UIAchievementDisplay.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -718,11 +719,11 @@ void Game::initUI() {
     loadGameButton->setSelectionId(1);
     _saveStartMenu->addElement(loadGameButton);
 
-    std::shared_ptr<UIButton> statsMenuButton_main = std::shared_ptr<UIButton>(new UIButton(
-        50, 60, 9, 3, "stats", _font, this, "stats_main", true
+    std::shared_ptr<UIButton> unlocksMenu = std::shared_ptr<UIButton>(new UIButton(
+        50, 60, 9, 3, "unlocks", _font, this, "progressmenu", true
     ));
-    statsMenuButton_main->setSelectionId(2);
-    _saveStartMenu->addElement(statsMenuButton_main);
+    unlocksMenu->setSelectionId(2);
+    _saveStartMenu->addElement(unlocksMenu);
 
     std::shared_ptr<UIButton> back_saveStart = std::shared_ptr<UIButton>(new UIButton(
         50, 70, 9, 3, "back", _font, this, "back_savestart", true
@@ -730,17 +731,94 @@ void Game::initUI() {
     back_saveStart->setSelectionId(3);
     _saveStartMenu->addElement(back_saveStart);
 
+    std::shared_ptr<UIButton> resetSlotButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 82, 9, 3, "reset slot", _font, this, "slotreset", true
+    ));
+    resetSlotButton->setSelectionId(4);
+    _saveStartMenu->addElement(resetSlotButton);
+
     _saveStartMenu->useGamepadConfiguration = true;
     _saveStartMenu->defineSelectionGrid(
-        {
+        {   
             {newGameButton->getSelectionId()},
             {loadGameButton->getSelectionId()},
-            {statsMenuButton_main->getSelectionId()},
-            {back_saveStart->getSelectionId()}
+            {unlocksMenu->getSelectionId()},
+            {back_saveStart->getSelectionId()},
+            {resetSlotButton->getSelectionId()}
         }
     );
 
     _ui->addMenu(_saveStartMenu);
+    //
+
+    // Progress menu
+    _progressMenu->addElement(logoImage);
+
+    std::shared_ptr<UIButton> unlockedItemsMenu = std::shared_ptr<UIButton>(new UIButton(
+        50, 48, 10.5, 3, "unlocked items", _font, this, "unlocks", true
+    ));
+    unlockedItemsMenu->setSelectionId(0);
+    _progressMenu->addElement(unlockedItemsMenu);
+
+    std::shared_ptr<UIButton> achievementsMenuButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 54, 10, 3, "achievements", _font, this, "achmenu", true
+    ));
+    achievementsMenuButton->setSelectionId(1);
+    _progressMenu->addElement(achievementsMenuButton);
+
+    std::shared_ptr<UIButton> statsMenuButton_main = std::shared_ptr<UIButton>(new UIButton(
+        50, 60, 9, 3, "stats", _font, this, "stats_main", true
+    ));
+    statsMenuButton_main->setSelectionId(2);
+    _progressMenu->addElement(statsMenuButton_main);
+
+    std::shared_ptr<UIButton> back_unlocks = std::shared_ptr<UIButton>(new UIButton(
+        50, 70, 9, 3, "back", _font, this, "back_progress", true
+    ));
+    back_unlocks->setSelectionId(3);
+    _progressMenu->addElement(back_unlocks);
+
+    _progressMenu->useGamepadConfiguration = true;
+    _progressMenu->defineSelectionGrid(
+        {
+            {unlockedItemsMenu->getSelectionId()},
+            {achievementsMenuButton->getSelectionId()},
+            {statsMenuButton_main->getSelectionId()},
+            {back_unlocks->getSelectionId()}
+        }
+    );
+
+    _ui->addMenu(_progressMenu);
+    //
+
+
+    // Confirmation screen
+    _confirmationLabel = std::shared_ptr<UILabel>(new UILabel(
+        "", 50, 30, 2.f, _font
+    ));
+    _confirmationMenu->addElement(_confirmationLabel);
+
+    auto yesButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 56, 6, 3, "yes", _font, this, "confirm_yes", true
+    ));
+    yesButton->setSelectionId(1);
+    _confirmationMenu->addElement(yesButton);
+
+    auto noButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 50, 6, 3, "no", _font, this, "confirm_no", true
+    ));
+    noButton->setSelectionId(0);
+    _confirmationMenu->addElement(noButton);
+
+    _confirmationMenu->useGamepadConfiguration = true;
+    _confirmationMenu->defineSelectionGrid(
+        {
+            {noButton->getSelectionId()},
+            {yesButton->getSelectionId()}
+        }
+    );
+
+    _ui->addMenu(_confirmationMenu);
     //
 
 
@@ -1021,16 +1099,16 @@ void Game::initUI() {
     back_stats_mainButton->setSelectionId(0);
     _statsMenu_mainMenu->addElement(back_stats_mainButton);
 
-    std::shared_ptr<UIButton> unlockedItemsButton = std::shared_ptr<UIButton>(new UIButton(
+    /*std::shared_ptr<UIButton> unlockedItemsButton = std::shared_ptr<UIButton>(new UIButton(
         15.f, 5.f, 12.f, 3.f, "item catalogue", _font, this, "unlocks"
     ));
     unlockedItemsButton->setSelectionId(1);
-    _statsMenu_mainMenu->addElement(unlockedItemsButton);
+    _statsMenu_mainMenu->addElement(unlockedItemsButton);*/
 
     _statsMenu_mainMenu->useGamepadConfiguration = true;
     _statsMenu_mainMenu->defineSelectionGrid(
         {
-            {back_stats_mainButton->getSelectionId(), unlockedItemsButton->getSelectionId()}
+            {back_stats_mainButton->getSelectionId()/*, unlockedItemsButton->getSelectionId()*/}
         }
     );
     _ui->addMenu(_statsMenu_mainMenu);
@@ -1038,6 +1116,9 @@ void Game::initUI() {
     
     // item catalogue
     _ui->addMenu(_unlocksMenu);
+
+    // achievements
+    _ui->addMenu(_achievementsMenu);
 
    
     // Death screen
@@ -1700,7 +1781,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _statsMenu_pauseMenu->hide();
         _pauseMenu->show();
     } else if (buttonCode == "stats_main") {
-        _saveStartMenu->hide();
+        _progressMenu->hide();
         _statsMenu_mainMenu->show();
 
         std::string overallStatsText = "Stats\n\n\n";
@@ -1708,7 +1789,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _overallStatsLabel_mainMenu->setText(overallStatsText);
     } else if (buttonCode == "back_stats_main") {
         _statsMenu_mainMenu->hide();
-        _saveStartMenu->show();
+        _progressMenu->show();
     } else if (stringStartsWith(buttonCode, "textfieldarmedbygamepad:")) {
         disableGamepadInput(_newGameMenu);
         _virtualKeyboardMenu_lower->show();
@@ -1773,7 +1854,7 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "musicslider") {
         SoundManager::setMusicVolume(_musicSlider->getValue());
     } else if (buttonCode == "unlocks") {
-        _statsMenu_mainMenu->hide();
+        _progressMenu->hide();
 
         std::vector<unsigned int> unlockableItems;
         std::vector<unsigned int> unlockedItems;
@@ -1814,7 +1895,7 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "back_unlocks") {
         _unlocksMenu->hide();
         _unlocksMenu->clearElements();
-        _statsMenu_mainMenu->show();
+        _progressMenu->show();
     } else if (buttonCode == "selectsave") {
         _startMenu->hide();
         _saveSelectionMenu->show();
@@ -1858,6 +1939,63 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "start") {
         _startMenu->hide();
         _saveSelectionMenu->show();
+    } else if (buttonCode == "progressmenu") {
+        _saveStartMenu->hide();
+        _progressMenu->show();
+    } else if (buttonCode == "back_progress") {
+        _progressMenu->hide();
+        _saveStartMenu->show();
+    } else if (buttonCode == "achmenu") {
+        _progressMenu->hide();
+
+        std::shared_ptr<UIButton> backButton = std::shared_ptr<UIButton>(new UIButton(
+            5.f, 5.f, 5.f, 3.f, "back", _font, this, "back_achmenu"
+        ));
+        backButton->setSelectionId(0);
+        _achievementsMenu->addElement(backButton);
+
+        int unlockedCount = 0;
+        for (int i = 0; i < NUM_ACHIEVEMENTS; i++) {
+            if (LocalAchievementManager::isUnlocked((ACHIEVEMENT)i)) unlockedCount++;
+        }
+
+        std::shared_ptr<UIAchievementDisplay> catalogue = std::shared_ptr<UIAchievementDisplay>(new UIAchievementDisplay(
+            39.f, 11.f, unlockedCount, NUM_ACHIEVEMENTS, _font
+        ));
+        _achievementsMenu->addElement(catalogue);
+
+        _achievementsMenu->useGamepadConfiguration = true;
+        _achievementsMenu->defineSelectionGrid(
+            {
+                { backButton->getSelectionId() }
+            }
+        );
+        _achievementsMenu->show();
+    } else if (buttonCode == "back_achmenu") {
+        _achievementsMenu->hide();
+        _achievementsMenu->clearElements();
+        _progressMenu->show();
+    } else if (buttonCode == "slotreset") {
+        _saveStartMenu->hide();
+        openConfirmationScreen("Are you sure you want to reset this save slot?", "slotreset");
+    } else if (stringStartsWith(buttonCode, "confirm_")) {
+        const bool confirmed = splitString(buttonCode, "_")[1] == "yes";
+
+        if (_confirmationCode == "slotreset") {
+            if (confirmed) {
+                StatManager::resetOverallStats();
+                StatManager::saveOverallStats();
+                SaveManager::deleteSaveFile();
+                ConditionalUnlockManager::hardResetUnlocks();
+                LocalAchievementManager::hardReset();
+
+                _saveStartMenu->show();
+            } else {
+                _saveStartMenu->show();
+            }
+        }
+
+        _confirmationMenu->hide();
     }
 }
 
@@ -2096,6 +2234,12 @@ void Game::changeMagMeterColor() {
     } else if (_gameStarted && !_isPaused) {
         _magazineMeter->setColor(0x787878FF);
     }
+}
+
+void Game::openConfirmationScreen(std::string msg, std::string confirmationCode) {
+    _confirmationLabel->setText(msg, true);
+    _confirmationCode = confirmationCode;
+    _confirmationMenu->show();
 }
 
 void Game::onPlayerDeath() {

@@ -41,6 +41,17 @@ void UIMenu::clearElements() {
     _elements.clear();
 }
 
+void UIMenu::removeElementBySelectionId(int selectionId) {
+    if (!useGamepadConfiguration) return;
+
+    _elements.erase(
+        std::remove_if(_elements.begin(), _elements.end(), 
+            [selectionId](std::shared_ptr<UIElement> element) {
+                return element->getSelectionId() == selectionId; 
+            }), _elements.end()
+    );
+}
+
 void UIMenu::controllerButtonReleased(GAMEPAD_BUTTON button) {
     for (auto& element : _elements) {
         if (element->isActive() && !element->blockControllerInput) element->controllerButtonReleased(button);
