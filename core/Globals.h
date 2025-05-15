@@ -42,6 +42,9 @@ extern bool DIAGONAL_MOVEMENT_ENABLED;
 
 extern bool UPCOMING_FEATURES_ENABLED;
 
+extern constexpr int SAVE_FILE_NOT_SELECTED = -1;
+extern int SELECTED_SAVE_FILE;
+
 extern bool DEBUG_MODE;
 
 #endif

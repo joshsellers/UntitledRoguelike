@@ -83,7 +83,7 @@ public:
 
         std::ifstream in(_saveDir + "/" + saveFileName);
         if (!in.good()) {
-            MessageManager::displayMessage("Could not find save file", 5, WARN);
+            MessageManager::displayMessage("Could not find save file: " + saveFileName, 5, WARN);
             loadedSuccessfully = false;
             in.close();
             return loadedSuccessfully;
@@ -384,7 +384,7 @@ private:
     static void saveStats(std::ofstream& out) {
         out << "STATS";
         for (int i = 0; i < StatManager::NUM_STATS; i++) {
-            out << ":" << std::to_string(StatManager::getStatThisSave((STATISTIC)i));
+            out << ":" << std::to_string(StatManager::getStatThisRun((STATISTIC)i));
         }
         out << std::endl;
 
@@ -566,7 +566,7 @@ private:
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {
             for (int i = 0; i < data.size(); i++) {
-                StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+                StatManager::setStatThisRun((STATISTIC)i, std::stof(data[i]));
             }
         } else if (header == "CAT") {
             for (int i = 0; i < data.size() && i < 3; i++) {

@@ -17,7 +17,7 @@ float UIElement::getRelativeHeight(float size) {
 }
 
 UIElement::UIElement(float x, float y, float width, float height,
-    bool drawSprite, bool drawText, sf::Font font) {
+    bool drawSprite, bool drawText, sf::Font font, bool centerOnCoords) {
     _x = x;
     _y = y;
     _drawSprite = drawSprite;
@@ -29,6 +29,10 @@ UIElement::UIElement(float x, float y, float width, float height,
 
     _width = WINDOW_WIDTH * (width / 100);
     _height = WINDOW_WIDTH * (height / 100);
+
+    if (centerOnCoords && drawSprite) {
+        _shape.setPosition(_shape.getPosition().x - _width / 2.f, _shape.getPosition().y - _height / 2.f);
+    }
 }
 
 void UIElement::render(sf::RenderTexture& surface, const sf::RenderStates& states) {

@@ -14,7 +14,7 @@ public:
     static float getRelativeHeight(float size);
 
     UIElement(float x, float y, float width, float height, bool drawSprite, bool drawText,
-        sf::Font font);
+        sf::Font font, bool centerOnCoords = false);
 
     virtual void update() = 0;
     virtual void draw(sf::RenderTexture& surface) = 0;

@@ -20,7 +20,7 @@ const sf::Uint32 BUTTON_COLOR_CLICK[] = {
 class UIButton : public UIElement {
 public:
     UIButton(float x, float y, float width, float height, sf::String labelText,
-        sf::Font font, UIButtonListener* listener, std::string code);
+        sf::Font font, UIButtonListener* listener, std::string code, bool centerOnCoords = false);
 
     virtual void update();
     void draw(sf::RenderTexture& surface);

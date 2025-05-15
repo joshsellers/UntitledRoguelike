@@ -90,6 +90,11 @@ private:
 	std::shared_ptr<UIMenu> _audioMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _unlocksMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _miniMapMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _saveSelectionMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _saveStartMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UILabel> _selectSaveSlotLabel;
+	std::shared_ptr<UILabel> _selectedSlotLabel;
 
 	std::shared_ptr<UISlider> _musicSlider;
 	std::shared_ptr<UISlider> _sfxSlider;
@@ -175,6 +180,7 @@ private:
 	void interruptPause();
 
 	void displayStartupMessages() const;
+	void migrateLegacyProgressData() const;
 
 	void runStartupCommands() const;
 

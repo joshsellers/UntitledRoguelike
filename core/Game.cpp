@@ -148,6 +148,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     loadTips();
 
     displayStartupMessages();
+    migrateLegacyProgressData();
 }
 
 void Game::initUI() {
@@ -176,7 +177,7 @@ void Game::initUI() {
 
 
     // Load game menu
-    _ui->addMenu(_loadGameMenu);
+    //_ui->addMenu(_loadGameMenu);
 
 
     // Mini map menu
@@ -504,7 +505,7 @@ void Game::initUI() {
     //_startMenu->addElement(titleLabel);
 
     std::shared_ptr<UILabel> logoImage = std::shared_ptr<UILabel>(new UILabel(
-        "IMAGE:res/logo.png", 25.0f, -18.f, 1.f, _font, 50.f, 50.f
+        "IMAGE:res/logo.png", 25.5f, -18.f, 1.f, _font, 50.f, 50.f
     ));
     _startMenu->addElement(logoImage);
 
@@ -513,50 +514,36 @@ void Game::initUI() {
     ));
     _startMenu->addElement(versionLabel);
 
-    std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 39, 9, 3, "new game", _font, this, "newgame"
+    std::shared_ptr<UIButton> startButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 48, 9, 3, "start", _font, this, "start", true
     ));
-    newGameButton->setSelectionId(0);
-    _startMenu->addElement(newGameButton);
-
-    std::shared_ptr<UIButton> loadGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 46, 9, 3, "load game", _font, this, "loadgame"
-    ));
-    loadGameButton->setSelectionId(1);
-    _startMenu->addElement(loadGameButton);
+    startButton->setSelectionId(0);
+    _startMenu->addElement(startButton);
 
     std::shared_ptr<UIButton> settingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
-        45, 53, 9, 3, "settings", _font, this, "settings_mainmenu"
+        50, 55, 9, 3, "settings", _font, this, "settings_mainmenu", true
     ));
-    settingsButton_mainMenu->setSelectionId(2);
+    settingsButton_mainMenu->setSelectionId(1);
     _startMenu->addElement(settingsButton_mainMenu);
 
     std::shared_ptr<UIButton> controlsButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 60, 9, 3, "controls", _font, this, "controls"
+        50, 62, 9, 3, "controls", _font, this, "controls", true
     ));
-    controlsButton->setSelectionId(3);
+    controlsButton->setSelectionId(2);
     _startMenu->addElement(controlsButton);
-
-    std::shared_ptr<UIButton> statsMenuButton_main = std::shared_ptr<UIButton>(new UIButton(
-        45, 67, 9, 3, "stats", _font, this, "stats_main"
-    ));
-    statsMenuButton_main->setSelectionId(4);
-    _startMenu->addElement(statsMenuButton_main);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 74, 9, 3, "exit game", _font, this, "exit"
+        50, 69, 9, 3, "exit game", _font, this, "exit", true
     ));
-    exitGameButton->setSelectionId(5);
+    exitGameButton->setSelectionId(3);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
     _startMenu->defineSelectionGrid(
         {
-            {newGameButton->getSelectionId()},
-            {loadGameButton->getSelectionId()},
+            {startButton->getSelectionId()},
             {settingsButton_mainMenu->getSelectionId()},
             {controlsButton->getSelectionId()},
-            {statsMenuButton_main->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
@@ -566,31 +553,31 @@ void Game::initUI() {
     
     // Settings menu (from start menu)
     std::shared_ptr<UIButton> backButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        45, 10, 9, 3, "back", _font, this, "back_startsettings"
+        50, 10, 9, 3, "back", _font, this, "back_startsettings", true
     ));
     backButton_startSettings->setSelectionId(0);
     _startMenu_settings->addElement(backButton_startSettings);
 
     std::shared_ptr<UIButton> togglefullscreenButton_fromstart = std::shared_ptr<UIButton>(new UIButton(
-        36, 17, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
+        50, 17, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen", true
     ));
     togglefullscreenButton_fromstart->setSelectionId(1);
     _startMenu_settings->addElement(togglefullscreenButton_fromstart);
 
     _vsyncToggleButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 24, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync"
+        50, 24, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync", true
     ));
     _vsyncToggleButton_mainMenu->setSelectionId(2);
     _startMenu_settings->addElement(_vsyncToggleButton_mainMenu);
 
     _completeTutorialButton_startSettings = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 31, 12, 3, (!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial", _font, this, "skiptutorial"
+        50, 31, 12, 3, (!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial", _font, this, "skiptutorial", true
     ));
     _completeTutorialButton_startSettings->setSelectionId(3);
     _startMenu_settings->addElement(_completeTutorialButton_startSettings);
 
     std::shared_ptr<UIButton> audioSettingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
-        43.5, 38, 12, 3, "audio settings", _font, this, "audiosettings_main"
+        50, 38, 12, 3, "audio settings", _font, this, "audiosettings_main", true
     ));
     audioSettingsButton_mainMenu->setSelectionId(4);
     _startMenu_settings->addElement(audioSettingsButton_mainMenu);
@@ -614,17 +601,17 @@ void Game::initUI() {
     ));
     _newGameMenu->addElement(_tipLabel);
 
-    _worldNameField = std::shared_ptr<UITextField>(new UITextField(
+    /*_worldNameField = std::shared_ptr<UITextField>(new UITextField(
         "world name:", 49.5, 37, _font
     ));
     _worldNameField->setDefaultText("New World");
     _worldNameField->setId("newworld");
     _worldNameField->setListener(this);
     _worldNameField->setSelectionId(0);
-    _newGameMenu->addElement(_worldNameField);
+    _newGameMenu->addElement(_worldNameField);*/
 
     _seedField = std::shared_ptr<UITextField>(new UITextField(
-        "seed:", 49.5, 48, _font
+        "seed:", 50, 48, _font, true
     ));
     _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
     _seedField->setId("seed");
@@ -633,19 +620,19 @@ void Game::initUI() {
     _newGameMenu->addElement(_seedField);
 
     std::shared_ptr<UIButton> startGameButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 55, 9, 3, "start", _font, this, "startnewgame"
+        50, 55, 9, 3, "start", _font, this, "startnewgame", true
     ));
     startGameButton->setSelectionId(2);
     _newGameMenu->addElement(startGameButton);
 
     std::shared_ptr<UIButton> newGameBackButton = std::shared_ptr<UIButton>(new UIButton(
-        45, 61, 9, 3, "back", _font, this, "back_newgame"
+        50, 61, 9, 3, "back", _font, this, "back_newgame", true
     ));
     newGameBackButton->setSelectionId(3);
     _newGameMenu->addElement(newGameBackButton);
 
     _hardModeToggleButton = std::shared_ptr<UIButton>(new UIButton(
-        44, 72, 11, 3, "hard mode: off", _font, this, "hardmode"
+        50, 72, 11, 3, "hard mode: off", _font, this, "hardmode", true
     ));
     _hardModeToggleButton->setSelectionId(4);
     if (Tutorial::isCompleted()) _newGameMenu->addElement(_hardModeToggleButton);
@@ -653,7 +640,6 @@ void Game::initUI() {
     _newGameMenu->useGamepadConfiguration = true;
     _newGameMenu->defineSelectionGrid(
         {
-            {_worldNameField->getSelectionId()},
             {_seedField->getSelectionId()},
             {startGameButton->getSelectionId()},
             {newGameBackButton->getSelectionId()},
@@ -661,6 +647,94 @@ void Game::initUI() {
         }
     );
     _ui->addMenu(_newGameMenu);
+
+
+    // Save selection menu
+    _selectSaveSlotLabel = std::shared_ptr<UILabel>(new UILabel(
+        "select a save slot", 50, 30, 2.f, _font
+    ));
+    _saveSelectionMenu->addElement(_selectSaveSlotLabel);
+
+    std::shared_ptr<UIButton> save0Button = std::shared_ptr<UIButton>(new UIButton(
+        50, 48, 9, 3, "slot 1", _font, this, "selectsave:0", true
+    ));
+    save0Button->setSelectionId(0);
+    _saveSelectionMenu->addElement(save0Button);
+
+    std::shared_ptr<UIButton> save1Button = std::shared_ptr<UIButton>(new UIButton(
+        50, 54, 9, 3, "slot 2", _font, this, "selectsave:1", true
+    ));
+    save1Button->setSelectionId(1);
+    _saveSelectionMenu->addElement(save1Button);
+
+    std::shared_ptr<UIButton> save2Button = std::shared_ptr<UIButton>(new UIButton(
+        50, 60, 9, 3, "slot 3", _font, this, "selectsave:2", true
+    ));
+    save2Button->setSelectionId(2);
+    _saveSelectionMenu->addElement(save2Button);
+
+    std::shared_ptr<UIButton> back_saveSelect = std::shared_ptr<UIButton>(new UIButton(
+        50, 70, 9, 3, "back", _font, this, "back_saveselect", true
+    ));
+    back_saveSelect->setSelectionId(4);
+    _saveSelectionMenu->addElement(back_saveSelect);
+
+    _saveSelectionMenu->useGamepadConfiguration = true;
+    _saveSelectionMenu->defineSelectionGrid(
+        {
+            {save0Button->getSelectionId()},
+            {save1Button->getSelectionId()},
+            {save2Button->getSelectionId()},
+            {back_saveSelect->getSelectionId()}
+        }
+    );
+
+    _ui->addMenu(_saveSelectionMenu);
+    //
+
+
+    // Save start menu
+    _selectedSlotLabel = std::shared_ptr<UILabel>(new UILabel(
+        "slot", 50, 30, 2.f, _font
+    ));
+    _saveStartMenu->addElement(_selectedSlotLabel);
+
+    std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 48, 9, 3, "new run", _font, this, "newgame", true
+    ));
+    newGameButton->setSelectionId(0);
+    _saveStartMenu->addElement(newGameButton);
+
+    std::shared_ptr<UIButton> loadGameButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 54, 9, 3, "continue run", _font, this, "loadgame", true
+    ));
+    loadGameButton->setSelectionId(1);
+    _saveStartMenu->addElement(loadGameButton);
+
+    std::shared_ptr<UIButton> statsMenuButton_main = std::shared_ptr<UIButton>(new UIButton(
+        50, 60, 9, 3, "stats", _font, this, "stats_main", true
+    ));
+    statsMenuButton_main->setSelectionId(2);
+    _saveStartMenu->addElement(statsMenuButton_main);
+
+    std::shared_ptr<UIButton> back_saveStart = std::shared_ptr<UIButton>(new UIButton(
+        50, 70, 9, 3, "back", _font, this, "back_savestart", true
+    ));
+    back_saveStart->setSelectionId(3);
+    _saveStartMenu->addElement(back_saveStart);
+
+    _saveStartMenu->useGamepadConfiguration = true;
+    _saveStartMenu->defineSelectionGrid(
+        {
+            {newGameButton->getSelectionId()},
+            {loadGameButton->getSelectionId()},
+            {statsMenuButton_main->getSelectionId()},
+            {back_saveStart->getSelectionId()}
+        }
+    );
+
+    _ui->addMenu(_saveStartMenu);
+    //
 
 
     // Join game menu
@@ -1260,7 +1334,11 @@ void Game::drawUI(sf::RenderTexture& surface) {
 
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
-        StatManager::saveOverallStats();
+        if (_gameStarted) {
+            SaveManager::saveGame();
+            ConditionalUnlockManager::saveUnlockedItems();
+        }
+
         _window->close();
     } else if (buttonCode == "newgame") {
         if (!Tutorial::isCompleted() && _tips.size() > 0) {
@@ -1270,10 +1348,10 @@ void Game::buttonPressed(std::string buttonCode) {
         }
 
         enableGamepadInput(_newGameMenu);
+        _saveStartMenu->hide();
         _newGameMenu->show();
-        _startMenu->hide();
     } else if (buttonCode == "startnewgame") {
-        SaveManager::setCurrentSaveFileName(_worldNameField->getText() + ".save");
+        SaveManager::setCurrentSaveFileName(std::to_string(SELECTED_SAVE_FILE) + ".save");
 
         std::string seedText = _seedField->getText();
         unsigned int seed = 0;
@@ -1354,12 +1432,13 @@ void Game::buttonPressed(std::string buttonCode) {
         _lastAutosaveTime = currentTimeMillis();
     } else if (buttonCode == "back_newgame") {
         _newGameMenu->hide();
-        _startMenu->show();
+        _saveStartMenu->show();
 
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
         StatManager::saveOverallStats();
+        StatManager::resetOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
 
         _miniMapMenu->hide();
@@ -1392,7 +1471,8 @@ void Game::buttonPressed(std::string buttonCode) {
         ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
         PlayerVisualEffectManager::clearPlayerEffects();
-        StatManager::resetStatsForThisSave();
+        StatManager::resetStatsForThisRun();
+        ConditionalUnlockManager::softResetUnlocks();
         for (int i = 0; i < 3; i++) ConditionalUnlockManager::_catItems[i] = 0;
 
         PLAYER_SCORE = 1.f;
@@ -1435,10 +1515,12 @@ void Game::buttonPressed(std::string buttonCode) {
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();
 
-        _worldNameField->setDefaultText("New World");
+        //_worldNameField->setDefaultText("New World");
         _seedField->setDefaultText(std::to_string((unsigned int)currentTimeMillis()));
         _textSeed = "NONE";
         _startMenu->show();
+
+        SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
     } else if (buttonCode == "joingame") {
         _startMenu->hide();
         _joinGameMenu->show();
@@ -1470,7 +1552,7 @@ void Game::buttonPressed(std::string buttonCode) {
                 "Heads up:\nYou might not be in your boat when you load this save.\nI am not going to fix this bug.\nSorry\n\nIt'll still be in your inventory though so you can\njust get back in it."
                 , 10);
         } else MessageManager::displayMessage("You can't save the game while you're in the shop :(", 5);
-    } else if (buttonCode == "loadgame") {
+    } else if (buttonCode == "DEPRICATEDloadgame") {
         if (SaveManager::getAvailableSaveFiles().empty()) MessageManager::displayMessage("There are no saved games", 5);
         else {
             _startMenu->hide();
@@ -1540,8 +1622,9 @@ void Game::buttonPressed(std::string buttonCode) {
                 _firstTimeOpeningMap = false;
             }
 
-            _loadGameMenu->hide();
-            _loadGameMenu->clearElements();
+            //_loadGameMenu->hide();
+            //_loadGameMenu->clearElements();
+            _saveStartMenu->hide();
 
             //_HUDMenu->show();
             _magazineMeter->hide();
@@ -1596,7 +1679,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _pauseMenu->hide();
         _statsMenu_pauseMenu->show();
 
-        std::string currentStatsText = "Stats for this save\n\n\n";
+        std::string currentStatsText = "Stats for this run\n\n\n";
         generateStatsString(currentStatsText, false);
 
         std::string overallStatsText = "Overall stats\n\n\n";
@@ -1608,7 +1691,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _statsMenu_pauseMenu->hide();
         _pauseMenu->show();
     } else if (buttonCode == "stats_main") {
-        _startMenu->hide();
+        _saveStartMenu->hide();
         _statsMenu_mainMenu->show();
 
         std::string overallStatsText = "Stats\n\n\n";
@@ -1616,7 +1699,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _overallStatsLabel_mainMenu->setText(overallStatsText);
     } else if (buttonCode == "back_stats_main") {
         _statsMenu_mainMenu->hide();
-        _startMenu->show();
+        _saveStartMenu->show();
     } else if (stringStartsWith(buttonCode, "textfieldarmedbygamepad:")) {
         disableGamepadInput(_newGameMenu);
         _virtualKeyboardMenu_lower->show();
@@ -1626,9 +1709,9 @@ void Game::buttonPressed(std::string buttonCode) {
 
         auto enterCharacter = [&](char character) {
             std::shared_ptr<UITextField> field = nullptr;
-            if (_armedTextFieldId == _worldNameField->getId()) {
+            /*if (_armedTextFieldId == _worldNameField->getId()) {
                 field = _worldNameField;
-            } else if (_armedTextFieldId == _seedField->getId()) {
+            } else */if (_armedTextFieldId == _seedField->getId()) {
                 field = _seedField;
             }
 
@@ -1723,6 +1806,47 @@ void Game::buttonPressed(std::string buttonCode) {
         _unlocksMenu->hide();
         _unlocksMenu->clearElements();
         _statsMenu_mainMenu->show();
+    } else if (buttonCode == "selectsave") {
+        _startMenu->hide();
+        _saveSelectionMenu->show();
+    } else if (buttonCode == "back_saveselect") {
+        _saveSelectionMenu->hide();
+        _startMenu->show();
+    } else if (stringStartsWith(buttonCode, "selectsave:")) {
+        SELECTED_SAVE_FILE = std::stoi(splitString(buttonCode, ":")[1]);
+        _selectedSlotLabel->setText("slot " + std::to_string(SELECTED_SAVE_FILE + 1), true);
+        StatManager::loadOverallStats();
+        ConditionalUnlockManager::loadUnlockedItems();
+
+        _saveSelectionMenu->hide();
+        _saveStartMenu->show();
+    } else if (buttonCode == "back_savestart") {
+        StatManager::resetOverallStats();
+        ConditionalUnlockManager::softResetUnlocks();
+        SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
+
+        _saveStartMenu->hide();
+        _saveSelectionMenu->show();
+    } else if (buttonCode == "loadgame") {
+        const auto& availableSaves = SaveManager::getAvailableSaveFiles();
+        bool foundSelectedSave = false;
+        for (const auto& fileName : availableSaves) {
+            if (fileName == std::to_string(SELECTED_SAVE_FILE) + ".save") {
+                foundSelectedSave = true;
+                break;
+            }
+        }
+
+        if (!foundSelectedSave) {
+            MessageManager::displayMessage("You don't have a saved run for this save file.", 5);
+            return;
+        }
+
+        _saveStartMenu->hide();
+        buttonPressed("load:" + std::to_string(SELECTED_SAVE_FILE) + ".save");
+    } else if (buttonCode == "start") {
+        _startMenu->hide();
+        _saveSelectionMenu->show();
     }
 }
 
@@ -2101,7 +2225,98 @@ void Game::textEntered(sf::Uint32 character) {
 }
 
 void Game::displayStartupMessages() const {
+    
+}
 
+void Game::migrateLegacyProgressData() const {
+    bool foundOldData = false;
+
+    std::string path = getLocalLowPath() + "\\stats.config";
+    std::ifstream in0(path);
+
+    if (!in0.good()) {
+        MessageManager::displayMessage("Did not find legacy stats file", 5, DEBUG);
+        in0.close();
+    } else {
+        foundOldData = true;
+
+        std::string line;
+        int lineNumber = 0;
+        while (getline(in0, line)) {
+            try {
+                StatManager::setOverallStat((STATISTIC)lineNumber, std::stof(line));
+            } catch (std::exception ex) {
+                MessageManager::displayMessage("Error reading legacy stats.config: " + (std::string)ex.what(), 5, ERR);
+            }
+
+            lineNumber++;
+        }
+
+        in0.close();
+
+        SELECTED_SAVE_FILE = 0;
+        StatManager::saveOverallStats();
+        SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
+
+        try {
+            if (!std::filesystem::remove(path)) {
+                MessageManager::displayMessage("Could not remove legacy stats file", 5, DEBUG);
+            }
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not remove legacy stats file: " + (std::string)err.what(), 5, ERR);
+        }
+    }
+
+    path = getLocalLowPath() + "\\unlocks.config";
+    std::ifstream in1(path);
+
+    if (!in1.good()) {
+        MessageManager::displayMessage("Did not find legacy unlocks file", 5, DEBUG);
+        in1.close();
+    } else {
+        foundOldData = true;
+
+        std::string line;
+        while (getline(in1, line)) {
+            try {
+                const std::vector<std::string> parsedEntry = splitString(line, ",");
+                const std::string itemName = parsedEntry[0];
+                const float progress = std::stof(parsedEntry[1]);
+
+                if (ConditionalUnlockManager::_unlockProgress.find(itemName) == ConditionalUnlockManager::_unlockProgress.end()) {
+                    MessageManager::displayMessage("Unkown item name for unlock progress: \"" + itemName + "\"", 5, WARN);
+                    continue;
+                }
+
+                ConditionalUnlockManager::_unlockProgress.at(itemName).progress = progress;
+                if (progress >= ConditionalUnlockManager::_unlockProgress.at(itemName).valueToUnlock) ConditionalUnlockManager::_unlockedItems.push_back(itemName);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage("Error reading legacy unlock.config: " + std::string(ex.what()), 5, ERR);
+            }
+        }
+
+        in1.close();
+
+        SELECTED_SAVE_FILE = 0;
+        ConditionalUnlockManager::saveUnlockedItems();
+        SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
+
+        try {
+            if (!std::filesystem::remove(path)) {
+                MessageManager::displayMessage("Could not remove legacy unlocks file", 5, DEBUG);
+            }
+        } catch (const std::filesystem::filesystem_error& err) {
+            MessageManager::displayMessage("Could not remove legacy unlocks file: " + (std::string)err.what(), 5, ERR);
+        }
+    }
+
+    if (foundOldData) {
+        MessageManager::displayMessage(
+            std::string("It looks like your game has been updated\nfrom a pre-release version."
+                "\n\nYour saved unlocks and stats have been\ntransferred to save slot 1, but your old\nsave files will no longer work.")
+            , 15
+        );
+    }
 }
 
 void Game::runStartupCommands() const {
@@ -2144,7 +2359,7 @@ void Game::generateStatsString(std::string& statsString, bool overall, bool useU
         if (statIsHidden) continue;
 
         const std::string statName = STAT_NAMES[(STATISTIC)i];
-        float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisSave((STATISTIC)i);
+        float statValue = overall ? StatManager::getOverallStat((STATISTIC)i) : StatManager::getStatThisRun((STATISTIC)i);
 
         std::string unit = "";
         std::string distString = "";

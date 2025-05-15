@@ -157,7 +157,6 @@ int main() {
     SoundManager::loadSounds();
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
-    StatManager::loadOverallStats();
     MusicManager::start();
     MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
     ProjectilePoolManager::init();
@@ -170,7 +169,6 @@ int main() {
     AchievementManager::start();
 
     Item::initItems();
-    ConditionalUnlockManager::loadUnlockedItems();
 
     checkLocalLowExists();
 

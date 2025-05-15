@@ -4,9 +4,9 @@
 #include "UIHandler.h"
 
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
-    UIButtonListener* listener, std::string buttonCode)
+    UIButtonListener* listener, std::string buttonCode, bool centerOnCoords)
     : UIElement(
-        x, y, width, height, true, true, font
+        x, y, width, height, true, true, font, centerOnCoords
     ) {
 
     _rTexture.create(_width, 16 * 3);

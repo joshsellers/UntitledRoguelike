@@ -967,7 +967,7 @@ private:
             "resetunlocks",
             Command("Reset all conditional item unlocks",
             [this](std::vector<std::string>& parsedCommand)->std::string {
-                ConditionalUnlockManager::resetUnlocks();
+                ConditionalUnlockManager::hardResetUnlocks();
                 return "Reset item unlocks";
             })
         },

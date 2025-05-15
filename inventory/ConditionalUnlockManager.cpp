@@ -72,7 +72,17 @@ void ConditionalUnlockManager::increaseUnlockProgress(std::string itemName, floa
 }
 
 void ConditionalUnlockManager::loadUnlockedItems() {
-    std::string path = getLocalLowPath() + "\\unlocks.config";
+    if (SELECTED_SAVE_FILE == SAVE_FILE_NOT_SELECTED) {
+        MessageManager::displayMessage("Tried to load unlocks before save file was selected", 5, WARN);
+        return;
+    }
+
+    std::string path = getLocalLowPath() + "\\save" + std::to_string(SELECTED_SAVE_FILE);
+    if (!std::filesystem::is_directory(path + "\\")) {
+        std::filesystem::create_directory(path);
+    }
+
+    path += "\\unlocks.config";
     std::ifstream in(path);
 
     if (!in.good()) {
@@ -105,7 +115,17 @@ void ConditionalUnlockManager::loadUnlockedItems() {
 void ConditionalUnlockManager::saveUnlockedItems() {
     if (DISABLE_UNLOCKS) return;
 
-    std::string path = getLocalLowPath() + "\\unlocks.config";
+    if (SELECTED_SAVE_FILE == SAVE_FILE_NOT_SELECTED) {
+        MessageManager::displayMessage("Tried to save unlocks before save file was selected", 5, WARN);
+        return;
+    }
+
+    std::string path = getLocalLowPath() + "\\save" + std::to_string(SELECTED_SAVE_FILE);
+    if (!std::filesystem::is_directory(path + "\\")) {
+        std::filesystem::create_directory(path);
+    }
+
+    path += "\\unlocks.config";
 
     try {
         if (!std::filesystem::remove(path)) {
@@ -126,12 +146,20 @@ void ConditionalUnlockManager::saveUnlockedItems() {
     }
 }
 
-void ConditionalUnlockManager::resetUnlocks() {
+void ConditionalUnlockManager::hardResetUnlocks() {
     _unlockedItems.clear();
     for (auto& unlockProgress : _unlockProgress) {
         unlockProgress.second.progress = 0.f;
     }
     saveUnlockedItems();
+}
+
+void ConditionalUnlockManager::softResetUnlocks() {
+    saveUnlockedItems();
+    _unlockedItems.clear();
+    for (auto& unlockProgress : _unlockProgress) {
+        unlockProgress.second.progress = 0.f;
+    }
 }
 
 void ConditionalUnlockManager::catItemUsed(unsigned int itemId) {
