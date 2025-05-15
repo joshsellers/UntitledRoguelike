@@ -54,11 +54,14 @@ class AchievementManagerInstance {
 public:
     void start();
 
-    void unlock(ACHIEVEMENT achievement);
+    void unlock(ACHIEVEMENT achievement, bool callLocalManager = true);
 
     void resetAchievements();
 
     bool achievementsReady() const;
+
+    void migrateAchievements();
+
 private:
     bool isUnlocked(ACHIEVEMENT achievement);
 
@@ -69,6 +72,8 @@ private:
     bool _achievementsReady = false;
 
     inline static bool _achievementStats[NUM_ACHIEVEMENTS];
+
+    bool _needToMigrateAchivements = false;
 };
 
 class AchievementManager {
@@ -77,7 +82,7 @@ public:
         return _instance;
     }
 
-    inline static const std::vector<std::string> achievementNames = {
+    inline static const std::vector<std::string> achievementSteamIds = {
         "ACH_MILLIONAIRE",
         "ACH_CHEESEBOSS",
         "ACH_HARDMODE_CHEESEBOSS",
@@ -124,8 +129,8 @@ public:
         getInstance().start();
     }
 
-    static void unlock(ACHIEVEMENT achievement) {
-        getInstance().unlock(achievement);
+    static void unlock(ACHIEVEMENT achievement, bool callLocalManager = true) {
+        getInstance().unlock(achievement, callLocalManager);
     }
 
     static void resetAchievements() {

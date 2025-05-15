@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
+    <ClCompile Include="statistics\LocalAchievementManager.cpp" />
     <ClCompile Include="ui\UIItemCatalogue.cpp" />
     <ClCompile Include="ui\UIMiniMapInterface.cpp" />
     <ClCompile Include="world\entities\BabyBoss.cpp" />
@@ -206,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
+    <ClInclude Include="statistics\LocalAchievementManager.h" />
     <ClInclude Include="ui\UIItemCatalogue.h" />
     <ClInclude Include="ui\UIMiniMapInterface.h" />
     <ClInclude Include="world\entities\BabyBoss.h" />

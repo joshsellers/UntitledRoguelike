@@ -567,6 +567,9 @@
     <ClCompile Include="ui\UIMiniMapInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="statistics\LocalAchievementManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1035,6 +1038,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMiniMapInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="statistics\LocalAchievementManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,20 +3,23 @@
 #include "StatManager.h"
 #include "../core/Tutorial.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "LocalAchievementManager.h"
 
 void AchievementManagerInstance::start() {
     if (!STEAMAPI_INITIATED) return;
     SteamUserStats()->RequestCurrentStats();
 }
 
-void AchievementManagerInstance::unlock(ACHIEVEMENT achievement) {
+void AchievementManagerInstance::unlock(ACHIEVEMENT achievement, bool callLocalManager) {
+    if (callLocalManager) LocalAchievementManager::unlock(achievement);
+
     if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return;
     else if (isUnlocked(achievement)) {
         return;
     }
 
-    if (!SteamUserStats()->SetAchievement(AchievementManager::achievementNames.at(achievement).c_str())) {
-        MessageManager::displayMessage("Failed to set achievement: " + AchievementManager::achievementNames.at(achievement), 5, WARN);
+    if (!SteamUserStats()->SetAchievement(AchievementManager::achievementSteamIds.at(achievement).c_str())) {
+        MessageManager::displayMessage("Failed to set achievement: " + AchievementManager::achievementSteamIds.at(achievement), 5, WARN);
     } else if (!SteamUserStats()->StoreStats()) {
         MessageManager::displayMessage("Failed to store achievements", 5, WARN);
     } else {
@@ -39,6 +42,10 @@ bool AchievementManagerInstance::achievementsReady() const {
     return _achievementsReady;
 }
 
+void AchievementManagerInstance::migrateAchievements() {
+    _needToMigrateAchivements = true;
+}
+
 bool AchievementManagerInstance::isUnlocked(ACHIEVEMENT achievement) {
     if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) return false;
 
@@ -53,7 +60,7 @@ void AchievementManagerInstance::onUserStatsReceived(UserStatsReceived_t* pCallb
         for (int i = 0; i < NUM_ACHIEVEMENTS; i++) {
             bool temp = false;
             bool* achieved = &temp;
-            if (!SteamUserStats()->GetAchievement(AchievementManager::achievementNames.at(i).c_str(), achieved)) {
+            if (!SteamUserStats()->GetAchievement(AchievementManager::achievementSteamIds.at(i).c_str(), achieved)) {
                 MessageManager::displayMessage("Failed to get achievement status", 5, WARN);
             }
 
@@ -61,6 +68,22 @@ void AchievementManagerInstance::onUserStatsReceived(UserStatsReceived_t* pCallb
         }
 
         MessageManager::displayMessage("Achievements ready", 2, DEBUG);
+    } 
+    
+    if (_needToMigrateAchivements) {
+        if (!STEAMAPI_INITIATED || !_achievementsReady || DISABLE_ACHIEVEMENTS) {
+            MessageManager::displayMessage("Failed to migrate achivements", 5, WARN);
+            return;
+        }
+
+        for (int i = 0; i < NUM_ACHIEVEMENTS; i++) {
+            LocalAchievementManager::_unlockedAchievements[i] = _achievementStats[i];
+        }
+        SELECTED_SAVE_FILE = 0;
+        LocalAchievementManager::saveLocalAchievements();
+        SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
+
+        _needToMigrateAchivements = false;
     }
 }
 

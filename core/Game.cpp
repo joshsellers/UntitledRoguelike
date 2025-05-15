@@ -23,6 +23,7 @@
 #include "SoundManager.h"
 #include "../ui/UIItemCatalogue.h"
 #include "../world/MiniMapGenerator.h"
+#include "../statistics/LocalAchievementManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1343,6 +1344,7 @@ void Game::buttonPressed(std::string buttonCode) {
         if (_gameStarted) {
             SaveManager::saveGame();
             ConditionalUnlockManager::saveUnlockedItems();
+            LocalAchievementManager::saveLocalAchievements();
         }
 
         _window->close();
@@ -1446,6 +1448,7 @@ void Game::buttonPressed(std::string buttonCode) {
         StatManager::saveOverallStats();
         StatManager::resetOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+        LocalAchievementManager::softReset();
 
         _miniMapMenu->hide();
         MiniMapGenerator::reset();
@@ -1823,12 +1826,14 @@ void Game::buttonPressed(std::string buttonCode) {
         _selectedSlotLabel->setText("slot " + std::to_string(SELECTED_SAVE_FILE + 1), true);
         StatManager::loadOverallStats();
         ConditionalUnlockManager::loadUnlockedItems();
+        LocalAchievementManager::loadLocalAchievements();
 
         _saveSelectionMenu->hide();
         _saveStartMenu->show();
     } else if (buttonCode == "back_savestart") {
         StatManager::resetOverallStats();
         ConditionalUnlockManager::softResetUnlocks();
+        LocalAchievementManager::softReset();
         SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
 
         _saveStartMenu->hide();
@@ -2317,9 +2322,11 @@ void Game::migrateLegacyProgressData() const {
     }
 
     if (foundOldData) {
+        AchievementManager::getInstance().migrateAchievements();
+
         MessageManager::displayMessage(
-            std::string("It looks like your game has been updated\nfrom a pre-release version."
-                "\n\nYour saved unlocks and stats have been\ntransferred to save slot 1, but your old\nsave files will no longer work.")
+            std::string("It looks like your game has been updated\nfrom an early access version."
+                "\n\nYour saved unlocks, stats, and achievements have\nbeen transferred to save slot 1, but your old\nsave files will no longer work.")
             , 15
         );
     }
