@@ -596,8 +596,10 @@ void Game::initUI() {
 
 
     // New game menu
+    _newGameMenu->addElement(logoImage);
+
     _tipLabel = std::shared_ptr<UILabel>(new UILabel(
-        "", 50.f, 20.f, 2, _font
+        "", 50.f, 30.f, 2, _font
     ));
     _newGameMenu->addElement(_tipLabel);
 
@@ -650,6 +652,8 @@ void Game::initUI() {
 
 
     // Save selection menu
+    _saveSelectionMenu->addElement(logoImage);
+
     _selectSaveSlotLabel = std::shared_ptr<UILabel>(new UILabel(
         "select a save slot", 50, 30, 2.f, _font
     ));
@@ -694,6 +698,8 @@ void Game::initUI() {
 
 
     // Save start menu
+    _saveStartMenu->addElement(logoImage);
+
     _selectedSlotLabel = std::shared_ptr<UILabel>(new UILabel(
         "slot", 50, 30, 2.f, _font
     ));
