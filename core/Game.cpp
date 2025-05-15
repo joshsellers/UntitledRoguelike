@@ -753,6 +753,7 @@ void Game::initUI() {
 
     // Progress menu
     _progressMenu->addElement(logoImage);
+    _progressMenu->addElement(_selectedSlotLabel);
 
     std::shared_ptr<UIButton> unlockedItemsMenu = std::shared_ptr<UIButton>(new UIButton(
         50, 48, 10.5, 3, "unlocked items", _font, this, "unlocks", true
