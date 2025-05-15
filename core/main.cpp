@@ -205,6 +205,30 @@ int main() {
 
     srand(currentTimeMillis());
     
+    // Controller
+    bool controllerConnected = false;
+    int controllerId = -1;
+    for (int i = 0; i < 7; i++) {
+        if (sf::Joystick::isConnected(i)) {
+            controllerConnected = true;
+            controllerId = i;
+            break;
+        }
+    }
+    if (controllerId != -1) GamePad::setControllerId(controllerId);
+    MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
+    MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
+
+    bool mouseCooldownActive = false;
+    constexpr long long mouseCooldownLength = 5000LL;
+    const long long mouseCooldownStartTime = currentTimeMillis();
+    if (GamePad::isConnected()) {
+        mouseCooldownActive = true;
+        USING_MOUSE = false;
+        window.setMouseCursorVisible(false);
+    }
+    //
+
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     GamePad::addListener(game);
 
@@ -224,20 +248,6 @@ int main() {
 
     sf::Sprite uiSurfaceSprite;
     uiSurfaceSprite.setTexture(uiSurfaceTexture);
-
-    // Controller
-    bool controllerConnected = false;
-    int controllerId = -1;
-    for (int i = 0; i < 7; i++) {
-        if (sf::Joystick::isConnected(i)) {
-            controllerConnected = true;
-            controllerId = i;
-            break;
-        }
-    }
-    if (controllerId != - 1) GamePad::setControllerId(controllerId);
-    MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
-    MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
 
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
@@ -262,11 +272,15 @@ int main() {
                 );
                 break;
             case sf::Event::MouseMoved:
-                window.setMouseCursorVisible(true);
-                USING_MOUSE = true;
-                game->mouseMoved(
-                    event.mouseMove.x, event.mouseMove.y
-                );
+                if (!mouseCooldownActive) {
+                    window.setMouseCursorVisible(true);
+                    USING_MOUSE = true;
+                    game->mouseMoved(
+                        event.mouseMove.x, event.mouseMove.y
+                    );
+                } else if (currentTimeMillis() - mouseCooldownStartTime >= mouseCooldownLength) {
+                    mouseCooldownActive = false;
+                }
                 break;
             case sf::Event::MouseWheelScrolled:
                 game->mouseWheelScrolled(event.mouseWheelScroll);

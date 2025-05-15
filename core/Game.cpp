@@ -140,7 +140,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
     GamePad::addListener(_ui);
 
     SaveManager::init(&_world, &_shopManager);
-
+    
     initUI();
     runStartupCommands();
 
@@ -277,13 +277,13 @@ void Game::initUI() {
 
     // Audio menu
     std::shared_ptr<UIButton> backAudioSettingsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 5, 9, 3, "back", _font, this, "back_audio"
+        50, 10, 9, 3, "back", _font, this, "back_audio", true
     ));
     backAudioSettingsButton->setSelectionId(0);
     _audioMenu->addElement(backAudioSettingsButton);
 
     _sfxSlider = std::shared_ptr<UISlider>(new UISlider(
-        "sound effects:", 45, 11, 10, _font, "sfxslider"
+        "sound effects:", 45, 20, 10, _font, "sfxslider"
     ));
     _sfxSlider->setSelectionId(1);
     _sfxSlider->setListener(this);
@@ -291,7 +291,7 @@ void Game::initUI() {
     _audioMenu->addElement(_sfxSlider);
 
     _musicSlider = std::shared_ptr<UISlider>(new UISlider(
-        "music:", 45, 19, 10, _font, "musicslider"
+        "music:", 45, 28, 10, _font, "musicslider"
     ));
     _musicSlider->setSelectionId(2);
     _musicSlider->setListener(this);

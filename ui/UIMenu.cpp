@@ -11,6 +11,13 @@ void UIMenu::update() {
     if (_pendingActivation) {
         for (auto& element : _elements) {
             element->show();
+
+            if (!USING_MOUSE && useGamepadConfiguration) {
+                if (element->isActive()
+                    && element->_selectionId == _selectionGrid.at(_selectedItemY).at(_selectedItemX)) {
+                    element->_isSelected = true;
+                } else element->_isSelected = false;
+            }
         }
         _pendingActivation = false;
     }
@@ -134,6 +141,11 @@ void UIMenu::show() {
     //    element->show();
     //}
     _pendingActivation = true;
+
+    if (!USING_MOUSE && useGamepadConfiguration) {
+        if (_selectedItemX == -1) _selectedItemX = 0;
+        if (_selectedItemY == -1) _selectedItemY = 0;
+    }
 }
 
 void UIMenu::hide() {
