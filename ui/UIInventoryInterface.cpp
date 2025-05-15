@@ -560,6 +560,15 @@ void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent m
 
 void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
 
+void UIInventoryInterface::show() {
+    _isActive = true;
+
+    if (GamePad::isConnected() && _source.getCurrentSize() > 0) {
+        _gamepadSelectedItemIndex = 0;
+        _gamepadUnfilteredSelectedItemIndex = 0;
+    }
+}
+
 void UIInventoryInterface::hide() {
     _isActive = false;
     _gamepadSelectedItemIndex = -1;
