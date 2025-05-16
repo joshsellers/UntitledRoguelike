@@ -89,6 +89,10 @@ protected:
     void unfilterGamepadIndex();
 
     int _discountedItemId = -1;
+
+    bool _displayControls = false;
+
+    sf::RectangleShape _buttonSprite;
 };
 
 #endif

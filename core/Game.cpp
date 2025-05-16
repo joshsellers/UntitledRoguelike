@@ -154,6 +154,15 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 }
 
 void Game::initUI() {
+    // Ingame controls display
+    std::shared_ptr<UILabel> controlsDisplay = std::shared_ptr<UILabel>(new UILabel(
+        "IMAGE:res/ingamecontrols.png", 2.f, 70.f, 1.f, _font, 16.f, 16.f
+    ));
+    _controlsDisplayMenu->addElement(controlsDisplay);
+
+    _ui->addMenu(_controlsDisplayMenu);
+    //
+
     // Title screen background
     std::vector<std::string> bgPaths;
     if (std::filesystem::is_directory("res/waterbg")) {
@@ -1273,6 +1282,7 @@ void Game::update() {
             _gameLoading = false;
             _gameStarted = true;
             _HUDMenu->show();
+            if (GamePad::isConnected()) _controlsDisplayMenu->show();
             
             MUSIC_SITUTAION situation = MUSIC_SITUTAION::WAVE;
             if (_world.onEnemySpawnCooldown()) {
@@ -2110,6 +2120,9 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         }
     } else if (button == GAMEPAD_BUTTON::Y && _player->getInventory().hasItem(Item::getIdFromName("Map"))) {
         toggleMiniMapMenu();
+    } else if (_gameStarted && button == GAMEPAD_BUTTON::B) {
+        if (_controlsDisplayMenu->isActive()) _controlsDisplayMenu->hide();
+        else _controlsDisplayMenu->show();
     }
     
     if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) {
@@ -2176,10 +2189,7 @@ void Game::toggleShopMenu() {
                     _shopMenu->show();
 
                     std::string controlsMsg = "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25";
-                    if (GamePad::isConnected()) controlsMsg = "Press A to buy/sell 1 item\nPress Y to buy/sell a stack\nPress down on the right joystick to buy/sell 25";
-                    MessageManager::displayMessage(controlsMsg, 5);
-
-                    if (GamePad::isConnected()) MessageManager::displayMessage("Use the bumpers to switch between buying and selling", 8);
+                    if (!GamePad::isConnected()) MessageManager::displayMessage(controlsMsg, 5);
                     break;
                 }
             } else if (entity->isActive() && entity->getEntityType() == "shopatm") {

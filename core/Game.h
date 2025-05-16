@@ -94,6 +94,7 @@ private:
 	std::shared_ptr<UIMenu> _saveStartMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _progressMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _achievementsMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _controlsDisplayMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _confirmationMenu = std::shared_ptr<UIMenu>(new UIMenu());
 
 	std::shared_ptr<UILabel> _confirmationLabel;

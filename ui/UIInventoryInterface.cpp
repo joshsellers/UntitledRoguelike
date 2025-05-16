@@ -12,6 +12,7 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     _source(source), _spriteSheet(spriteSheet), UIElement(x, y, 3, 3, false, false, font), _originalY(_y) {
 
     _disableAutomaticTextAlignment = true;
+    _displayControls = true;
 
     float fontSize = 3.f;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -51,6 +52,9 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     ));
     _headerBg.setTexture(UIHandler::getUISpriteSheet().get());
     _headerBg.setTextureRect(sf::IntRect(0, 16, 80, 16));
+
+    _buttonSprite.setTexture(UIHandler::getUISpriteSheet().get());
+    _buttonSprite.setSize(sf::Vector2f(getRelativeHeight(4.f), getRelativeHeight(4.f)));
 }
 
 void UIInventoryInterface::update() {
@@ -272,6 +276,39 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             surface.draw(_tooltipText);
 
             drawAdditionalTooltip(surface, mousedOverItemIndex);
+            
+
+            if (_displayControls && GamePad::isConnected()) {
+                sf::Text controlLabel;
+                controlLabel.setFont(_font);
+                controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+
+                _buttonSprite.setTextureRect(sf::IntRect(0, 208, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setPosition(getRelativePos(26.5, 80)); 
+                std::string aString = "";
+                if (item->isConsumable()) aString = "use";
+                else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) aString = "equip";
+                
+                if (aString != "") surface.draw(_buttonSprite);
+                
+                controlLabel.setString(aString);
+                controlLabel.setPosition(getRelativePos(29.5, 80.5));
+                surface.draw(controlLabel);
+
+                _buttonSprite.setTextureRect(sf::IntRect(16, 208, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setPosition(getRelativePos(26.5, 84));
+                surface.draw(_buttonSprite);
+                controlLabel.setString("drop one");
+                controlLabel.setPosition(getRelativePos(29.5, 84.5));
+                surface.draw(controlLabel);
+
+                _buttonSprite.setTextureRect(sf::IntRect(0, 224, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setPosition(getRelativePos(26.5, 88));
+                surface.draw(_buttonSprite);
+                controlLabel.setString("drop all");
+                controlLabel.setPosition(getRelativePos(29.5, 89));
+                surface.draw(controlLabel);
+            }
         }
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error in UIInventoryInterface::draw: " + (std::string)ex.what(), 5, ERR);

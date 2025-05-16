@@ -1019,6 +1019,32 @@ private:
                 DISABLE_UNLOCKS = false;
                 return "Enabled progress persistence";
             })
+        },
+
+        {
+            "randitems",
+            Command("Give the play a bunch of random items",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    try {
+                        const int itemAmount = std::stoi(parsedCommand.at(1));
+                        for (int i = 0; i < itemAmount; i++) {
+                            const unsigned int itemId = randomInt(0, Item::ITEMS.size() - 1);
+                            if (stringStartsWith(Item::ITEMS.at(itemId)->getName(), "_")) {
+                                i--;
+                                continue;
+                            }
+                            _world->getPlayer()->getInventory().addItem(itemId, 1);
+                        }
+
+                        return "Gave player " + std::to_string(itemAmount) + " items";
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
         }
     };
 };
