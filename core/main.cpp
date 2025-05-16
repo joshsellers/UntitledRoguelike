@@ -137,7 +137,7 @@ void checkCrash() {
         if (crashData.autoSaveTimeString != "NONE" && crashData.saveFileName != "NONE") {
             MessageManager::displayMessage("It looks like pennylooter did not shut down\ncorrectly last time.", 15);
             MessageManager::displayMessage(
-                "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
+                "Your game was last autosaved on " + crashData.autoSaveTimeString, 15
             );
         } else {
             MessageManager::displayMessage(
