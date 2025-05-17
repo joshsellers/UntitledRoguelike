@@ -156,7 +156,7 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 void Game::initUI() {
     // Ingame controls display
     std::shared_ptr<UILabel> controlsDisplay = std::shared_ptr<UILabel>(new UILabel(
-        "IMAGE:res/ingamecontrols.png", 2.f, 70.f, 1.f, _font, 16.f, 16.f
+        "IMAGE:res/ingamecontrols.png", 2.f, 68.f, 1.f, _font, 18.f, 18.f
     ));
     _controlsDisplayMenu->addElement(controlsDisplay);
 
@@ -998,66 +998,65 @@ void Game::initUI() {
     _inputBindingsMenu->addElement(skipCooldownButtonKeyboard);
 
     // gamepad
-    std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
+    /*std::shared_ptr<UIGamepadBindingButton> sprintButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
         50.f, 12.f, 16.5f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::WALK
     ));
-    sprintButtonGamepad->setSelectionId(1);
-    _inputBindingsMenu->addElement(sprintButtonGamepad);
+    sprintButtonGamepad->setSelectionId(0);
+    _inputBindingsMenu->addElement(sprintButtonGamepad);*/
 
     std::shared_ptr<UIGamepadBindingButton> dodgeButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 18.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::DODGE
+        50.f, 12.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::DODGE
     ));
-    dodgeButtonGamepad->setSelectionId(2);
+    dodgeButtonGamepad->setSelectionId(1);
     _inputBindingsMenu->addElement(dodgeButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> reloadButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 24.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::RELOAD
+        50.f, 18.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::RELOAD
     ));
-    reloadButtonGamepad->setSelectionId(3);
+    reloadButtonGamepad->setSelectionId(2);
     _inputBindingsMenu->addElement(reloadButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> shootButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 30.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SHOOT
+        50.f, 24.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SHOOT
     ));
-    shootButtonGamepad->setSelectionId(4);
+    shootButtonGamepad->setSelectionId(3);
     _inputBindingsMenu->addElement(shootButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> interactButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 36.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::INTERACT
+        50.f, 30.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::INTERACT
     ));
-    interactButtonGamepad->setSelectionId(5);
+    interactButtonGamepad->setSelectionId(4);
     _inputBindingsMenu->addElement(interactButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> inventoryButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 42.f, 20.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY
+        50.f, 36.f, 20.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_INVENTORY
     ));
-    inventoryButtonGamepad->setSelectionId(6);
+    inventoryButtonGamepad->setSelectionId(5);
     _inputBindingsMenu->addElement(inventoryButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> pauseButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 48.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE
+        50.f, 42.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::TOGGLE_PAUSE
     ));
-    pauseButtonGamepad->setSelectionId(7);
+    pauseButtonGamepad->setSelectionId(6);
     _inputBindingsMenu->addElement(pauseButtonGamepad);
 
     std::shared_ptr<UIGamepadBindingButton> skipCooldownButtonGamepad = std::shared_ptr<UIGamepadBindingButton>(new UIGamepadBindingButton(
-        50.f, 54.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN
+        50.f, 48.f, 14.f, 3.f, _font, InputBindingManager::BINDABLE_ACTION::SKIP_COOLDOWN
     ));
-    skipCooldownButtonGamepad->setSelectionId(8);
+    skipCooldownButtonGamepad->setSelectionId(7);
     _inputBindingsMenu->addElement(skipCooldownButtonGamepad);
 
 
     std::shared_ptr<UIButton> resetBindingsButton = std::shared_ptr<UIButton>(new UIButton(
         38.f, 80.f, 14.f, 3.f, "reset to default", _font, this, "resetbindings"
     ));
-    resetBindingsButton->setSelectionId(9);
+    resetBindingsButton->setSelectionId(8);
     _inputBindingsMenu->addElement(resetBindingsButton);
 
     _inputBindingsMenu->useGamepadConfiguration = true;
     _inputBindingsMenu->defineSelectionGrid(
         {
             {backBindingsMenuButton->getSelectionId()},
-            {sprintButtonGamepad->getSelectionId()},
             {dodgeButtonGamepad->getSelectionId()},
             {reloadButtonGamepad->getSelectionId()},
             {shootButtonGamepad->getSelectionId()},
@@ -2120,7 +2119,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         }
     } else if (button == GAMEPAD_BUTTON::Y && _player->getInventory().hasItem(Item::getIdFromName("Map"))) {
         toggleMiniMapMenu();
-    } else if (_gameStarted && button == GAMEPAD_BUTTON::B) {
+    } else if (_gameStarted && button == GAMEPAD_BUTTON::RIGHT_BUMPER) {
         if (_controlsDisplayMenu->isActive()) _controlsDisplayMenu->hide();
         else _controlsDisplayMenu->show();
     }

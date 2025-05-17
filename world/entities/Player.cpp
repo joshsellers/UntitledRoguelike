@@ -131,8 +131,7 @@ void Player::update() {
     }
     const float velX = xa, velY = ya;
 
-    if ((sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::WALK))
-            || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::WALK)))
+    if ((sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::WALK)))
         && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isInBoat()) {
         xa *= _slowMoveMultiplier;
         ya *= _slowMoveMultiplier;
