@@ -2119,7 +2119,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
         }
     } else if (button == GAMEPAD_BUTTON::Y && _player->getInventory().hasItem(Item::getIdFromName("Map"))) {
         toggleMiniMapMenu();
-    } else if (_gameStarted && button == GAMEPAD_BUTTON::RIGHT_BUMPER) {
+    } else if (_gameStarted && button == GAMEPAD_BUTTON::RIGHT_BUMPER && !_shopMenu->isActive()) {
         if (_controlsDisplayMenu->isActive()) _controlsDisplayMenu->hide();
         else _controlsDisplayMenu->show();
     }
