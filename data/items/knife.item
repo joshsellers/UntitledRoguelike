@@ -7,6 +7,6 @@ magazineSize = 1
 reloadTime = 250
 conditionalUnlock = true
 isBuyable = true
-value = 120
+value = 5
 functionName = "throwknife"
 textureRect = 145, 0, 1, 1
