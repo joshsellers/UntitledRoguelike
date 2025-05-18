@@ -441,7 +441,7 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
     "Helps you get nice forearms",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(6, 0), true, 5, true,
     [](Entity* parent) {
-        fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW);
+        fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW, "basicprojlaunch");
         return false;
     }, 1, false, 0, 500
 );

@@ -287,7 +287,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
                 _buttonSprite.setPosition(getRelativePos(26.5, 80)); 
                 std::string aString = "";
                 if (item->isConsumable()) aString = "use";
-                else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE) aString = "equip";
+                else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE)  aString = _source.isEquipped(_gamepadUnfilteredSelectedItemIndex) ? "unequip" : "equip";
                 
                 if (aString != "") surface.draw(_buttonSprite);
                 

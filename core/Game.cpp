@@ -1546,6 +1546,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _firstTimeOpeningMap = true;
 
         _bossHUDMenu->hide();
+        _controlsDisplayMenu->hide();
 
         if (_inventoryMenu->isActive()) toggleInventoryMenu();
         if (_shopMenu->isActive()) toggleShopMenu();
@@ -2263,6 +2264,7 @@ void Game::onPlayerDeath() {
             SaveManager::deleteSaveFile();
             _bossHUDMenu->hide();
             _HUDMenu->hide();
+            _controlsDisplayMenu->hide();
             if (_inventoryMenu->isActive()) toggleInventoryMenu();
             if (_shopMenu->isActive()) toggleShopMenu();
             _gameStarted = false;
