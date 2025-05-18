@@ -46,14 +46,14 @@ void TreeBoss::draw(sf::RenderTexture& surface) {
         int xOffset = ((_numSteps >> 3) & 1) * TILE_SIZE;
 
         _wavesSprite.setTextureRect(sf::IntRect(0 + xOffset, 160, TILE_SIZE, TILE_SIZE));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - (float)TILE_SIZE * 3.f / 2.f + 16, getPosition().y + (TILE_SIZE * 5 - 8)));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - (float)TILE_SIZE * 3.f / 2.f + 16, getPosition().y + (TILE_SIZE * 6 - 8)));
         surface.draw(_wavesSprite);
     }
 
-    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 5 : 0;
+    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 6 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        1504, 640 + yOffset, TILE_SIZE * 3, isSwimming() ? TILE_SIZE * 3 : TILE_SIZE * 5
+        1504, 640 + yOffset, TILE_SIZE * 3, isSwimming() ? TILE_SIZE * 3 : TILE_SIZE * 6
     ));
 
     surface.draw(_sprite);
@@ -61,7 +61,7 @@ void TreeBoss::draw(sf::RenderTexture& surface) {
 
 void TreeBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(1504, 640, TILE_SIZE * 3, TILE_SIZE * 5));
+    _sprite.setTextureRect(sf::IntRect(1504, 640, TILE_SIZE * 3, TILE_SIZE * 6));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin((float)TILE_SIZE * 3 / 2, 0);
 
@@ -127,7 +127,7 @@ void TreeBoss::runCurrentState() {
                     angle += (float)i * 45.f;
                     if (angle >= 360.f) angle -= 360.f;
 
-                    fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_TREEBOSS_LOG"), "NONE", true, false, { TILE_SIZE / 2, 0 });
+                    fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_TREEBOSS_LOG"), "NONE", true, false, { TILE_SIZE / 2, 16 });
                     _lastFireTimeMillis = currentTimeMillis();
                 }
             }
