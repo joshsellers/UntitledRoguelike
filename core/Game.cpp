@@ -2132,6 +2132,12 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (_shopMenu->isActive()) _shopManager.controllerButtonReleased(button);
 }
 
+void Game::gamepadConnected() {
+    if (_gameStarted) {
+        _controlsDisplayMenu->show();
+    }
+}
+
 void Game::gamepadDisconnected() {
     interruptPause();
 }

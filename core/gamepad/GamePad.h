@@ -79,6 +79,7 @@ public:
                 break;
             case sf::Event::JoystickConnected:
                 MessageManager::displayMessage("Controller connected", 5);
+                for (auto& listener : _listeners) listener->gamepadConnected();
                 break;
             case sf::Event::JoystickDisconnected:
                 MessageManager::displayMessage("Controller disconnected", 5);

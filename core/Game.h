@@ -42,6 +42,7 @@ public:
 
 	void controllerButtonPressed(GAMEPAD_BUTTON button);
 	void controllerButtonReleased(GAMEPAD_BUTTON button);
+	void gamepadConnected();
 	void gamepadDisconnected();
 
 	void textEntered(sf::Uint32 character);

@@ -36,6 +36,9 @@ void UIHandler::controllerButtonPressed(GAMEPAD_BUTTON button) {
     }
 }
 
+void UIHandler::gamepadConnected() {
+}
+
 void UIHandler::gamepadDisconnected() {}
 
 void UIHandler::keyPressed(sf::Keyboard::Key& key) {
