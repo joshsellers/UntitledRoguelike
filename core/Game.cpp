@@ -2333,7 +2333,7 @@ void Game::onPlayerDeath() {
                 droppedSlimeBall->loadSprite(_world.getSpriteSheet());
                 _world.addEntity(droppedSlimeBall);
 
-                Tutorial::reset();
+                //Tutorial::reset();
             }
         }
     }
