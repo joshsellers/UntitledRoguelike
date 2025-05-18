@@ -30,7 +30,7 @@ BoulderBeast::BoulderBeast(sf::Vector2f pos) : Boss(BOULDER_BEAST, pos, 2.5, TIL
 }
 
 void BoulderBeast::draw(sf::RenderTexture& surface) {
-    int xOffset = getMovingDir() * TILE_SIZE * 3;
+    int xOffset = 0;
     int yOffset = ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 3;
 
     _sprite.setTextureRect(sf::IntRect(
