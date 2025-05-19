@@ -2273,6 +2273,7 @@ void Game::onPlayerDeath() {
             _controlsDisplayMenu->hide();
             if (_inventoryMenu->isActive()) toggleInventoryMenu();
             if (_shopMenu->isActive()) toggleShopMenu();
+            if (_miniMapMenu->isActive()) toggleMiniMapMenu();
             _gameStarted = false;
 
             _waveReachedLabel->setText("you made it to wave " + std::to_string(_world._currentWaveNumber));
@@ -2576,11 +2577,11 @@ void Game::toggleMiniMapMenu() {
                 _firstTimeOpeningMap = false;
             }
 
-            const std::string keyboardMsg = 
-                "Hold mousewheel button and drag to look around\nRight click to center on player\nLeft click to drop/remove a pin\nScroll mousewheel to zoom in/out";
-            const std::string gamepadMsg = 
-                "Use the right joystick to look around\nPress the right joystick to center on player\nPress the left joystick to drop/remove a pin\nPress up/down on the d-pad to zoom in/out";
-            MessageManager::displayMessage(GamePad::isConnected() ? gamepadMsg : keyboardMsg, 8);
+            if (!GamePad::isConnected()) {
+                const std::string keyboardMsg =
+                    "Hold mousewheel button and drag to look around\nRight click to center on player\nLeft click to drop/remove a pin\nScroll mousewheel to zoom in/out";
+                MessageManager::displayMessage(keyboardMsg, 8);
+            }
         }
     }
 }

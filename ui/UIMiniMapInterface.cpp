@@ -143,6 +143,61 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
         && _playerIcon.getPosition().y + _playerIcon.getSize().y / 2.f < _y + _dispSize * _dispScale) {
         surface.draw(_playerIcon);
     }
+
+    if (GamePad::isConnected()) {
+        drawControls(surface);
+    }
+}
+
+void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
+    sf::RectangleShape button;
+    button.setTexture(UIHandler::getUISpriteSheet().get());
+    button.setSize(sf::Vector2f(getRelativeHeight(4.f), getRelativeHeight(4.f)));
+    sf::Text controlLabel; 
+    controlLabel.setFont(_font);
+    controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+    const float x = 43.f;
+    const float xTextPadding = 3.5f;
+    const float y = 70.f;
+    const float ySpacing = 4.f;
+
+    button.setTextureRect(sf::IntRect(0, 192, TILE_SIZE, TILE_SIZE));
+    button.setPosition(getRelativePos(x, y + ySpacing * 0));
+    surface.draw(button);
+
+    controlLabel.setString("look around");
+    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
+    surface.draw(controlLabel);
+
+    button.setTextureRect(sf::IntRect(0, 224, TILE_SIZE, TILE_SIZE));
+    button.setPosition(getRelativePos(x, y + ySpacing * 1));
+    surface.draw(button);
+
+    controlLabel.setString("center map on your location");
+    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
+    surface.draw(controlLabel);
+
+    button.setTextureRect(sf::IntRect(16, 224, TILE_SIZE, TILE_SIZE));
+    button.setPosition(getRelativePos(x, y + ySpacing * 2));
+    surface.draw(button);
+
+    controlLabel.setString("drop/remove pin");
+    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
+    surface.draw(controlLabel);
+
+    button.setTextureRect(sf::IntRect(32, 192, TILE_SIZE, TILE_SIZE));
+    button.setPosition(getRelativePos(x, y + ySpacing * 3));
+    surface.draw(button);
+    controlLabel.setString("zoom in");
+    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
+    surface.draw(controlLabel);
+
+    button.setTextureRect(sf::IntRect(48, 192, TILE_SIZE, TILE_SIZE));
+    button.setPosition(getRelativePos(x, y + ySpacing * 4));
+    surface.draw(button);
+    controlLabel.setString("zoom out");
+    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 4 + 1.f));
+    surface.draw(controlLabel);
 }
 
 void UIMiniMapInterface::controllerButtonPressed(GAMEPAD_BUTTON button) {

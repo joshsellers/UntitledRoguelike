@@ -10,6 +10,7 @@ public:
 
     void update();
     void draw(sf::RenderTexture& surface);
+    void drawControls(sf::RenderTexture& surface);
 
     void controllerButtonPressed(GAMEPAD_BUTTON button);
     virtual void controllerButtonReleased(GAMEPAD_BUTTON button);
