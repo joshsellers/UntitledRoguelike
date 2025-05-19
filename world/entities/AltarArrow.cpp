@@ -68,7 +68,7 @@ void AltarArrow::checkIfAltarDespawned() {
     if (_world != nullptr) {
         bool foundAltar = false;
         for (const auto& prop : _world->getEntities()) {
-            if (prop->isProp() && prop->getEntityType() == "altar") {
+            if (prop->getEntityType() == "altar") {
                 foundAltar = true;
                 break;
             }

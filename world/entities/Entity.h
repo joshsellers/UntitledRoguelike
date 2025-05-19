@@ -168,7 +168,7 @@ protected:
     sf::Vector2f _wanderTargetPos;
 
     bool _isMob = false;
-    const bool _isProp = false;
+    bool _isProp = false;
     bool _isEnemy = false;
     bool _isBoss = false;
     bool _isMiniboss = false;

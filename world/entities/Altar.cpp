@@ -3,8 +3,8 @@
 #include "../../core/SoundManager.h"
 #include "../../core/MessageManager.h"
 
-Altar::Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet) : 
-Entity(NO_SAVE, pos, 0, 96, 112, true), _isActivated(isActivated) {
+Altar::Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet, bool naturalSpawn) : 
+Entity(NO_SAVE, pos, 0, 96, 112, naturalSpawn), _isActivated(isActivated) {
     _pos = pos;
     loadSprite(spriteSheet);
 
@@ -162,4 +162,5 @@ void Altar::onActivation() {
     }
 
     getWorld()->altarActivatedAt(getPosition());
+    _isProp = true;
 }

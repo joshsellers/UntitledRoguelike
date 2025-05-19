@@ -728,18 +728,14 @@ void World::checkAltarSpawn() {
                 }
 
                 std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(
-                    spawnPos, false, getSpriteSheet()
+                    spawnPos, false, getSpriteSheet(), false
                 ));
                 altar->setWorld(this);
                 addEntity(altar);
 
-                if (getTerrainDataAt(spawnPos) != TERRAIN_TYPE::EMPTY) {
-                    AltarArrow::altarSpawned(spawnPos);
+                AltarArrow::altarSpawned(spawnPos);
 
-                    AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
-                } else {
-                    MessageManager::displayMessage("Did not spawn altar because it would have spawned in empty terrain", 5, DEBUG);
-                }
+                AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
             }
 
             MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance) + "%", 5, DEBUG);

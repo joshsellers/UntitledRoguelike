@@ -5,7 +5,7 @@
 
 class Altar : public Entity {
 public:
-    Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet);
+    Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet, bool naturalSpawn = true);
 
     virtual void update();
     virtual void draw(sf::RenderTexture& surface);
