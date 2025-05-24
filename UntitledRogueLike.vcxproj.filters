@@ -573,6 +573,12 @@
     <ClCompile Include="ui\UIAchievementDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\FrogBoss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\ImpactExplosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1047,6 +1053,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIAchievementDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\FrogBoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\ImpactExplosion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

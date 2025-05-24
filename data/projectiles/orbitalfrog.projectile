@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_ORBITAL_FROG"
+velocity = 8.0
+lifeTime = 3000
+onlyHitEnemies = false
+hitBox = 4, 4, 10, 10
+rotate = true

@@ -67,6 +67,7 @@
 #include "entities/Funguy.h"
 #include "entities/FungusMan.h"
 #include "MiniMapGenerator.h"
+#include "entities/FrogBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -686,13 +687,8 @@ void World::onWaveCleared() {
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
-    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        // !TODO: increase the number in the if statement below
-        // as new bosses are added, remove the if statement
-        // once all bosses are added
-        if (_currentWaveNumber < 64) {
-            MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
-        }
+    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95 || _currentWaveNumber == 99) {
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
     }
 
     spawnBoss(_currentWaveNumber);
@@ -1402,6 +1398,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 64:
             boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
             break;
+        case 72:
+            boss = std::shared_ptr<FrogBoss>(new FrogBoss(spawnPos));
+            break;
     }
 
     if (boss != nullptr) {
@@ -1639,6 +1638,9 @@ void World::bossDefeated() {
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
             ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
+            break;
+        case FROG_BOSS:
+            //achievement = DEFEAT_FROGBOSS;
             break;
     }
 

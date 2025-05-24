@@ -31,6 +31,7 @@ public:
     static const OrbiterType PIZZA_CHEFBOSS;
     static const OrbiterType BUBBLE;
     static const OrbiterType BEE;
+    static const OrbiterType FROG;
 
     static std::vector<const OrbiterType*> ORBITER_TYPES;
 

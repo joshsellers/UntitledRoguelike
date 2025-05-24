@@ -960,6 +960,9 @@ private:
                 case FUNGUS_MAN:
                     entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
                     break;
+                case FROG_BOSS:
+                    entity = std::shared_ptr<FrogBoss>(new FrogBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

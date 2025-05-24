@@ -1,0 +1,4 @@
+name = "_PROJECTILE_FROG"
+description = "This item should not be obtainable."
+textureRect = 104, 38, 1, 1
+damage = 20

@@ -36,6 +36,8 @@ protected:
     const int _numBossStates;
     BossState _currentState;
 
+    bool _permitStateChange = true;
+
     long long _currentStateLength = 1000LL;
     long long _lastStateChangeTime = 0LL;
 

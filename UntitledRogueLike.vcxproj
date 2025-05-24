@@ -34,8 +34,10 @@
     <ClCompile Include="mod\byrgo\Parser.cpp" />
     <ClCompile Include="mod\byrgo\Tokenizer.cpp" />
     <ClCompile Include="world\entities\FallingObjectShadow.cpp" />
+    <ClCompile Include="world\entities\FrogBoss.cpp" />
     <ClCompile Include="world\entities\FungusMan.cpp" />
     <ClCompile Include="world\entities\Funguy.cpp" />
+    <ClCompile Include="world\entities\ImpactExplosion.cpp" />
     <ClCompile Include="world\entities\LargeMushroom.cpp" />
     <ClCompile Include="world\entities\MegaBombBoy.cpp" />
     <ClCompile Include="world\entities\BombBoy.cpp" />
@@ -223,8 +225,10 @@
     <ClInclude Include="mod\byrgo\Parser.h" />
     <ClInclude Include="mod\byrgo\Tokenizer.h" />
     <ClInclude Include="world\entities\FallingObjectShadow.h" />
+    <ClInclude Include="world\entities\FrogBoss.h" />
     <ClInclude Include="world\entities\FungusMan.h" />
     <ClInclude Include="world\entities\Funguy.h" />
+    <ClInclude Include="world\entities\ImpactExplosion.h" />
     <ClInclude Include="world\entities\LargeMushroom.h" />
     <ClInclude Include="world\entities\MegaBombBoy.h" />
     <ClInclude Include="world\entities\BombBoy.h" />

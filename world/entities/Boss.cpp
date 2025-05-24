@@ -17,7 +17,7 @@ void Boss::update() {
     subUpdate();
 
     runCurrentState();
-    if (currentTimeMillis() - _lastStateChangeTime >= _currentStateLength) changeState();
+    if (currentTimeMillis() - _lastStateChangeTime >= _currentStateLength && _permitStateChange) changeState();
 }
 
 void Boss::deactivateBossMode() {
