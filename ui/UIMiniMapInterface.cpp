@@ -4,7 +4,7 @@
 #include "UIHandler.h"
 
 UIMiniMapInterface::UIMiniMapInterface(Player* player, sf::Font font) : UIElement(50, 50, 30, 30, false, false, font), 
-_dispSize(getRelativeWidth(4)), _dispScale(getRelativeWidth(0.25f)) {
+_dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
     _player = player;
 
     const float scale = (float)MiniMapGenerator::CHUNK_SIZE_SCALED / (float)CHUNK_SIZE; 
