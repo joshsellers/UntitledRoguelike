@@ -282,6 +282,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
                 sf::Text controlLabel;
                 controlLabel.setFont(_font);
                 controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+                controlLabel.setOutlineThickness(2.f);
 
                 _buttonSprite.setTextureRect(sf::IntRect(0, 208, TILE_SIZE, TILE_SIZE));
                 _buttonSprite.setPosition(getRelativePos(26.5, 80)); 

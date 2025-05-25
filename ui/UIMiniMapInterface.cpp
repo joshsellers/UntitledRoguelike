@@ -156,6 +156,7 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     sf::Text controlLabel; 
     controlLabel.setFont(_font);
     controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+    controlLabel.setOutlineThickness(2.f);
     const float x = 43.f;
     const float xTextPadding = 3.5f;
     const float y = 70.f;
