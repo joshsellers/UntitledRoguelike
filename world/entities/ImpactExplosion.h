@@ -5,7 +5,7 @@
 
 class ImpactExplosion : public Entity {
 public:
-    ImpactExplosion(sf::Vector2f pos, unsigned int layerCount, unsigned int propogationRate = 2);
+    ImpactExplosion(sf::Vector2f pos, unsigned int layerCount, unsigned int propogationRate = 2, bool onlyDamagePlayer = true, bool onlyDamageEnemies = false);
 
     void update();
 
@@ -15,6 +15,9 @@ public:
 private:
     const unsigned int _layerCount;
     const unsigned int _propogationRate;
+
+    const bool _onlyDamagePlayer;
+    const bool _onlyDamageEnemies;
 
     int _explosionLayersSpawned = 0;
     long long _lastLayerSpawnTime = 0;

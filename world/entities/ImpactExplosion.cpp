@@ -3,8 +3,10 @@
 #include "Explosion.h"
 #include "../World.h"
 
-ImpactExplosion::ImpactExplosion(sf::Vector2f pos, unsigned int layerCount, unsigned int propogationRate) : Entity(NO_SAVE, pos, 0.f, 0, 0, false), 
-_layerCount(layerCount), _propogationRate(propogationRate) {
+ImpactExplosion::ImpactExplosion(sf::Vector2f pos, unsigned int layerCount, unsigned int propogationRate, bool onlyDamagePlayer, bool onlyDamageEnemies) 
+    : Entity(NO_SAVE, pos, 0.f, 0, 0, false), 
+_layerCount(layerCount), _propogationRate(propogationRate),
+_onlyDamagePlayer(onlyDamagePlayer), _onlyDamageEnemies(onlyDamageEnemies) {
     if (propogationRate == 0) {
         MessageManager::displayMessage("Invalid propogation rate for ImpactExplosion", WARN, 5);
         deactivate();
@@ -22,7 +24,7 @@ void ImpactExplosion::update() {
             float angle = i * (360.f / (6 * _explosionLayersSpawned));
 
             const sf::Vector2f explosionPos(centerPoint.x + explosionRadius * std::cos(degToRads(angle)), centerPoint.y + explosionRadius * std::sin(degToRads(angle)));
-            const auto& explosion = std::shared_ptr<Explosion>(new Explosion(explosionPos, 16, true));
+            const auto& explosion = std::shared_ptr<Explosion>(new Explosion(explosionPos, 16, _onlyDamagePlayer, _onlyDamageEnemies));
             explosion->setWorld(getWorld());
             explosion->loadSprite(getWorld()->getSpriteSheet());
             getWorld()->addEntity(explosion);
