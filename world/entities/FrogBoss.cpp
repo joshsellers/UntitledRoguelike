@@ -177,10 +177,24 @@ void FrogBoss::runCurrentState() {
 
                 const float angle = (float)((std::atan2(y, x)));
 
-                fireTargetedProjectile(angle + degToRads((float)randomInt(-5.f, 5.f)), ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, {8, -35});
-                const float angleOffset = degToRads((float)randomInt(5.f, 15.f));
-                fireTargetedProjectile(angle + angleOffset, ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, { 8, -35 });
-                fireTargetedProjectile(angle - angleOffset, ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, { 8, -35 });
+                constexpr float fireChance = 0.15f;
+
+                if (randomChance(fireChance)) {
+                    fireTargetedProjectile(
+                        angle, ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, { 8, -35 }
+                    );
+                }
+                const float angleOffset = degToRads(15.f);
+                if (randomChance(fireChance)) {
+                    fireTargetedProjectile(
+                        angle + angleOffset, ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, { 8, -35 }
+                    );
+                }
+                if (randomChance(fireChance)) {
+                    fireTargetedProjectile(
+                        angle - angleOffset, ProjectileDataManager::getData("_PROJECTILE_FROG"), "basicprojlaunch", true, false, { 8, -35 }
+                    );
+                }
                 _lastFireTimeMillis = currentTimeMillis();
             }
             break;
