@@ -667,6 +667,7 @@ void Game::initUI() {
     _selectSaveSlotLabel = std::shared_ptr<UILabel>(new UILabel(
         "select a save slot", 50, 30, 2.f, _font
     ));
+    _selectSaveSlotLabel->setTextOutlineThickness(4.f);
     _saveSelectionMenu->addElement(_selectSaveSlotLabel);
 
     std::shared_ptr<UIButton> save0Button = std::shared_ptr<UIButton>(new UIButton(
@@ -713,6 +714,7 @@ void Game::initUI() {
     _selectedSlotLabel = std::shared_ptr<UILabel>(new UILabel(
         "slot", 50, 30, 2.f, _font
     ));
+    _selectedSlotLabel->setTextOutlineThickness(4.f);
     _saveStartMenu->addElement(_selectedSlotLabel);
 
     std::shared_ptr<UIButton> newGameButton = std::shared_ptr<UIButton>(new UIButton(
