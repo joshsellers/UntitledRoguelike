@@ -10,6 +10,7 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void setText(sf::String text, bool recenter = false);
+    void setTextOutlineThickness(float thickness);
 
     void mouseButtonPressed(const int mx, const int my, const int button);
     void mouseButtonReleased(const int mx, const int my, const int button);

@@ -50,6 +50,10 @@ void UILabel::setText(sf::String text, bool recenter) {
     }
 }
 
+void UILabel::setTextOutlineThickness(float thickness) {
+    _text.setOutlineThickness(thickness);
+}
+
 void UILabel::mouseButtonPressed(const int mx, const int my, const int button) {
 }
 

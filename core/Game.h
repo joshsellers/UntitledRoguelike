@@ -214,6 +214,7 @@ private:
 	void changeMagMeterColor();
 
 	void openConfirmationScreen(std::string msg, std::string confirmationCode);
+	bool _exitConfirmed = false;
 
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };

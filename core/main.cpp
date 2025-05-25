@@ -256,12 +256,7 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
-                if (game->gameIsStarted()) {
-                    if (AUTOSAVE_ENABLED) SaveManager::saveGame();
-                    ConditionalUnlockManager::saveUnlockedItems();
-                    LocalAchievementManager::saveLocalAchievements();
-                }
-                window.close();
+                game->buttonPressed("exit");
                 break;
             case sf::Event::KeyPressed:
                 game->keyPressed(event.key.code);

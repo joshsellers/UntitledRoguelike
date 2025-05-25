@@ -805,6 +805,7 @@ void Game::initUI() {
     _confirmationLabel = std::shared_ptr<UILabel>(new UILabel(
         "", 50, 30, 2.f, _font
     ));
+    _confirmationLabel->setTextOutlineThickness(2.f);
     _confirmationMenu->addElement(_confirmationLabel);
 
     auto yesButton = std::shared_ptr<UIButton>(new UIButton(
@@ -1432,7 +1433,16 @@ void Game::drawUI(sf::RenderTexture& surface) {
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         if (_gameStarted) {
-            if (AUTOSAVE_ENABLED) SaveManager::saveGame();
+            if (_world.playerIsInShop() && !_exitConfirmed) {
+                _pauseMenu->hide();
+                openConfirmationScreen(
+                    "                                  WARNING:\nThe game cannot be saved while you are in the shop.\n                 Are you sure you'd like to exit?", 
+                    "exitconf_exit"
+                );
+                return;
+            }
+
+            if (AUTOSAVE_ENABLED && !_world.playerIsInShop()) SaveManager::saveGame();
             ConditionalUnlockManager::saveUnlockedItems();
             LocalAchievementManager::saveLocalAchievements();
         }
@@ -1535,7 +1545,16 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
-        if (AUTOSAVE_ENABLED && _gameStarted) SaveManager::saveGame();
+        if (_gameStarted && _world.playerIsInShop() && !_exitConfirmed) {
+            _pauseMenu->hide();
+            openConfirmationScreen(
+                "                                  WARNING:\nThe game cannot be saved while you are in the shop.\n                 Are you sure you'd like to exit?", 
+                "exitconf_main"
+            );
+            return;
+        }
+
+        if (AUTOSAVE_ENABLED && _gameStarted && !_world.playerIsInShop()) SaveManager::saveGame();
         StatManager::saveOverallStats();
         StatManager::resetOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
@@ -2004,6 +2023,21 @@ void Game::buttonPressed(std::string buttonCode) {
             } else {
                 _saveStartMenu->show();
             }
+        } else if (_confirmationCode == "exitconf_exit") {
+            if (confirmed) {
+                _exitConfirmed = true;
+                buttonPressed("exit");
+            } else {
+                if (_isPaused) _pauseMenu->show();
+            }
+        } else if (_confirmationCode == "exitconf_main") {
+            if (confirmed) {
+                _exitConfirmed = true;
+                buttonPressed("mainmenu");
+                _exitConfirmed = false;
+            } else {
+                if (_isPaused) _pauseMenu->show();
+            }
         }
 
         _confirmationMenu->hide();
@@ -2143,6 +2177,8 @@ void Game::gamepadDisconnected() {
 }
 
 void Game::togglePauseMenu() {
+    if (_confirmationMenu->isActive() && stringStartsWith(_confirmationCode, "exitconf")) return;
+
     bool skipCooldownAdjustment = true;
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
