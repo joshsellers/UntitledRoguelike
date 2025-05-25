@@ -47,6 +47,8 @@ public:
 
 	void textEntered(sf::Uint32 character);
 
+	bool gameIsStarted() const;
+
 private:
 	void initUI();
 

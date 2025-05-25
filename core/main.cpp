@@ -18,6 +18,9 @@
 #include "../world/TerrainGenParameters.h"
 #include "../mod/ModManager.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "SaveManager.h"
+#include "../statistics/LocalAchievementManager.h"
+
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -253,6 +256,11 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
+                if (game->gameIsStarted()) {
+                    if (AUTOSAVE_ENABLED) SaveManager::saveGame();
+                    ConditionalUnlockManager::saveUnlockedItems();
+                    LocalAchievementManager::saveLocalAchievements();
+                }
                 window.close();
                 break;
             case sf::Event::KeyPressed:

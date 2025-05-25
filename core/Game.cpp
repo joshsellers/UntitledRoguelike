@@ -211,28 +211,28 @@ void Game::initUI() {
     exitButton->setSelectionId(1);
     _pauseMenu->addElement(exitButton);
 
-    std::shared_ptr<UIButton> saveButton = std::shared_ptr<UIButton>(new UIButton(
+    /*std::shared_ptr<UIButton> saveButton = std::shared_ptr<UIButton>(new UIButton(
         1, 17, 9, 3, "save game", _font, this, "save"
     ));
     saveButton->setSelectionId(2);
-    _pauseMenu->addElement(saveButton);
+    _pauseMenu->addElement(saveButton);*/
 
     std::shared_ptr<UIButton> settingsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 23, 9, 3, "settings", _font, this, "settings"
+        1, 17, 9, 3, "settings", _font, this, "settings"
     ));
-    settingsButton->setSelectionId(3);
+    settingsButton->setSelectionId(2);
     _pauseMenu->addElement(settingsButton);
 
     std::shared_ptr<UIButton> pauseControlsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 29, 9, 3, "controls", _font, this, "controls"
+        1, 23, 9, 3, "controls", _font, this, "controls"
     ));
-    pauseControlsButton->setSelectionId(4);
+    pauseControlsButton->setSelectionId(3);
     _pauseMenu->addElement(pauseControlsButton);
 
     std::shared_ptr<UIButton> statsMenuButton_pause = std::shared_ptr<UIButton>(new UIButton(
-        1, 35, 9, 3, "stats", _font, this, "stats_pause"
+        1, 29, 9, 3, "stats", _font, this, "stats_pause"
     ));
-    statsMenuButton_pause->setSelectionId(5);
+    statsMenuButton_pause->setSelectionId(4);
     _pauseMenu->addElement(statsMenuButton_pause);
 
     _pauseMenu->useGamepadConfiguration = true;
@@ -240,7 +240,6 @@ void Game::initUI() {
         {
             {mainMenuButton->getSelectionId()},
             {exitButton->getSelectionId()},
-            {saveButton->getSelectionId()},
             {settingsButton->getSelectionId()},
             {pauseControlsButton->getSelectionId()},
             {statsMenuButton_pause->getSelectionId()}
@@ -1433,7 +1432,7 @@ void Game::drawUI(sf::RenderTexture& surface) {
 void Game::buttonPressed(std::string buttonCode) {
     if (buttonCode == "exit") {
         if (_gameStarted) {
-            SaveManager::saveGame();
+            if (AUTOSAVE_ENABLED) SaveManager::saveGame();
             ConditionalUnlockManager::saveUnlockedItems();
             LocalAchievementManager::saveLocalAchievements();
         }
@@ -1536,6 +1535,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
     } else if (buttonCode == "mainmenu") {
+        if (AUTOSAVE_ENABLED && _gameStarted) SaveManager::saveGame();
         StatManager::saveOverallStats();
         StatManager::resetOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
@@ -2396,6 +2396,10 @@ void Game::loadTips() {
 
 void Game::textEntered(sf::Uint32 character) {
     _ui->textEntered(character);
+}
+
+bool Game::gameIsStarted() const {
+    return _gameStarted;
 }
 
 void Game::displayStartupMessages() const {
