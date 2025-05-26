@@ -70,7 +70,7 @@ public:
 
             out.close();
 
-            if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2);
+            if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2, DEBUG);
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to save file: " + (std::string)ex.what(), 5, ERR);
         }
