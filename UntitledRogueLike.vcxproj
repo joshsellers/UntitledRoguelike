@@ -28,6 +28,7 @@
     <ClCompile Include="world\entities\BeeFamiliar.cpp" />
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
     <ClCompile Include="world\entities\Bouncer.cpp" />
+    <ClCompile Include="world\entities\FallingBomb.cpp" />
     <ClCompile Include="world\entities\FallingNuke.cpp" />
     <ClCompile Include="mod\byrgo\Bygro.cpp" />
     <ClCompile Include="mod\byrgo\Compiler.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="world\entities\BeeFamiliar.h" />
     <ClInclude Include="world\entities\BigSnowMan.h" />
     <ClInclude Include="world\entities\Bouncer.h" />
+    <ClInclude Include="world\entities\FallingBomb.h" />
     <ClInclude Include="world\entities\FallingNuke.h" />
     <ClInclude Include="mod\byrgo\Bygro.h" />
     <ClInclude Include="mod\byrgo\Compiler.h" />

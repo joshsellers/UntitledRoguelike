@@ -4,6 +4,7 @@
 #include "../../world/entities/Lightning.h"
 #include "../../core/ShaderManager.h"
 #include "../effect/PlayerVisualEffectManager.h"
+#include "../../world/entities/FallingBomb.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
@@ -304,6 +305,28 @@ const Ability Ability::BOUNCING_PROJECTILES(17, "Bouncing Projectiles",
 const Ability Ability::PERMANENT_ARMOR(18, "Permanent Armor",
     { {"protection", 0.0f} },
     [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::AIR_STRIKE(19, "Air Strike",
+    { {"rate", 1000.f}, {"chance", 0.25f} },
+    [](Player* player, Ability* ability) {
+        const float chance = ability->getParameter("chance");
+        const long long rate = (long long)ability->getParameter("rate");
+
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= rate && player->getWorld()->getEnemyCount() > 0) {
+            ability->_lastFireTimeMillis = currentTimeMillis();
+            if (!randomChance(chance)) return;
+
+            const sf::Vector2f playerPos = player->getPosition();
+            const sf::Vector2f pos(playerPos.x + randomInt(-WIDTH / 2, WIDTH / 2), playerPos.y + randomInt(-HEIGHT / 2, HEIGHT / 2));
+
+            const auto& bomb = std::shared_ptr<FallingBomb>(new FallingBomb(pos));
+            bomb->setWorld(player->getWorld());
+            bomb->loadSprite(player->getWorld()->getSpriteSheet());
+            player->getWorld()->addEntity(bomb);
+        }
+    },
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 

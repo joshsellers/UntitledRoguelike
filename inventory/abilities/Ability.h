@@ -28,6 +28,7 @@ public:
     static const Ability COUPON;
     static const Ability BOUNCING_PROJECTILES;
     static const Ability PERMANENT_ARMOR;
+    static const Ability AIR_STRIKE;
 
     static std::vector<Ability*> ABILITIES;
 

@@ -1,0 +1,9 @@
+name = "Airstrike"
+description = "Drop bombs from the sky"
+conditionalUnlock = true
+isConsumable = true
+functionName = "useairstrike"
+isBuyable = true
+value = 699
+textureRect = 27, 16, 1, 1
+rarityTier = 2
