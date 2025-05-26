@@ -62,7 +62,9 @@ private:
         "Economical",
         "Shroomy",
         "Slaughterer",
-        "Breaking and Entering"
+        "Breaking and Entering",
+        "Remmy Ribbit",
+        "Remmy Ribbit but harder"
     };
 };
 

@@ -1640,7 +1640,8 @@ void World::bossDefeated() {
             ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
         case FROG_BOSS:
-            //achievement = DEFEAT_FROGBOSS;
+            achievement = DEFEAT_FROGBOSS;
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Airstrike", 1);
             break;
     }
 
