@@ -13,6 +13,7 @@
 #include "../world/entities/BeeFamiliar.h"
 #include "../world/entities/Blinker.h"
 #include "../world/MiniMapGenerator.h"
+#include "../world/entities/Thief.h"
 
 class SaveManager {
 public:
@@ -962,6 +963,11 @@ private:
                     break;
                 case FROG_BOSS:
                     entity = std::shared_ptr<FrogBoss>(new FrogBoss(pos));
+                    break;
+                case THIEF:
+                    const unsigned int pennyAmt = std::stoul(data[4]);
+                    entity = std::shared_ptr<Thief>(new Thief(pos, pennyAmt == 0));
+                    if (pennyAmt != 0) entity->getInventory().addItem(Item::PENNY.getId(), pennyAmt);
                     break;
             }
 

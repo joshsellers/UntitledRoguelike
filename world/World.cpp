@@ -68,6 +68,7 @@
 #include "entities/FungusMan.h"
 #include "MiniMapGenerator.h"
 #include "entities/FrogBoss.h"
+#include "entities/Thief.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -301,6 +302,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::MUSHROID:
                                 mob = std::shared_ptr<Mushroid>(new Mushroid(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::THIEF:
+                                mob = std::shared_ptr<Thief>(new Thief(sf::Vector2f(xi, yi), true));
                                 break;
                             default:
                                 return;
