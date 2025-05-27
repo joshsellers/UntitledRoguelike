@@ -1531,6 +1531,8 @@ void Game::buttonPressed(std::string buttonCode) {
         startingItemDropped->loadSprite(_world.getSpriteSheet());
         _world.addEntity(startingItemDropped);
 
+        if (LocalAchievementManager::isUnlocked(ACHIEVEMENT::MARATHON)) _player->getInventory().addItem(Item::getIdFromName("Map"), 1);
+
         startLoading();
         if (!Tutorial::isCompleted()) {
             std::string msg;
