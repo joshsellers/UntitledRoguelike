@@ -1,0 +1,8 @@
+hasAbility = player.hasAbility("Healthy Stench");
+if: not hasAbility {
+    player.addAbility("Healthy Stench");
+    return true;
+}
+
+displayMessage("Healthy Stench has already been activated\nWait until the effect ends to use another", 5);
+return false;

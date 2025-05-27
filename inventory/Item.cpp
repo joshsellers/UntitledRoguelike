@@ -590,9 +590,9 @@ const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40
 
 const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 3.f, sf::IntRect(2, 2, 12, 12), false);
 
-const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
+const Item Item::HEALING_MIST(71, "_Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
     "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19999, false,
     [](Entity* parent) {
         const unsigned int id = Ability::HEALILNG_MIST.getId();
         if (!AbilityManager::givePlayerAbility(id)) {
@@ -820,7 +820,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::SOMBRERO.getId(),                        3},
     {Item::AXE.getId(),                             0},
     {Item::DAGGER.getId(),                          0},
-    {Item::BULLET_455.getId(),                      3},
+    {Item::BULLET_455.getId(),                      0},
     {Item::HOWDAH.getId(),                          3},
     {Item::POD.getId(),                             0},
     {Item::POD_LAUNCHER.getId(),                    0},
@@ -831,13 +831,13 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::RED_TEE_SHIRT.getId(),                   6},
     {Item::OVERALLS.getId(),                        6},
     {Item::BOOTS.getId(),                           6},
-    {Item::RIFLE_ROUND.getId(),                     17},
+    {Item::RIFLE_ROUND.getId(),                     0},
     {Item::ASSAULT_RIFLE.getId(),                   16},
     {Item::PENNY.getId(),                           0},
-    {Item::LIGHT_LASER_CHARGE.getId(),              18},
+    {Item::LIGHT_LASER_CHARGE.getId(),              0},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
     {Item::LASER_PISTOL.getId(),                    18},
-    {Item::PROPANE.getId(),                         20},
+    {Item::PROPANE.getId(),                         0},
     {Item::_PROJECTILE_PROPANE.getId(),             0},
     {Item::BLOW_TORCH.getId(),                      20},
     {Item::_PROJECTILE_SLIME_BALL.getId(),          0},
@@ -862,14 +862,14 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::BROADSWORD.getId(),                      8},
     {Item::ENERGY_DRINK.getId(),                    4},
     {Item::AUTOLASER.getId(),                       24},
-    {Item::RAILGUN_DART.getId(),                    30},
+    {Item::RAILGUN_DART.getId(),                    0},
     {Item::_PROJECTILE_RAILGUN_DART.getId(),        0},
     {Item::RAILGUN.getId(),                         30},
-    {Item::GASOLINE.getId(),                        34},
+    {Item::GASOLINE.getId(),                        0},
     {Item::_PROJECITLE_CHAINSAW.getId(),            0},
     {Item::CHAINSAW.getId(),                        34},
     {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0},
-    {Item::ARROW.getId(),                           2},
+    {Item::ARROW.getId(),                           0},
     {Item::BOW.getId(),                             2},
     {Item::CHEESE_SLICE.getId(),                    0},
     {Item::_PROJECTILE_TEAR_DROP.getId(),           0},
@@ -884,7 +884,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::_PROJECTILE_THORN.getId(),               0},
     {Item::_PROJECTILE_ROCK.getId(),                0},
     {Item::_PROJECTILE_POLLEN.getId(),              0},
-    {Item::HEALING_MIST.getId(),                    90}
+    {Item::HEALING_MIST.getId(),                    0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
