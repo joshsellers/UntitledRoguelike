@@ -1293,7 +1293,7 @@ void Game::update() {
             MusicManager::setSituation(situation);
         }
     }
-    _camera->setCenter(_player->getPosition().x + (float)PLAYER_WIDTH / 2, _player->getPosition().y + (float)PLAYER_HEIGHT / 2);
+    _camera->setCenter(_player->getSprite().getPosition().x + (float)PLAYER_WIDTH / 2.f, _player->getSprite().getPosition().y + (float)PLAYER_HEIGHT / 2.f);
 }
 
 void Game::displayEnemyWaveCountdownUpdates() {

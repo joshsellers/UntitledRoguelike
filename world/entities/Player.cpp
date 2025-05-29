@@ -129,7 +129,6 @@ void Player::update() {
         xa *= diagonalMultiplier;
         ya *= diagonalMultiplier;
     }
-    const float velX = xa, velY = ya;
 
     if ((sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::WALK)))
         && !isDodging() && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isInBoat()) {
@@ -144,7 +143,7 @@ void Player::update() {
         ya /= 4.f;
     }
 
-    if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat()
+    if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat() && !getWorld()->playerIsInShop()
         && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
             || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE))) && _dodgeKeyReleased) {
         _isDodging = true;
@@ -166,9 +165,11 @@ void Player::update() {
         !sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
         && !GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE));
 
-    float oldX = getPosition().x, oldY = getPosition().y;
+    const float oldX = getPosition().x, oldY = getPosition().y;
     move(xa * _dodgeSpeedMultiplier, ya * _dodgeSpeedMultiplier);
-    if (DIAGONAL_MOVEMENT_ENABLED && xa && ya) {
+
+    const float velX = _pos.x - oldX, velY = _pos.y - oldY;
+    if (DIAGONAL_MOVEMENT_ENABLED && velX && velY) {
         if (std::abs(oldX - getPosition().x) > std::abs(oldY - getPosition().y)) {
             float xRounded = std::round(_pos.x);
             float yRounded = std::round(_pos.y + (xRounded - _pos.x) * velY / velX);
@@ -179,8 +180,8 @@ void Player::update() {
             _pos.x = xRounded;
         }
     }
+    _sprite.setPosition(getPosition());
 
-    _sprite.setPosition(getPosition()); 
     if (isInBoat()) _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
 
     if (isSwimming() && !isInBoat()) {
@@ -585,20 +586,30 @@ void Player::blink() {
 }
 
 void Player::move(float xa, float ya) {
-    bool collidingX = false, collidingY = false;
+    bool colliding = false;
 
     if (std::abs(xa) > 0 || std::abs(ya) > 0) {
         _numSteps++;
-
+        const sf::Vector2f velocity(xa, ya);
+        const sf::FloatRect playerBounds(_pos.x + velocity.x, _pos.y + velocity.y, PLAYER_WIDTH, PLAYER_HEIGHT);
         for (auto& entity : getWorld()->getEntities()) {
-            if (entity->isActive() && entity->hasColliders()) {
-                for (auto& collider : entity->getColliders()) {
-                    if (sf::FloatRect(_pos.x + xa, _pos.y, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingX = true;
-                    if (sf::FloatRect(_pos.x, _pos.y + ya, PLAYER_WIDTH, PLAYER_HEIGHT).intersects(collider)) collidingY = true;
-                    if (collidingX && collidingY) return;
-                    else if (collidingX || collidingY) break;
+            if (!entity->isActive() || !entity->hasColliders()) continue;
+            
+            for (const auto& box : entity->getColliders()) {
+                sf::FloatRect intersection;
+                if (playerBounds.intersects(box, intersection)) {
+                    colliding = true;
+
+                    const float moveX = (intersection.width < intersection.height)
+                        ? ((playerBounds.left < box.left) ? -intersection.width : intersection.width)
+                        : 0.f;
+                    const float moveY = (intersection.height < intersection.width)
+                        ? ((playerBounds.top < box.top) ? -intersection.height : intersection.height)
+                        : 0.f;
+
+                    _pos.x += moveX;
+                    _pos.y += moveY;
                 }
-                if (collidingX || collidingY) break;
             }
         }
 
@@ -615,14 +626,22 @@ void Player::move(float xa, float ya) {
         _isActuallyMoving = false;
     }
 
-    if (!collidingX) _pos.x += xa;
-    if (!collidingY) _pos.y += ya;
-    // these are never used anywhere else 
+    _pos.x += xa;
+    _pos.y += ya;
+
+    _pos.x += _collisionForce.x;
+    _pos.y += _collisionForce.y;
+    constexpr float friction = 0.75f;
+    _collisionForce.x *= friction;
+    _collisionForce.y *= friction;
+    if (std::abs(_collisionForce.x) < 0.001f) _collisionForce.x = 0;
+    if (std::abs(_collisionForce.y) < 0.001f) _collisionForce.y = 0;
+
     _velocity.x = xa;
     _velocity.y = ya;
 
 
-    if ((!collidingX || !collidingY) && (xa != 0 || ya != 0)) {
+    if ((!colliding) && (xa != 0 || ya != 0)) {
         const int deltaPos = std::max(std::abs(xa), std::abs(ya));
         constexpr float metersPerPixel = 0.053;
         const float distMoved = (float)deltaPos * metersPerPixel;
@@ -730,16 +749,20 @@ void Player::knockBack(float amt, MOVING_DIRECTION dir) {
     if (!freeMove) {
         switch (dir) {
             case UP:
-                move(0, -amt);
+                //move(0, -amt);
+                _collisionForce.y = -amt;
                 break;
             case DOWN:
-                move(0, amt);
+                //move(0, amt);
+                _collisionForce.y = amt;
                 break;
             case LEFT:
-                move(-amt, 0);
+                //move(-amt, 0);
+                _collisionForce.x = -amt;
                 break;
             case RIGHT:
-                move(amt, 0);
+                //move(amt, 0);
+                _collisionForce.x = amt;
                 break;
         }
     }

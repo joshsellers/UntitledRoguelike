@@ -23,29 +23,31 @@ ShopInterior::ShopInterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
     heal(getMaxHitPoints());
 
     _hasColliders = true;
+    constexpr float extension = 50.f;
+
     sf::FloatRect topCollider;
     topCollider.left = getSprite().getPosition().x;
-    topCollider.top = getSprite().getPosition().y - 10;
+    topCollider.top = getSprite().getPosition().y - (10 + extension);
     topCollider.width = SHOP_INTERIOR_WIDTH;
-    topCollider.height = 18;
+    topCollider.height = 18 + extension;
 
     sf::FloatRect leftCollider;
-    leftCollider.left = getSprite().getPosition().x - 10;
+    leftCollider.left = getSprite().getPosition().x - (10 + extension);
     leftCollider.top = getSprite().getPosition().y;
-    leftCollider.width = 10;
+    leftCollider.width = 10 + extension;
     leftCollider.height = SHOP_INTERIOR_HEIGHT;
 
     sf::FloatRect rightCollider;
     rightCollider.left = getSprite().getPosition().x + SHOP_INTERIOR_WIDTH - 16;
     rightCollider.top = getSprite().getPosition().y;
-    rightCollider.width = 10;
+    rightCollider.width = 10 + extension;
     rightCollider.height = SHOP_INTERIOR_HEIGHT;
 
     sf::FloatRect bottomCollider;
     bottomCollider.left = getSprite().getPosition().x;
     bottomCollider.top = getSprite().getPosition().y + SHOP_INTERIOR_HEIGHT;
     bottomCollider.width = SHOP_INTERIOR_WIDTH;
-    bottomCollider.height = 10;
+    bottomCollider.height = 10 + extension;
 
     sf::FloatRect gapCollider;
     gapCollider.left = getSprite().getPosition().x;

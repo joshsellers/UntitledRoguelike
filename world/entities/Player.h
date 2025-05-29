@@ -172,6 +172,8 @@ private:
 
     long long _timeDamageTaken = 0LL;
     bool isTakingDamage() const;
+
+    sf::Vector2f _collisionForce;
 };
 
 #endif
