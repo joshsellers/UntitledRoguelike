@@ -69,6 +69,7 @@
 #include "MiniMapGenerator.h"
 #include "entities/FrogBoss.h"
 #include "entities/Thief.h"
+#include "entities/ShopShelf.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -164,7 +165,8 @@ void World::update() {
                 || entity->getEntityType() == "barberext"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
-                || entity->getEntityType() == "shopatm") entity->update();
+                || entity->getEntityType() == "shopatm"
+                || entity->getEntityType() == "shopshelf") entity->update();
         }
     }
 }
@@ -201,7 +203,8 @@ void World::draw(sf::RenderTexture& surface) {
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "barber"
-                || entity->getEntityType() == "shopatm"))) entity->draw(surface);
+                || entity->getEntityType() == "shopatm"
+                || entity->getEntityType() == "shopshelf"))) entity->draw(surface);
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -1518,6 +1521,16 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
             std::shared_ptr<ShopKeepCorpse> corpse = std::shared_ptr<ShopKeepCorpse>(new ShopKeepCorpse(corpsePos, getSpriteSheet()));
             corpse->setWorld(this);
             addEntity(corpse);
+        }
+
+        const sf::Vector2f shelfBasePos(buildingPos.x + 128 - TILE_SIZE - 1 + 7, buildingPos.y + 56 - 4);
+        constexpr float shelfSpacing = 36.f;
+        constexpr int shelfCount = 3;
+        for (int i = 0; i < shelfCount; i++) {
+            auto& shelf = std::shared_ptr<ShopShelf>(new ShopShelf({shelfBasePos.x, shelfBasePos.y + shelfSpacing * i}));
+            shelf->setWorld(this);
+            shelf->loadSprite(getSpriteSheet());
+            addEntity(shelf);
         }
 
         float atmChance = 0.1f;
