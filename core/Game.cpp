@@ -1635,6 +1635,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _player->_staminaRefreshRate = INITIAL_STAMINA_REFRESH_RATE;
         _player->_coinMagnetCount = 0;
         _player->_speedMultiplier = 0.f;
+        _player->_collisionForce = { 0.f, 0.f };
 
         _world.resetChunks();
         _world.resetEnemySpawnCooldown();
