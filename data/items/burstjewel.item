@@ -1,0 +1,8 @@
+name = "Burst Jewel"
+description = "A gem that holds mysterious power..."
+conditionalUnlock = true
+rarityTier = 3
+value = 500
+isConsumable = true
+functionName = "burstjewel"
+textureRect = 24, 17, 1, 1
