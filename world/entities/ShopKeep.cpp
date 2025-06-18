@@ -88,6 +88,7 @@ void ShopKeep::initInventory(bool visited) {
                 if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
                 else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
                 if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) continue;
+                else if (item->getId() == Item::getIdFromName("Burst Jewel") && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) continue;
                 else if (item->getId() == Item::getIdFromName("Map") && getWorld()->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) continue;
 
                 availableItems.push_back(item->getId());
