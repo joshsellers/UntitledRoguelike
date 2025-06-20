@@ -6,11 +6,11 @@
 #include "entities/Player.h"
 #include <mutex>
 #include <memory>
-#include "PerlinNoise.hpp"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include "MobSpawnData.h"
 #include "entities/ShopKeep.h"
+#include "TerrainGenerator.h"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 400;
 // original size 270
@@ -106,6 +106,9 @@ public:
 
     std::vector<Chunk>& getChunks();
 
+    void setRealm(REALM realm);
+    REALM getRealm() const;
+
     friend class Game;
     friend class SaveManager;
     friend class UICommandPrompt;
@@ -184,6 +187,7 @@ private:
     void buildChunk(sf::Vector2f pos);
     bool chunkContains(const Chunk& chunk, sf::Vector2f pos) const;
 
+    TerrainGenerator _terrainGenerator;
     sf::Image generateChunkTerrain(Chunk& chunk);
     std::queue<Chunk> _chunkBuffer;
     void generateChunkScatters(Chunk& chunk);

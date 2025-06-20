@@ -1054,6 +1054,38 @@ private:
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "clearchunks",
+            Command("Delete all chunks",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                _world->_chunks.clear();
+                _world->_loadingChunks.clear();
+                for (int i = 0; i < _world->_chunkBuffer.size(); i++) {
+                    _world->_chunkBuffer.pop();
+                }
+
+                return "Emptied chunks and chunk buffer";
+            })
+        },
+
+        {
+            "setrealm",
+            Command("Change the terrain generation realm",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    try {
+                        REALM realm = (REALM)std::stoi(parsedCommand[1]);
+                        _world->setRealm(realm);
+                        return "Realm set to " + parsedCommand[1];
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
         }
     };
 };

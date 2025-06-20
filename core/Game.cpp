@@ -1277,6 +1277,13 @@ void Game::update() {
         } else {
             autoSave();
         }
+
+        if (_world._chunks.size() == 0) {
+            _gameStarted = false;
+            _gameLoading = true;
+            _HUDMenu->hide();
+        }
+
     } else if (!_isPaused && !_gameStarted && _gameLoading) {
         _world.dumpChunkBuffer();
         if (_world._chunks.size() == 4) {
