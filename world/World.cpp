@@ -70,6 +70,7 @@
 #include "entities/FrogBoss.h"
 #include "entities/Thief.h"
 #include "entities/ShopShelf.h"
+#include "../statistics/LocalAchievementManager.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1089,7 +1090,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const sf::Vector2f fungusPrec = TerrainGenInitializer::getParameters()->fungusPrec;
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
-            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y&& rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y;
+            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y && rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y 
+                && LocalAchievementManager::isUnlocked(ACHIEVEMENT::DEFEAT_SHROOMBOSS);
 
             if (_seed == 124959026) flesh = true;
             else if (_seed == 4134632056) fungus = true;
