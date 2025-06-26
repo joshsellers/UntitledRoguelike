@@ -239,11 +239,12 @@ void Projectile::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
 }
 
-void Projectile::setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount) {
+void Projectile::setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount, const unsigned int splitIterations) {
     _splitProjectileDataIdentifer = projectileDataIdentifier;
     _splitOnHit = splitOnHit;
     _splitOnDecay = splitOnDecay;
     _splitProjectileCount = projectileCount;
+    _splitIterations = splitIterations;
 }
 
 void Projectile::split() const {
@@ -261,6 +262,21 @@ void Projectile::split() const {
 
         proj->setCrit(_criticalHit);
         proj->bounceOffViewport = bounceOffViewport;
+
+        if (_splitIterations > 1) {
+            const std::vector<std::string> identifierParsed = splitString(_splitProjectileDataIdentifer, "-");
+            if (identifierParsed.size() < 2) {
+                MessageManager::displayMessage("Bad identifier for split projectile with split iteration of > 1", 5, WARN);
+                return;
+            }
+
+            const unsigned int iteration = std::stoul(identifierParsed[1]);
+            if (iteration < _splitIterations - 1) {
+                const unsigned int nextIteration = iteration + 1;
+                const std::string identifier = identifierParsed[0] + "-" + std::to_string(nextIteration);
+                proj->setSplitInto(identifier, _splitOnHit, _splitOnDecay, _splitProjectileCount, _splitIterations);
+            }
+        }
     }
 }
 
@@ -342,6 +358,7 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitOnHit = false;
     _splitOnDecay = false;
     _splitProjectileCount = 0;
+    _splitIterations = 0;
 
     optimizedExplosions = false;
 

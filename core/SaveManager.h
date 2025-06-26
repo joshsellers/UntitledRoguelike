@@ -965,9 +965,14 @@ private:
                     entity = std::shared_ptr<FrogBoss>(new FrogBoss(pos));
                     break;
                 case THIEF:
+                {
                     const unsigned int pennyAmt = std::stoul(data[4]);
                     entity = std::shared_ptr<Thief>(new Thief(pos, pennyAmt == 0));
                     if (pennyAmt != 0) entity->getInventory().addItem(Item::PENNY.getId(), pennyAmt);
+                    break;
+                }
+                case OCTOPUS_BOSS:
+                    entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
                     break;
             }
 

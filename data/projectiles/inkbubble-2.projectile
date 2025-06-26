@@ -1,0 +1,6 @@
+itemName = "_PROJECTILE_INK_BUBBLE-2"
+velocity = 0.75
+hitBox = 5, 5, 8, 8
+rotate = false
+onlyHitEnemies = false
+lifeTime = 5000

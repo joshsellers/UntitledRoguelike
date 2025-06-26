@@ -41,7 +41,8 @@ enum ENTITY_SAVE_ID {
     FUNGUS_MAN,
     FUNGUY,
     FROG_BOSS,
-    THIEF
+    THIEF,
+    OCTOPUS_BOSS
 };
 
 #endif

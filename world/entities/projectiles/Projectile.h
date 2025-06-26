@@ -12,7 +12,7 @@ public:
     virtual void update();
     void draw(sf::RenderTexture& surface);
 
-    void setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount);
+    void setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount, const unsigned int splitIterations = 1);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -62,6 +62,7 @@ protected:
     bool _splitOnHit = false;
     bool _splitOnDecay = false;
     unsigned int _splitProjectileCount = 0;
+    unsigned int _splitIterations = 0;
 
     bool _criticalHit = false;
 
