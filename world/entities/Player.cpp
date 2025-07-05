@@ -183,6 +183,9 @@ void Player::update() {
     _sprite.setPosition(getPosition());
 
     if (isInBoat()) _boatSprite.setPosition(sf::Vector2f(getPosition().x - TILE_SIZE, getPosition().y));
+    else if (!isMoving() && AbilityManager::playerHasAbility(Ability::BLESSING.getId())) {
+        _numSteps++;
+    }
 
     if (isSwimming() && !isInBoat()) {
         _hitBoxYOffset = TILE_SIZE; 

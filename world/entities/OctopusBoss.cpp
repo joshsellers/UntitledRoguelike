@@ -107,8 +107,8 @@ void OctopusBoss::runCurrentState() {
         {
             const long long fireRateMillis = 750LL;
             if (currentTimeMillis() - _lastFireTimeMillis >= fireRateMillis) {
-                const float angle = degToRads(randomInt(0, 360));
-                sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+                //const float angle = degToRads(randomInt(0, 360));
+                const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
                 const auto proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_INK_BUBBLE"), "NONE", true, false, {-48.f / 2.f, 48.f}, true);
                 proj->setSplitInto("_PROJECTILE_INK_BUBBLE-0", false, true, 4, 4);
                 _lastFireTimeMillis = currentTimeMillis();
