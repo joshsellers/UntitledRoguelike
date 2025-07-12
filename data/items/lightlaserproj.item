@@ -1,0 +1,4 @@
+name = "_LIGHT_LASER_PROJECTILE"
+description = "This item should not be obtainable."
+damage = 8
+textureRect = 43, 4, 1, 1

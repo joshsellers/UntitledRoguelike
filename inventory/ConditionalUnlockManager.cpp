@@ -22,7 +22,10 @@ std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockPr
     {"Knife", 1},
     {"Ski Mask", 1},
     {"Heavy Duty Boots", 1},
-    {"Airstrike", 1}
+    {"Airstrike", 1},
+    {"Burst Jewel", 1},
+    {"Radioactive Octopus", 1},
+    {"Canned Soup", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {

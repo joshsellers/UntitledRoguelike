@@ -1649,6 +1649,7 @@ void World::bossDefeated() {
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Canned Soup", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
             break;
         case BABY_BOSS:
@@ -1660,14 +1661,17 @@ void World::bossDefeated() {
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
-            ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
+            if (!LocalAchievementManager::isUnlocked(DEFEAT_SHROOMBOSS)) MessageManager::displayMessage("You unlocked the Fungus Biome!", 8, SPECIAL);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
         case FROG_BOSS:
             achievement = DEFEAT_FROGBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Burst Jewel", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Airstrike", 1);
             break;
         case OCTOPUS_BOSS:
             achievement = DEFEAT_OCTOPUSBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Radioactive Octopus", 1);
             break;
     }
 

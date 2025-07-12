@@ -148,15 +148,15 @@ const Item Item::LIGHT_LASER_CHARGE(21, "Light Laser Charge", sf::IntRect(43, 3,
     EQUIPMENT_TYPE::AMMO, 8, 0, 0, sf::Vector2f(), false, 150
 );
 
-const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_DEPRECATED_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true, true);
 
-const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+const Item Item::LASER_PISTOL(23, "_Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
-    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 80, true,
+    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 80, false,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -373,9 +373,9 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
     }
 );
 
-const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+const Item Item::AUTOLASER(48, "_Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 300, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 300, false,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -836,7 +836,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::PENNY.getId(),                           0},
     {Item::LIGHT_LASER_CHARGE.getId(),              0},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
-    {Item::LASER_PISTOL.getId(),                    18},
+    {Item::LASER_PISTOL.getId(),                    0},
     {Item::PROPANE.getId(),                         0},
     {Item::_PROJECTILE_PROPANE.getId(),             0},
     {Item::BLOW_TORCH.getId(),                      20},
@@ -861,7 +861,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::MATMURA_BOOTS.getId(),                   32},
     {Item::BROADSWORD.getId(),                      8},
     {Item::ENERGY_DRINK.getId(),                    4},
-    {Item::AUTOLASER.getId(),                       24},
+    {Item::AUTOLASER.getId(),                       0},
     {Item::RAILGUN_DART.getId(),                    0},
     {Item::_PROJECTILE_RAILGUN_DART.getId(),        0},
     {Item::RAILGUN.getId(),                         30},

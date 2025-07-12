@@ -5,5 +5,5 @@ textureRect = 23, 13, 1, 1
 isBuyable = true
 rarityTier = 3
 value = 500
-unlockWaveNumber = 30
+conditionalUnlock = true
 functionName = "octopus"
