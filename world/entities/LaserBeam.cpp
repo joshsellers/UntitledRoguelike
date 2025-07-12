@@ -51,7 +51,7 @@ void LaserBeam::draw(sf::RenderTexture& surface) {
     surface.draw(_laser, _useShader ? ShaderManager::getShader("genericwaves_frag") : sf::RenderStates::Default);
 }
 
-bool LaserBeam::collidesWith(sf::FloatRect& hitBox) {
+bool LaserBeam::collidesWith(sf::FloatRect& hitBox) const {
     const int lineCount = _width / 3 + (((_width / 3) & 1) - 1);
     const float distance = _width / ((float)lineCount - 1);
 
@@ -99,19 +99,6 @@ bool LaserBeam::collidesWith(sf::FloatRect& hitBox) {
     }
 
     return false;
-}
-
-bool LaserBeam::linesIntersect(float p0_x, float p0_y, float p1_x, float p1_y,
-    float p2_x, float p2_y, float p3_x, float p3_y) {
-    float s1_x, s1_y, s2_x, s2_y;
-    s1_x = p1_x - p0_x;     s1_y = p1_y - p0_y;
-    s2_x = p3_x - p2_x;     s2_y = p3_y - p2_y;
-
-    float s, t;
-    s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
-    t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
-
-    return s >= 0 && s <= 1 && t >= 0 && t <= 1;
 }
 
 void LaserBeam::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

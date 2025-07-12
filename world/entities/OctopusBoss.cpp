@@ -6,7 +6,7 @@
 OctopusBoss::OctopusBoss(sf::Vector2f pos) : Boss(OCTOPUS_BOSS, pos, 1.0, 12 * TILE_SIZE, 13 * TILE_SIZE, 
     {
         BossState(BEHAVIOR_STATE::REST, 1000, 2000),
-        //BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000),
+        BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000),
         BossState(BEHAVIOR_STATE::INK_RAY, 4000, 5000)
     }) {
     setMaxHitPoints(80000);
@@ -82,7 +82,7 @@ void OctopusBoss::subUpdate() {
     }
 
     if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
-    //else move(xa, ya);
+    else move(xa, ya);
 
     _sprite.setPosition(getPosition());
 
