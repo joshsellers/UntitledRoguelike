@@ -40,6 +40,7 @@
     <ClCompile Include="world\entities\Funguy.cpp" />
     <ClCompile Include="world\entities\ImpactExplosion.cpp" />
     <ClCompile Include="world\entities\LargeMushroom.cpp" />
+    <ClCompile Include="world\entities\LaserBeam.cpp" />
     <ClCompile Include="world\entities\MegaBombBoy.cpp" />
     <ClCompile Include="world\entities\BombBoy.cpp" />
     <ClCompile Include="world\entities\Explosion.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="world\entities\Funguy.h" />
     <ClInclude Include="world\entities\ImpactExplosion.h" />
     <ClInclude Include="world\entities\LargeMushroom.h" />
+    <ClInclude Include="world\entities\LaserBeam.h" />
     <ClInclude Include="world\entities\MegaBombBoy.h" />
     <ClInclude Include="world\entities\BombBoy.h" />
     <ClInclude Include="world\entities\Explosion.h" />

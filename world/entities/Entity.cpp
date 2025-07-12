@@ -701,6 +701,10 @@ bool Entity::isReloading() const {
     return _isReloading;
 }
 
+bool Entity::ignoresViewport() const {
+    return _ignoreViewport;
+}
+
 ENTITY_SAVE_ID Entity::getSaveId() const {
     return _saveId;
 }

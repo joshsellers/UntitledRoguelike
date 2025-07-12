@@ -1,11 +1,13 @@
 #include "OctopusBoss.h"
 #include "../World.h"
 #include "projectiles/Projectile.h"
+#include "LaserBeam.h"
 
 OctopusBoss::OctopusBoss(sf::Vector2f pos) : Boss(OCTOPUS_BOSS, pos, 1.0, 12 * TILE_SIZE, 13 * TILE_SIZE, 
     {
         BossState(BEHAVIOR_STATE::REST, 1000, 2000),
-        BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000)
+        //BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000),
+        BossState(BEHAVIOR_STATE::INK_RAY, 4000, 5000)
     }) {
     setMaxHitPoints(80000);
     heal(getMaxHitPoints());
@@ -80,7 +82,7 @@ void OctopusBoss::subUpdate() {
     }
 
     if (_spawnedWithEnemies) hoardMove(xa, ya, true, 128);
-    else move(xa, ya);
+    //else move(xa, ya);
 
     _sprite.setPosition(getPosition());
 
@@ -99,6 +101,10 @@ void OctopusBoss::subUpdate() {
 }
 
 void OctopusBoss::onStateChange(const BossState previousState, const BossState newState) {
+    if (newState.stateId == INK_RAY) {
+        const float angleChoices[2] = { 0.f, 22.5f };
+        _angleOffset = angleChoices[randomInt(0, 1)];
+    }
 }
 
 void OctopusBoss::runCurrentState() {
@@ -112,6 +118,22 @@ void OctopusBoss::runCurrentState() {
                 const auto proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_INK_BUBBLE"), "NONE", true, false, {-48.f / 2.f, 48.f}, true);
                 proj->setSplitInto("_PROJECTILE_INK_BUBBLE-0", false, true, 4, 4);
                 _lastFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+        case INK_RAY:
+        {
+            const long long fireRateMillis = 1250LL;
+            if (currentTimeMillis() - _lastFireTimeMillis >= fireRateMillis) {
+                const int numLasers = 8;
+                for (int i = 0; i < numLasers; i++) {
+                    const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(this, (360.f / numLasers) * i + _angleOffset, 0xFFFFFFFF, 32, 1000, 10, {0, 156}, true, fireRateMillis));
+                    laser->setWorld(getWorld());
+                    laser->setTextureRect({2064, 1792, TILE_SIZE * 4, TILE_SIZE * 4}, 3, 12, true);
+                    getWorld()->addEntity(laser);
+                }
+                _lastFireTimeMillis = currentTimeMillis();
+                _angleOffset += 22.5f;
             }
             break;
         }

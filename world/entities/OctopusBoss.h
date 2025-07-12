@@ -26,6 +26,7 @@ private:
     long long _lastContactDamageTimeMillis = 0LL;
 
     long long _lastFireTimeMillis = 0LL;
+    float _angleOffset = 0.f;
 };
 
 #endif

@@ -30,6 +30,7 @@ void ShaderManager::compileShaders() {
 void ShaderManager::configureShaders() {
     // waves_frag
     getShader("waves_frag")->setUniform("texture", sf::Shader::CurrentTexture);
+    getShader("genericwaves_frag")->setUniform("texture", sf::Shader::CurrentTexture);
     //getShader("waves_frag")->setUniform("resolution", sf::Glsl::Vec2(CHUNK_SIZE, CHUNK_SIZE));
 
     const siv::PerlinNoise perlin{ (siv::PerlinNoise::seed_type)currentTimeMillis() };
@@ -48,6 +49,7 @@ void ShaderManager::configureShaders() {
     _wavesNoiseTexture.setRepeated(true);
     delete wavesNoiseImage;
     getShader("waves_frag")->setUniform("wavesNoiseTex", _wavesNoiseTexture);
+    getShader("genericwaves_frag")->setUniform("wavesNoiseTex", _wavesNoiseTexture);
 
     sf::Image* capsNoiseImage = new sf::Image;
     capsNoiseImage->create(_capsNoiseSize, _capsNoiseSize, sf::Color::Black);
@@ -62,6 +64,7 @@ void ShaderManager::configureShaders() {
     _capsNoiseTexture.setRepeated(true);
     delete capsNoiseImage;
     getShader("waves_frag")->setUniform("capsNoiseTex", _capsNoiseTexture);
+    getShader("genericwaves_frag")->setUniform("capsNoiseTex", _capsNoiseTexture);
     //
 
     // damage_frag
@@ -72,9 +75,11 @@ void ShaderManager::configureShaders() {
 void ShaderManager::updateShaders() {
     // waves_frag
     getShader("waves_frag")->setUniform("time", _wavesTimer / _wavesNoiseSize);
+    getShader("genericwaves_frag")->setUniform("time", _wavesTimer / _wavesNoiseSize);
     _wavesTimer += 0.05f;
 
     getShader("waves_frag")->setUniform("capsTime", _capsTimer / _capsNoiseSize);
+    getShader("genericwaves_frag")->setUniform("capsTime", _capsTimer / _capsNoiseSize);
     _capsTimer += 0.05;
     //
 }

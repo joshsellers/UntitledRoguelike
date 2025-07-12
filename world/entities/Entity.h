@@ -131,6 +131,8 @@ public:
     virtual void emptyMagazine();
     bool isReloading() const;
 
+    bool ignoresViewport() const;
+
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
 
@@ -223,6 +225,9 @@ protected:
     bool _checkedFear = false;
     bool _isScared = false;
     int _fearTimer = 0;
+
+    // this should hardly ever be set to true
+    bool _ignoreViewport = false;
 
 private:
     const ENTITY_SAVE_ID _saveId;

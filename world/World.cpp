@@ -195,7 +195,7 @@ void World::draw(sf::RenderTexture& surface) {
 
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
-        if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
+        if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()) || entity->ignoresViewport())
             || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
                 || entity->getEntityType() == "player" 
                 || entity->getEntityType() == "shopcounter" 
