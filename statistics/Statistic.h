@@ -37,7 +37,7 @@ inline std::map<STATISTIC, std::string> STAT_NAMES = {
     {TIMES_DIED,            "Deaths"},
     {WAVES_CLEARED,         "Waves cleared"},
     {SHOTS_FIRED,           "Shots fired"},
-    {PENNIES_COLLECTED,     "Pennies collected"},
+    {PENNIES_COLLECTED,     "Pennies looted"},
     {TIMES_ROLLED,          "Rolls"},
     {ITEMS_PURCHASED,       "Items bought"},
     {ITEMS_SOLD,            "Items sold"},

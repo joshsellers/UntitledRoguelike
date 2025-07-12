@@ -64,7 +64,9 @@ private:
         "Slaughterer",
         "Breaking and Entering",
         "Remmy Ribbit",
-        "Remmy Ribbit but harder"
+        "Remmy Ribbit but harder",
+        "Amy Eightlegs",
+        "Amy Eightlegs but harder"
     };
 };
 
