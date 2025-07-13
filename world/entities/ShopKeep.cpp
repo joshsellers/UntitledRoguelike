@@ -82,7 +82,11 @@ void ShopKeep::initInventory(bool visited) {
                 bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
                     || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
                     || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET
+                    || equipType == EQUIPMENT_TYPE::ARMOR_HEAD
+                    || equipType == EQUIPMENT_TYPE::ARMOR_BODY
+                    || equipType == EQUIPMENT_TYPE::ARMOR_LEGS
+                    || equipType == EQUIPMENT_TYPE::ARMOR_FEET;
                 bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
 
                 if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
