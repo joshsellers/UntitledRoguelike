@@ -1656,6 +1656,7 @@ void World::bossDefeated() {
             break;
         case CREAM_BOSS:
             achievement = DEFEAT_CREAMBOSS;
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Bloat Jewel", 1);
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;

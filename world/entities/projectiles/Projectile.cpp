@@ -6,6 +6,8 @@
 #include "ProjectileDataManager.h"
 #include "ProjectilePoolManager.h"
 #include "../../../core/Viewport.h"
+#include "../../../inventory/abilities/AbilityManager.h"
+#include "../../../inventory/abilities/Ability.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -29,6 +31,13 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
         _hitBoxYOffset = _data.hitBox.top;
         _hitBox.width = _data.hitBox.width;
         _hitBox.height = _data.hitBox.height;
+
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) {
+            _hitBoxXOffset *= 2;
+            _hitBoxYOffset *= 2;
+            _hitBox.width *= 2;
+            _hitBox.height *= 2;
+        }
 
         if (_explosionBehavior == EXPLOSION_BEHAVIOR::DEFER_TO_DATA) _explosionBehavior = _data.explosionBehavior;
     } else {
@@ -289,6 +298,7 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
+
     if (_data.rotateSprite) _sprite.setRotation(_directionAngle * (180.f / PI));
     else _sprite.setRotation(0);
 
@@ -343,6 +353,15 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _hitBoxYOffset = _data.hitBox.top;
     _hitBox.width = _data.hitBox.width;
     _hitBox.height = _data.hitBox.height; 
+
+    if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) {
+        _hitBoxXOffset *= 2;
+        _hitBoxYOffset *= 2;
+        _hitBox.width *= 2;
+        _hitBox.height *= 2;
+        _sprite.setScale(2.f, 2.f);
+    }
+
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 
