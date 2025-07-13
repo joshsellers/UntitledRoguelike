@@ -2288,9 +2288,9 @@ void Game::changeMagMeterColor() {
             _magazineMeter->setColor(0xD21919FF);
         } else if (_player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Penny Cannon")) {
             _magazineMeter->setColor(0xFFD700FF);
+        } else {
+            _magazineMeter->setColor(0x787878FF);
         }
-    } else if (_gameStarted && !_isPaused) {
-        _magazineMeter->setColor(0x787878FF);
     }
 }
 
