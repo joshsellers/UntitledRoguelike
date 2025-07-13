@@ -1637,12 +1637,22 @@ void World::bossDefeated() {
     switch (getCurrentBoss()->getSaveId()) {
         case CHEESE_BOSS:
             achievement = DEFEAT_CHEESEBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("SMG", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Assault Rifle", 1);
             break;
         case CANNON_BOSS:
             achievement = DEFEAT_CANNONBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Rocket Launcher", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Laser Pistol", 1);
             break;
         case TREE_BOSS:
             achievement = DEFEAT_TREEBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Leaf Hat", 1);
+            if (HARD_MODE_ENABLED) {
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Cuirass", 1);
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Greaves", 1);
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Sabatons", 1);
+            }
             break;
         case CREAM_BOSS:
             achievement = DEFEAT_CREAMBOSS;
@@ -1654,10 +1664,12 @@ void World::bossDefeated() {
             break;
         case BABY_BOSS:
             achievement = DEFEAT_BABYBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Railgun", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Minigun", 1);
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Speed Pill", 1);
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
@@ -1671,7 +1683,8 @@ void World::bossDefeated() {
             break;
         case OCTOPUS_BOSS:
             achievement = DEFEAT_OCTOPUSBOSS;
-            ConditionalUnlockManager::increaseUnlockProgress("Radioactive Octopus", 1);
+            ConditionalUnlockManager::increaseUnlockProgress("Autolaser", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Radioactive Octopus", 1);
             break;
     }
 

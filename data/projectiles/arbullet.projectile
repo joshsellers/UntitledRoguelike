@@ -1,0 +1,4 @@
+itemName = "_PROJECTILE_ASSAULT_RIFLE"
+velocity = 8
+hitBox = 6, 8, 4, 4
+rotate = true

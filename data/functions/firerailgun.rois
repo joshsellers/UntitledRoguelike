@@ -1,0 +1,5 @@
+weaponIsLoaded = player.weaponIsLoaded();
+if: weaponIsLoaded {
+    playSound("railgun");
+    player.fireProjectile("_PROJECTILE_RAILGUN_DART", 5);
+}

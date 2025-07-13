@@ -1,0 +1,7 @@
+name = "Leaf Hat"
+description = "Leaf your problems behind"
+equipmentType = CLOTHING_HEAD
+isBuyable = true
+value = 5
+conditionalUnlock = true
+textureRect = 36, 157, 1, 1

@@ -129,7 +129,7 @@ const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 
 );
 const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true, true);
 
-const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
+const Item Item::ASSAULT_RIFLE(19, "_Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 200, true,
     [](Entity* parent) {
@@ -393,7 +393,7 @@ const Item Item::_PROJECTILE_RAILGUN_DART(50, "_RAILGUN_DART_PROJECTILE", sf::In
 );
 const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGUN_DART.getId(), 15, sf::IntRect(8, 8, 8, 8), true, true);
 
-const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
+const Item Item::RAILGUN(51, "_Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
     "Harness the power of electromagnets\nto solve your problems",
     EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 500, true,
     [](Entity* parent) {
@@ -832,7 +832,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::OVERALLS.getId(),                        6},
     {Item::BOOTS.getId(),                           6},
     {Item::RIFLE_ROUND.getId(),                     0},
-    {Item::ASSAULT_RIFLE.getId(),                   16},
+    {Item::ASSAULT_RIFLE.getId(),                   0},
     {Item::PENNY.getId(),                           0},
     {Item::LIGHT_LASER_CHARGE.getId(),              0},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
@@ -864,7 +864,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::AUTOLASER.getId(),                       0},
     {Item::RAILGUN_DART.getId(),                    0},
     {Item::_PROJECTILE_RAILGUN_DART.getId(),        0},
-    {Item::RAILGUN.getId(),                         30},
+    {Item::RAILGUN.getId(),                         0},
     {Item::GASOLINE.getId(),                        0},
     {Item::_PROJECITLE_CHAINSAW.getId(),            0},
     {Item::CHAINSAW.getId(),                        34},

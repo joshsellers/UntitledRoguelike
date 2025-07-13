@@ -1,0 +1,15 @@
+name = "Railgun"
+description = "Harness the power of electromagnets\nto solve your problems"
+isGun = true
+equipmentType = TOOL
+damage = 1
+barrelPos = 40, 1
+isBuyable = true
+conditionalUnlock = true
+value = 500
+magazineSize = 1
+isAutomatic = true
+fireRate = 0
+reloadTime = 500
+textureRect = 68, 0 , 1, 1
+functionName = "firerailgun"
