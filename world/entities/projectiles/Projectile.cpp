@@ -360,6 +360,8 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
         _hitBox.width *= 2;
         _hitBox.height *= 2;
         _sprite.setScale(2.f, 2.f);
+    } else {
+        _sprite.setScale(1.f, 1.f);
     }
 
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
