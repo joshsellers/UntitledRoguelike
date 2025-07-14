@@ -30,6 +30,7 @@ public:
     static const Ability PERMANENT_ARMOR;
     static const Ability AIR_STRIKE;
     static const Ability BIG_BULLETS;
+    static const Ability CONTACT_DAMAGE;
 
     static std::vector<Ability*> ABILITIES;
 

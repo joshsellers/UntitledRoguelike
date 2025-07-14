@@ -789,6 +789,16 @@ void Player::damage(int damage) {
             _hitPoints = 0;
         }
 
+        if (AbilityManager::playerHasAbility(Ability::CONTACT_DAMAGE.getId())) {
+            const int contactDamage = AbilityManager::getParameter(Ability::CONTACT_DAMAGE.getId(), "damage");
+            for (const auto& enemy : getWorld()->getEnemies()) {
+                if (enemy->isActive() && enemy->getHitBox().intersects(getHitBox())) {
+                    enemy->takeDamage(contactDamage);
+                    StatManager::increaseStat(DAMAGE_DEALT, contactDamage);
+                }
+            }
+        }
+
         if (!getWorld()->onEnemySpawnCooldown()) {
             AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "damageThisWave", 1.f);
             AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);

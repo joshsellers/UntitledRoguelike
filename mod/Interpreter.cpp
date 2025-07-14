@@ -543,3 +543,7 @@ void Interpreter::skipStringLit(int& index, std::vector<int> bytecode) {
     int strSize = bytecode.at(index + 1);
     index += strSize + 1;
 }
+
+void Interpreter::formatString(std::string& str) {
+
+}
