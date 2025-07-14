@@ -89,6 +89,10 @@ bool stringEndsWith(std::string const& fullString, std::string const& ending) {
     }
 }
 
+bool stringContains(std::string str, std::string contained) {
+    return str.find(contained) != std::string::npos;
+}
+
 bool isNumber(std::string s) {
     return !s.empty() && s.find_first_not_of("0123456789.") == std::string::npos;
 }

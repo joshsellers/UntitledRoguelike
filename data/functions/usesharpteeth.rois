@@ -11,6 +11,6 @@ damageIncrease = random(1, 3);
 newDamage = damageIncrease + currentDamage;
 player.setAbilityParameter("Contact Damage", "damage", newDamage);
 
-displayMessage("Increased contact damage by {damageIncrease}", 5);
+displayMessage("Increased bite damage by {damageIncrease}", 5);
 
 return true;

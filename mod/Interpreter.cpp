@@ -29,6 +29,9 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
             for (int j = 0; j < strSize; j++) {
                 str += (char)bytecode.at(i + 2 + j);
             }
+
+            if (stringContains(str, "{") && stringContains(str, "}")) formatString(str);
+
             strPush(str);
             i += strSize + 2;
         } else if (inst == INSTRUCTION::IF) {
@@ -545,5 +548,6 @@ void Interpreter::skipStringLit(int& index, std::vector<int> bytecode) {
 }
 
 void Interpreter::formatString(std::string& str) {
-
+    const int addr = std::stoi(splitString(splitString(str, "{")[1], "}")[0]);
+    replaceAll(str, "{" + std::to_string(addr) + "}", std::to_string((int)_register[addr]));
 }

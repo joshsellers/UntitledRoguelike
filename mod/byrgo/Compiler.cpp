@@ -77,6 +77,14 @@ std::string Compiler::compile(std::string assembly) {
                 bytecode.push_back((int)INSTRUCTION::STR);
                 std::string str = value;
                 replaceAll(str, "\"", "");
+
+                if (stringContains(str, "{") && stringContains(str, "}")) {
+                    const std::string varName = splitString(splitString(str, "{")[1], "}")[0];
+                    int varIndex = 0;
+                    findVar(varName, varIndex);
+                    replaceAll(str, varName, std::to_string(varIndex));
+                }
+
                 int strSize = (int)str.size();
                 if (strSize > 255) {
                     MessageManager::displayMessage("String should not be greater than 255 characters", 5, WARN);
