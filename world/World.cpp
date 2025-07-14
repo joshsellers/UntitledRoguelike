@@ -1671,6 +1671,7 @@ void World::bossDefeated() {
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
             ConditionalUnlockManager::increaseUnlockProgress("Speed Pill", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Sharp Teeth", 1);
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
