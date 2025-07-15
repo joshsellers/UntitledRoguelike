@@ -859,7 +859,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::MATMURA_CHESTPLATE.getId(),              32},
     {Item::MATMURA_LEGGINGS.getId(),                32},
     {Item::MATMURA_BOOTS.getId(),                   32},
-    {Item::BROADSWORD.getId(),                      8},
+    {Item::BROADSWORD.getId(),                      0},
     {Item::ENERGY_DRINK.getId(),                    4},
     {Item::AUTOLASER.getId(),                       0},
     {Item::RAILGUN_DART.getId(),                    0},
