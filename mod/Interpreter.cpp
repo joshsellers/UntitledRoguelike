@@ -532,6 +532,71 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 MessageManager::displayMessage("player.getSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
             }
             i++;
+        } else if (inst == INSTRUCTION::ESETPOS) {
+            if (entity != nullptr) {
+                const float y = pop();
+                const float x = pop();
+                entity->move(x - entity->getPosition().x, y - entity->getPosition().y);
+            } else {
+                MessageManager::displayMessage("entity.setPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EGETPOSX) {
+            if (entity != nullptr) {
+                push(entity->getPosition().x);
+            } else {
+                MessageManager::displayMessage("entity.getXPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EGETPOSY) {
+            if (entity != nullptr) {
+                push(entity->getPosition().y);
+            } else {
+                MessageManager::displayMessage("entity.getYPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EROT) {
+            if (entity != nullptr) {
+                const float angle = pop();
+                entity->getSprite().rotate(angle);
+            } else {
+                MessageManager::displayMessage("entity.rotate() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::ESETSCALE) {
+            if (entity != nullptr) {
+                const float scaleY = pop();
+                const float scaleX = pop();
+                entity->getSprite().setScale(scaleX, scaleY);
+            } else {
+                MessageManager::displayMessage("entity.setScale() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::RANDPROB) {
+            const float chance = pop() / 100.f;
+            push(randomChance(chance));
+            i++;
+        } else if (inst == INSTRUCTION::POW) {
+            const float exponent = pop();
+            const float base = pop();
+            push(std::pow(base, exponent));
+            i++;
+        } else if (inst == INSTRUCTION::SQRT) {
+            const float radicand = pop();
+            push(std::sqrt(radicand));
+            i++;
+        } else if (inst == INSTRUCTION::SIN) {
+            const float angle = degToRads(pop());
+            push(std::sin(angle));
+            i++;
+        } else if (inst == INSTRUCTION::COS) {
+            const float angle = degToRads(pop());
+            push(std::cos(angle));
+            i++;
+        } else if (inst == INSTRUCTION::TAN) {
+            const float angle = degToRads(pop());
+            push(std::tan(angle));
+            i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);
             i++;

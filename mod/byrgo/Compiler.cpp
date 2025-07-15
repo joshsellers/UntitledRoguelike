@@ -61,7 +61,18 @@ std::string Compiler::compile(std::string assembly) {
         {"player.getStaminaRestoreRate",    INSTRUCTION::PLGETSTAMINARESTORE},
         {"player.setSpeedMultiplier",       INSTRUCTION::PLSETSPEEDMULT},
         {"player.getSpeedMultiplier",       INSTRUCTION::PLGETSPEEDMULT},
-        {"player.removeItem",               INSTRUCTION::PLRMITEM}
+        {"player.removeItem",               INSTRUCTION::PLRMITEM},
+        {"entity.setPosition",              INSTRUCTION::ESETPOS},
+        {"entity.getXPosition",             INSTRUCTION::EGETPOSX},
+        {"entity.getYPosition",             INSTRUCTION::EGETPOSY},
+        {"entity.rotate",                   INSTRUCTION::EROT},
+        {"entity.setScale",                 INSTRUCTION::ESETSCALE},
+        {"randomChance",                    INSTRUCTION::RANDPROB},
+        {"pow",                             INSTRUCTION::POW},
+        {"sqrt",                            INSTRUCTION::SQRT},
+        {"sin",                             INSTRUCTION::SIN},
+        {"cos",                             INSTRUCTION::COS},
+        {"tan",                             INSTRUCTION::TAN}
     };
 
     std::vector<int> bytecode;
