@@ -1656,6 +1656,7 @@ void World::bossDefeated() {
             break;
         case CREAM_BOSS:
             achievement = DEFEAT_CREAMBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Scythe", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Bloat Jewel", 1);
             break;
         case CHEF_BOSS:
@@ -1675,7 +1676,10 @@ void World::bossDefeated() {
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
-            if (!LocalAchievementManager::isUnlocked(DEFEAT_SHROOMBOSS)) MessageManager::displayMessage("You unlocked the Fungus Biome!", 8, SPECIAL);
+            if (!LocalAchievementManager::isUnlocked(DEFEAT_SHROOMBOSS)) {
+                MessageManager::displayMessage("You unlocked the Fungus Biome!", 8, SPECIAL);
+                SoundManager::playSound("itemunlock");
+            }
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
         case FROG_BOSS:

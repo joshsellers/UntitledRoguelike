@@ -60,6 +60,7 @@
 #include "../world/entities/FallingBomb.h"
 #include "../world/entities/Thief.h"
 #include "../world/entities/OctopusBoss.h"
+#include "../world/entities/Scythe.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -364,6 +365,8 @@ private:
                             entity = std::shared_ptr<Thief>(new Thief(pos, true));
                         } else if (entityName == "octopusboss") {
                             entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
+                        } else if (entityName == "scythe") {
+                            entity = std::shared_ptr<Scythe>(new Scythe(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

@@ -51,6 +51,7 @@
     <ClCompile Include="world\entities\Mushroid.cpp" />
     <ClCompile Include="world\entities\MushroomBoss.cpp" />
     <ClCompile Include="world\entities\OctopusBoss.cpp" />
+    <ClCompile Include="world\entities\Scythe.cpp" />
     <ClCompile Include="world\entities\ShopATM.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
     <ClCompile Include="world\entities\Lightning.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="world\entities\MushroomBoss.h" />
     <ClInclude Include="world\entities\OctopusBoss.h" />
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
+    <ClInclude Include="world\entities\Scythe.h" />
     <ClInclude Include="world\entities\ShopATM.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />

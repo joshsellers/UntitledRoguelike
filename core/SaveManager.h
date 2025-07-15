@@ -974,6 +974,9 @@ private:
                 case OCTOPUS_BOSS:
                     entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
                     break;
+                case SCYTHE:
+                    entity = std::shared_ptr<Scythe>(new Scythe(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

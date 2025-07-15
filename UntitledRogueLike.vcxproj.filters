@@ -594,6 +594,9 @@
     <ClCompile Include="world\entities\LaserBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\Scythe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1089,6 +1092,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\LaserBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\Scythe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

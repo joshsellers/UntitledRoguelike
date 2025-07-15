@@ -1,0 +1,2 @@
+runFunction("BUILTIN_spawnScythe");
+return true;

@@ -1,0 +1,9 @@
+name = "Scythe"
+description = "Doesn't seem to work like a normal sycthe..."
+isBuyable = true
+value = 250
+rarityTier = 2
+conditionalUnlock = true
+isConsumable = true
+functionName = "usescythe"
+textureRect = 57, 0, 1, 1
