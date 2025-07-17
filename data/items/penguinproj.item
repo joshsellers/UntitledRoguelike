@@ -1,0 +1,4 @@
+name = "_PROJECTILE_PENGUIN"
+description = "This item should not be obtainable."
+damage = 12
+textureRect = 152, 3, 1, 1

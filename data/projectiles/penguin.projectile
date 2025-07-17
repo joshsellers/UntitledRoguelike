@@ -1,0 +1,5 @@
+itemName = "_PROJECTILE_PENGUIN"
+velocity = 6.0
+rotate = true
+lifeTime = 5000
+hitBox = 2, 2, 14, 14

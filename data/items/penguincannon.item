@@ -1,0 +1,12 @@
+name = "Penguin Cannon"
+description = "They love it"
+conditionalUnlock = true
+isBuyable = true
+value = 450
+isGun = true
+equipmentType = TOOL
+barrelPos = 24, 0
+reloadTime = 900
+magazineSize = 1
+functionName = "firepenguincannon"
+textureRect = 152, 0, 1, 1
