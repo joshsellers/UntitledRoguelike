@@ -21,7 +21,7 @@
 
 const std::string GAME_NAME = "pennylooter";
 
-class Game : public UIButtonListener, public GamePadListener {
+class Game : public UIButtonListener, public GamePadListener, public EndGameSequenceListener {
 public:
 	Game(sf::View* camera, sf::RenderWindow* window);
 
@@ -48,6 +48,9 @@ public:
 	void textEntered(sf::Uint32 character);
 
 	bool gameIsStarted() const;
+
+	virtual void onEndGameSequenceStart();
+	virtual void onEndGameSequenceEnd();
 
 private:
 	void initUI();

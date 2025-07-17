@@ -21,6 +21,8 @@ void MusicManager::start() {
         }
     }
 
+    _creditsSongs = {_mainMenuSongs.at(0), _cooldownSongs.at(0), _waveSongs.at(0), _bossSongs.at(0), _shopSongs.at(0)};
+
     std::thread musicThread(MusicManager::run);
     musicThread.detach();
 }
@@ -41,9 +43,12 @@ void MusicManager::run() {
     while (!_isHalted) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)(250.f)));
 
-        if (_situation != _lastSituation) {
+        if (_situation != _lastSituation || _situation == MUSIC_SITUTAION::CREDITS) {
             _lastSituation = _situation;
-            SoundManager::stopMusic();
+            if (_situation != MUSIC_SITUTAION::CREDITS || _creditsSongIndex == -1) {
+                SoundManager::stopMusic();
+                if (_creditsSongIndex >= 0) _creditsSongIndex = -1;
+            }
 
             switch (_situation) {
                 case MUSIC_SITUTAION::MAIN_MENU:
@@ -86,6 +91,13 @@ void MusicManager::run() {
                         SoundManager::playSong(_deathSongs.at(randomInt(0, _deathSongs.size() - 1)));
                     } else if (_deathSongs.size() == 1) {
                         SoundManager::playSong(_deathSongs.at(0));
+                    }
+                    break;
+                case MUSIC_SITUTAION::CREDITS:
+                    if (!SoundManager::musicIsPlaying() || _creditsSongIndex == -1) {
+                        _creditsSongIndex++;
+                        if (_creditsSongIndex == _creditsSongs.size()) _creditsSongIndex = 0;
+                        SoundManager::playSong(_creditsSongs.at(_creditsSongIndex), false);
                     }
                     break;
             }

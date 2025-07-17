@@ -21,11 +21,21 @@ public:
         sounds[soundName].setVolume(volume);
     }
 
-    static void playSong(std::string musicName) {
+    static void playSong(std::string musicName, bool loop = true) {
         stopMusic();
+        music[musicName].setLooping(loop);
         _currentSong = soloud.play(music[musicName]);
+        _songLength = music[musicName].getLength();
         _songIsPlaying = true;
-        music[musicName].setLooping(true);
+        _songStartTimeMillis = currentTimeMillis();
+    }
+
+    static bool musicIsPlaying() {
+        if (soloud.getLooping(_currentSong)) {
+            return _songIsPlaying;
+        } else {
+            return (double)currentTimeMillis() / 1000. - (double)_songStartTimeMillis / 1000. < _songLength;
+        }
     }
 
     static void stopSong(std::string songName) {
@@ -132,6 +142,8 @@ private:
 
     inline static SoLoud::handle _currentSong;
     inline static bool _songIsPlaying = false;
+    inline static SoLoud::time _songLength = 0;
+    inline static long long _songStartTimeMillis = 0;
 };
 
 #endif

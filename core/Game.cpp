@@ -25,6 +25,7 @@
 #include "../world/MiniMapGenerator.h"
 #include "../statistics/LocalAchievementManager.h"
 #include "../ui/UIAchievementDisplay.h"
+#include "EndGameSequence.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1210,7 +1211,7 @@ void Game::update() {
         }
 
         if (_world.playerIsInShop() && !_shopKeep->isActive() && _shopMenu->isActive()) toggleShopMenu();
-        _world.update();
+        if (!EndGameSequence::isActive()) _world.update();
 
         if (_world.bossIsActive() && !_bossHUDMenu->isActive()) {
             auto& boss = _world.getCurrentBoss();
@@ -1294,6 +1295,8 @@ void Game::update() {
         }
     }
     _camera->setCenter(_player->getSprite().getPosition().x + (float)PLAYER_WIDTH / 2.f, _player->getSprite().getPosition().y + (float)PLAYER_HEIGHT / 2.f);
+
+    if (EndGameSequence::isActive()) EndGameSequence::update();
 }
 
 void Game::displayEnemyWaveCountdownUpdates() {
@@ -1362,6 +1365,8 @@ void Game::drawUI(sf::RenderTexture& surface) {
             _frameCounter++;
         }
     }
+
+    if (EndGameSequence::isActive()) EndGameSequence::draw(surface);
 
     if (!_hideUI) {
         if (_gameStarted && (_controlsMenu->isActive() || _inputBindingsMenu->isActive() || _statsMenu_pauseMenu->isActive() || _audioMenu->isActive())) {
@@ -2050,6 +2055,8 @@ void Game::buttonPressed(std::string buttonCode) {
 }
 
 void Game::keyPressed(sf::Keyboard::Key& key) {
+    if (EndGameSequence::isActive()) return;
+
     _ui->keyPressed(key);
     _player->keyPressed(key);
 
@@ -2060,6 +2067,11 @@ void Game::keyPressed(sf::Keyboard::Key& key) {
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
+    if (EndGameSequence::isActive() && key != sf::Keyboard::Enter) {
+        EndGameSequence::end();
+        return;
+    }
+
     switch (key) {
     case sf::Keyboard::F3:
         _showDebug = !_showDebug;
@@ -2129,6 +2141,8 @@ void Game::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll)
 }
 
 void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
+    if (EndGameSequence::isActive()) return;
+
     if (_interactReleased && button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT)) {
         _interactPressTime = currentTimeMillis();
         _interactReleased = false;
@@ -2136,6 +2150,11 @@ void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
 }
 
 void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
+    if (EndGameSequence::isActive()) {
+        EndGameSequence::end();
+        return;
+    }
+
     if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
         buttonPressed("virtkey:back");
     } else if (button == GAMEPAD_BUTTON::Y && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
@@ -2441,6 +2460,22 @@ void Game::textEntered(sf::Uint32 character) {
 
 bool Game::gameIsStarted() const {
     return _gameStarted;
+}
+
+void Game::onEndGameSequenceStart() {
+    _startMenu->hide();
+    _HUDMenu->hide();
+    _bossHUDMenu->hide(); 
+    _controlsDisplayMenu->hide();
+    if (_inventoryMenu->isActive()) toggleInventoryMenu();
+    if (_shopMenu->isActive()) toggleShopMenu();
+    if (_miniMapMenu->isActive()) toggleMiniMapMenu();
+}
+
+void Game::onEndGameSequenceEnd() {
+    if (SELECTED_SAVE_FILE != SAVE_FILE_NOT_SELECTED) SaveManager::deleteSaveFile();
+    _gameStarted = false;
+    buttonPressed("mainmenu");
 }
 
 void Game::displayStartupMessages() const {

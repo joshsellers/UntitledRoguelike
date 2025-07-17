@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core\EndGameSequence.cpp" />
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
     <ClCompile Include="statistics\LocalAchievementManager.cpp" />
     <ClCompile Include="ui\UIAchievementDisplay.cpp" />
@@ -215,6 +216,8 @@
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\EndGameSequenceListener.h" />
+    <ClInclude Include="core\EndGameSequence.h" />
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
     <ClInclude Include="statistics\LocalAchievementManager.h" />
     <ClInclude Include="ui\UIAchievementDisplay.h" />

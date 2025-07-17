@@ -26,6 +26,9 @@ private:
     static inline std::vector<std::string> _bossSongs;
     static inline std::vector<std::string> _shopSongs;
     static inline std::vector<std::string> _deathSongs;
+    static inline std::vector<std::string> _creditsSongs;
+
+    static inline int _creditsSongIndex = -1;
 };
 
 #endif

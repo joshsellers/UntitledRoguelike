@@ -20,6 +20,7 @@
 #include "../inventory/ConditionalUnlockManager.h"
 #include "SaveManager.h"
 #include "../statistics/LocalAchievementManager.h"
+#include "EndGameSequence.h"
 
 
 #ifndef DBGBLD
@@ -234,6 +235,7 @@ int main() {
 
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     GamePad::addListener(game);
+    EndGameSequence::addListener(game);
 
     sf::Event event;
 

@@ -61,6 +61,7 @@
 #include "../world/entities/Thief.h"
 #include "../world/entities/OctopusBoss.h"
 #include "../world/entities/Scythe.h"
+#include "../core/EndGameSequence.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -1059,6 +1060,15 @@ private:
                 } else {
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
+            })
+        },
+
+        {
+            "rollcredits",
+            Command("Start the end game sequence",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                EndGameSequence::start();
+                return "Started the end game sequence";
             })
         }
     };
