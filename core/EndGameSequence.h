@@ -16,12 +16,14 @@ public:
     static void draw(sf::RenderTexture& surface);
 
     static bool isActive();
+    static bool fadeComplete();
 
     static void addListener(std::shared_ptr<EndGameSequenceListener> listener);
 private:
     inline static std::vector<std::shared_ptr<EndGameSequenceListener>> _listeners;
 
     inline static bool _isActive = false;
+    inline static bool _fadeComplete = false;
 
     inline static sf::Font _font;
     inline static std::vector<std::string> _creditsStrings;

@@ -20,6 +20,7 @@ void EndGameSequence::end() {
     _bgAlpha = 0x00;
     _scrollPosY = 102;
     _creditsStrings.clear();
+    _fadeComplete = false;
     for (const auto& listener : _listeners) listener->onEndGameSequenceEnd();
 }
 
@@ -31,6 +32,7 @@ void EndGameSequence::update() {
         if (currentTimeMillis() - _lastFadeIncrease >= fadeRate && _bgAlpha < 0xAA) {
             _bgAlpha++;
         } else if (_bgAlpha == 0xAA) {
+            _fadeComplete = true;
             constexpr float creditsRollSpeed = 0.14f;
             _scrollPosY -= creditsRollSpeed;
         }
@@ -59,6 +61,10 @@ void EndGameSequence::draw(sf::RenderTexture& surface) {
 
 bool EndGameSequence::isActive() {
     return _isActive;
+}
+
+bool EndGameSequence::fadeComplete() {
+    return _fadeComplete;
 }
 
 void EndGameSequence::addListener(std::shared_ptr<EndGameSequenceListener> listener) {

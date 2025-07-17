@@ -2076,7 +2076,7 @@ void Game::keyPressed(sf::Keyboard::Key& key) {
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
-    if (EndGameSequence::isActive() && key != sf::Keyboard::Enter && key != sf::Keyboard::F3 && key != sf::Keyboard::F10 && !_commandMenu->isActive()) {
+    if (EndGameSequence::isActive() && EndGameSequence::fadeComplete() && key != sf::Keyboard::Enter && key != sf::Keyboard::F3 && key != sf::Keyboard::F10 && !_commandMenu->isActive()) {
         EndGameSequence::end();
         return;
     }
@@ -2159,7 +2159,7 @@ void Game::controllerButtonPressed(GAMEPAD_BUTTON button) {
 }
 
 void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
-    if (EndGameSequence::isActive()) {
+    if (EndGameSequence::isActive() && EndGameSequence::fadeComplete()) {
         EndGameSequence::end();
         return;
     }
