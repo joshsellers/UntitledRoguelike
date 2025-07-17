@@ -2079,7 +2079,7 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
     if (EndGameSequence::isActive() && EndGameSequence::fadeComplete() && key != sf::Keyboard::Enter && key != sf::Keyboard::F3 && key != sf::Keyboard::F10 && !_commandMenu->isActive()) {
         EndGameSequence::end();
         return;
-    }
+    } else if (EndGameSequence::isActive() && key != sf::Keyboard::Enter && key != sf::Keyboard::F3 && key != sf::Keyboard::F10 && !_commandMenu->isActive()) return;
 
     switch (key) {
     case sf::Keyboard::F3:
@@ -2162,7 +2162,7 @@ void Game::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (EndGameSequence::isActive() && EndGameSequence::fadeComplete()) {
         EndGameSequence::end();
         return;
-    }
+    } else if (EndGameSequence::isActive()) return;
 
     if (button == GAMEPAD_BUTTON::B && (_virtualKeyboardMenu_lower->isActive() || _virtualKeyboardMenu_upper->isActive())) {
         buttonPressed("virtkey:back");
