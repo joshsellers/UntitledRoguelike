@@ -19,6 +19,7 @@ void EndGameSequence::end() {
 
     _bgAlpha = 0x00;
     _scrollPosY = 102;
+    _creditsStrings.clear();
     for (const auto& listener : _listeners) listener->onEndGameSequenceEnd();
 }
 
