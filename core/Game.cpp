@@ -542,11 +542,17 @@ void Game::initUI() {
     ));
     controlsButton->setSelectionId(2);
     _startMenu->addElement(controlsButton);
+
+    std::shared_ptr<UIButton> creditsButton = std::shared_ptr<UIButton>(new UIButton(
+        50, 69, 9, 3, "credits", _font, this, "credits", true
+    ));
+    creditsButton->setSelectionId(3);
+    _startMenu->addElement(creditsButton);
     
     std::shared_ptr<UIButton> exitGameButton = std::shared_ptr<UIButton>(new UIButton(
-        50, 69, 9, 3, "exit game", _font, this, "exit", true
+        50, 76, 9, 3, "exit game", _font, this, "exit", true
     ));
-    exitGameButton->setSelectionId(3);
+    exitGameButton->setSelectionId(4);
     _startMenu->addElement(exitGameButton);
 
     _startMenu->useGamepadConfiguration = true;
@@ -555,6 +561,7 @@ void Game::initUI() {
             {startButton->getSelectionId()},
             {settingsButton_mainMenu->getSelectionId()},
             {controlsButton->getSelectionId()},
+            {creditsButton->getSelectionId()},
             {exitGameButton->getSelectionId()}
         }
     );
@@ -2051,6 +2058,8 @@ void Game::buttonPressed(std::string buttonCode) {
         }
 
         _confirmationMenu->hide();
+    } else if (buttonCode == "credits") {
+        EndGameSequence::start();
     }
 }
 
@@ -2067,7 +2076,7 @@ void Game::keyPressed(sf::Keyboard::Key& key) {
 }
 
 void Game::keyReleased(sf::Keyboard::Key& key) {
-    if (EndGameSequence::isActive() && key != sf::Keyboard::Enter) {
+    if (EndGameSequence::isActive() && key != sf::Keyboard::Enter && key != sf::Keyboard::F3 && key != sf::Keyboard::F10 && !_commandMenu->isActive()) {
         EndGameSequence::end();
         return;
     }
