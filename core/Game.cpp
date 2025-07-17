@@ -236,6 +236,12 @@ void Game::initUI() {
     statsMenuButton_pause->setSelectionId(4);
     _pauseMenu->addElement(statsMenuButton_pause);
 
+    std::shared_ptr<UILabel> pausedLabel_pause = std::shared_ptr<UILabel>(new UILabel(
+        "paused", 50.f, 10.f, 2.5f, _font
+    ));
+    pausedLabel_pause->setTextOutlineThickness(2.f);
+    _pauseMenu->addElement(pausedLabel_pause);
+
     _pauseMenu->useGamepadConfiguration = true;
     _pauseMenu->defineSelectionGrid(
         {
@@ -273,6 +279,8 @@ void Game::initUI() {
     ));
     audioSettingsButton_pauseMenu->setSelectionId(3);
     _pauseMenu_settings->addElement(audioSettingsButton_pauseMenu);
+
+    _pauseMenu_settings->addElement(pausedLabel_pause);
 
     _pauseMenu_settings->useGamepadConfiguration = true;
     _pauseMenu_settings->defineSelectionGrid(
