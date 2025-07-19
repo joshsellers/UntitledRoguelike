@@ -85,7 +85,7 @@ private:
         {TUTORIAL_STEP::USE_BEE, "Great! The bee will attack enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies.\n\nHold B to start the first wave when you're ready."},
         {TUTORIAL_STEP::CLEAR_WAVE_1, "You beat the first wave!\nNow you should find a shop and buy a bow."},
         {TUTORIAL_STEP::BUY_BOW, "Excellent. Now open your inventory and equip the bow."},
-        {TUTORIAL_STEP::EQUIP_BOW, "Great! Press X to load your weapon."},
+        {TUTORIAL_STEP::EQUIP_BOW, "Great! Press X to load your weapon.\nYou can use the right joystick to aim, and\nthe right trigger to shoot."},
         {TUTORIAL_STEP::RELOAD_BOW, "That's about it! Get ready for the next wave.\nYou can hold B to skip the cooldown.\nNo respawning anymore!"}
     };
 
