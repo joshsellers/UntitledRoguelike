@@ -10,8 +10,8 @@
 
 enum class TUTORIAL_STEP {
     START,
-    PICK_UP_SLIMEBALL,
-    EQUIP_SLIMEBALL,
+    PICK_UP_BEE,
+    USE_BEE,
     CLEAR_WAVE_1,
     BUY_BOW,
     EQUIP_BOW,
@@ -30,12 +30,20 @@ public:
         }
 
         if (!isCompleted() && _currentStep == step) {
-            if (GamePad::isConnected()) {
-                MessageManager::displayMessage(_messagesGamepad[_currentStep], 10);
-            } else {
-                MessageManager::displayMessage(_messagesKeyboard[_currentStep], 10);
+            int timeout = (int)_currentStep + 1;
+            int messageType = TUTORIAL;
+            if (_currentStep == TUTORIAL_STEP::RELOAD_BOW) {
+                timeout = 10;
+                messageType = NORMAL;
             }
 
+            if (GamePad::isConnected()) {
+                MessageManager::displayMessage(_messagesGamepad[_currentStep], timeout, messageType);
+            } else {
+                MessageManager::displayMessage(_messagesKeyboard[_currentStep], timeout, messageType);
+            }
+
+            MessageManager::clearTutorialMessage((int)_currentStep);
             _currentStep = (TUTORIAL_STEP)((int)_currentStep + 1);
             if (_currentStep == TUTORIAL_STEP::END) {
                 _tutorialCompleted = true;
@@ -62,9 +70,9 @@ public:
     
 private:
     inline static std::map<TUTORIAL_STEP, std::string> _messagesKeyboard = {
-        {TUTORIAL_STEP::START, "Pick up that green orb."},
-        {TUTORIAL_STEP::PICK_UP_SLIMEBALL, "Now press tab to open the inventory, and\nclick the slime ball to equip it."},
-        {TUTORIAL_STEP::EQUIP_SLIMEBALL, "Great! The slime ball will shoot at enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies."},
+        {TUTORIAL_STEP::START, "Walk into that bee."},
+        {TUTORIAL_STEP::PICK_UP_BEE, "Now press tab to open the inventory, and\nclick the bee to activate it.\n\nThis is the same way you will activate most items that\nyou buy from the shop."},
+        {TUTORIAL_STEP::USE_BEE, "Great! The bee will attack enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies.\n\nHold B to start the first wave when you're ready."},
         {TUTORIAL_STEP::CLEAR_WAVE_1, "You beat the first wave!\nNow you should find a shop and buy a bow."},
         {TUTORIAL_STEP::BUY_BOW, "Excellent. Now open your inventory and equip the bow."},
         {TUTORIAL_STEP::EQUIP_BOW, "Great! Press R to load your weapon."},
@@ -72,9 +80,9 @@ private:
     };
 
     inline static std::map<TUTORIAL_STEP, std::string> _messagesGamepad = {
-        {TUTORIAL_STEP::START, "Pick up that green orb."},
-        {TUTORIAL_STEP::PICK_UP_SLIMEBALL, "Now press select to open the inventory,\nuse the d-pad to select the slime ball, and press A to\nequip it."},
-        {TUTORIAL_STEP::EQUIP_SLIMEBALL, "Great! The slime ball will shoot at enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies"},
+        {TUTORIAL_STEP::START, "Walk into that bee."},
+        {TUTORIAL_STEP::PICK_UP_BEE, "Now press select to open the inventory,\nuse the d-pad to select the bee, and press A to\nactivate it.\n\nThis is the same way you will activate most items that\nyou buy from the shop."},
+        {TUTORIAL_STEP::USE_BEE, "Great! The bee will attack enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies.\n\nHold B to start the first wave when you're ready."},
         {TUTORIAL_STEP::CLEAR_WAVE_1, "You beat the first wave!\nNow you should find a shop and buy a bow."},
         {TUTORIAL_STEP::BUY_BOW, "Excellent. Now open your inventory and equip the bow."},
         {TUTORIAL_STEP::EQUIP_BOW, "Great! Press X to load your weapon."},

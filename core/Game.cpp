@@ -1500,7 +1500,8 @@ void Game::buttonPressed(std::string buttonCode) {
         // fixes tried to reset chunks while chunks were loading
         _world.resetChunks();
         //
-        _world.init(seed);
+        constexpr unsigned int tutorialSeed = 543098336;
+        _world.init(Tutorial::isCompleted() ? seed : tutorialSeed);
         //if (!Tutorial::isCompleted()) _world._newGameCooldownLength = 45000LL;
         //else _world._newGameCooldownLength = 15000LL;
         //_world.startNewGameCooldown();
@@ -1525,7 +1526,7 @@ void Game::buttonPressed(std::string buttonCode) {
 
         const size_t numStartingItems = startingItems.size();
 
-        std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::SLIME_BALL.getId()]);
+        std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::getIdFromName("Bee")]);
 
         constexpr int gunStartChance = 49;
         if (Tutorial::isCompleted() && randomInt(0, gunStartChance) == 0) {
@@ -1587,6 +1588,8 @@ void Game::buttonPressed(std::string buttonCode) {
         _miniMapMenu->hide();
         MiniMapGenerator::reset();
         _firstTimeOpeningMap = true;
+
+        if (!Tutorial::isCompleted()) MessageManager::clearAllTutorialMessages();
 
         _bossHUDMenu->hide();
         _controlsDisplayMenu->hide();
@@ -2408,14 +2411,14 @@ void Game::onPlayerDeath() {
             _world.resetEnemySpawnCooldown();
             _world.startNewGameCooldown();
 
-            if (_player->getInventory().findItem(Item::SLIME_BALL.getId()) == NO_ITEM) {
-                std::shared_ptr<DroppedItem> droppedSlimeBall
+            if (_player->getInventory().findItem(Item::getIdFromName("Bee")) == NO_ITEM && Tutorial::getCurrentStep() < TUTORIAL_STEP::CLEAR_WAVE_1) {
+                std::shared_ptr<DroppedItem> droppedBee
                     = std::shared_ptr<DroppedItem>(new DroppedItem(
-                        sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::SLIME_BALL.getId(), 1, Item::SLIME_BALL.getTextureRect())
+                        sf::Vector2f(_player->getPosition().x, _player->getPosition().y - 48), 2, Item::getIdFromName("Bee"), 1, Item::ITEMS[Item::getIdFromName("Bee")]->getTextureRect())
                         );
-                droppedSlimeBall->setWorld(&_world);
-                droppedSlimeBall->loadSprite(_world.getSpriteSheet());
-                _world.addEntity(droppedSlimeBall);
+                droppedBee->setWorld(&_world);
+                droppedBee->loadSprite(_world.getSpriteSheet());
+                _world.addEntity(droppedBee);
 
                 //Tutorial::reset();
             }

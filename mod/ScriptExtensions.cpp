@@ -5,6 +5,7 @@
 #include "../world/World.h"
 #include "../world/entities/orbiters/Orbiter.h"
 #include "../world/entities/Scythe.h"
+#include "../core/Tutorial.h"
 
 bool ScriptExtensions::execute(const std::string functionName, Entity* entity, Interpreter* interpreter) {
     if (_functions.find(functionName) != _functions.end()) {
@@ -78,6 +79,17 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             scythe->setWorld(parent->getWorld());
             scythe->loadSprite(parent->getWorld()->getSpriteSheet());
             parent->getWorld()->addEntity(scythe);
+            return true;
+        }
+    },
+
+    {
+        "completeTutorialStep",
+        [](Entity* parent, Interpreter* interpreter) {
+            const int step = interpreter->pop();
+            if (!Tutorial::isCompleted()) {
+                Tutorial::completeStep((TUTORIAL_STEP)step);
+            }
             return true;
         }
     }

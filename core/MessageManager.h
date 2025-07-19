@@ -29,12 +29,14 @@ constexpr int WARN = 1;
 constexpr int ERR = 2;
 constexpr int DEBUG = 3;
 constexpr int SPECIAL = 4;
-const MessageType MESSAGE_TYPES[5] = {
+constexpr int TUTORIAL = 5;
+const MessageType MESSAGE_TYPES[6] = {
     MessageType("NORMAL", 0xFFFFFFFF),
     MessageType("WARN", 0xFFFF00FF),
     MessageType("ERR", 0xFF0000FF),
     MessageType("DEBUG", 0x00FF00FF),
-    MessageType("SPECIAL", 0xFFD700FF)
+    MessageType("SPECIAL", 0xFFD700FF),
+    MessageType("TUTORIAL", 0xFFFFFFFF)
 };
 
 struct Message {
@@ -69,16 +71,19 @@ public:
         _isHalted = true;
     }
 
+    // For tutorial messages, timeout is tutorial step ID
     static void displayMessage(std::string text, int timeout, int messageType = NORMAL) {
-        if (messageType != NORMAL && messageType != SPECIAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
+        if (messageType != NORMAL && messageType != SPECIAL && messageType != TUTORIAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
         std::cout << text << std::endl;
         Logger::log(text);
 
         std::shared_ptr<Message> message = std::shared_ptr<Message>(new Message(text, timeout, messageType));
         _messages.push_back(message);
 
-        std::thread deactivationThread(&MessageManager::scheduleMessageDeactivation, message);
-        deactivationThread.detach();
+        if (messageType != TUTORIAL) {
+            std::thread deactivationThread(&MessageManager::scheduleMessageDeactivation, message);
+            deactivationThread.detach();
+        }
     }
 
     static void displayMessage(int message, int timeout, int messageType = NORMAL) {
@@ -120,6 +125,23 @@ public:
 
     static bool isPurging() {
         return _isPurging;
+    }
+
+    static void clearTutorialMessage(int tutorialStepId) {
+        for (int i = 0; i < _messages.size(); i++) {
+            if (_messages[i]->messageType == TUTORIAL && _messages[i]->timeout == tutorialStepId) {
+                _messages[i]->active = false;
+                break;
+            }
+        }
+    }
+
+    static void clearAllTutorialMessages() {
+        for (int i = 0; i < _messages.size(); i++) {
+            if (_messages[i]->messageType == TUTORIAL) {
+                _messages[i]->active = false;
+            }
+        }
     }
 
 private:

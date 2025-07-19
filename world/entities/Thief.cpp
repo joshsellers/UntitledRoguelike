@@ -1,5 +1,6 @@
 #include "Thief.h"
 #include "../World.h"
+#include "../../core/Tutorial.h"
 
 Thief::Thief(sf::Vector2f pos, bool chasing) : Entity(THIEF, pos, 6.f, TILE_SIZE, TILE_SIZE * 2, false) {
     _chasing = chasing;
@@ -29,6 +30,11 @@ Thief::Thief(sf::Vector2f pos, bool chasing) : Entity(THIEF, pos, 6.f, TILE_SIZE
 }
 
 void Thief::update() {
+    if (!Tutorial::isCompleted()) {
+        deactivate();
+        return;
+    }
+
     float xa = 0.f, ya = 0.f;
 
     const sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);

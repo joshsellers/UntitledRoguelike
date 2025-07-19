@@ -39,7 +39,7 @@ void DroppedItem::update() {
             }
             _isActive = false;
 
-            if (!Tutorial::isCompleted() && _itemId == Item::SLIME_BALL.getId()) Tutorial::completeStep(TUTORIAL_STEP::PICK_UP_SLIMEBALL);
+            if (!Tutorial::isCompleted() && _itemId == Item::getIdFromName("Bee")) Tutorial::completeStep(TUTORIAL_STEP::PICK_UP_BEE);
             return;
         }
 
