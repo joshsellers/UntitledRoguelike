@@ -74,6 +74,7 @@ public:
             if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2, DEBUG);
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to save file: " + (std::string)ex.what(), 5, ERR);
+            MessageManager::displayMessage("There was an error saving the game.\n\nYou can contact the developer on instagram @pennylooter or at rolmigame@gmail.com", 10);
         }
 
         StatManager::saveOverallStats();

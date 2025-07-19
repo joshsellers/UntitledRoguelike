@@ -1785,6 +1785,7 @@ void Game::buttonPressed(std::string buttonCode) {
             _loadGameMenu->hide();
             _loadGameMenu->clearElements();
             buttonPressed("mainmenu");
+            MessageManager::displayMessage("The save file could not be loaded correctly.\n\nYou can contact the developer on instagram @pennylooter or at rolmigame@gmail.com", 10);
         }
     } else if (buttonCode == "controls") {
         if (_gameStarted) _pauseMenu->hide();
@@ -1813,7 +1814,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _vsyncToggleButton_mainMenu->setLabelText((VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync");
 
         if (VSYNC_ENABLED) {
-            MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20, WARN);
+            MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20);
         }
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();

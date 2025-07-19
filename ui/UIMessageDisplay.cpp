@@ -11,7 +11,7 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
     if (!MessageManager::isPurging()) {
         int lastHeight = getRelativeHeight(3.f);
         for (auto& message : MessageManager::getMessages()) {
-            if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) {
+            if (message->active && !((message->messageType == DEBUG || message->messageType == WARN || message->messageType == ERR) && !DISPLAY_DEBUG_MESSAGES)) {
                 const bool special = message->messageType == SPECIAL;
                 const bool tutorial = message->messageType == TUTORIAL;
 
