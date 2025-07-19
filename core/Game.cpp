@@ -231,7 +231,7 @@ void Game::initUI() {
     _pauseMenu->addElement(pauseControlsButton);
 
     std::shared_ptr<UIButton> statsMenuButton_pause = std::shared_ptr<UIButton>(new UIButton(
-        1, 29, 9, 3, "stats", _font, this, "stats_pause"
+        1, 29, 9, 3, "unlocks", _font, this, "progressmenu"
     ));
     statsMenuButton_pause->setSelectionId(4);
     _pauseMenu->addElement(statsMenuButton_pause);
@@ -1824,7 +1824,7 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "resetbindings") {
         InputBindingManager::resetBindings();
     } else if (buttonCode == "stats_pause") {
-        _pauseMenu->hide();
+        _progressMenu->hide();
         _statsMenu_pauseMenu->show();
 
         std::string currentStatsText = "Stats for this run\n\n\n";
@@ -1837,8 +1837,13 @@ void Game::buttonPressed(std::string buttonCode) {
         _overallStatsLabel_pauseMenu->setText(overallStatsText);
     } else if (buttonCode == "back_stats_pause") {
         _statsMenu_pauseMenu->hide();
-        _pauseMenu->show();
+        _progressMenu->show();
     } else if (buttonCode == "stats_main") {
+        if (_gameStarted) {
+            buttonPressed("stats_pause");
+            return;
+        }
+
         _progressMenu->hide();
         _statsMenu_mainMenu->show();
 
@@ -1998,11 +2003,17 @@ void Game::buttonPressed(std::string buttonCode) {
         _startMenu->hide();
         _saveSelectionMenu->show();
     } else if (buttonCode == "progressmenu") {
-        _saveStartMenu->hide();
+        if (_gameStarted) {
+            _pauseMenu->hide();
+        } else _saveStartMenu->hide();
+
         _progressMenu->show();
     } else if (buttonCode == "back_progress") {
         _progressMenu->hide();
-        _saveStartMenu->show();
+
+        if (_gameStarted) {
+            _pauseMenu->show();
+        } else _saveStartMenu->show();
     } else if (buttonCode == "achmenu") {
         _progressMenu->hide();
 
@@ -2229,7 +2240,8 @@ void Game::togglePauseMenu() {
             _pauseMenu->hide();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
-        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()) {
+        } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()
+            && !_unlocksMenu->isActive() && !_achievementsMenu->isActive() && !_progressMenu->isActive()) {
             _pauseMenu->show();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
@@ -2238,6 +2250,9 @@ void Game::togglePauseMenu() {
         else if (_inputBindingsMenu->isActive()) buttonPressed("back_bindings");
         else if (_statsMenu_pauseMenu->isActive()) buttonPressed("back_stats_pause");
         else if (_audioMenu->isActive()) buttonPressed("back_audio");
+        else if (_progressMenu->isActive()) buttonPressed("back_progress");
+        else if (_unlocksMenu->isActive()) buttonPressed("back_unlocks");
+        else if (_achievementsMenu->isActive()) buttonPressed("back_achmenu");
     } else if (_gameStarted && _inventoryMenu->isActive()) toggleInventoryMenu();
     else if (_gameStarted && _shopMenu->isActive()) toggleShopMenu();
 
