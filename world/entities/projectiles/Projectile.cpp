@@ -191,7 +191,7 @@ void Projectile::update() {
         }
 
         if (closestEnemy != nullptr) {
-            const float steerAmount = 0.15f;
+            const float steerAmount = 0.45f;
             const float angle = std::atan2((closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2.f) - getPosition().y, closestEnemy->getPosition().x - getPosition().x);
             _velocityComponents.x += steerAmount * std::cos(angle);
             _velocityComponents.y += steerAmount * std::sin(angle);
