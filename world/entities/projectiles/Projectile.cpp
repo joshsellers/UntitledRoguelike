@@ -176,7 +176,7 @@ void Projectile::update() {
         }
     }
 
-    if (targetSeeking && _data.onlyHitEnemies) {
+    if (targetSeeking && (_data.onlyHitEnemies || _parent->getSaveId() == PLAYER)) {
         const float range = 100000.f;
         float smallestDistance = range;
         std::shared_ptr<Entity> closestEnemy = nullptr;
@@ -202,6 +202,16 @@ void Projectile::update() {
             _baseSpeed = 1;
             move(_velocityComponents.x, _velocityComponents.y);
         }
+    } else if (targetSeeking && onlyDamagePlayer) {
+        const sf::Vector2f playerPos(getWorld()->getPlayer()->getPosition().x + (float)TILE_SIZE / 2.f, getWorld()->getPlayer()->getPosition().y + (float)TILE_SIZE);
+        const float steerAmount = 0.45f;
+        const float angle = std::atan2(playerPos.y - getPosition().y, playerPos.x - getPosition().x);
+        _velocityComponents.x += steerAmount * std::cos(angle);
+        _velocityComponents.y += steerAmount * std::sin(angle);
+        _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+
+        _baseSpeed = 1;
+        move(_velocityComponents.x, _velocityComponents.y);
     }
 
     if (bounceOffViewport) {
