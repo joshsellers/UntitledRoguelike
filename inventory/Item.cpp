@@ -684,6 +684,8 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         firedProjectile->setCrit(crit);
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
 
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::TARGET_SEEKING_BULLETS.getId())) firedProjectile->targetSeeking = true;
+
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
             const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");
             const float chance = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "chance");

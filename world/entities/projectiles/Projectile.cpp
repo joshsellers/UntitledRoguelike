@@ -176,6 +176,34 @@ void Projectile::update() {
         }
     }
 
+    if (targetSeeking && _data.onlyHitEnemies) {
+        const float range = 100000.f;
+        float smallestDistance = range;
+        std::shared_ptr<Entity> closestEnemy = nullptr;
+        for (const auto& enemy : getWorld()->getEnemies()) {
+            if (enemy->isActive()) {
+                const float distSquared = std::pow(enemy->getPosition().x - getPosition().x, 2) + std::pow((enemy->getPosition().y + enemy->getSpriteSize().y / 2.f) - getPosition().y, 2);
+                if (distSquared < smallestDistance) {
+                    smallestDistance = distSquared;
+                    closestEnemy = enemy;
+                }
+            }
+        }
+
+        if (closestEnemy != nullptr) {
+            const float steerAmount = 0.15f;
+            const float angle = std::atan2((closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2.f) - getPosition().y, closestEnemy->getPosition().x - getPosition().x);
+            _velocityComponents.x += steerAmount * std::cos(angle);
+            _velocityComponents.y += steerAmount * std::sin(angle);
+            _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+        }
+
+        if (!bounceOffViewport) {
+            _baseSpeed = 1;
+            move(_velocityComponents.x, _velocityComponents.y);
+        }
+    }
+
     if (bounceOffViewport) {
         _baseSpeed = 1;
         move(_velocityComponents.x, _velocityComponents.y);
@@ -208,7 +236,7 @@ void Projectile::update() {
             const float angle = radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x));
             _sprite.setRotation(angle);
         }
-    } else {
+    } else if (!targetSeeking) {
         _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
         _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
     }
@@ -386,5 +414,6 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _criticalHit = false;
 
     bounceOffViewport = false;
+    targetSeeking = false;
     _baseSpeed = 0;
 }

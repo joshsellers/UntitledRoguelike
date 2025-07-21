@@ -342,6 +342,12 @@ const Ability Ability::CONTACT_DAMAGE(21, "Contact Damage",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::TARGET_SEEKING_BULLETS(22, "Target Seeking Bullets", 
+    {},
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,

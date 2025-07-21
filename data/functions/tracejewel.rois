@@ -1,0 +1,8 @@
+playerHasAbility = player.hasAbility("Target Seeking Bullets");
+if: not playerHasAbility {
+    player.addAbility("Target Seeking Bullets");
+    player.addEffect("Trace Jewel");
+    return true;
+}
+
+return false;

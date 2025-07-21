@@ -1,0 +1,9 @@
+name = "Seek Jewel"
+description = "A gem that holds mysterious power..."
+isBuyable = true
+value = 500
+rarityTier = 3
+conditionalUnlock = true
+isConsumable = true
+textureRect = 27, 17, 1, 1
+functionName = "tracejewel"

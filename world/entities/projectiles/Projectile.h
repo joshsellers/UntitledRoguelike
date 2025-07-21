@@ -25,6 +25,7 @@ public:
     int passThroughCount = 1;
 
     bool bounceOffViewport = false;
+    bool targetSeeking = false;
 
     void setCrit(const bool crit);
 
