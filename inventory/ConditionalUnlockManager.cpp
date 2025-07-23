@@ -4,6 +4,7 @@
 #include "../core/Util.h"
 #include "../statistics/StatManager.h"
 #include "../core/SoundManager.h"
+#include "../core/FileIntegrityManager.h"
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
@@ -109,6 +110,8 @@ void ConditionalUnlockManager::loadUnlockedItems() {
     } else {
         std::string line;
         while (getline(in, line)) {
+            if (stringStartsWith(line, "#")) continue;
+
             try {
                 const std::vector<std::string> parsedEntry = splitString(line, ",");
                 const std::string itemName = parsedEntry[0];
@@ -159,6 +162,8 @@ void ConditionalUnlockManager::saveUnlockedItems() {
             out << unlockProgress.first << "," << unlockProgress.second.progress << std::endl;
         }
         out.close();
+
+        FileIntegrityManager::signFile(path);
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error saving unlocks: " + (std::string)ex.what(), 5, ERR);
     }

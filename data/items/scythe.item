@@ -1,3 +1,4 @@
+#!SIG947109672
 name = "Scythe"
 description = "Doesn't seem to work like a normal sycthe..."
 isBuyable = true

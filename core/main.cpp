@@ -176,6 +176,8 @@ int main() {
 
     checkLocalLowExists();
 
+    FileIntegrityManager::verifyFiles();
+
     if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
 

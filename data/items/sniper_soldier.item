@@ -1,3 +1,4 @@
+#!SIG1284960282
 name = "_SNIPER_SOLDIER"
 description = "This item should not be obtainable."
 isGun = true

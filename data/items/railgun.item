@@ -1,3 +1,4 @@
+#!SIG523822597
 name = "Railgun"
 description = "Harness the power of electromagnets\nto solve your problems"
 isGun = true

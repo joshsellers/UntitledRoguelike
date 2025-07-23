@@ -1,3 +1,4 @@
+#!SIG3250766458
 name = "Cassidy's Tail"
 description = "Strike fear into your enemies\n\nUse more of these to increase fear chance"
 isConsumable = true

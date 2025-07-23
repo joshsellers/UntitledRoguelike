@@ -1,3 +1,4 @@
+#!SIG2437478768
 name = "Writ of Blood"
 description = "Upon signing, you agree to forfeit half of your\nmax hp in exchange for greatly increased damage."
 value = 150

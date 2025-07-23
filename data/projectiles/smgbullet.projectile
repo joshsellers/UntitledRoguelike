@@ -1,3 +1,4 @@
+#!SIG1010411857
 itemName = "_PROJECTILE_SMG"
 velocity = 8
 lifeTime = 2500

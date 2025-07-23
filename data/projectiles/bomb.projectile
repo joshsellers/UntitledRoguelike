@@ -1,3 +1,4 @@
+#!SIG1966050112
 itemName = "_PROJECTILE_BOMB"
 velocity = 4
 lifeTime = 1000

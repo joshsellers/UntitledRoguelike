@@ -174,6 +174,17 @@ std::string generateUID() {
     return ss.str();
 }
 
+std::string hash(std::string text) {
+    unsigned int hash = 0x811c9dc5u;
+    for (int i = 0; i < text.length(); i++) {
+        hash = (hash ^ (unsigned int)text.at(i)) * 0x1000193u;
+    }
+    hash = (hash ^ (hash >> 16)) * 0x7feb352du;
+    hash = (hash ^ (hash >> 15)) * 0x846ca68bu;
+
+    return std::to_string(hash ^ (hash >> 16));
+}
+
 std::string getLocalLowPath() {
     std::string pathStr = "err";
     char* buf = nullptr;

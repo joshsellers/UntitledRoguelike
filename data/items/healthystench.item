@@ -1,3 +1,4 @@
+#!SIG901769960
 name = "Healthy Stench"
 description = "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes"
 isStackable = false

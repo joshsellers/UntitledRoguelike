@@ -1,3 +1,4 @@
+#!SIG1222777337
 name = "_PROJECTILE_TREEBOSS_LOG"
 description = "This item should not be obtainable"
 damage = 10

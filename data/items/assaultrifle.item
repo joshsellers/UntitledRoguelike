@@ -1,3 +1,4 @@
+#!SIG3025767224
 name = "Assault Rifle"
 description = "Big scary shoots fast"
 isGun = true

@@ -1,3 +1,4 @@
+#!SIG3786288928
 itemName = "_PROJECTILE_RAILGUN_DART"
 velocity = 15
 hitBox = 8, 8, 8, 8

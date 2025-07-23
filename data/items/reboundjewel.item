@@ -1,3 +1,4 @@
+#!SIG373855363
 name = "Rebound Jewel"
 description = "A gem that holds mysterious power..."
 conditionalUnlock = true

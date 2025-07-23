@@ -1,3 +1,4 @@
+#!SIG2887444906
 name = "Airstrike"
 description = "Drop bombs from the sky"
 conditionalUnlock = true

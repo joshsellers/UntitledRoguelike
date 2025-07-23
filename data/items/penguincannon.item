@@ -1,3 +1,4 @@
+#!SIG3612648233
 name = "Penguin Cannon"
 description = "They love it"
 conditionalUnlock = true

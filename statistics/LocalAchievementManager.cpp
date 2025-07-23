@@ -4,6 +4,7 @@
 #include <filesystem>
 #include "../core/MessageManager.h"
 #include "../core/SoundManager.h"
+#include "../core/FileIntegrityManager.h"
 
 void LocalAchievementManager::unlock(ACHIEVEMENT achievement) {
     if (!isReady() || isUnlocked(achievement)) return;
@@ -30,6 +31,8 @@ void LocalAchievementManager::loadLocalAchievements() {
     } else {
         std::string line;
         while (getline(in, line)) {
+            if (stringStartsWith(line, "#")) continue;
+
             try {
                 const int achNumber = std::stoi(line);
                 if (achNumber >= 0 && achNumber < NUM_ACHIEVEMENTS) {
@@ -73,6 +76,8 @@ void LocalAchievementManager::saveLocalAchievements() {
             }
         }
         out.close();
+
+        FileIntegrityManager::signFile(path);
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error saving achievements: " + (std::string)ex.what(), 5, ERR);
     }

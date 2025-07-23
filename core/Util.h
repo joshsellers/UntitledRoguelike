@@ -41,6 +41,8 @@ double round_prec(double n, int prec);
 
 std::string generateUID();
 
+std::string hash(std::string text);
+
 std::string getLocalLowPath();
 
 void updateSettingsFile(std::string path);

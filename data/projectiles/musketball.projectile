@@ -1,3 +1,4 @@
+#!SIG35806417
 itemName = "_PROJECTILE_MUSKET_BALL"
 hitBox = 6, 6, 6, 6
 rotate = true

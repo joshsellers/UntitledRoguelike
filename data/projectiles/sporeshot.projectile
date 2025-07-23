@@ -1,3 +1,4 @@
+#!SIG3129843118
 itemName = "_PROJECTILE_SPORE_SHOT"
 velocity = 3
 hitBox = 2, 2, 12, 12

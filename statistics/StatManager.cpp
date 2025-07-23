@@ -3,6 +3,7 @@
 #include <fstream>
 #include "../core/MessageManager.h"
 #include "AchievementManager.h"
+#include "../core/FileIntegrityManager.h"
 
 float StatManager::getOverallStat(STATISTIC stat) {
     return _STATS_OVERALL[stat];
@@ -42,6 +43,8 @@ void StatManager::loadOverallStats() {
         std::string line;
         int lineNumber = 0;
         while (getline(in, line)) {
+            if (stringStartsWith(line, "#")) continue;
+
             try {
                 _STATS_OVERALL[lineNumber] = std::stof(line);
             } catch (std::exception ex) {
@@ -84,6 +87,8 @@ void StatManager::saveOverallStats() {
             out << std::to_string(getOverallStat((STATISTIC)i)) << std::endl;
         }
         out.close();
+
+        FileIntegrityManager::signFile(path);
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error saving stats: " + (std::string)ex.what(), 5, ERR);
     }

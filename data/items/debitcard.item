@@ -1,3 +1,4 @@
+#!SIG3949590460
 name = "Debit Card"
 description = "Increases ATM spawn chance by 5%"
 conditionalUnlock = true

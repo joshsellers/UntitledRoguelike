@@ -14,6 +14,7 @@
 #include "../world/entities/Blinker.h"
 #include "../world/MiniMapGenerator.h"
 #include "../world/entities/Thief.h"
+#include "FileIntegrityManager.h"
 
 class SaveManager {
 public:
@@ -60,6 +61,14 @@ public:
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
             if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
             if (MID_GAME_PERF_BOOST) out << "PERF:" + std::to_string(MID_GAME_PERF_BOOST) << std::endl;
+
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == _currentSaveFileName) {
+                    out << "MODDED:1" << std::endl;
+                    break;
+                }
+            }
+
             saveStats(out);
             savePlayerData(out);
             saveWorldData(out);
@@ -70,6 +79,8 @@ public:
             saveMiniMapData(out);
 
             out.close();
+
+            FileIntegrityManager::signFile(fileName);
 
             if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2, DEBUG);
         } catch (std::exception ex) {
@@ -92,6 +103,8 @@ public:
         } else {
             std::string line;
             while (getline(in, line)) {
+                if (stringStartsWith(line, "#")) continue;
+
                 try {
                     std::vector<std::string> data = splitString(line, ":");
                     std::string fullHeader = data[0] + ":";
@@ -114,6 +127,21 @@ public:
         }
 
         in.close();
+
+        if (!FileIntegrityManager::verifyFile(_saveDir + "/" + saveFileName)) {
+            MessageManager::displayMessage("This save file has been modified.\nAchievements will be disabled until the game is restarted.", 10, SPECIAL);
+            DISABLE_ACHIEVEMENTS = true;
+
+            bool found = false;
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == saveFileName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) _modifiedSaveFiles.push_back(saveFileName);
+        }
 
         return loadedSuccessfully;
     }
@@ -149,6 +177,7 @@ public:
 private:
     inline const static std::string _saveDir = "save";
     inline static std::string _currentSaveFileName = "NONE";
+    inline static std::vector<std::string> _modifiedSaveFiles;
 
     inline static World* _world = nullptr;
     inline static ShopManager* _shopManager = nullptr;
@@ -564,6 +593,20 @@ private:
             HARD_MODE_ENABLED = true;
         } else if (header == "PERF") {
             MID_GAME_PERF_BOOST = true;
+        } else if (header == "MODDED") {
+            MessageManager::displayMessage("This save file has been modified.\nAchievements will be disabled until the game is restarted.", 10, SPECIAL);
+            DISABLE_ACHIEVEMENTS = true;
+            bool found = false;
+
+            const std::string saveFileName = std::to_string(SELECTED_SAVE_FILE) + ".save";
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == saveFileName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) _modifiedSaveFiles.push_back(saveFileName);
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {

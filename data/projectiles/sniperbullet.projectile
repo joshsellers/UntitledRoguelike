@@ -1,3 +1,4 @@
+#!SIG3689098163
 itemName = "_PROJECTILE_SNIPER"
 velocity = 12
 lifeTime = 5000

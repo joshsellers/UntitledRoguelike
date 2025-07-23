@@ -1,3 +1,4 @@
+#!SIG1856319307
 name = "_CYCLOPS_TEAR"
 description = "This item should not be obtainable."
 damage = 15

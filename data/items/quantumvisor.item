@@ -1,3 +1,4 @@
+#!SIG602909613
 name = "Quantum Visor"
 description = "See into alternate dimensions and use quantum tunnling to\nsummon bullets from other timelines.\n\nChance for bullets to split into multiple bullets\non contact.\n\nUsing more of these will increase the amount of bullets\nthat your bullets split into, as well as the chance\nfor splitting to happen."
 isConsumable = true

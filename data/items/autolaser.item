@@ -1,3 +1,4 @@
+#!SIG2369171947
 name = "Autolaser"
 description = "PewPew"
 isGun = true

@@ -1,3 +1,4 @@
+#!SIG2765918053
 itemName = "_LIGHT_LASER_PROJECTILE"
 velocity = 10
 hitBox = 6, 8, 4, 4

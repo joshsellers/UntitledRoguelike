@@ -1,3 +1,4 @@
+#!SIG2256680489
 name = "Burst Jewel"
 description = "A gem that holds mysterious power..."
 conditionalUnlock = true

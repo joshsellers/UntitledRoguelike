@@ -1,3 +1,4 @@
+#!SIG3800812919
 name = "Blood Gun"
 description = "Tired of having blood? Give it away!\n\nUse this gun to exchange HP for damage"
 equipmentType = TOOL

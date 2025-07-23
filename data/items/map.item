@@ -1,3 +1,4 @@
+#!SIG4125661101
 name = "Map"
 description = "Record your findings\n\nPress (Y) on gamepad or M on keyboard to\nopen/close."
 isBuyable = true

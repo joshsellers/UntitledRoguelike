@@ -1,3 +1,4 @@
+#!SIG3477372370
 itemName = "_PROJECTILE_PENGUIN"
 velocity = 6.0
 rotate = true

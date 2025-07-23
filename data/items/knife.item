@@ -1,3 +1,4 @@
+#!SIG273638548
 name = "Knife"
 description = "For throwing"
 isGun = true

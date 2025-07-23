@@ -1,3 +1,4 @@
+#!SIG524224578
 name = "Cassidy's Brain Cell"
 description = "Increases critical hit chance"
 isConsumable = true

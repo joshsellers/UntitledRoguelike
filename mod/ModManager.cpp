@@ -134,6 +134,8 @@ void ModManager::loadItem(std::ifstream& in) {
 
     std::string line;
     while (getline(in, line)) {
+        if (stringStartsWith(line, "#")) continue;
+
         const std::vector<std::string> unmergedTokens = tokenize(line);
         std::vector<std::string> tokens;
         for (int i = 0; i < unmergedTokens.size(); i++) {
@@ -350,6 +352,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
 
     std::string line;
     while (getline(in, line)) {
+        if (stringStartsWith(line, "#")) continue;
+
         const std::vector<std::string> tokens = tokenize(line);
 
         if (tokens.size() > 2 && tokens.at(1) == "=") {

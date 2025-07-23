@@ -62,6 +62,7 @@
 #include "../world/entities/OctopusBoss.h"
 #include "../world/entities/Scythe.h"
 #include "../core/EndGameSequence.h"
+#include "../core/FileIntegrityManager.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -1069,6 +1070,52 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 EndGameSequence::start();
                 return "Started the end game sequence";
+            })
+        },
+
+        {
+            "sign",
+            Command("Sign a file",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const std::string path = parsedCommand[1];
+                    FileIntegrityManager::signFile(path);
+                    return "Attempted to sign " + path;
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "verify",
+            Command("Verify a file",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const std::string path = parsedCommand[1];
+                    const bool verified = FileIntegrityManager::verifyFile(path);
+                    return (verified ? "Verified " : "Failed to verify ") + path;
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "signall",
+            Command("Sign all game files",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                FileIntegrityManager::signFiles();
+                return "Attempted to sign all game files";
+            })
+        },
+
+        {
+            "verifyall",
+            Command("Verify all game files",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                FileIntegrityManager::verifyFiles();
+                return "Verified all game files";
             })
         }
     };

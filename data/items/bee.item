@@ -1,3 +1,4 @@
+#!SIG2626020697
 name = "Bee"
 description = "There's a bee??"
 isConsumable = true

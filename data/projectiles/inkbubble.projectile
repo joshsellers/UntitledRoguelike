@@ -1,3 +1,4 @@
+#!SIG3702998609
 itemName = "_PROJECTILE_INK_BUBBLE"
 velocity = 0.75
 hitBox = 0, 0, 48, 48

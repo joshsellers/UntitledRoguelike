@@ -1,3 +1,4 @@
+#!SIG3242959527
 name = "_PROJECTILE_BUBBLE"
 description = "This item should not be obtainable."
 damage = 3

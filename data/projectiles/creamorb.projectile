@@ -1,3 +1,4 @@
+#!SIG52636925
 itemName = "_PROJECTILE_CREAM_ORB"
 velocity = 2.0
 lifeTime = 10000

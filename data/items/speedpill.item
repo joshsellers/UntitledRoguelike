@@ -1,3 +1,4 @@
+#!SIG1770813065
 name = "Speed Pill"
 description = "Go a bit faster"
 isStackable = false

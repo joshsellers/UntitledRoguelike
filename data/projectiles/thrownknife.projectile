@@ -1,3 +1,4 @@
+#!SIG2850037242
 itemName = "_PROJECTILE_THROWN_KNIFE"
 velocity = 4
 lifeTime = 1000

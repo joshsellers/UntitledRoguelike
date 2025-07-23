@@ -1,3 +1,4 @@
+#!SIG1729866526
 name = "_PROJECTILE_RAILGUN_DART"
 description = "This item should not be obtainable."
 damage = 15
