@@ -49,7 +49,8 @@ void ShopKeep::initInventory(bool visited) {
     };
 
     for (const auto& item : Item::ITEMS) {
-        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()) {
+        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()
+            && item->getId() != Item::getIdFromName("Leaf Hat")) {
             clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
         }
     }
