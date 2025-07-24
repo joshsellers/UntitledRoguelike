@@ -1,6 +1,8 @@
 #include "TreeBoss.h"
 #include "../../core/Util.h"
 #include "../World.h"
+#include "../../statistics/AchievementManager.h"
+#include "../../inventory/ConditionalUnlockManager.h"
 
 TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 5,
     {
@@ -75,6 +77,10 @@ void TreeBoss::setWorld(World* world) {
     _world = world;
 
     _playerIsTree = playerIsWearing("Leaf Hat") && playerIsWearing("Bark Cuirass") && playerIsWearing("Bark Greaves") && playerIsWearing("Bark Sabatons");
+    if (_playerIsTree) {
+        AchievementManager::unlock(TREECKSTER);
+        ConditionalUnlockManager::increaseUnlockProgress("Acorn", 1);
+    }
 }
 
 void TreeBoss::subUpdate() {

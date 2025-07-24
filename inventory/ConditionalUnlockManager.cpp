@@ -40,7 +40,8 @@ std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockPr
     {"Bark Sabatons", 3},
     {"Bloat Jewel", 1},
     {"Sharp Teeth", 1},
-    {"Scythe", 1}
+    {"Scythe", 1},
+    {"Acorn", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {

@@ -348,6 +348,30 @@ const Ability Ability::TARGET_SEEKING_BULLETS(22, "Target Seeking Bullets",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::TREE_MAN(23, "Tree Man",
+    { {"fireChance", 0.10f} },
+    [](Player* player, Ability* ability) {
+        constexpr long long fireRate = 750LL;
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate && player->getWorld()->getEnemyCount() > 0) {
+            const float chance = ability->getParameter("fireChance");
+            if (randomChance(chance)) {
+                const int projCount = 6;
+                const float angleIncrement = 360.f / projCount;
+                const float angleOffset = (float)randomInt(0, 360);
+                for (int i = 0; i < projCount; i++) {
+                    const sf::Vector2f spawnPos(player->getPosition().x + PLAYER_WIDTH / 2, player->getPosition().y + PLAYER_HEIGHT / 2);
+                    fireTargetedProjectile(
+                        degToRads(angleIncrement * i + angleOffset), ProjectileDataManager::getData("_PROJECTILE_TREEMAN_LOG"), spawnPos, player, 0, true
+                    );
+                }
+            }
+
+            ability->_lastFireTimeMillis = currentTimeMillis();
+        }
+    },
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
