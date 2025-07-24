@@ -9,6 +9,7 @@ TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TI
         //BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 3000LL, 4000LL)
     }) 
 {
+    _gen.seed(currentTimeNano());
     setMaxHitPoints(HARD_MODE_ENABLED ? 700 : 475);
     heal(getMaxHitPoints());
 
@@ -70,6 +71,12 @@ void TreeBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
 }
 
+void TreeBoss::setWorld(World* world) {
+    _world = world;
+
+    _playerIsTree = playerIsWearing("Leaf Hat") && playerIsWearing("Bark Cuirass") && playerIsWearing("Bark Greaves") && playerIsWearing("Bark Sabatons");
+}
+
 void TreeBoss::subUpdate() {
     _sprite.setPosition(getPosition());
 
@@ -83,10 +90,20 @@ void TreeBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
+    if (_playerIsTree) {
+        _playerIsTree = playerIsWearing("Leaf Hat") && playerIsWearing("Bark Cuirass") && playerIsWearing("Bark Greaves") && playerIsWearing("Bark Sabatons");
+
+        const sf::Vector2f feetPos(getPosition().x, getPosition().y + _spriteHeight);
+        wander(feetPos, _gen);
+        return;
+    }
+
     if (_chaseTarget.x == 0.f && _chaseTarget.y == 0.f) resetChaseTarget();
 }
 
 void TreeBoss::onStateChange(const BossState previousState, const BossState newState) {
+    if (_playerIsTree) return;
+
     if (newState.stateId == CHASE) {
         _baseSpeed = 4.5f;
         resetChaseTarget();
@@ -95,6 +112,8 @@ void TreeBoss::onStateChange(const BossState previousState, const BossState newS
 }
 
 void TreeBoss::runCurrentState() {
+    if (_playerIsTree) return;
+
     switch (_currentState.stateId) {
         case CHASE:
         {
@@ -262,4 +281,16 @@ void TreeBoss::resetChaseTarget() {
     const float distRat = targetDist / dist;
 
     _chaseTarget = sf::Vector2f(((1 - distRat) * cLoc.x + distRat * playerPos.x), ((1 - distRat) * cLoc.y + distRat * playerPos.y));
+}
+
+bool TreeBoss::playerIsWearing(std::string itemName) {
+    const auto& inv = getWorld()->getPlayer()->getInventory();
+    const unsigned int itemId = Item::getIdFromName(itemName);
+    const int index = inv.findItem(itemId);
+
+    if (index != NO_ITEM) {
+        return inv.isEquipped(index);
+    }
+
+    return false;
 }

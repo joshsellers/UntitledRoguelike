@@ -10,6 +10,8 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
+    virtual void setWorld(World* world);
 protected:
     void subUpdate();
     void onStateChange(const BossState previousState, const BossState newState);
@@ -30,6 +32,10 @@ private:
 
     void resetChaseTarget();
     sf::Vector2f _chaseTarget;
+
+    boost::random::mt19937 _gen = boost::random::mt19937();
+    bool _playerIsTree = false;
+    bool playerIsWearing(std::string itemName);
 };
 
 #endif
