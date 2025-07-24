@@ -1440,7 +1440,10 @@ void Game::drawUI(sf::RenderTexture& surface) {
         _perfBoostEnabledLabel.setString("mgpb: " + (std::string)(MID_GAME_PERF_BOOST ? "1" : "0"));
         surface.draw(_perfBoostEnabledLabel);
 
-        _achEnabledLabel.setColor((DISABLE_ACHIEVEMENTS || !AchievementManager::achievementsReady()) ? sf::Color::Red : sf::Color::Green);
+        sf::Color achColor = sf::Color::Green;
+        if (DISABLE_ACHIEVEMENTS) achColor = sf::Color::Red;
+        else if (!AchievementManager::achievementsReady()) achColor = sf::Color::Yellow;
+        _achEnabledLabel.setColor(achColor);
         _statEnabledLabel.setColor(DISABLE_STATS ? sf::Color::Red : sf::Color::Green);
         _unlocksEnabledLabel.setColor(DISABLE_UNLOCKS ? sf::Color::Red : sf::Color::Green);
         surface.draw(_progStatusSeparatorsLabel);
