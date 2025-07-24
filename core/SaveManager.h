@@ -129,8 +129,10 @@ public:
         in.close();
 
         if (!FileIntegrityManager::verifyFile(_saveDir + "/" + saveFileName)) {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements will be disabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be disabled until the game is restarted.", 10, SPECIAL);
             DISABLE_ACHIEVEMENTS = true;
+            DISABLE_UNLOCKS = true;
+            DISABLE_STATS = true;
 
             bool found = false;
             for (const auto& moddedSaveName : _modifiedSaveFiles) {
@@ -594,8 +596,10 @@ private:
         } else if (header == "PERF") {
             MID_GAME_PERF_BOOST = true;
         } else if (header == "MODDED") {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements will be disabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be disabled until the game is restarted.", 10, SPECIAL);
             DISABLE_ACHIEVEMENTS = true;
+            DISABLE_UNLOCKS = true;
+            DISABLE_STATS = true;
             bool found = false;
 
             const std::string saveFileName = std::to_string(SELECTED_SAVE_FILE) + ".save";
