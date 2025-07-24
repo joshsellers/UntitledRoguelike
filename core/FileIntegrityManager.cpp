@@ -6,6 +6,7 @@ constexpr const char SALT[10] = "saltyPeas";
 
 void FileIntegrityManager::verifyFiles() {
     bool verifiedAll = true;
+    bool progFileFailedVerification = false;
 
     for (const auto& pathRaw : _paths) {
         std::string path = pathRaw;
@@ -34,13 +35,20 @@ void FileIntegrityManager::verifyFiles() {
             if (!verifyFile(fullpath)) {
                 verifiedAll = false;
                 MessageManager::displayMessage("Verification failed for " + fullpath, 5, WARN);
+
+                if (localLow) progFileFailedVerification = true;
             }
         }
     }
 
-    if (!verifiedAll) {
-        MessageManager::displayMessage("One or more modified game files were detected. Achievements will be disabled.", 10, SPECIAL);
+    if (!verifiedAll && !progFileFailedVerification) {
+        MessageManager::displayMessage("One or more modified game files were detected.\nAchievements will be disabled.", 10, SPECIAL);
         DISABLE_ACHIEVEMENTS = true;
+    } else if (!verifiedAll && progFileFailedVerification) {
+        MessageManager::displayMessage("One or more modified progression files were detected.\nAchievements, unlocks, and stats will be disabled.", 10, SPECIAL);
+        DISABLE_ACHIEVEMENTS = true;
+        DISABLE_UNLOCKS = true;
+        DISABLE_STATS = true;
     }
 }
 
