@@ -214,14 +214,16 @@ void updateSettingsFile(std::string path) {
 
     try {
         std::ofstream out(path);
-        int fullscreenSetting = FULLSCREEN ? 1 : 0;
-        int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
-        int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+        const int fullscreenSetting = FULLSCREEN ? 1 : 0;
+        const int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
+        const int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+        const int dparticlesEnabled = DAMAGE_PARTICLES_ENABLED ? 1 : 0;
         out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
         out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
         out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
         out << "sfx=" << std::to_string(SFX_VOLUME) << std::endl;
         out << "music=" << std::to_string(MUSIC_VOLUME) << std::endl;
+        out << "dparticles=" << std::to_string(dparticlesEnabled) << std::endl;
         out.close();
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);

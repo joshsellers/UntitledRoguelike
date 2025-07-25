@@ -274,10 +274,16 @@ void Game::initUI() {
     _vsyncToggleButton_pauseMenu->setSelectionId(2);
     _pauseMenu_settings->addElement(_vsyncToggleButton_pauseMenu);
 
-    std::shared_ptr<UIButton> audioSettingsButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
-        1, 23, 11, 3, "audio settings", _font, this, "audiosettings_pause"
+    _dparticlesToggleButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
+        1, 23, 20, 3, "damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"), _font, this, "toggledparticles"
     ));
-    audioSettingsButton_pauseMenu->setSelectionId(3);
+    _dparticlesToggleButton_pauseMenu->setSelectionId(3);
+    _pauseMenu_settings->addElement(_dparticlesToggleButton_pauseMenu);
+
+    std::shared_ptr<UIButton> audioSettingsButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
+        1, 29, 11, 3, "audio settings", _font, this, "audiosettings_pause"
+    ));
+    audioSettingsButton_pauseMenu->setSelectionId(4);
     _pauseMenu_settings->addElement(audioSettingsButton_pauseMenu);
 
     _pauseMenu_settings->addElement(pausedLabel_pause);
@@ -288,6 +294,7 @@ void Game::initUI() {
             {backSettingsMenuButton->getSelectionId()},
             {togglefullscreenButton->getSelectionId()},
             {_vsyncToggleButton_pauseMenu->getSelectionId()},
+            {_dparticlesToggleButton_pauseMenu->getSelectionId()},
             {audioSettingsButton_pauseMenu->getSelectionId()}
         }
     );
@@ -602,10 +609,16 @@ void Game::initUI() {
     _completeTutorialButton_startSettings->setSelectionId(3);
     _startMenu_settings->addElement(_completeTutorialButton_startSettings);
 
-    std::shared_ptr<UIButton> audioSettingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
-        50, 38, 12, 3, "audio settings", _font, this, "audiosettings_main", true
+    _dparticlesToggleButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
+        50, 38, 20, 3, "damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"), _font, this, "toggledparticles", true
     ));
-    audioSettingsButton_mainMenu->setSelectionId(4);
+    _dparticlesToggleButton_mainMenu->setSelectionId(4);
+    _startMenu_settings->addElement(_dparticlesToggleButton_mainMenu);
+
+    std::shared_ptr<UIButton> audioSettingsButton_mainMenu = std::shared_ptr<UIButton>(new UIButton(
+        50, 45, 12, 3, "audio settings", _font, this, "audiosettings_main", true
+    ));
+    audioSettingsButton_mainMenu->setSelectionId(5);
     _startMenu_settings->addElement(audioSettingsButton_mainMenu);
 
     _startMenu_settings->useGamepadConfiguration = true;
@@ -615,6 +628,7 @@ void Game::initUI() {
             {togglefullscreenButton_fromstart->getSelectionId()},
             {_vsyncToggleButton_mainMenu->getSelectionId()},
             {_completeTutorialButton_startSettings->getSelectionId()},
+            {_dparticlesToggleButton_mainMenu->getSelectionId()},
             {audioSettingsButton_mainMenu->getSelectionId()}
         }
     );
@@ -1819,6 +1833,14 @@ void Game::buttonPressed(std::string buttonCode) {
         if (VSYNC_ENABLED) {
             MessageManager::displayMessage("WARNING:\nOn some devices, there may be a graphical glitch when vsync is enabled while\nin fullscreen mode that can cause flashing lights", 20);
         }
+    } else if (buttonCode == "toggledparticles") {
+        DAMAGE_PARTICLES_ENABLED = !DAMAGE_PARTICLES_ENABLED;
+        updateSettingsFiles();
+
+        MessageManager::displayMessage((DAMAGE_PARTICLES_ENABLED ? "Enabled" : "Disabled") + (std::string)" damage numbers", 5);
+
+        _dparticlesToggleButton_mainMenu->setLabelText("damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"));
+        _dparticlesToggleButton_pauseMenu->setLabelText("damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"));
     } else if (buttonCode == "bindings") {
         _controlsMenu->hide();
         _inputBindingsMenu->show();

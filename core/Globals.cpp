@@ -16,6 +16,8 @@ bool VSYNC_ENABLED = false;
 float SFX_VOLUME = 1.f;
 float MUSIC_VOLUME = 1.f;
 
+bool DAMAGE_PARTICLES_ENABLED = true;
+
 bool AUTOSAVE_ENABLED = true;
 long long AUTOSAVE_INTERVAL_SECONDS = 30;
 

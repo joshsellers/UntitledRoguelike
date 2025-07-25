@@ -126,6 +126,9 @@ private:
 	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
 	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;
 
+	std::shared_ptr<UIButton> _dparticlesToggleButton_mainMenu;
+	std::shared_ptr<UIButton> _dparticlesToggleButton_pauseMenu;
+
 	std::shared_ptr<UIButton> _hardModeToggleButton;
 
 	std::shared_ptr<UITextField> _worldNameField;

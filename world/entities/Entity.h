@@ -60,6 +60,7 @@ public:
     bool isHostile() const;
 
     sf::Sprite getSprite() const;
+    sf::Sprite& getSpriteRef();
 
     bool displayBottom() const;
     bool displayOnTop() const;
@@ -98,6 +99,8 @@ public:
     void heal(int hitPoints);
     int getHitPoints() const;
     int& getHitPointsRef();
+
+    bool isTakingDamage() const;
 
     virtual int getStamina() const;
     virtual int getMaxStamina() const;
@@ -228,6 +231,9 @@ protected:
 
     // this should hardly ever be set to true
     bool _ignoreViewport = false;
+
+    bool _overrideDamageShaderBehavior = false;
+    long long _timeDamageTaken = 0LL;
 
 private:
     const ENTITY_SAVE_ID _saveId;

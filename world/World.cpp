@@ -197,16 +197,22 @@ void World::draw(sf::RenderTexture& surface) {
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
         if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()) || entity->ignoresViewport())
-            || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
-                || entity->getEntityType() == "player" 
-                || entity->getEntityType() == "shopcounter" 
+            || (_isPlayerInShop && (entity->getEntityType() == "shopint"
+                || entity->getEntityType() == "player"
+                || entity->getEntityType() == "shopcounter"
                 || entity->getEntityType() == "shopkeep"
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "barber"
                 || entity->getEntityType() == "shopatm"
-                || entity->getEntityType() == "shopshelf"))) entity->draw(surface);
+                || entity->getEntityType() == "shopshelf"))) {
+            entity->draw(surface);
+
+            if (!entity->isProp() && !entity->isBoss() && entity->isTakingDamage()) {
+                surface.draw(entity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
+            }
+        }
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;

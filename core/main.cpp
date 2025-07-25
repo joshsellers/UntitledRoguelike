@@ -68,6 +68,13 @@ void readSettings(std::ifstream& in) {
             } catch (std::exception ex) {
                 MessageManager::displayMessage(ex.what(), 5, ERR);
             }
+        } else if (line.rfind("dparticles", 0) == 0) {
+            try {
+                const std::vector<std::string> parsedLine = splitString(line, "=");
+                DAMAGE_PARTICLES_ENABLED = (bool)std::stoi(parsedLine[1]);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
         }
     }
 }

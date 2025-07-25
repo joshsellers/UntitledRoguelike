@@ -12,6 +12,7 @@
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
     _canPickUpItems = true;
+    _overrideDamageShaderBehavior = true;
 
     setMaxHitPoints(100);
     heal(getMaxHitPoints());
@@ -805,11 +806,6 @@ void Player::damage(int damage) {
         }
         StatManager::increaseStat(DAMAGE_TAKEN, damage);
     }
-}
-
-bool Player::isTakingDamage() const {
-    constexpr long long damageDisplayTime = 225LL;
-    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
 }
 
 float getArmorCoefficient(unsigned int itemId) {
