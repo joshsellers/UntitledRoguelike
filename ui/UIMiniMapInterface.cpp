@@ -2,6 +2,7 @@
 #include "../world/MiniMapGenerator.h"
 #include "../world/TerrainColor.h"
 #include "UIHandler.h"
+#include "../world/World.h"
 
 UIMiniMapInterface::UIMiniMapInterface(Player* player, sf::Font font) : UIElement(50, 50, 30, 30, false, false, font), 
 _dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
@@ -32,6 +33,10 @@ _dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
     _playerIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _playerIcon.setTextureRect(sf::IntRect(64, 224, 32, 32));
     _playerIcon.setSize(sf::Vector2f(getRelativeWidth(2.4f), getRelativeWidth(2.4f)));
+
+    _bossIcon.setTexture(UIHandler::getUISpriteSheet().get());
+    _bossIcon.setTextureRect(sf::IntRect(112, 240, 16, 16));
+    _bossIcon.setSize(sf::Vector2f(getRelativeWidth(1.75f), getRelativeWidth(1.75f)));
 }
 
 void UIMiniMapInterface::update() {
@@ -142,6 +147,22 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
         && _playerIcon.getPosition().y + _playerIcon.getSize().y / 2.f > _y
         && _playerIcon.getPosition().y + _playerIcon.getSize().y / 2.f < _y + _dispSize * _dispScale) {
         surface.draw(_playerIcon);
+    }
+
+    if (_player->getWorld()->bossIsActive()) {
+        const sf::Vector2f bossPos = _player->getWorld()->getCurrentBoss()->getPosition();
+
+        _bossIcon.setPosition(
+            (_x + ((bossPos.x * scale + centerX) - _cameraX) * _dispScale) - (_bossIcon.getSize().x / 2.f),
+            (_y + ((bossPos.y * scale + centerY) - _cameraY) * _dispScale) - (_bossIcon.getSize().y / 2.f)
+        );
+
+        if (_bossIcon.getPosition().x + _bossIcon.getSize().x / 2.f > _x
+            && _bossIcon.getPosition().x + _bossIcon.getSize().x / 2.f < _x + _dispSize * _dispScale
+            && _bossIcon.getPosition().y + _bossIcon.getSize().y / 2.f > _y
+            && _bossIcon.getPosition().y + _bossIcon.getSize().y / 2.f < _y + _dispSize * _dispScale) {
+            surface.draw(_bossIcon);
+        }
     }
 
     if (GamePad::isConnected()) {

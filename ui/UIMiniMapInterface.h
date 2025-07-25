@@ -31,6 +31,7 @@ private:
     sf::RectangleShape _shopIcon;
     sf::RectangleShape _pinIcon;
     sf::RectangleShape _playerIcon;
+    sf::RectangleShape _bossIcon;
 
     Player* _player;
 
