@@ -24,7 +24,7 @@ _dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
 
     _shopIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _shopIcon.setTextureRect(sf::IntRect(96, 240, 16, 16));
-    _shopIcon.setSize(sf::Vector2f(getRelativeWidth(0.75f), getRelativeWidth(0.75f)));
+    _shopIcon.setSize(sf::Vector2f(getRelativeWidth(1.f), getRelativeWidth(1.f)));
 
     _pinIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _pinIcon.setTextureRect(sf::IntRect(32, 224, 32, 32));
