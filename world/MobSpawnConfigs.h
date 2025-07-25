@@ -3,7 +3,7 @@
 
 #include "MobSpawnData.h"
 
-constexpr int THIEF_CHANCE = 500;
+constexpr int THIEF_CHANCE = 1000;
 const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {
         //MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
