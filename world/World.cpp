@@ -209,7 +209,7 @@ void World::draw(sf::RenderTexture& surface) {
                 || entity->getEntityType() == "shopshelf"))) {
             entity->draw(surface);
 
-            if (!entity->isProp() && !entity->isBoss() && entity->isTakingDamage()) {
+            if (entity->getSaveId() != PLAYER && !entity->isProp() && !entity->isBoss() && entity->isTakingDamage()) {
                 surface.draw(entity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
             }
         }
