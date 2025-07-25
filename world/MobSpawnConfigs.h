@@ -42,7 +42,7 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {
-        MobSpawnData(MOB_TYPE::MUSHROID, 10, 1, 1, 0),
+        MobSpawnData(MOB_TYPE::MUSHROID, 12, 1, 1, 0),
         MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     })
 };
