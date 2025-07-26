@@ -1025,6 +1025,12 @@ private:
                 case SCYTHE:
                     entity = std::shared_ptr<Scythe>(new Scythe(pos));
                     break;
+                case PENGUIN_BOSS:
+                    entity = std::shared_ptr<PenguinBoss>(new PenguinBoss(pos));
+                    break;
+                case HYPNO_PENGUIN:
+                    entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

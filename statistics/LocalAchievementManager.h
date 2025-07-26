@@ -67,7 +67,9 @@ private:
         "Remmy Ribbit but harder",
         "Amy Eightlegs",
         "Amy Eightlegs but harder",
-        "Treeckster"
+        "Treeckster",
+        "Princeton the Penguin",
+        "Princeton the Penguin but harder"
     };
 };
 

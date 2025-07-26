@@ -63,6 +63,8 @@
 #include "../world/entities/Scythe.h"
 #include "../core/EndGameSequence.h"
 #include "../core/FileIntegrityManager.h"
+#include "../world/entities/PenguinBoss.h"
+#include "../world/entities/HypnoPenguin.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -369,6 +371,10 @@ private:
                             entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
                         } else if (entityName == "scythe") {
                             entity = std::shared_ptr<Scythe>(new Scythe(pos));
+                        } else if (entityName == "penguinboss") {
+                            entity = std::shared_ptr<PenguinBoss>(new PenguinBoss(pos));
+                        } else if (entityName == "hypnopenguin") {
+                            entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

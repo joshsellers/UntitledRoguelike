@@ -19,6 +19,28 @@ LaserBeam::LaserBeam(const Entity* parent, const float angle, const sf::Uint32 c
     _laser.setRotation(_angle);
 }
 
+LaserBeam::LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const sf::Uint32 color, 
+    const unsigned int width, const unsigned int length, const unsigned int damage, 
+    sf::Vector2f posOffset, const bool onlyDamagePlayer, const long long lifeTime) :
+    Entity(NO_SAVE, parent->getPosition() + posOffset, 0, width, width, false), _color(color),
+    _width(width), _length(length), _damage(damage), _onlyDamagePlayer(onlyDamagePlayer), _posOffset(posOffset), _parent(parent),
+    _lifeTime(lifeTime), _spawnTime(currentTimeMillis()) {
+
+    _ignoreViewport = true;
+
+    _targetPos = targetPos;
+    _pos = _parent->getPosition() + _posOffset;
+    const float dX = _pos.x - _targetPos.x;
+    const float dY = _pos.y - _targetPos.y;
+    _angle = radsToDeg(std::atan2(dY, dX)) + 90.f;
+
+    _laser.setOrigin({ _width / 2.f, 0 });
+    _laser.setFillColor(sf::Color(_color));
+    _laser.setPosition(getPosition());
+    _laser.setSize({ (float)_width, (float)_length });
+    _laser.setRotation(_angle);
+}
+
 void LaserBeam::update() {
     if (_parent == nullptr || currentTimeMillis() - _spawnTime >= _lifeTime) {
         deactivate();

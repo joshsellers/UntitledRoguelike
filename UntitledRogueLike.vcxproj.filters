@@ -603,6 +603,12 @@
     <ClCompile Include="core\FileIntegrityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\PenguinBoss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world\entities\HypnoPenguin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1110,6 +1116,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\FileIntegrityManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\PenguinBoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\HypnoPenguin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

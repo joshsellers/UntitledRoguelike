@@ -1,0 +1,6 @@
+#!SIG3693833766
+itemName = "_PROJECTILE_HOMING_SNOWBALL"
+velocity = 4
+onlyHitEnemies = false
+lifeTime = 5000
+hitBox = 3, 3, 28, 28

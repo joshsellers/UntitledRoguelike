@@ -72,6 +72,7 @@
 #include "entities/ShopShelf.h"
 #include "../statistics/LocalAchievementManager.h"
 #include "entities/OctopusBoss.h"
+#include "entities/PenguinBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1420,6 +1421,9 @@ void World::spawnBoss(int currentWaveNumber) {
         case 80:
             boss = std::shared_ptr<OctopusBoss>(new OctopusBoss(spawnPos));
             break;
+        case 88:
+            boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));
+            break
     }
 
     if (boss != nullptr) {
@@ -1697,6 +1701,11 @@ void World::bossDefeated() {
             achievement = DEFEAT_OCTOPUSBOSS;
             ConditionalUnlockManager::increaseUnlockProgress("Autolaser", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Radioactive Octopus", 1);
+            break;
+        case PENGUIN_BOSS:
+            achievement = DEFEAT_PENGUINBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Penguin Cannon", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Seek Jewel", 1);
             break;
     }
 

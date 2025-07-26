@@ -8,6 +8,9 @@ public:
     LaserBeam(const Entity* parent, const float angle, const sf::Uint32 color, const unsigned int width, const unsigned int length, const unsigned int damage, 
         sf::Vector2f posOffset = {0, 0}, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL);
 
+    LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const sf::Uint32 color, const unsigned int width, const unsigned int length, const unsigned int damage,
+        sf::Vector2f posOffset = { 0, 0 }, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL);
+
     void update();
     void draw(sf::RenderTexture& surface);
 
@@ -16,7 +19,7 @@ public:
 private:
     const Entity* _parent;
     const sf::Vector2f _posOffset;
-    const float _angle;
+    float _angle;
     sf::Vector2f _targetPos;
     const sf::Uint32 _color;
     const unsigned int _width;

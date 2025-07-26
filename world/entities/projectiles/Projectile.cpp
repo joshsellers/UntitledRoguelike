@@ -191,10 +191,8 @@ void Projectile::update() {
         }
 
         if (closestEnemy != nullptr) {
-            const float steerAmount = 0.45f;
-            const float angle = std::atan2((closestEnemy->getPosition().y + closestEnemy->getSpriteSize().y / 2.f) - getPosition().y, closestEnemy->getPosition().x - getPosition().x);
-            _velocityComponents.x += steerAmount * std::cos(angle);
-            _velocityComponents.y += steerAmount * std::sin(angle);
+            seekTarget(closestEnemy->getPosition(), closestEnemy->getSpriteSize(), targetSeekStrength);
+
             _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
         }
 
@@ -203,11 +201,7 @@ void Projectile::update() {
             move(_velocityComponents.x, _velocityComponents.y);
         }
     } else if (targetSeeking && onlyDamagePlayer) {
-        const sf::Vector2f playerPos(getWorld()->getPlayer()->getPosition().x + (float)TILE_SIZE / 2.f, getWorld()->getPlayer()->getPosition().y + (float)TILE_SIZE);
-        const float steerAmount = 0.45f;
-        const float angle = std::atan2(playerPos.y - getPosition().y, playerPos.x - getPosition().x);
-        _velocityComponents.x += steerAmount * std::cos(angle);
-        _velocityComponents.y += steerAmount * std::sin(angle);
+        seekTarget(getWorld()->getPlayer()->getPosition(), { TILE_SIZE, TILE_SIZE * 2 }, targetSeekStrength);
         _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
 
         _baseSpeed = 1;
@@ -257,6 +251,36 @@ void Projectile::update() {
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 
     _currentTime++;
+}
+
+void Projectile::seekTarget(sf::Vector2f targetPos, sf::Vector2i targetSpriteSize, float steerAmount, bool constantVelocity) {
+    if (constantVelocity) {
+        sf::Vector2f toTarget = targetPos + 0.5f * sf::Vector2f(targetSpriteSize.x, targetSpriteSize.y) - getPosition();
+
+        float targetLength = std::sqrt(toTarget.x * toTarget.x + toTarget.y * toTarget.y);
+        if (targetLength != 0.f) {
+            toTarget /= targetLength;
+        }
+
+        float currentSpeed = std::sqrt(_velocityComponents.x * _velocityComponents.x + _velocityComponents.y * _velocityComponents.y);
+        sf::Vector2f velocityDir = _velocityComponents;
+        if (currentSpeed != 0.f) {
+            velocityDir /= currentSpeed;
+        }
+
+        velocityDir = (1.f - steerAmount) * velocityDir + steerAmount * toTarget;
+
+        float newDirLength = std::sqrt(velocityDir.x * velocityDir.x + velocityDir.y * velocityDir.y);
+        if (newDirLength != 0.f) {
+            velocityDir /= newDirLength;
+        }
+        _velocityComponents = velocityDir * currentSpeed;
+    } else {
+        const float angle = std::atan2((targetPos.y + targetSpriteSize.y / 2.f) - getPosition().y, targetSpriteSize.x - getPosition().x);
+
+        _velocityComponents.x += steerAmount * std::cos(angle);
+        _velocityComponents.y += steerAmount * std::sin(angle);
+    }
 }
 
 void Projectile::spawnExplosion() const {
@@ -425,5 +449,6 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
 
     bounceOffViewport = false;
     targetSeeking = false;
+    targetSeekStrength = 0.05f;
     _baseSpeed = 0;
 }

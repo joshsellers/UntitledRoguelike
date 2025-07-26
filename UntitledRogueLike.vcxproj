@@ -40,6 +40,7 @@
     <ClCompile Include="world\entities\FrogBoss.cpp" />
     <ClCompile Include="world\entities\FungusMan.cpp" />
     <ClCompile Include="world\entities\Funguy.cpp" />
+    <ClCompile Include="world\entities\HypnoPenguin.cpp" />
     <ClCompile Include="world\entities\ImpactExplosion.cpp" />
     <ClCompile Include="world\entities\LargeMushroom.cpp" />
     <ClCompile Include="world\entities\LaserBeam.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="world\entities\Mushroid.cpp" />
     <ClCompile Include="world\entities\MushroomBoss.cpp" />
     <ClCompile Include="world\entities\OctopusBoss.cpp" />
+    <ClCompile Include="world\entities\PenguinBoss.cpp" />
     <ClCompile Include="world\entities\Scythe.cpp" />
     <ClCompile Include="world\entities\ShopATM.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
@@ -240,6 +242,7 @@
     <ClInclude Include="world\entities\FrogBoss.h" />
     <ClInclude Include="world\entities\FungusMan.h" />
     <ClInclude Include="world\entities\Funguy.h" />
+    <ClInclude Include="world\entities\HypnoPenguin.h" />
     <ClInclude Include="world\entities\ImpactExplosion.h" />
     <ClInclude Include="world\entities\LargeMushroom.h" />
     <ClInclude Include="world\entities\LaserBeam.h" />
@@ -253,6 +256,7 @@
     <ClInclude Include="world\entities\Mushroid.h" />
     <ClInclude Include="world\entities\MushroomBoss.h" />
     <ClInclude Include="world\entities\OctopusBoss.h" />
+    <ClInclude Include="world\entities\PenguinBoss.h" />
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
     <ClInclude Include="world\entities\Scythe.h" />
     <ClInclude Include="world\entities\ShopATM.h" />

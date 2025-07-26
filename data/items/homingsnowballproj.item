@@ -1,0 +1,5 @@
+#!SIG3613096969
+name = "_PROJECTILE_HOMING_SNOWBALL"
+description = "This item should not be obtainable."
+textureRect = 167, 17, 2, 2
+damage = 15
