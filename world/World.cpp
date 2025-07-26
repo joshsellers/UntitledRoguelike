@@ -1423,7 +1423,7 @@ void World::spawnBoss(int currentWaveNumber) {
             break;
         case 88:
             boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));
-            break
+            break;
     }
 
     if (boss != nullptr) {

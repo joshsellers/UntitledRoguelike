@@ -56,6 +56,11 @@ void HypnoPenguin::update() {
     _sprite.setPosition(getPosition());
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+    if (getHitBox().intersects(getWorld()->getPlayer()->getHitBox())) {
+        getWorld()->getPlayer()->takeDamage(15);
+        getWorld()->getPlayer()->knockBack(5.f, (MOVING_DIRECTION)_movingDir);
+    }
 }
 
 void HypnoPenguin::draw(sf::RenderTexture& surface) {

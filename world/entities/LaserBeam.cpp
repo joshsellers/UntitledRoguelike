@@ -48,6 +48,9 @@ void LaserBeam::update() {
     }
 
     _pos = _parent->getPosition() + _posOffset;
+    const float dX = _pos.x - _targetPos.x;
+    const float dY = _pos.y - _targetPos.y;
+    _angle = radsToDeg(std::atan2(dY, dX)) + 90.f;
     _targetPos = { getPosition().x + _length * std::cos(degToRads(_angle)), getPosition().y + _length * std::sin(degToRads(_angle)) };
 
     _laser.setPosition(getPosition());
