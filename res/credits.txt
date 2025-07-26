@@ -68,7 +68,18 @@ Quality Control - Josh Sellers
 Compatibility Lead - Josh Sellers
 Analyst - Josh Sellers
 Release Manager - Josh Sellers
-Playtesting - Josh Sellers, Spencer Brown, Eli Brown, Draven Harper, August Morey, Julian Dubinsky
+
+
+PLAYTESTERS
+-----------------------------------
+Spencer Brown
+Eli Brown
+Draven Harper
+August Morey
+Dylan Thompson
+Noah Plemons
+Ayden McCain
+Julian Dubinsky
 
 
 MARKETING
