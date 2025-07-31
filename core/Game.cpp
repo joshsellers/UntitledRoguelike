@@ -1223,6 +1223,8 @@ void Game::update() {
 
                 _completeTutorialButton_startSettings->setLabelText((!Tutorial::isCompleted() ? "disable" : "enable") + (std::string)" tutorial");
             }
+
+            if (Tutorial::getCurrentStep() < TUTORIAL_STEP::CLEAR_WAVE_1) _world._cooldownStartTime = currentTimeMillis() + 500LL;
         }
 
         constexpr long long withdrawInterval = 75LL;
@@ -1524,8 +1526,7 @@ void Game::buttonPressed(std::string buttonCode) {
         //_world.startNewGameCooldown();
         _world._cooldownActive = true;
         _world._cooldownStartTime = currentTimeMillis();
-        if (!Tutorial::isCompleted()) _world._enemySpawnCooldownTimeMilliseconds = 45000LL;
-        else _world._enemySpawnCooldownTimeMilliseconds = 15000LL;
+        _world._enemySpawnCooldownTimeMilliseconds = 15000LL;
 
         _virtualKeyboardMenu_lower->hide();
         _virtualKeyboardMenu_upper->hide();
