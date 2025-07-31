@@ -703,7 +703,7 @@ void World::onWaveCleared() {
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
-    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95 || _currentWaveNumber == 99) {
+    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95 || _currentWaveNumber == 100) {
         MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
     }
 
