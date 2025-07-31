@@ -1539,7 +1539,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
             addEntity(corpse);
         }
 
-        const sf::Vector2f shelfBasePos(buildingPos.x + 128 - TILE_SIZE - 1 + 7, buildingPos.y + 56 - 4);
+        const sf::Vector2f shelfBasePos(buildingPos.x + 128 - TILE_SIZE - 1 + 7, buildingPos.y + 56 - 9 - TILE_SIZE * 2);
         constexpr float shelfSpacing = 36.f;
         constexpr int shelfCount = 3;
         for (int i = 0; i < shelfCount; i++) {
@@ -1558,7 +1558,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
         const unsigned int seed = shopkeepPos.x + shopkeepPos.y * (shopkeepPos.x - shopkeepPos.y);
         srand(seed);
         if (randomChance(atmChance)) {
-            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
+            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96 - TILE_SIZE + 3, buildingPos.y), getSpriteSheet()));
             shopAtm->setWorld(this);
             addEntity(shopAtm);
         }
