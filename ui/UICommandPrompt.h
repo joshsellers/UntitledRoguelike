@@ -1132,6 +1132,15 @@ private:
                 MOVEMENT_RESETS_AIM = !MOVEMENT_RESETS_AIM;
                 return "MOVEMENT_RESETS_AIM set to " + (std::string)(MOVEMENT_RESETS_AIM ? "true" : "false");
             })
+        },
+
+        {
+            "tar",
+            Command("Toggle auto-reload",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                AUTO_RELOAD_ENABLED = !AUTO_RELOAD_ENABLED;
+                return "Automatic reload " + (std::string)(AUTO_RELOAD_ENABLED ? "enabled" : "disabled");
+            })
         }
     };
 };
