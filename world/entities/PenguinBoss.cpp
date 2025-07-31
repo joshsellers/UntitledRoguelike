@@ -94,12 +94,15 @@ void PenguinBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
-    constexpr long long contactDamageRateMillis = 500LL;
-    if (getWorld()->getPlayer()->isActive()
-        && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())
-        && currentTimeMillis() - _lastContactDamageTimeMillis >= contactDamageRateMillis) {
-        getWorld()->getPlayer()->takeDamage(25);
-        _lastContactDamageTimeMillis = currentTimeMillis();
+    if (_isChargingLaser) {
+        const sf::Vector2i textureCoords(178, 32);
+        constexpr int ticksPerFrame = 2;
+        constexpr int frameCount = 6;
+        const int yOffset = ((_animCounter / ticksPerFrame) % frameCount);
+
+        _animCounter++;
+
+        if (yOffset == frameCount - 1) _isChargingLaser = false;
     }
 }
 
@@ -135,15 +138,6 @@ void PenguinBoss::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
 
     if (_isChargingLaser) {
-        const sf::Vector2i textureCoords(178, 32);
-        constexpr int ticksPerFrame = 10;
-        constexpr int frameCount = 6;
-        const int yOffset = ((_animCounter / ticksPerFrame) % frameCount);
-
-        _animCounter++;
-
-        if (yOffset == frameCount - 1) _isChargingLaser = false;
-
         _laserEyesSprite.setTextureRect(sf::IntRect(
             178 << SPRITE_SHEET_SHIFT, (32 << SPRITE_SHEET_SHIFT) + yOffset * TILE_SIZE * 12, TILE_SIZE * 9, TILE_SIZE * 12
         ));
@@ -173,7 +167,7 @@ void PenguinBoss::runCurrentState() {
     switch (_currentState.stateId) {
         case PSYCH_LASER:
         {
-            constexpr long long laserFireDelay = 1500LL;
+            constexpr long long laserFireDelay = 450LL;
             if (!_isChargingLaser && !_firedLaser && currentTimeMillis() - _laserChargeStartTime >= laserFireDelay) {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
                 const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(this, playerPos, 0xFFFFFFFF, 16, 600, 30, {0, isSwimming() ? (float)TILE_SIZE * 7.f : 16.f}, true, 1250));

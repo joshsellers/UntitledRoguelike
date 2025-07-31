@@ -16,7 +16,7 @@ LaserBeam::LaserBeam(const Entity* parent, const float angle, const sf::Uint32 c
     _laser.setFillColor(sf::Color(_color));
     _laser.setPosition(getPosition());
     _laser.setSize({ (float)_width, (float)_length });
-    _laser.setRotation(_angle);
+    _laser.setRotation(_angle - 90.f);
 }
 
 LaserBeam::LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const sf::Uint32 color, 
@@ -32,13 +32,13 @@ LaserBeam::LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const s
     _pos = _parent->getPosition() + _posOffset;
     const float dX = _pos.x - _targetPos.x;
     const float dY = _pos.y - _targetPos.y;
-    _angle = radsToDeg(std::atan2(dY, dX)) + 90.f;
+    _angle = radsToDeg(std::atan2(dY, dX)) + 180.f;
 
     _laser.setOrigin({ _width / 2.f, 0 });
     _laser.setFillColor(sf::Color(_color));
     _laser.setPosition(getPosition());
     _laser.setSize({ (float)_width, (float)_length });
-    _laser.setRotation(_angle);
+    _laser.setRotation(_angle - 90.f);
 }
 
 void LaserBeam::update() {
@@ -50,7 +50,6 @@ void LaserBeam::update() {
     _pos = _parent->getPosition() + _posOffset;
     const float dX = _pos.x - _targetPos.x;
     const float dY = _pos.y - _targetPos.y;
-    _angle = radsToDeg(std::atan2(dY, dX)) + 90.f;
     _targetPos = { getPosition().x + _length * std::cos(degToRads(_angle)), getPosition().y + _length * std::sin(degToRads(_angle)) };
 
     _laser.setPosition(getPosition());

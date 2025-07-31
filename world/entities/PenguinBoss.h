@@ -34,6 +34,8 @@ private:
     long long _laserChargeStartTime = 0LL;
     sf::Sprite _laserEyesSprite;
     int _animCounter = 0;
+
+    sf::Vector2f _laserTarget;
 };
 
 #endif
