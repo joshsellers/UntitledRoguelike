@@ -202,6 +202,7 @@ void ShopKeep::initInventory(bool visited) {
     //
 
     if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
+    if (!Tutorial::isCompleted() && getInventory().hasItem(Item::AXE.getId())) getInventory().removeItem(Item::AXE.getId(), 1);
 }
 
 void ShopKeep::update() {
