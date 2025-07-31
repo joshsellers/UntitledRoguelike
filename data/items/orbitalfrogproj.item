@@ -1,5 +1,5 @@
-#!SIG3534581739
+#!SIG2161684200
 name = "_PROJECTILE_ORBITAL_FROG"
 description = "This item should not be obtainable."
 textureRect = 104, 38, 1, 1
-damage = 20
+damage = 6

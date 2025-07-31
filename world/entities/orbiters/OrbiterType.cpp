@@ -181,7 +181,7 @@ const OrbiterType OrbiterType::BEE(12, "Bee", sf::IntRect(24, 13, 1, 1), 2.f, 16
     }
 );
 
-const OrbiterType OrbiterType::FROG(13, "Frog", sf::IntRect(104, 37, 1, 1), 2.f, 64.f,
+const OrbiterType OrbiterType::FROG(13, "Frog", sf::IntRect(104, 37, 1, 1), 2.f, 128.f,
     OrbiterAttackMethod::CUSTOM, 0LL, 0, true, "NONE", {},
     [](Orbiter* orbiterInstance) {
         float fireAngle = orbiterInstance->getAngle();
