@@ -1,6 +1,7 @@
 #include "BeeFamiliar.h"
 #include "../World.h"
 #include "orbiters/Orbiter.h"
+#include "../../core/Tutorial.h"
 
 BeeFamiliar::BeeFamiliar(sf::Vector2f pos, float orbiterAngle, float orbiterDistance) : Entity(BEE_FAMILIAR, pos, 1.f, TILE_SIZE, TILE_SIZE, false),
 _orbiterAngle(orbiterAngle), _orbiterDistance(orbiterDistance)
@@ -52,7 +53,7 @@ void BeeFamiliar::update() {
 
         constexpr long long damageRate = 500LL;
         if (_hitBox.intersects(_enemyTarget->getHitBox()) && currentTimeMillis() - _lastDamageTime >= damageRate) {
-            _enemyTarget->takeDamage(2);
+            _enemyTarget->takeDamage(Tutorial::isCompleted() ? 2 : 5);
             _lastDamageTime = currentTimeMillis();
         }
     }
