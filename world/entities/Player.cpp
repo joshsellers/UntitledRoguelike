@@ -58,6 +58,8 @@ void Player::update() {
 
             _magContentsPercentage = ((float)(maxAmmo * reloadProgress) / (float)weapon->getMagazineSize()) * 100;
         }
+    } else if (AUTO_RELOAD_ENABLED && _magazineContents == 0 && GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT))) {
+        startReloadingWeapon();
     }
 
     fireAutomaticWeapon();
@@ -886,7 +888,6 @@ void Player::keyReleased(sf::Keyboard::Key& key) {
 
 void Player::controllerButtonReleased(GAMEPAD_BUTTON button) {
     if (button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::RELOAD)) startReloadingWeapon();
-    if (AUTO_RELOAD_ENABLED && _magazineContents == 0 && button == InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)) startReloadingWeapon();
 }
 
 void Player::controllerButtonPressed(GAMEPAD_BUTTON button) {
