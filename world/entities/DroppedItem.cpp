@@ -84,6 +84,18 @@ void DroppedItem::draw(sf::RenderTexture& surface) {
         ));
     }
     surface.draw(_sprite);
+
+    if (!Tutorial::isCompleted() && _itemId == Item::getIdFromName("Bee")) {
+        sf::CircleShape circle;
+        circle.setFillColor(sf::Color::Transparent);
+        const float oscSpeed = 0.05f;
+        const unsigned int alpha = (std::sin((float)_animCounter * oscSpeed) * 0.5f + 0.5f) * 255.f;
+        circle.setOutlineColor(sf::Color(((0xFF0000) << 8) + alpha));
+        circle.setOutlineThickness(2.f);
+        circle.setPosition({ _pos.x, _originalY - 3.5f });
+        circle.setRadius(8.5f);
+        surface.draw(circle);
+    }
 }
 
 void DroppedItem::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
