@@ -43,7 +43,7 @@ bool DIAGONAL_MOVEMENT_ENABLED = true;
 
 bool MOVEMENT_RESETS_AIM = true;
 
-bool AUTO_RELOAD_ENABLED = false;
+bool AUTO_RELOAD_ENABLED = true;
 
 bool UPCOMING_FEATURES_ENABLED = true;
 
