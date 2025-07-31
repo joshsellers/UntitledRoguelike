@@ -11,6 +11,8 @@ public:
     static bool verifyFile(std::string path);
     static void signFiles();
     static void signFile(std::string path);
+
+    static bool startupVerificationFailed();
 private:
 
     static inline const std::string _sigPrefix = "#!SIG";
@@ -22,6 +24,8 @@ private:
         "LOCALLOW\\save1",
         "LOCALLOW\\save2"
     };
+
+    static inline bool _verificationFailed = false;
 };
 
 #endif

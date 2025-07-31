@@ -62,12 +62,17 @@ public:
             if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
             if (MID_GAME_PERF_BOOST) out << "PERF:" + std::to_string(MID_GAME_PERF_BOOST) << std::endl;
 
+
+            bool alreadyMarked = false;
             for (const auto& moddedSaveName : _modifiedSaveFiles) {
                 if (moddedSaveName == _currentSaveFileName) {
                     out << "MODDED:1" << std::endl;
+                    alreadyMarked = true;
                     break;
                 }
             }
+
+            if (!alreadyMarked && FileIntegrityManager::startupVerificationFailed()) out << "MODDED:1" << std::endl;
 
             saveStats(out);
             savePlayerData(out);
@@ -129,7 +134,7 @@ public:
         in.close();
 
         if (!FileIntegrityManager::verifyFile(_saveDir + "/" + saveFileName)) {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be disabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL);
             DISABLE_ACHIEVEMENTS = true;
             DISABLE_UNLOCKS = true;
             DISABLE_STATS = true;
@@ -596,7 +601,7 @@ private:
         } else if (header == "PERF") {
             MID_GAME_PERF_BOOST = true;
         } else if (header == "MODDED") {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be disabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL);
             DISABLE_ACHIEVEMENTS = true;
             DISABLE_UNLOCKS = true;
             DISABLE_STATS = true;

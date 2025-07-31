@@ -50,6 +50,8 @@ void FileIntegrityManager::verifyFiles() {
         DISABLE_UNLOCKS = true;
         DISABLE_STATS = true;
     }
+
+    if (!verifiedAll) _verificationFailed = true;
 }
 
 bool FileIntegrityManager::verifyFile(std::string path) {
@@ -159,4 +161,8 @@ void FileIntegrityManager::signFile(std::string path) {
             MessageManager::displayMessage("Exception while signing " + path + ": " + (std::string)ex.what(), 5, WARN);
         }
     }
+}
+
+bool FileIntegrityManager::startupVerificationFailed() {
+    return _verificationFailed;
 }
