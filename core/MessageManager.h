@@ -129,7 +129,7 @@ public:
 
     static void clearTutorialMessage(int tutorialStepId) {
         for (int i = 0; i < _messages.size(); i++) {
-            if (_messages[i]->messageType == TUTORIAL && _messages[i]->timeout == tutorialStepId) {
+            if (_messages[i]->active && _messages[i]->messageType == TUTORIAL && _messages[i]->timeout == tutorialStepId) {
                 _messages[i]->active = false;
                 break;
             }

@@ -1521,6 +1521,7 @@ void Game::buttonPressed(std::string buttonCode) {
         //
         constexpr unsigned int tutorialSeed = 543098336;
         _world.init(Tutorial::isCompleted() ? seed : tutorialSeed);
+        if (!Tutorial::isCompleted()) Tutorial::reset();
         //if (!Tutorial::isCompleted()) _world._newGameCooldownLength = 45000LL;
         //else _world._newGameCooldownLength = 15000LL;
         //_world.startNewGameCooldown();
@@ -1708,6 +1709,7 @@ void Game::buttonPressed(std::string buttonCode) {
     } else if (buttonCode == "settings_mainmenu") {
         _startMenu->hide();
         _startMenu_settings->show();
+        _completeTutorialButton_startSettings->setLabelText(Tutorial::isCompleted() ? "enable tutorial" : "disable tutorial");
     } else if (buttonCode == "back_startsettings") {
         _startMenu_settings->hide();
         _startMenu->show();
@@ -1778,6 +1780,13 @@ void Game::buttonPressed(std::string buttonCode) {
 
         _startMenu->show();
     } else if (stringStartsWith(buttonCode, "load:")) {
+        if (!Tutorial::isCompleted() && Tutorial::getCurrentStep() == TUTORIAL_STEP::START) {
+            Tutorial::reset();
+            MessageManager::clearAllTutorialMessages();
+            buttonPressed("startnewgame");
+            return;
+        }
+
         if (SaveManager::loadGame(splitString(buttonCode, ":")[1])) {
             SaveManager::setCurrentSaveFileName(splitString(buttonCode, ":")[1]);
 
@@ -1796,7 +1805,7 @@ void Game::buttonPressed(std::string buttonCode) {
             _magazineMeter->hide();
 
             startLoading();
-            Tutorial::completeStep(TUTORIAL_STEP::END);
+            //Tutorial::completeStep(TUTORIAL_STEP::END);
             
             _lastAutosaveTime = currentTimeMillis();
         } else {
