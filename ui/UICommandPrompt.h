@@ -1123,6 +1123,15 @@ private:
                 FileIntegrityManager::verifyFiles();
                 return "Verified all game files";
             })
+        },
+
+        {
+            "tmra",
+            Command("Toggle MOVEMENT_RESETS_AIM",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                MOVEMENT_RESETS_AIM = !MOVEMENT_RESETS_AIM;
+                return "MOVEMENT_RESETS_AIM set to " + (std::string)(MOVEMENT_RESETS_AIM ? "true" : "false");
+            })
         }
     };
 };

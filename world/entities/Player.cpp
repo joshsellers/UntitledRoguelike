@@ -434,8 +434,14 @@ void Player::drawTool(sf::RenderTexture& surface) {
             float angle = (float)(std::atan2(y, x) * (180. / PI)) + 90.f;
 
             if (GamePad::isConnected()) { 
-                angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
-                if (GamePad::isRightStickDeadZoned()) {
+                if (MOVEMENT_RESETS_AIM || !GamePad::isRightStickDeadZoned()) {
+                    angle = (float)(((std::atan2(GamePad::getRightStickYAxis(), GamePad::getRightStickXAxis()))) * (180. / PI)) + 90.f;
+                    if (!MOVEMENT_RESETS_AIM) _gamepadAimAngle = angle;
+                } else if (!MOVEMENT_RESETS_AIM && GamePad::isRightStickDeadZoned()) {
+                    angle = _gamepadAimAngle;
+                }
+
+                if (GamePad::isRightStickDeadZoned() && MOVEMENT_RESETS_AIM) {
                     switch (_movingDir) {
                         case UP:
                             angle = 0.f;
@@ -453,11 +459,11 @@ void Player::drawTool(sf::RenderTexture& surface) {
                 }
             }
 
-            if (angle >= -45.f && angle < 45.f) 
+            if (angle >= -45.f && angle < 45.f)
                 _facingDir = UP;
             else if (angle >= 45.f && angle < 135.f)
                 _facingDir = RIGHT;
-            else if (angle >= 135.f && angle < 225.f) 
+            else if (angle >= 135.f && angle < 225.f)
                 _facingDir = DOWN;
             else if (angle >= 225.f || angle < -45.f)
                 _facingDir = LEFT;

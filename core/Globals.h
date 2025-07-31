@@ -42,6 +42,8 @@ extern bool USING_MOUSE;
 
 extern bool DIAGONAL_MOVEMENT_ENABLED;
 
+extern bool MOVEMENT_RESETS_AIM;
+
 extern bool UPCOMING_FEATURES_ENABLED;
 
 extern constexpr int SAVE_FILE_NOT_SELECTED = -1;

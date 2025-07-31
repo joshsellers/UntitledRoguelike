@@ -171,6 +171,8 @@ private:
     long long _blinkStartTime = 0LL;
 
     sf::Vector2f _collisionForce;
+
+    float _gamepadAimAngle;
 };
 
 #endif
