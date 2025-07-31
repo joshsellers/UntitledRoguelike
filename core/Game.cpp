@@ -1327,7 +1327,10 @@ void Game::update() {
             MusicManager::setSituation(situation);
         }
     }
-    _camera->setCenter(_player->getSprite().getPosition().x + (float)PLAYER_WIDTH / 2.f, _player->getSprite().getPosition().y + (_player->isSwimming() && _isPaused ? 0.f : (float)PLAYER_HEIGHT / 2.f));
+    _camera->setCenter(
+        _player->getSprite().getPosition().x + (float)PLAYER_WIDTH / 2.f, 
+        _player->getSprite().getPosition().y + (_player->isSwimming() && !_player->isInBoat() && _isPaused ? 0.f : (float)PLAYER_HEIGHT / 2.f)
+    );
 
     if (EndGameSequence::isActive()) EndGameSequence::update();
 }
