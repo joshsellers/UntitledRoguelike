@@ -26,7 +26,7 @@ std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockPr
     {"Airstrike", 1},
     {"Burst Jewel", 1},
     {"Radioactive Octopus", 1},
-    {"Canned Soup", 1},
+    {"Can of Soup", 1},
     {"Rocket Launcher", 1},
     {"Laser Pistol", 1},
     {"SMG", 1},

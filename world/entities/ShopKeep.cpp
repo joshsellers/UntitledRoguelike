@@ -50,7 +50,7 @@ void ShopKeep::initInventory(bool visited) {
 
     for (const auto& item : Item::ITEMS) {
         if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()
-            && item->getId() != Item::getIdFromName("Leaf Hat") && (Tutorial::isCompleted() || item->getId() != Item::getIdFromName("Ski Mask"))) {
+            && item->getId() != Item::getIdFromName("Leaf Hat") && (item->getId() != Item::getIdFromName("Ski Mask"))) {
             clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
         }
     }
