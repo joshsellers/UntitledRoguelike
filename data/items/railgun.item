@@ -1,4 +1,4 @@
-#!SIG523822597
+#!SIG4006551349
 name = "Railgun"
 description = "Harness the power of electromagnets\nto solve your problems"
 isGun = true
@@ -9,7 +9,7 @@ isBuyable = true
 conditionalUnlock = true
 value = 500
 magazineSize = 1
-isAutomatic = true
+isAutomatic = false
 fireRate = 0
 reloadTime = 500
 textureRect = 68, 0 , 1, 1
