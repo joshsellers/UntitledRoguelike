@@ -56,6 +56,8 @@ void ShopKeep::initInventory(bool visited) {
     }
 
     for (int i = 0; i < clothingOptions.size(); i++) {
+        constexpr float skipChance = 0.25f;
+        if (randomChance(skipChance)) continue;
         _equippedApparel[i] = clothingOptions.at(i).at((size_t)randomInt(0, clothingOptions.at(i).size() - 1));
     }
 
