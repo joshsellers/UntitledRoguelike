@@ -609,6 +609,9 @@
     <ClCompile Include="world\entities\HypnoPenguin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\gamepad\GamePad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">

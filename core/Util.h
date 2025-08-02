@@ -39,6 +39,8 @@ bool linesIntersect(float p0_x, float p0_y, float p1_x, float p1_y,
 int ipow(int base, int exp);
 double round_prec(double n, int prec);
 
+std::string intToHex(int i);
+
 std::string generateUID();
 
 std::string hash(std::string text);

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="core\EndGameSequence.cpp" />
     <ClCompile Include="core\FileIntegrityManager.cpp" />
+    <ClCompile Include="core\gamepad\GamePad.cpp" />
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
     <ClCompile Include="statistics\LocalAchievementManager.cpp" />
     <ClCompile Include="ui\UIAchievementDisplay.cpp" />

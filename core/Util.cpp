@@ -142,6 +142,14 @@ double round_prec(double n, int prec) {
     return std::round(n * ipow(10, prec)) / ipow(10, prec);
 }
 
+std::string intToHex(int i) {
+    std::stringstream stream;
+    stream << "0x"
+        << std::setfill('0') << std::setw(sizeof(int) * 2)
+        << std::hex << i;
+    return stream.str();
+}
+
 std::string generateUID() {
     static std::random_device              rd;
     static std::mt19937                    gen(rd());
