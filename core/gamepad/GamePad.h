@@ -11,12 +11,17 @@
 
 constexpr int MAX_CONTROLLER_VIBRATION = 65535;
 
+constexpr unsigned int SONY_VID = 0x054C;
+constexpr unsigned int DUALSENSE_PID = 0x0CE6;
+
 class GamePad {
 public:
 
     static void setControllerId(unsigned int id);
 
     static unsigned int getControllerId();
+    static unsigned int getVendorId();
+    static unsigned int getProductId();
 
     static void vibrate(int vibrationAmount, long long time);
 
@@ -46,6 +51,9 @@ public:
 
 private:
     inline static unsigned int _id = 0;
+
+    inline static unsigned int _vid = 0;
+    inline static unsigned int _pid = 0;
     
     inline static float _deadZone = 10.f;
 
@@ -71,6 +79,8 @@ private:
     static void listenerButtonReleaseCallback(GAMEPAD_BUTTON button);
 
     static void listenerButtonPressCallback(GAMEPAD_BUTTON button);
+
+    static GAMEPAD_BUTTON translateButton(GAMEPAD_BUTTON button);
 };
 
 #endif

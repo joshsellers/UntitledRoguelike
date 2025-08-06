@@ -1,15 +1,34 @@
 #include "GamePad.h"
+#include "../InputBindings.h"
 
 void GamePad::setControllerId(unsigned int id) {
     _id = id;
+
+    const auto& info = sf::Joystick::getIdentification(id);
+    MessageManager::displayMessage("Gamepad name: " + info.name.toAnsiString(), 5, DEBUG);
+    MessageManager::displayMessage("Gamepad VID: " + intToHex(info.vendorId), 5, DEBUG);
+    MessageManager::displayMessage("Gamepad PID: " + intToHex(info.productId), 5, DEBUG);
+
+    _vid = info.vendorId;
+    _pid = info.productId;
+
+    //if (_pid == DUALSENSE_PID) InputBindingManager::setDualSenseBindings();
 }
 
 unsigned int GamePad::getControllerId() {
     return _id;
 }
 
+unsigned int GamePad::getVendorId() {
+    return _vid;
+}
+
+unsigned int GamePad::getProductId() {
+    return _pid;
+}
+
 void GamePad::vibrate(int vibrationAmount, long long time) {
-    if (_isVibrating) return;
+    if (_isVibrating || _pid == DUALSENSE_PID || (!STEAMAPI_INITIATED && _vid == SONY_VID)) return;
     vibrationAmount = std::min(MAX_CONTROLLER_VIBRATION, vibrationAmount);
     _isVibrating = true;
     std::thread vibrateThread(&GamePad::runVibration, vibrationAmount, time);
@@ -25,14 +44,16 @@ float GamePad::getLeftStickYAxis() {
 }
 
 float GamePad::getRightStickXAxis() {
-    return removeDeadZone(sf::Joystick::getAxisPosition(getControllerId(), sf::Joystick::U));
+    return removeDeadZone(sf::Joystick::getAxisPosition(getControllerId(), _pid == DUALSENSE_PID ? sf::Joystick::Z : sf::Joystick::U));
 }
 
 float GamePad::getRightStickYAxis() {
-    return removeDeadZone(sf::Joystick::getAxisPosition(getControllerId(), sf::Joystick::V));
+    return removeDeadZone(sf::Joystick::getAxisPosition(getControllerId(), _pid == DUALSENSE_PID ? sf::Joystick::R : sf::Joystick::V));
 }
 
 bool GamePad::isButtonPressed(GAMEPAD_BUTTON button) {
+    if (_pid == DUALSENSE_PID) return sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)translateButton(translateButton(button)));
+
     return (unsigned int)button < (unsigned int)GAMEPAD_BUTTON::LEFT_TRIGGER ?
         sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)button)
         : _triggerIsPressed[(int)button - (int)GAMEPAD_BUTTON::LEFT_TRIGGER];
@@ -84,10 +105,10 @@ void GamePad::receiveControllerEvent(sf::Event& event) {
             for (auto& listener : _listeners) listener->gamepadDisconnected();
             break;
         case sf::Event::JoystickButtonReleased:
-            listenerButtonReleaseCallback((GAMEPAD_BUTTON)event.joystickButton.button);
+            listenerButtonReleaseCallback(translateButton((GAMEPAD_BUTTON)event.joystickButton.button));
             break;
         case sf::Event::JoystickButtonPressed:
-            listenerButtonPressCallback((GAMEPAD_BUTTON)event.joystickButton.button);
+            listenerButtonPressCallback(translateButton((GAMEPAD_BUTTON)event.joystickButton.button));
             break;
     }
 }
@@ -117,6 +138,7 @@ float GamePad::removeDeadZone(float axisValue) {
 }
 
 void GamePad::updateControllerAxisValue(GAMEPAD_AXIS axis, float value) {
+    if (_pid == DUALSENSE_PID && (axis == GAMEPAD_AXIS::RIGHT_STICK_X || axis == GAMEPAD_AXIS::TRIGGERS)) return;
     switch (axis) {
         case GAMEPAD_AXIS::TRIGGERS:
         {
@@ -172,4 +194,42 @@ void GamePad::listenerButtonPressCallback(GAMEPAD_BUTTON button) {
 
     for (auto& listener : _listeners)
         listener->controllerButtonPressed(button);
+}
+
+GAMEPAD_BUTTON GamePad::translateButton(GAMEPAD_BUTTON button) {
+    if (_pid != DUALSENSE_PID) return button;
+
+    GAMEPAD_BUTTON newButton = button;
+
+    switch (button) {
+        case GAMEPAD_BUTTON::SELECT:
+            newButton = GAMEPAD_BUTTON::LEFT_TRIGGER;
+            break;
+        case GAMEPAD_BUTTON::START:
+            newButton = GAMEPAD_BUTTON::RIGHT_TRIGGER;
+            break;
+        case GAMEPAD_BUTTON::LEFT_STICK:
+            newButton = GAMEPAD_BUTTON::SELECT;
+            break;
+        case GAMEPAD_BUTTON::RIGHT_STICK:
+            newButton = GAMEPAD_BUTTON::START;
+            break;
+        case GAMEPAD_BUTTON::A:
+            newButton = GAMEPAD_BUTTON::X;
+            break;
+        case GAMEPAD_BUTTON::B:
+            newButton = GAMEPAD_BUTTON::A;
+            break;
+        case GAMEPAD_BUTTON::X:
+            newButton = GAMEPAD_BUTTON::B;
+            break;
+        case GAMEPAD_BUTTON::LEFT_TRIGGER:
+            newButton = GAMEPAD_BUTTON::LEFT_STICK;
+            break;
+        case GAMEPAD_BUTTON::RIGHT_TRIGGER:
+            newButton = GAMEPAD_BUTTON::RIGHT_STICK;
+            break;
+    }
+
+    return newButton;
 }

@@ -10,6 +10,7 @@
 #include "MessageManager.h"
 #include "Util.h"
 #include <filesystem>
+#include "gamepad/GamePad.h"
 
 class InputBindingManager {
 public:
@@ -33,7 +34,7 @@ public:
     }
 
     static std::string getGamepadButtonName(GAMEPAD_BUTTON button) {
-        return GAMEPAD_BUTTON_NAMES[button];
+        return GamePad::getProductId() == DUALSENSE_PID ? DUALSENSE_BUTTON_NAMES[button] : GAMEPAD_BUTTON_NAMES[button];
     }
 
     static std::string getKeyName(sf::Keyboard::Key key) {
@@ -171,7 +172,7 @@ private:
                 }
             } else if (fileName == "gamepadbindings.config") {
                 for (auto& binding : GAMEPAD_BINDINGS) {
-                    out << getActionName(binding.first) << "=" << getGamepadButtonName(binding.second) << std::endl;
+                    out << getActionName(binding.first) << "=" << GAMEPAD_BUTTON_NAMES[binding.second] << std::endl;
                 }
             }
             out.close();
@@ -231,6 +232,25 @@ private:
 
         {GAMEPAD_BUTTON::LEFT_TRIGGER, "left trigger"},
         {GAMEPAD_BUTTON::RIGHT_TRIGGER, "right trigger"},
+    };
+
+    inline static std::map<GAMEPAD_BUTTON, std::string> DUALSENSE_BUTTON_NAMES = {
+        {GAMEPAD_BUTTON::A, "x"},
+        {GAMEPAD_BUTTON::B, "circle"},
+        {GAMEPAD_BUTTON::Y, "triangle"},
+        {GAMEPAD_BUTTON::X, "square"},
+
+        {GAMEPAD_BUTTON::START, "options"},
+        {GAMEPAD_BUTTON::SELECT, "create"},
+
+        {GAMEPAD_BUTTON::LEFT_STICK, "press left stick"},
+        {GAMEPAD_BUTTON::RIGHT_STICK, "press right stick"},
+
+        {GAMEPAD_BUTTON::LEFT_BUMPER, "L1"},
+        {GAMEPAD_BUTTON::RIGHT_BUMPER, "R1"},
+
+        {GAMEPAD_BUTTON::LEFT_TRIGGER, "L2"},
+        {GAMEPAD_BUTTON::RIGHT_TRIGGER, "R2"},
     };
 
     inline static std::map<sf::Keyboard::Key, std::string> KEY_NAMES;
