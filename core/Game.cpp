@@ -26,6 +26,7 @@
 #include "../statistics/LocalAchievementManager.h"
 #include "../ui/UIAchievementDisplay.h"
 #include "EndGameSequence.h"
+#include "../ui/UIControlsDisplay.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -156,10 +157,22 @@ Game::Game(sf::View* camera, sf::RenderWindow* window) :
 
 void Game::initUI() {
     // Ingame controls display
-    std::shared_ptr<UILabel> controlsDisplay = std::shared_ptr<UILabel>(new UILabel(
+    /*std::shared_ptr<UILabel> controlsDisplay = std::shared_ptr<UILabel>(new UILabel(
         "IMAGE:res/ingamecontrols.png", 2.f, 68.f, 1.f, _font, 18.f, 18.f
     ));
-    _controlsDisplayMenu->addElement(controlsDisplay);
+    _controlsDisplayMenu->addElement(controlsDisplay);*/
+    
+    std::shared_ptr<UIControlsDisplay> mainControlsDisplay = std::shared_ptr<UIControlsDisplay>(new UIControlsDisplay(sf::Vector2f(2, 68), _font));
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::LEFT_STICK, "move");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_STICK, "aim");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_TRIGGER, "shoot");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::LEFT_BUMPER, "roll");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::X, "reload/interact");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::SELECT, "inventory");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::START, "pause");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::B, "skip to next wave (hold)");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_BUMPER, "show/hide controls");
+    _controlsDisplayMenu->addElement(mainControlsDisplay);
 
     _ui->addMenu(_controlsDisplayMenu);
     //

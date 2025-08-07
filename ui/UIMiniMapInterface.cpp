@@ -3,6 +3,7 @@
 #include "../world/TerrainColor.h"
 #include "UIHandler.h"
 #include "../world/World.h"
+#include "UIControlsDisplay.h"
 
 UIMiniMapInterface::UIMiniMapInterface(Player* player, sf::Font font) : UIElement(50, 50, 30, 30, false, false, font), 
 _dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
@@ -183,7 +184,7 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     const float y = 70.f;
     const float ySpacing = 4.f;
 
-    button.setTextureRect(sf::IntRect(0, 192, TILE_SIZE, TILE_SIZE));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK));
     button.setPosition(getRelativePos(x, y + ySpacing * 0));
     surface.draw(button);
 
@@ -191,7 +192,7 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
     surface.draw(controlLabel);
 
-    button.setTextureRect(sf::IntRect(0, 224, TILE_SIZE, TILE_SIZE));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
     button.setPosition(getRelativePos(x, y + ySpacing * 1));
     surface.draw(button);
 
@@ -199,7 +200,7 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
     surface.draw(controlLabel);
 
-    button.setTextureRect(sf::IntRect(16, 224, TILE_SIZE, TILE_SIZE));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_STICK));
     button.setPosition(getRelativePos(x, y + ySpacing * 2));
     surface.draw(button);
 
@@ -207,14 +208,14 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
     surface.draw(controlLabel);
 
-    button.setTextureRect(sf::IntRect(32, 192, TILE_SIZE, TILE_SIZE));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_UP));
     button.setPosition(getRelativePos(x, y + ySpacing * 3));
     surface.draw(button);
     controlLabel.setString("zoom in");
     controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
     surface.draw(controlLabel);
 
-    button.setTextureRect(sf::IntRect(48, 192, TILE_SIZE, TILE_SIZE));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_DOWN));
     button.setPosition(getRelativePos(x, y + ySpacing * 4));
     surface.draw(button);
     controlLabel.setString("zoom out");

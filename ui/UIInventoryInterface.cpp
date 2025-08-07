@@ -4,6 +4,7 @@
 #include "../world/entities/Entity.h"
 #include "UIHandler.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "UIControlsDisplay.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     UIInventoryInterface(2, 11, source, font, spriteSheet) {}
@@ -284,7 +285,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
                 controlLabel.setCharacterSize(getRelativeWidth(1.25f));
                 controlLabel.setOutlineThickness(2.f);
 
-                _buttonSprite.setTextureRect(sf::IntRect(0, 208, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
                 _buttonSprite.setPosition(getRelativePos(26.5, 80)); 
                 std::string aString = "";
                 if (item->isConsumable()) aString = "use";
@@ -296,14 +297,14 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
                 controlLabel.setPosition(getRelativePos(29.5, 80.5));
                 surface.draw(controlLabel);
 
-                _buttonSprite.setTextureRect(sf::IntRect(16, 208, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::Y));
                 _buttonSprite.setPosition(getRelativePos(26.5, 84));
                 surface.draw(_buttonSprite);
                 controlLabel.setString("drop one");
                 controlLabel.setPosition(getRelativePos(29.5, 84.5));
                 surface.draw(controlLabel);
 
-                _buttonSprite.setTextureRect(sf::IntRect(0, 224, TILE_SIZE, TILE_SIZE));
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
                 _buttonSprite.setPosition(getRelativePos(26.5, 88));
                 surface.draw(_buttonSprite);
                 controlLabel.setString("drop all");

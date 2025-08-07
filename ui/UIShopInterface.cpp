@@ -3,6 +3,7 @@
 #include "../core/gamepad/GamePad.h"
 #include "../statistics/StatManager.h"
 #include "../world/entities/Entity.h"
+#include "UIControlsDisplay.h"
 
 UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet)
     : UIInventoryInterface(buyMode ? 2 : 76, 11, source, font, spriteSheet), _shopManager(shopManager) {
@@ -127,7 +128,7 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
         const float y = 70.f;
         const float ySpacing = 4.f;
 
-        _buttonSprite.setTextureRect(sf::IntRect(0, 240, TILE_SIZE, TILE_SIZE));
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_BUMPER));
         _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 0));
         surface.draw(_buttonSprite);
 
@@ -135,7 +136,7 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
         controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
         surface.draw(controlLabel);
 
-        _buttonSprite.setTextureRect(sf::IntRect(16, 240, TILE_SIZE, TILE_SIZE));
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_BUMPER));
         _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 1));
         surface.draw(_buttonSprite);
 
@@ -143,7 +144,7 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
         controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
         surface.draw(controlLabel);
 
-        _buttonSprite.setTextureRect(sf::IntRect(0, 208, TILE_SIZE, TILE_SIZE));
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
         _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 2));
         surface.draw(_buttonSprite);
 
@@ -151,14 +152,14 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
         controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
         surface.draw(controlLabel);
 
-        _buttonSprite.setTextureRect(sf::IntRect(16, 208, TILE_SIZE, TILE_SIZE));
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::Y));
         _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 3));
         surface.draw(_buttonSprite);
         controlLabel.setString("buy/sell all");
         controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
         surface.draw(controlLabel);
 
-        _buttonSprite.setTextureRect(sf::IntRect(0, 224, TILE_SIZE, TILE_SIZE));
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
         _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 4));
         surface.draw(_buttonSprite);
         controlLabel.setString("buy/sell 25");
