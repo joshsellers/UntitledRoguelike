@@ -52,7 +52,17 @@ float GamePad::getRightStickYAxis() {
 }
 
 bool GamePad::isButtonPressed(GAMEPAD_BUTTON button) {
-    if (_pid == DUALSENSE_PID) return sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)translateButton(translateButton(button)));
+    if (_pid == DUALSENSE_PID) {
+        const unsigned int translatedButton = (unsigned int)translateButton(translateButton(button));
+        if (translatedButton == (unsigned int)GAMEPAD_BUTTON::DPAD_DOWN
+            || translatedButton == (unsigned int)GAMEPAD_BUTTON::DPAD_LEFT
+            || translatedButton == (unsigned int)GAMEPAD_BUTTON::DPAD_RIGHT
+            || translatedButton == (unsigned int)GAMEPAD_BUTTON::DPAD_UP) {
+            return _triggerIsPressed[translatedButton - (unsigned int)GAMEPAD_BUTTON::LEFT_TRIGGER];
+        }
+
+        return sf::Joystick::isButtonPressed(getControllerId(), translatedButton);
+    }
 
     return (unsigned int)button < (unsigned int)GAMEPAD_BUTTON::LEFT_TRIGGER ?
         sf::Joystick::isButtonPressed(getControllerId(), (unsigned int)button)
