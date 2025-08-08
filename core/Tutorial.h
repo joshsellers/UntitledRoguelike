@@ -37,7 +37,9 @@ public:
                 messageType = NORMAL;
             }
 
-            if (GamePad::isConnected()) {
+            if (GamePad::isConnected() && GamePad::getVendorId() == SONY_VID) {
+                MessageManager::displayMessage(_messagesSony[_currentStep], timeout, messageType);
+            } else if (GamePad::isConnected()) {
                 MessageManager::displayMessage(_messagesGamepad[_currentStep], timeout, messageType);
             } else {
                 MessageManager::displayMessage(_messagesKeyboard[_currentStep], timeout, messageType);
@@ -87,6 +89,16 @@ private:
         {TUTORIAL_STEP::BUY_BOW, "Excellent. Now open your inventory and equip the bow."},
         {TUTORIAL_STEP::EQUIP_BOW, "Great!\nYou can use the right joystick to aim, and\nthe right trigger to shoot.\nPress the right trigger to load your weapon."},
         {TUTORIAL_STEP::RELOAD_BOW, "That's about it! Get ready for the next wave.\nYou can hold B to skip the cooldown.\nNo respawning anymore!"}
+    };
+
+    inline static std::map<TUTORIAL_STEP, std::string> _messagesSony = {
+        {TUTORIAL_STEP::START, "Walk into that bee."},
+        {TUTORIAL_STEP::PICK_UP_BEE, "Now press the create button to open the inventory,\nuse the d-pad to select the bee, and press X to\nactivate it.\n\nThis is the same way you will activate most items that\nyou buy from the shop."},
+        {TUTORIAL_STEP::USE_BEE, "Great! The bee will attack enemies.\nThe first wave will start soon.\nMake sure you pick up the coins dropped by enemies.\n\nHold Circle to start the first wave when you're ready."},
+        {TUTORIAL_STEP::CLEAR_WAVE_1, "You beat the first wave!\nNow you should find a shop and buy a bow."},
+        {TUTORIAL_STEP::BUY_BOW, "Excellent. Now open your inventory and equip the bow."},
+        {TUTORIAL_STEP::EQUIP_BOW, "Great!\nYou can use the right joystick to aim, and\ntR2 to shoot.\nPress R2 to load your weapon."},
+        {TUTORIAL_STEP::RELOAD_BOW, "That's about it! Get ready for the next wave.\nYou can hold Circle to skip the cooldown.\nNo respawning anymore!"}
     };
 
     inline static TUTORIAL_STEP _currentStep = TUTORIAL_STEP::START;
