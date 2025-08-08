@@ -2838,4 +2838,13 @@ void Game::initVirtualKeyboard() {
 
     initKeyboard(_virtualKeyboardMenu_lower, lowerRows);
     initKeyboard(_virtualKeyboardMenu_upper, upperRows);
+
+    std::shared_ptr<UIControlsDisplay> controlsDisp = std::shared_ptr<UIControlsDisplay>(new UIControlsDisplay({ 5.f, 70.f }, _font));
+    controlsDisp->addLabel(GAMEPAD_BUTTON::A, "select");
+    controlsDisp->addLabel(GAMEPAD_BUTTON::Y, "space");
+    controlsDisp->addLabel(GAMEPAD_BUTTON::B, "backspace");
+    controlsDisp->addLabel(GAMEPAD_BUTTON::RIGHT_STICK, "toggle caps", true);
+    controlsDisp->addLabel(GAMEPAD_BUTTON::START, "done");
+    _virtualKeyboardMenu_lower->addElement(controlsDisp);
+    _virtualKeyboardMenu_upper->addElement(controlsDisp);
 }
