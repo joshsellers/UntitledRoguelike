@@ -213,14 +213,16 @@ void Game::initUI() {
 
 
     // Pause menu
+    constexpr float pauseMenuYOffset = 15.f;
+
     std::shared_ptr<UIButton> mainMenuButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 5, 9, 3, "main menu", _font, this, "mainmenu"
+        50, 5 + pauseMenuYOffset, 9, 3, "main menu", _font, this, "mainmenu", true
     ));
     mainMenuButton->setSelectionId(0);
     _pauseMenu->addElement(mainMenuButton);
 
     std::shared_ptr<UIButton> exitButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 11, 9, 3, "exit game", _font, this, "exit"
+        50, 11 + pauseMenuYOffset, 9, 3, "exit game", _font, this, "exit", true
     ));
     exitButton->setSelectionId(1);
     _pauseMenu->addElement(exitButton);
@@ -232,19 +234,19 @@ void Game::initUI() {
     _pauseMenu->addElement(saveButton);*/
 
     std::shared_ptr<UIButton> settingsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 17, 9, 3, "settings", _font, this, "settings"
+        50, 17 + pauseMenuYOffset, 9, 3, "settings", _font, this, "settings", true
     ));
     settingsButton->setSelectionId(2);
     _pauseMenu->addElement(settingsButton);
 
     std::shared_ptr<UIButton> pauseControlsButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 23, 9, 3, "controls", _font, this, "controls"
+        50, 23 + pauseMenuYOffset, 9, 3, "controls", _font, this, "controls", true
     ));
     pauseControlsButton->setSelectionId(3);
     _pauseMenu->addElement(pauseControlsButton);
 
     std::shared_ptr<UIButton> statsMenuButton_pause = std::shared_ptr<UIButton>(new UIButton(
-        1, 29, 9, 3, "unlocks", _font, this, "progressmenu"
+        50, 29 + pauseMenuYOffset, 9, 3, "unlocks", _font, this, "progressmenu", true
     ));
     statsMenuButton_pause->setSelectionId(4);
     _pauseMenu->addElement(statsMenuButton_pause);
@@ -270,31 +272,31 @@ void Game::initUI() {
     
     // Settings menu (from pause menu)
     std::shared_ptr<UIButton> backSettingsMenuButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 5, 9, 3, "back", _font, this, "back_pausesettings"
+        50, 5 + pauseMenuYOffset, 9, 3, "back", _font, this, "back_pausesettings", true
     ));
     backSettingsMenuButton->setSelectionId(0);
     _pauseMenu_settings->addElement(backSettingsMenuButton);
 
     std::shared_ptr<UIButton> togglefullscreenButton = std::shared_ptr<UIButton>(new UIButton(
-        1, 11, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen"
+        50, 11 + pauseMenuYOffset, 28, 3, "toggle fullscreen (requires restart)", _font, this, "togglefullscreen", true
     ));
     togglefullscreenButton->setSelectionId(1);
     _pauseMenu_settings->addElement(togglefullscreenButton);
 
     _vsyncToggleButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
-        1, 17, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync"
+        50, 17 + pauseMenuYOffset, 12, 3, (VSYNC_ENABLED ? "disable" : "enable") + (std::string)" vsync", _font, this, "togglevsync", true
     ));
     _vsyncToggleButton_pauseMenu->setSelectionId(2);
     _pauseMenu_settings->addElement(_vsyncToggleButton_pauseMenu);
 
     _dparticlesToggleButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
-        1, 23, 20, 3, "damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"), _font, this, "toggledparticles"
+        50, 23 + pauseMenuYOffset, 20, 3, "damage numbers: " + (std::string)(DAMAGE_PARTICLES_ENABLED ? "enabled" : "disabled"), _font, this, "toggledparticles", true
     ));
     _dparticlesToggleButton_pauseMenu->setSelectionId(3);
     _pauseMenu_settings->addElement(_dparticlesToggleButton_pauseMenu);
 
     std::shared_ptr<UIButton> audioSettingsButton_pauseMenu = std::shared_ptr<UIButton>(new UIButton(
-        1, 29, 11, 3, "audio settings", _font, this, "audiosettings_pause"
+        50, 29 + pauseMenuYOffset, 11, 3, "audio settings", _font, this, "audiosettings_pause", true
     ));
     audioSettingsButton_pauseMenu->setSelectionId(4);
     _pauseMenu_settings->addElement(audioSettingsButton_pauseMenu);
@@ -393,35 +395,35 @@ void Game::initUI() {
     ));
 
     std::shared_ptr<UIButton> filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 10, 5, 3, "all", _font, inventoryInterface.get(), "filter_none"
+        26.5, 10, 5, 3, "all", _font, inventoryInterface.get(), "filter_none", false, false
     ));
     filterNoneButton->pressWhenSelected = true;
     filterNoneButton->setSelectionId(0);
     _inventoryMenu->addElement(filterNoneButton);
 
     std::shared_ptr<UIButton> filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 16, 6, 3, "apparel", _font, inventoryInterface.get(), "filter_apparel"
+        26.5, 16, 6, 3, "apparel", _font, inventoryInterface.get(), "filter_apparel", false, false
     ));
     filterApparelButton->pressWhenSelected = true;
     filterApparelButton->setSelectionId(1);
     _inventoryMenu->addElement(filterApparelButton);
 
     std::shared_ptr<UIButton> filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 22, 7, 3, "weapons", _font, inventoryInterface.get(), "filter_weapons"
+        26.5, 22, 7, 3, "weapons", _font, inventoryInterface.get(), "filter_weapons", false, false
     ));
     filterWeaponsButton->pressWhenSelected = true;
     filterWeaponsButton->setSelectionId(2);
     _inventoryMenu->addElement(filterWeaponsButton);
 
     std::shared_ptr<UIButton> filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 28, 5, 3, "ammo", _font, inventoryInterface.get(), "filter_ammo"
+        26.5, 28, 5, 3, "ammo", _font, inventoryInterface.get(), "filter_ammo", false, false
     ));
     filterAmmoButton->pressWhenSelected = true;
     filterAmmoButton->setSelectionId(3);
     //_inventoryMenu->addElement(filterAmmoButton);
 
     std::shared_ptr<UIButton> filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26.5, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc"
+        26.5, 28, 5, 3, "misc", _font, inventoryInterface.get(), "filter_misc", false, false
     ));
     filterMiscButton->pressWhenSelected = true;
     filterMiscButton->setSelectionId(3);
@@ -445,35 +447,35 @@ void Game::initUI() {
     ));
 
     std::shared_ptr<UIButton> shop_filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 30, 5, 3, "all", _font, buyInterface.get(), "filter_none"
+        26.5, 30, 5, 3, "all", _font, buyInterface.get(), "filter_none", false, false
     ));
     shop_filterNoneButton->pressWhenSelected = true;
     shop_filterNoneButton->setSelectionId(0);
     _shopMenu->addElement(shop_filterNoneButton);
 
     std::shared_ptr<UIButton> shop_filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 36, 6, 3, "apparel", _font, buyInterface.get(), "filter_apparel"
+        26.5, 36, 6, 3, "apparel", _font, buyInterface.get(), "filter_apparel", false, false
     ));
     shop_filterApparelButton->pressWhenSelected = true;
     shop_filterApparelButton->setSelectionId(1);
     _shopMenu->addElement(shop_filterApparelButton);
 
     std::shared_ptr<UIButton> shop_filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 42, 7, 3, "weapons", _font, buyInterface.get(), "filter_weapons"
+        26.5, 42, 7, 3, "weapons", _font, buyInterface.get(), "filter_weapons", false, false
     ));
     shop_filterWeaponsButton->pressWhenSelected = true;
     shop_filterWeaponsButton->setSelectionId(2);
     _shopMenu->addElement(shop_filterWeaponsButton);
 
     std::shared_ptr<UIButton> shop_filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
-        26.5, 48, 5, 3, "ammo", _font, buyInterface.get(), "filter_ammo"
+        26.5, 48, 5, 3, "ammo", _font, buyInterface.get(), "filter_ammo", false, false
     ));
     shop_filterAmmoButton->pressWhenSelected = true;
     shop_filterAmmoButton->setSelectionId(3);
     //_shopMenu->addElement(shop_filterAmmoButton);
 
     std::shared_ptr<UIButton> shop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        26.5, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc"
+        26.5, 48, 5, 3, "misc", _font, buyInterface.get(), "filter_misc", false, false
     ));
     shop_filterMiscButton->pressWhenSelected = true;
     shop_filterMiscButton->setSelectionId(3);
@@ -487,35 +489,35 @@ void Game::initUI() {
     ));
 
     std::shared_ptr<UIButton> sellshop_filterNoneButton = std::shared_ptr<UIButton>(new UIButton(
-        71 - 2.25, 30, 5, 3, "all", _font, sellInterface.get(), "filter_none"
+        71 - 2.25, 30, 5, 3, "all", _font, sellInterface.get(), "filter_none", false, false
     ));
     sellshop_filterNoneButton->pressWhenSelected = true;
     sellshop_filterNoneButton->setSelectionId(0);
     _shopMenu->addElement(sellshop_filterNoneButton);
 
     std::shared_ptr<UIButton> sellshop_filterApparelButton = std::shared_ptr<UIButton>(new UIButton(
-        70 - 2.25, 36, 6, 3, "apparel", _font, sellInterface.get(), "filter_apparel"
+        70 - 2.25, 36, 6, 3, "apparel", _font, sellInterface.get(), "filter_apparel", false, false
     ));
     sellshop_filterApparelButton->pressWhenSelected = true;
     sellshop_filterApparelButton->setSelectionId(1);
     _shopMenu->addElement(sellshop_filterApparelButton);
 
     std::shared_ptr<UIButton> sellshop_filterWeaponsButton = std::shared_ptr<UIButton>(new UIButton(
-        69 - 2.25, 42, 7, 3, "weapons", _font, sellInterface.get(), "filter_weapons"
+        69 - 2.25, 42, 7, 3, "weapons", _font, sellInterface.get(), "filter_weapons", false, false
     ));
     sellshop_filterWeaponsButton->pressWhenSelected = true;
     sellshop_filterWeaponsButton->setSelectionId(2);
     _shopMenu->addElement(sellshop_filterWeaponsButton);
 
     std::shared_ptr<UIButton> sellshop_filterAmmoButton = std::shared_ptr<UIButton>(new UIButton(
-        71 - 2.25, 48, 5, 3, "ammo", _font, sellInterface.get(), "filter_ammo"
+        71 - 2.25, 48, 5, 3, "ammo", _font, sellInterface.get(), "filter_ammo", false, false
     ));
     sellshop_filterAmmoButton->pressWhenSelected = true;
     sellshop_filterAmmoButton->setSelectionId(3);
     //_shopMenu->addElement(sellshop_filterAmmoButton);
 
     std::shared_ptr<UIButton> sellshop_filterMiscButton = std::shared_ptr <UIButton>(new UIButton(
-        71 - 2.25, 48, 5, 3, "misc", _font, sellInterface.get(), "filter_misc"
+        71 - 2.25, 48, 5, 3, "misc", _font, sellInterface.get(), "filter_misc", false, false
     ));
     sellshop_filterMiscButton->pressWhenSelected = true;
     sellshop_filterMiscButton->setSelectionId(3);
