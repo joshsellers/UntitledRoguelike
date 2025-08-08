@@ -9,6 +9,7 @@
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
     [](Player* player, Ability* ability) {
+        int enemyCount = 0;
         if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
             float maxRadius = ability->getParameter("radius");
             float radius = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
@@ -64,13 +65,17 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
                             break;
                         }
                     }
+
+                    if (enemy->getSaveId() != CACTOID && enemy->getSaveId() != MUSHROID) enemyCount++;
                 }
             }
 
             if (attacked) ability->_lastAttackTimeMillis = currentTimeMillis();
         }
 
-        ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansion rate"));
+        if (enemyCount > 0) {
+            ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansion rate"));
+        } else ability->setParameter("anim", 0.f);
     },
 
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {
