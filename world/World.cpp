@@ -694,7 +694,7 @@ void World::onWaveCleared() {
     if (_currentWaveNumber == 100) {
         AchievementManager::unlock(UNSTOPPABLE);
         if (HARD_MODE_ENABLED) AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
-    } else if (_currentWaveNumber == 50) {
+    } else if (_currentWaveNumber == 42) {
         MID_GAME_PERF_BOOST = true;
     }
 
