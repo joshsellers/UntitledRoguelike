@@ -348,6 +348,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     bool dropOnExpire = false;
     bool noCollide = false;
     bool useDamageMultiplier = true;
+    bool allowPlayerProjectileEffects = true;
     EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE;
 
     std::string line;
@@ -396,6 +397,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 noCollide = tokens.at(2) == "1";
             } else if (tokens.at(0) == "useDamageMultiplier") {
                 useDamageMultiplier = tokens.at(2) == "1";
+            } else if (tokens.at(0) == "allowPlayerProjectileEffects") {
+                allowPlayerProjectileEffects = tokens.at(2) == "1";
             } else if (tokens.at(0) == "explosionBehavior") {
                 std::string strExplBehavior = tokens.at(2);
                 if (explosionBehaviorNames.find(strExplBehavior) == explosionBehaviorNames.end()) {
@@ -425,7 +428,10 @@ void ModManager::loadProjectile(std::ifstream& in) {
         return;
     }
 
-    ProjectileData data(itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, dropOnExpire, noCollide, useDamageMultiplier, explosionBehavior);
+    ProjectileData data(
+        itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, 
+        dropOnExpire, noCollide, useDamageMultiplier, explosionBehavior, allowPlayerProjectileEffects
+    );
 }
 
 void ModManager::loadPlayerVisualEffects() {

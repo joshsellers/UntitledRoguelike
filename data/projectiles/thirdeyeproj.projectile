@@ -1,6 +1,7 @@
-#!SIG1581546956
+#!SIG2098378981
 itemName = "_PROJECTILE_THIRD_EYE"
 velocity = 3.75
 lifeTime = 750
 hitBox = 2, 2, 12, 12
 useDamageMultiplier = false
+allowPlayerProjectileEffects = false

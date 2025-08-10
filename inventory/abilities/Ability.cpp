@@ -390,7 +390,7 @@ void Ability::fireTargetedProjectile(float angle, const ProjectileData projData,
     const sf::Vector2f centerPoint(projSpawnPoint.x, projSpawnPoint.y);
     sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
 
-    ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
+    const auto& proj = ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
         false, damageBoost, addParentVelocity);
 }
 

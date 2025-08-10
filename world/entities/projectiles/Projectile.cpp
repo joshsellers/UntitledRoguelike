@@ -32,7 +32,7 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
         _hitBox.width = _data.hitBox.width;
         _hitBox.height = _data.hitBox.height;
 
-        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) {
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) && data.allowPlayerProjectileEffects) {
             _hitBoxXOffset *= 2;
             _hitBoxYOffset *= 2;
             _hitBox.width *= 2;
@@ -84,7 +84,7 @@ void Projectile::update() {
                 _isActive = false;
                 return;
             }
-        } else if (_parent->getEntityType() != "player") {
+        } else if (_parent->getSaveId() != PLAYER) {
             for (auto& entity : getWorld()->getEntities()) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
@@ -414,9 +414,9 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _hitBoxXOffset = _data.hitBox.left;
     _hitBoxYOffset = _data.hitBox.top;
     _hitBox.width = _data.hitBox.width;
-    _hitBox.height = _data.hitBox.height; 
+    _hitBox.height = _data.hitBox.height;
 
-    if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) {
+    if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) && data.allowPlayerProjectileEffects) {
         _hitBoxXOffset *= 2;
         _hitBoxYOffset *= 2;
         _hitBox.width *= 2;
