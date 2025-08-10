@@ -73,6 +73,7 @@
 #include "../statistics/LocalAchievementManager.h"
 #include "entities/OctopusBoss.h"
 #include "entities/PenguinBoss.h"
+#include "../inventory/RecentItemUnlockTracker.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -669,6 +670,8 @@ void World::onWaveCleared() {
     _enemiesSpawnedThisRound = 0;
     _cooldownStartTime = currentTimeMillis();
 
+    RecentItemUnlockTracker::onWaveCleared();
+
     if (_waveCounter != 0) {
         MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
@@ -694,7 +697,10 @@ void World::onWaveCleared() {
     if (_currentWaveNumber > StatManager::getOverallStat(HIGHEST_WAVE_REACHED)) {
         StatManager::increaseStat(HIGHEST_WAVE_REACHED, _currentWaveNumber - StatManager::getOverallStat(HIGHEST_WAVE_REACHED));
         for (const auto& item : Item::ITEMS) {
-            if (_currentWaveNumber == item->getRequiredWave()) unlockedItemCount++;
+            if (_currentWaveNumber == item->getRequiredWave()) {
+                unlockedItemCount++;
+                RecentItemUnlockTracker::itemUnlocked(item->getId());
+            }
         }
     }
     if (unlockedItemCount > 0) {

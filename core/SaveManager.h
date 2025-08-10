@@ -15,6 +15,7 @@
 #include "../world/MiniMapGenerator.h"
 #include "../world/entities/Thief.h"
 #include "FileIntegrityManager.h"
+#include "../inventory/RecentItemUnlockTracker.h"
 
 class SaveManager {
 public:
@@ -75,6 +76,7 @@ public:
             if (!alreadyMarked && FileIntegrityManager::startupVerificationFailed()) out << "MODDED:1" << std::endl;
 
             saveStats(out);
+            saveRecentUnlocks(out);
             savePlayerData(out);
             saveWorldData(out);
             saveAbilities(out);
@@ -432,6 +434,16 @@ private:
         }
         out << std::endl;
     }
+
+    static void saveRecentUnlocks(std::ofstream& out) {
+        if (RecentItemUnlockTracker::_recentItemIds.size() > 0) {
+            out << "RUNLK";
+            for (const auto& item : RecentItemUnlockTracker::_recentItemIds) {
+                out << ":" << std::to_string(item.first) << "," << std::to_string(item.second);
+            }
+            out << std::endl;
+        }
+    }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
     static void loadDeferredOrbiters() {
@@ -595,6 +607,11 @@ private:
             for (const auto& rawLocation : data) {
                 const auto splitData = splitString(rawLocation, ",");
                 MiniMapGenerator::_markerLocations.push_back(sf::Vector2i(std::stoi(splitData[0]), std::stoi(splitData[1])));
+            }
+        } else if (header == "RUNLK") {
+            for (const auto& rawEntry : data) {
+                const auto parsedEntry = splitString(rawEntry, ",");
+                RecentItemUnlockTracker::_recentItemIds.push_back({ std::stoul(parsedEntry[0]), parsedEntry[1] == "1" });
             }
         } else if (header == "HARD") {
             HARD_MODE_ENABLED = true;

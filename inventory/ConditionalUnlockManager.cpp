@@ -5,6 +5,7 @@
 #include "../statistics/StatManager.h"
 #include "../core/SoundManager.h"
 #include "../core/FileIntegrityManager.h"
+#include "RecentItemUnlockTracker.h"
 
 std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockProgress = {
     {"Cyclops Eye", 100},
@@ -65,6 +66,7 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
             saveUnlockedItems();
             MessageManager::displayMessage("New item unlocked: " + itemName, 8, SPECIAL);
             SoundManager::playSound("itemunlock");
+            RecentItemUnlockTracker::itemUnlocked(item->getId());
             return;
         }
     }

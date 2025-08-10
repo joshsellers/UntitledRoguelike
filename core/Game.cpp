@@ -27,6 +27,7 @@
 #include "../ui/UIAchievementDisplay.h"
 #include "EndGameSequence.h"
 #include "../ui/UIControlsDisplay.h"
+#include "../inventory/RecentItemUnlockTracker.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1623,6 +1624,7 @@ void Game::buttonPressed(std::string buttonCode) {
         StatManager::resetOverallStats();
         MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
         LocalAchievementManager::softReset();
+        RecentItemUnlockTracker::reset();
 
         _miniMapMenu->hide();
         MiniMapGenerator::reset();
