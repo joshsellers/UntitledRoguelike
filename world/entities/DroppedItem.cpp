@@ -116,6 +116,11 @@ unsigned int DroppedItem::getAmount() const {
     return _amount;
 }
 
+void DroppedItem::setWorld(World* world) {
+    _world = world;
+    if (_world->playerIsInShop()) _spawnedInShop = true;
+}
+
 void DroppedItem::moveTowardPlayer() {
     if (getWorld()->getPlayer()->getCoinMagnetCount() > 0) {
         const sf::Vector2f playerPos(

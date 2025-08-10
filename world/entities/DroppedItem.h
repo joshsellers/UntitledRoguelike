@@ -17,6 +17,8 @@ public:
     unsigned int getItemId() const;
     unsigned int getAmount() const;
 
+    virtual void setWorld(World* world);
+
 private:
     const unsigned int _itemId;
     unsigned int _amount;

@@ -718,6 +718,10 @@ bool Entity::ignoresViewport() const {
     return _ignoreViewport;
 }
 
+bool Entity::spawnedInShop() const {
+    return _spawnedInShop;
+}
+
 ENTITY_SAVE_ID Entity::getSaveId() const {
     return _saveId;
 }

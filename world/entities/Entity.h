@@ -136,6 +136,8 @@ public:
 
     bool ignoresViewport() const;
 
+    bool spawnedInShop() const;
+
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
 
@@ -234,6 +236,8 @@ protected:
 
     bool _overrideDamageShaderBehavior = false;
     long long _timeDamageTaken = 0LL;
+
+    bool _spawnedInShop = false;
 
 private:
     const ENTITY_SAVE_ID _saveId;

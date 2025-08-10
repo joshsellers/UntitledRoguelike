@@ -170,7 +170,8 @@ void World::update() {
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "shopatm"
-                || entity->getEntityType() == "shopshelf") entity->update();
+                || entity->getEntityType() == "shopshelf"
+                || entity->getEntityType() == "droppeditem") entity->update();
         }
     }
 }
@@ -198,7 +199,7 @@ void World::draw(sf::RenderTexture& surface) {
 
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
-        if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()) || entity->ignoresViewport())
+        if (!entity->isDormant() && !_isPlayerInShop && !entity->spawnedInShop() && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()) || entity->ignoresViewport())
             || (_isPlayerInShop && (entity->getEntityType() == "shopint"
                 || entity->getEntityType() == "player"
                 || entity->getEntityType() == "shopcounter"
@@ -208,7 +209,11 @@ void World::draw(sf::RenderTexture& surface) {
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "barber"
                 || entity->getEntityType() == "shopatm"
-                || entity->getEntityType() == "shopshelf"))) {
+                || entity->getEntityType() == "shopshelf"
+                || (
+                    entity->getEntityType() == "droppeditem" && entity->isActive() && entity->spawnedInShop()
+                    && entity->getSprite().getGlobalBounds().intersects(sf::FloatRect(_shopIntPos.x, _shopIntPos.y, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT))
+                    ) ))) {
             entity->draw(surface);
 
             if (entity->getSaveId() != PLAYER && !entity->isProp() && !entity->isBoss() && entity->isTakingDamage()) {
@@ -1525,6 +1530,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
 
         MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
 
+        _shopIntPos = buildingPos;
         std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet(), doorBlownUp));
         shopInterior->setWorld(this);
         addEntity(shopInterior);

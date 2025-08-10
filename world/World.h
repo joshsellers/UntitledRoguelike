@@ -121,6 +121,7 @@ private:
     
     std::shared_ptr<Player> _player;
     std::shared_ptr<ShopKeep> _shopKeep;
+    sf::Vector2f _shopIntPos;
 
     std::vector<std::shared_ptr<Entity>> _entities;
     std::vector<std::shared_ptr<Entity>> _scatterBuffer;
