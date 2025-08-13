@@ -667,7 +667,11 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const float angle = (float)((std::atan2(y, x)));
 
         EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
-        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT;
+        if (parent->getSaveId() == PLAYER 
+            && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId()) 
+            && parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != Item::getIdFromName("Rocket Launcher")) {
+            explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
+        }
 
         const int projDamage = ITEMS[projData.itemId]->getDamage();
         const float critChance = AbilityManager::getParameter(Ability::CRIT_CHANCE.getId(), "chance");
