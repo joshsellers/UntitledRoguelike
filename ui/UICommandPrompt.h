@@ -65,6 +65,7 @@
 #include "../core/FileIntegrityManager.h"
 #include "../world/entities/PenguinBoss.h"
 #include "../world/entities/HypnoPenguin.h"
+#include "../world/entities/DevBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -375,6 +376,8 @@ private:
                             entity = std::shared_ptr<PenguinBoss>(new PenguinBoss(pos));
                         } else if (entityName == "hypnopenguin") {
                             entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
+                        } else if (entityName == "devboss") {
+                            entity = std::shared_ptr<DevBoss>(new DevBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }

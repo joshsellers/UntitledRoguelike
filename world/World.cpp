@@ -662,10 +662,10 @@ void World::dumpChunkBuffer() {
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
-        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
     } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
         _cooldownActive = false;
-        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::WAVE);
     } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
 }
 
@@ -1438,7 +1438,8 @@ void World::spawnBoss(int currentWaveNumber) {
     }
 
     if (boss != nullptr) {
-        MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
+        if (boss->getSaveId() == DEV_BOSS) MusicManager::setSituation(MUSIC_SITUATION::FINAL_BOSS);
+        else MusicManager::setSituation(MUSIC_SITUATION::BOSS);
 
         boss->loadSprite(getSpriteSheet());
         boss->setWorld(this);
@@ -1528,7 +1529,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
         else if (_visitedShops.at(shopIndex)) visitedShop = true;
         else if (!_visitedShops.at(shopIndex)) _visitedShops.at(shopIndex) = true;
 
-        MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
+        MusicManager::setSituation(MUSIC_SITUATION::SHOP);
 
         _shopIntPos = buildingPos;
         std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet(), doorBlownUp));
@@ -1604,9 +1605,9 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool
 }
 
 void World::exitBuilding() {
-    if (onEnemySpawnCooldown() && !bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
-    else if (bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
-    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+    if (onEnemySpawnCooldown() && !bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
+    else if (bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::BOSS);
+    else MusicManager::setSituation(MUSIC_SITUATION::WAVE);
 
     _isPlayerInShop = false;
 
@@ -1649,8 +1650,8 @@ bool World::bossIsActive() const {
 }
 
 void World::bossDefeated() {
-    if (onEnemySpawnCooldown()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
-    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+    if (onEnemySpawnCooldown()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
+    else MusicManager::setSituation(MUSIC_SITUATION::WAVE);
 
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);

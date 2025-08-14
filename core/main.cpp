@@ -169,7 +169,7 @@ int main() {
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
     MusicManager::start();
-    MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+    MusicManager::setSituation(MUSIC_SITUATION::MAIN_MENU);
     ProjectilePoolManager::init();
 
     if (!TerrainGenInitializer::loadParameters()) {

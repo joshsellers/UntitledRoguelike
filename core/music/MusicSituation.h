@@ -1,7 +1,7 @@
 #ifndef _MUSIC_SITUATION_H
 #define _MUSIC_SITUATION_H
 
-enum class MUSIC_SITUTAION {
+enum class MUSIC_SITUATION {
     NONE,
     MAIN_MENU,
     COOLDOWN,
@@ -9,6 +9,7 @@ enum class MUSIC_SITUTAION {
     BOSS,
     SHOP,
     DEATH,
+    FINAL_BOSS,
     CREDITS
 };
 

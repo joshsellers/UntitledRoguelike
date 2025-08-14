@@ -8,7 +8,7 @@ void EndGameSequence::start() {
     _startTimeMillis = currentTimeMillis();
     _isActive = true;
     loadCreditsText();
-    MusicManager::setSituation(MUSIC_SITUTAION::CREDITS);
+    MusicManager::setSituation(MUSIC_SITUATION::CREDITS);
 
     for (const auto& listener : _listeners) listener->onEndGameSequenceStart();
 }

@@ -1335,10 +1335,13 @@ void Game::update() {
             _HUDMenu->show();
             if (GamePad::isConnected()) _controlsDisplayMenu->show();
             
-            MUSIC_SITUTAION situation = MUSIC_SITUTAION::WAVE;
+            MUSIC_SITUATION situation = MUSIC_SITUATION::WAVE;
             if (_world.onEnemySpawnCooldown()) {
-                situation = MUSIC_SITUTAION::COOLDOWN;
-                if (_world.bossIsActive()) situation = MUSIC_SITUTAION::BOSS;
+                situation = MUSIC_SITUATION::COOLDOWN;
+                if (_world.bossIsActive()) {
+                    situation = MUSIC_SITUATION::BOSS;
+                    if (_world.getCurrentBoss()->getSaveId() == DEV_BOSS) situation = MUSIC_SITUATION::FINAL_BOSS;
+                }
             }
             MusicManager::setSituation(situation);
         }
@@ -1622,7 +1625,7 @@ void Game::buttonPressed(std::string buttonCode) {
         if (AUTOSAVE_ENABLED && _gameStarted && !_world.playerIsInShop()) SaveManager::saveGame();
         StatManager::saveOverallStats();
         StatManager::resetOverallStats();
-        MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+        MusicManager::setSituation(MUSIC_SITUATION::MAIN_MENU);
         LocalAchievementManager::softReset();
         RecentItemUnlockTracker::reset();
 
@@ -2434,7 +2437,7 @@ void Game::onPlayerDeath() {
             generateStatsString(statsText, false, false);
             _statsLabel_deathMenu->setText(statsText);
             _deathMenu->show();
-            MusicManager::setSituation(MUSIC_SITUTAION::DEATH);
+            MusicManager::setSituation(MUSIC_SITUATION::DEATH);
         } else {
             MessageManager::displayMessage("You died :(\nYou made it to wave " + std::to_string(_world._currentWaveNumber), 5);
             MessageManager::displayMessage("TIP: Be sure to dodge in order to help keep distance between enemies and yourself", 8);

@@ -1053,6 +1053,9 @@ private:
                 case HYPNO_PENGUIN:
                     entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
                     break;
+                case DEV_BOSS:
+                    entity = std::shared_ptr<DevBoss>(new DevBoss(pos));
+                    break;
             }
 
             if (entityLoadedSuccessfully) {

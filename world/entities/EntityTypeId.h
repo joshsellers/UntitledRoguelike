@@ -45,7 +45,8 @@ enum ENTITY_SAVE_ID {
     OCTOPUS_BOSS,
     SCYTHE,
     PENGUIN_BOSS,
-    HYPNO_PENGUIN
+    HYPNO_PENGUIN,
+    DEV_BOSS
 };
 
 #endif

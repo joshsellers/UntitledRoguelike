@@ -16,6 +16,8 @@ void MusicManager::start() {
             _bossSongs.push_back(songName);
         } else if (stringStartsWith(songName, "shop")) {
             _shopSongs.push_back(songName);
+        } else if (stringStartsWith(songName, "finalboss")) {
+            _finalBossSongs.push_back(songName);
         } else if (stringStartsWith(songName, "death")) {
             _deathSongs.push_back(songName);
         }
@@ -31,11 +33,11 @@ void MusicManager::shutdown() {
     _isHalted = true;
 }
 
-void MusicManager::setSituation(MUSIC_SITUTAION situation) {
+void MusicManager::setSituation(MUSIC_SITUATION situation) {
     _situation = situation;
 }
 
-MUSIC_SITUTAION MusicManager::getSituation() {
+MUSIC_SITUATION MusicManager::getSituation() {
     return _situation;
 }
 
@@ -43,57 +45,64 @@ void MusicManager::run() {
     while (!_isHalted) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)(250.f)));
 
-        if (_situation != _lastSituation || _situation == MUSIC_SITUTAION::CREDITS) {
+        if (_situation != _lastSituation || _situation == MUSIC_SITUATION::CREDITS) {
             _lastSituation = _situation;
-            if (_situation != MUSIC_SITUTAION::CREDITS || _creditsSongIndex == -1) {
+            if (_situation != MUSIC_SITUATION::CREDITS || _creditsSongIndex == -1) {
                 SoundManager::stopMusic();
                 if (_creditsSongIndex >= 0) _creditsSongIndex = -1;
             }
 
             switch (_situation) {
-                case MUSIC_SITUTAION::MAIN_MENU:
+                case MUSIC_SITUATION::MAIN_MENU:
                     if (_mainMenuSongs.size() > 1) {
                         SoundManager::playSong(_mainMenuSongs.at(randomInt(0, _mainMenuSongs.size() - 1)));
                     } else if (_mainMenuSongs.size() == 1) {
                         SoundManager::playSong(_mainMenuSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::COOLDOWN:
+                case MUSIC_SITUATION::COOLDOWN:
                     if (_cooldownSongs.size() > 1) {
                         SoundManager::playSong(_cooldownSongs.at(randomInt(0, _cooldownSongs.size() - 1)));
                     } else if (_cooldownSongs.size() == 1) {
                         SoundManager::playSong(_cooldownSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::WAVE:
+                case MUSIC_SITUATION::WAVE:
                     if (_waveSongs.size() > 1) {
                         SoundManager::playSong(_waveSongs.at(randomInt(0, _waveSongs.size() - 1)));
                     } else if (_waveSongs.size() == 1) {
                         SoundManager::playSong(_waveSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::BOSS:
+                case MUSIC_SITUATION::BOSS:
                     if (_bossSongs.size() > 1) {
                         SoundManager::playSong(_bossSongs.at(randomInt(0, _bossSongs.size() - 1)));
                     } else if (_bossSongs.size() == 1) {
                         SoundManager::playSong(_bossSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::SHOP:
+                case MUSIC_SITUATION::SHOP:
                     if (_shopSongs.size() > 1) {
                         SoundManager::playSong(_shopSongs.at(randomInt(0, _shopSongs.size() - 1)));
                     } else if (_shopSongs.size() == 1) {
                         SoundManager::playSong(_shopSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::DEATH:
+                case MUSIC_SITUATION::DEATH:
                     if (_deathSongs.size() > 1) {
                         SoundManager::playSong(_deathSongs.at(randomInt(0, _deathSongs.size() - 1)));
                     } else if (_deathSongs.size() == 1) {
                         SoundManager::playSong(_deathSongs.at(0));
                     }
                     break;
-                case MUSIC_SITUTAION::CREDITS:
+                case MUSIC_SITUATION::FINAL_BOSS:
+                    if (_finalBossSongs.size() > 1) {
+                        SoundManager::playSong(_finalBossSongs.at(randomInt(0, _finalBossSongs.size() - 1)));
+                    } else if (_finalBossSongs.size() == 1) {
+                        SoundManager::playSong(_finalBossSongs.at(0));
+                    }
+                    break;
+                case MUSIC_SITUATION::CREDITS:
                     if (!SoundManager::musicIsPlaying() || _creditsSongIndex == -1) {
                         _creditsSongIndex++;
                         if (_creditsSongIndex == _creditsSongs.size()) _creditsSongIndex = 0;
