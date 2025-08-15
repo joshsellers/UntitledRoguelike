@@ -1,0 +1,7 @@
+#!SIG1601502767
+itemName = "_PROJECTILE_DEV_BOSS"
+velocity = 4.0
+hitBox = 33, 33, 16, 16
+rotate = true
+onlyHitEnemies = false
+lifeTime = 8000

@@ -2,6 +2,14 @@
 #define _DEV_BOSS_H
 
 #include "Boss.h"
+#include "DevBossCmdLine.h"
+
+struct DevBossCommand {
+    DevBossCommand(std::string text, bool onlyRunOnce = false) : text(text), onlyRunOnce(onlyRunOnce) {}
+
+    const std::string text;
+    const bool onlyRunOnce;
+};
 
 class DevBoss : public Boss {
 public:
@@ -32,6 +40,25 @@ private:
     void blink();
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;
+
+    long long _lastProjectileFireTimeMillis = 0LL;
+
+    DevBossCmdLine _cmdLine;
+    enum COMMAND {
+        NONE = -1,
+        SPAWN_ENEMIES,
+        RESEED,
+        SLOW_BULLETS
+    } _currentCommand;
+
+    const std::map<COMMAND, DevBossCommand> _commands = {
+        {SPAWN_ENEMIES, {"summonEnemies();"}},
+        {RESEED, {"world.resetSeed();"}},
+        {SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}}
+    };
+
+    bool _ranCommand = false;
+    void runCommand(COMMAND cmd);
 };
 
 #endif

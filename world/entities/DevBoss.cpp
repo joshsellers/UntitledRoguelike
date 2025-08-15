@@ -1,10 +1,12 @@
 #include "DevBoss.h"
 #include "../World.h"
+#include "projectiles/Projectile.h"
+#include "../../core/Viewport.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
         BossState(BEHAVIOR_STATE::RUN_COMMAND, 5000LL, 5000LL),
-        BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
+        //BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
     }) {
     setMaxHitPoints(179000);
     heal(getMaxHitPoints());
@@ -79,6 +81,11 @@ void DevBoss::subUpdate() {
 
         _hitBox.left = getPosition().x + _hitBoxXOffset;
         _hitBox.top = getPosition().y + _hitBoxYOffset;
+
+        blink();
+    } else if (_animationState == TYPING) {
+        _cmdLine.update(getPosition());
+        _numSteps++;
     }
 }
 
@@ -101,13 +108,61 @@ void DevBoss::draw(sf::RenderTexture& surface) {
 
         surface.draw(_bodySprite);
         surface.draw(_headSprite);
+    } else if (_animationState == TYPING) {
+        const int yFrame = _numSteps >> _animSpeed & 3;
+        _sprite.setTextureRect({
+            102 << SPRITE_SHEET_SHIFT,
+            (68 + yFrame * 3) << SPRITE_SHEET_SHIFT,
+            TILE_SIZE * 2,
+            TILE_SIZE * 3
+        });
+        surface.draw(_sprite);
+
+        _cmdLine.draw(surface);
+    } else {
+        _sprite.setTextureRect({ 
+            102 << SPRITE_SHEET_SHIFT, 
+            65 << SPRITE_SHEET_SHIFT, 
+            TILE_SIZE * 2, 
+            TILE_SIZE * 3 
+        });
+        surface.draw(_sprite);
     }
 }
 
 void DevBoss::onStateChange(const BossState previousState, const BossState newState) {
+    if (newState.stateId == RUN_COMMAND) {
+        _animationState = TYPING;
+        _currentCommand = (COMMAND)randomInt(0, _commands.size() - 1);
+        _cmdLine.typeCommand(_commands.at(_currentCommand).text);
+    }
+    else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
+
+    if (previousState.stateId == RUN_COMMAND) _ranCommand = false;
 }
 
 void DevBoss::runCurrentState() {
+    switch (_currentState.stateId) {
+        case FIRE_PROJECILE:
+        {
+            constexpr long long fireRate = 750LL;
+            if (currentTimeMillis() - _lastProjectileFireTimeMillis >= fireRate) {
+                const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+                const auto& proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_DEV_BOSS"), "NONE", true, false, {}, true, true);
+                if (getHitBox().intersects(Viewport::getBounds())) proj->bounceOffViewport = true;
+                _lastProjectileFireTimeMillis = currentTimeMillis();
+            }
+            break;
+        }
+        case RUN_COMMAND:
+        {
+            if (!_cmdLine.isActive()) {
+                if (!_ranCommand) runCommand(_currentCommand);
+                _animationState = HANDS_UP;
+            }
+            break;
+        }
+    }
 }
 
 void DevBoss::blink() {
@@ -117,6 +172,20 @@ void DevBoss::blink() {
         _isBlinking = randomInt(0, blinkChance) == 0;
         if (_isBlinking) _blinkStartTime = currentTimeMillis();
     } else if (currentTimeMillis() - _blinkStartTime > blinkDuration) _isBlinking = false;
+}
+
+void DevBoss::runCommand(COMMAND cmd) {
+    if (cmd != NONE && !_ranCommand) {
+        _ranCommand = true;
+        switch (cmd) {
+            case RESEED:
+            {
+                getWorld()->resetChunks();
+                getWorld()->reseed(randomInt(0, 99999999));
+                break;
+            }
+        }
+    }
 }
 
 void DevBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {

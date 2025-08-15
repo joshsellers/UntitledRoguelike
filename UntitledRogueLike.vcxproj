@@ -34,6 +34,7 @@
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
     <ClCompile Include="world\entities\Bouncer.cpp" />
     <ClCompile Include="world\entities\DevBoss.cpp" />
+    <ClCompile Include="world\entities\DevBossCmdLine.cpp" />
     <ClCompile Include="world\entities\FallingBomb.cpp" />
     <ClCompile Include="world\entities\FallingNuke.cpp" />
     <ClCompile Include="mod\byrgo\Bygro.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="world\entities\BigSnowMan.h" />
     <ClInclude Include="world\entities\Bouncer.h" />
     <ClInclude Include="world\entities\DevBoss.h" />
+    <ClInclude Include="world\entities\DevBossCmdLine.h" />
     <ClInclude Include="world\entities\FallingBomb.h" />
     <ClInclude Include="world\entities\FallingNuke.h" />
     <ClInclude Include="mod\byrgo\Bygro.h" />
