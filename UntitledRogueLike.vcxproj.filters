@@ -624,6 +624,9 @@
     <ClCompile Include="world\entities\DevBossCmdLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="core\FinalBossEffectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1149,6 +1152,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world\entities\DevBossCmdLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\FinalBossEffectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

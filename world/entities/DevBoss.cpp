@@ -2,11 +2,27 @@
 #include "../World.h"
 #include "projectiles/Projectile.h"
 #include "../../core/Viewport.h"
+#include "PlantMan.h"
+#include "SnowMan.h"
+#include "Yeti.h"
+#include "Skeleton.h"
+#include "Cyclops.h"
+#include "FleshChicken.h"
+#include "LogMonster.h"
+#include "BoulderBeast.h"
+#include "TulipMonster.h"
+#include "BurgerBeast.h"
+#include "BombBoy.h"
+#include "MegaBombBoy.h"
+#include "Soldier.h"
+#include "BigSnowMan.h"
+#include "FungusMan.h"
+#include "Funguy.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
         BossState(BEHAVIOR_STATE::RUN_COMMAND, 5000LL, 5000LL),
-        //BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
+        BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
     }) {
     setMaxHitPoints(179000);
     heal(getMaxHitPoints());
@@ -135,8 +151,7 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
         _animationState = TYPING;
         _currentCommand = (COMMAND)randomInt(0, _commands.size() - 1);
         _cmdLine.typeCommand(_commands.at(_currentCommand).text);
-    }
-    else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
+    } else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
 
     if (previousState.stateId == RUN_COMMAND) _ranCommand = false;
 }
@@ -158,6 +173,15 @@ void DevBoss::runCurrentState() {
         {
             if (!_cmdLine.isActive()) {
                 if (!_ranCommand) runCommand(_currentCommand);
+                else if (_ranCommand && _currentCommand == SPAWN_ENEMIES) {
+                    constexpr long long spawnRate = 250LL;
+                    if (currentTimeMillis() - _lastPackSpawnTime >= spawnRate && _numPacksSpawned < _maxPackAmount) {
+                        spawnPack();
+                        _lastPackSpawnTime = currentTimeMillis();
+                        _numPacksSpawned++;
+                        if (_numPacksSpawned >= _maxPackAmount) _permitStateChange = true;
+                    }
+                }
                 _animationState = HANDS_UP;
             }
             break;
@@ -184,9 +208,104 @@ void DevBoss::runCommand(COMMAND cmd) {
                 getWorld()->reseed(randomInt(0, 99999999));
                 break;
             }
+            
+            case SPAWN_ENEMIES:
+            {
+                _permitStateChange = false;
+                _numPacksSpawned = 0;
+                _maxPackAmount = randomInt(4, 6);
+                break;
+            }
         }
     }
 }
+
+
+void DevBoss::spawnPack() {
+    constexpr int numMobTypes = 16;
+    constexpr MOB_TYPE mobTypes[numMobTypes] = {
+        MOB_TYPE::PLANT_MAN, MOB_TYPE::SNOW_MAN, MOB_TYPE::YETI, MOB_TYPE::SKELETON,
+        MOB_TYPE::CYCLOPS, MOB_TYPE::FLESH_CHICKEN, MOB_TYPE::LOG_MONSTER, 
+        MOB_TYPE::BOULDER_BEAST, MOB_TYPE::TULIP_MONSTER, MOB_TYPE::BURGER_BEAST,
+        MOB_TYPE::BOMB_BOY, MOB_TYPE::MEGA_BOMB_BOY, MOB_TYPE::SOLDIER,
+        MOB_TYPE::BIG_SNOW_MAN, MOB_TYPE::FUNGUY, MOB_TYPE::FUNGUS_MAN
+    };
+
+    const MOB_TYPE enemyType = mobTypes[randomInt(0, numMobTypes)];
+
+    const int packSize = randomInt(4, 8);
+
+    constexpr float packDist = 100.f;
+    const sf::Vector2f packPos = { 
+        (float)randomInt(getPosition().x - packDist, getPosition().x + packDist), 
+        (float)randomInt(getPosition().y - packDist, getPosition().y + packDist) 
+    };
+
+    for (int i = 0; i < packSize; i++) {
+        std::shared_ptr<Entity> enemy = nullptr;
+        switch (enemyType) {
+            case MOB_TYPE::PLANT_MAN:
+                enemy = std::shared_ptr<PlantMan>(new PlantMan(packPos));
+                break;
+            case MOB_TYPE::SNOW_MAN:
+                enemy = std::shared_ptr<SnowMan>(new SnowMan(packPos));
+                break;
+            case MOB_TYPE::YETI:
+                enemy = std::shared_ptr<Yeti>(new Yeti(packPos));
+                break;
+            case MOB_TYPE::SKELETON:
+                enemy = std::shared_ptr<Skeleton>(new Skeleton(packPos));
+                break;
+            case MOB_TYPE::CYCLOPS:
+                enemy = std::shared_ptr<Cyclops>(new Cyclops(packPos));
+                break;
+            case MOB_TYPE::FLESH_CHICKEN:
+                enemy = std::shared_ptr<FleshChicken>(new FleshChicken(packPos));
+                break;
+            case MOB_TYPE::LOG_MONSTER:
+                enemy = std::shared_ptr<LogMonster>(new LogMonster(packPos));
+                break;
+            case MOB_TYPE::BOULDER_BEAST:
+                enemy = std::shared_ptr<BoulderBeast>(new BoulderBeast(packPos));
+                break;
+            case MOB_TYPE::TULIP_MONSTER:
+                enemy = std::shared_ptr<TulipMonster>(new TulipMonster(packPos));
+                break;
+            case MOB_TYPE::BURGER_BEAST:
+                enemy = std::shared_ptr<BurgerBeast>(new BurgerBeast(packPos));
+                break;
+            case MOB_TYPE::BOMB_BOY:
+                enemy = std::shared_ptr<BombBoy>(new BombBoy(packPos));
+                break;
+            case MOB_TYPE::MEGA_BOMB_BOY:
+                enemy = std::shared_ptr<MegaBombBoy>(new MegaBombBoy(packPos));
+                break;
+            case MOB_TYPE::SOLDIER:
+                enemy = std::shared_ptr<Soldier>(new Soldier(packPos));
+                break;
+            case MOB_TYPE::BIG_SNOW_MAN:
+                enemy = std::shared_ptr<BigSnowMan>(new BigSnowMan(packPos));
+                break;
+            case MOB_TYPE::FUNGUY:
+                enemy = std::shared_ptr<Funguy>(new Funguy(packPos));
+                break;
+            case MOB_TYPE::FUNGUS_MAN:
+                enemy = std::shared_ptr<FungusMan>(new FungusMan(packPos));
+                break;
+        }
+
+        if (enemy != nullptr) {
+            enemy->setWorld(getWorld());
+            enemy->loadSprite(getWorld()->getSpriteSheet());
+            const int pennyIndex = enemy->getInventory().findItem(Item::PENNY.getId());
+            if (pennyIndex != NO_ITEM) {
+                enemy->getInventory().removeItem(Item::PENNY.getId(), enemy->getInventory().getItemAmountAt(pennyIndex));
+            }
+            getWorld()->addEntity(enemy);
+        }
+    }
+}
+
 
 void DevBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);

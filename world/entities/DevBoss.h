@@ -43,6 +43,11 @@ private:
 
     long long _lastProjectileFireTimeMillis = 0LL;
 
+    long long _lastPackSpawnTime = 0LL;
+    int _maxPackAmount = 5;
+    int _numPacksSpawned = 0;
+    void spawnPack();
+
     DevBossCmdLine _cmdLine;
     enum COMMAND {
         NONE = -1,
@@ -54,7 +59,7 @@ private:
     const std::map<COMMAND, DevBossCommand> _commands = {
         {SPAWN_ENEMIES, {"summonEnemies();"}},
         {RESEED, {"world.resetSeed();"}},
-        {SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}}
+        //{SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}}
     };
 
     bool _ranCommand = false;
