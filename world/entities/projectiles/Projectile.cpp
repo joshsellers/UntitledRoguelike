@@ -236,7 +236,7 @@ void Projectile::update() {
             _velocityComponents.y = -_velocityComponents.y;
         }
 
-        if (bounced) {
+        if (bounced && _data.rotateSprite) {
             const float angle = radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x));
             _sprite.setRotation(angle);
         }

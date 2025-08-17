@@ -163,7 +163,7 @@ void DevBoss::runCurrentState() {
             constexpr long long fireRate = 750LL;
             if (currentTimeMillis() - _lastProjectileFireTimeMillis >= fireRate) {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
-                const auto& proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_DEV_BOSS"), "NONE", true, false, {}, true, true);
+                const auto& proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_ERROR"), "NONE", true, false, {}, true, true);
                 if (getHitBox().intersects(Viewport::getBounds())) proj->bounceOffViewport = true;
                 _lastProjectileFireTimeMillis = currentTimeMillis();
             }

@@ -1,0 +1,5 @@
+#!SIG95747670
+name = "_PROJECTILE_ERROR"
+description = "This item should not be obtainable."
+damage = 10
+textureRect = 98, 80, 2, 2
