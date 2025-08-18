@@ -18,6 +18,8 @@ public:
     void draw(sf::RenderTexture& surface);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
+
+    virtual void setWorld(World* world);
 protected:
     void subUpdate();
     void onStateChange(const BossState previousState, const BossState newState);

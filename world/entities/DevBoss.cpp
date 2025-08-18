@@ -19,6 +19,8 @@
 #include "FungusMan.h"
 #include "Funguy.h"
 #include "../../core/FinalBossEffectManager.h"
+#include "../../inventory/abilities/AbilityManager.h"
+#include "../../inventory/abilities/Ability.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
@@ -336,4 +338,15 @@ void DevBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _bodySprite.setTextureRect({98 << SPRITE_SHEET_SHIFT, 73 << SPRITE_SHEET_SHIFT, TILE_SIZE, TILE_SIZE});
     _bodySprite.setOrigin((float)TILE_SIZE / 2.f, 0);
     _bodySprite.setPosition(getPosition().x, getPosition().y + TILE_SIZE * 2);
+}
+
+void DevBoss::setWorld(World* world) {
+    _world = world;
+
+    if (!AbilityManager::playerHasAbility(Ability::BLESSING.getId())) {
+        Inventory& pInventory = getWorld()->getPlayer()->getInventory();
+        const unsigned int itemId = Item::getIdFromName("Dev's Blessing");
+        pInventory.addItem(itemId, 1);
+        pInventory.useItem(pInventory.findItem(itemId));
+    }
 }
