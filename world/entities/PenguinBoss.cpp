@@ -159,7 +159,7 @@ void PenguinBoss::onStateChange(const BossState previousState, const BossState n
         _firedLaser = false;
         _animCounter = 0;
 
-        if (HARD_MODE_ENABLED) {
+        if (!HARD_MODE_ENABLED) {
             const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
             _laserTarget = playerPos;
         }
