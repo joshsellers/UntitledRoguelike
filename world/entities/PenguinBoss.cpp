@@ -159,6 +159,11 @@ void PenguinBoss::onStateChange(const BossState previousState, const BossState n
         _firedLaser = false;
         _animCounter = 0;
 
+        if (HARD_MODE_ENABLED) {
+            const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+            _laserTarget = playerPos;
+        }
+
         SoundManager::playSound("altaractivation");
     }
 }
@@ -170,7 +175,8 @@ void PenguinBoss::runCurrentState() {
             constexpr long long laserFireDelay = 450LL;
             if (!_isChargingLaser && !_firedLaser && currentTimeMillis() - _laserChargeStartTime >= laserFireDelay) {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
-                const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(this, playerPos, 0xFFFFFFFF, 16, 600, 7, {0, isSwimming() ? (float)TILE_SIZE * 7.f : 16.f}, true, 1250));
+                if (HARD_MODE_ENABLED) _laserTarget = playerPos;
+                const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(this, _laserTarget, 0xFFFFFFFF, 16, 600, 7, {0, isSwimming() ? (float)TILE_SIZE * 7.f : 16.f}, true, 1250));
                 laser->setWorld(getWorld());
                 laser->loadSprite(getWorld()->getSpriteSheet());
                 laser->setTextureRect(

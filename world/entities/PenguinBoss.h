@@ -30,7 +30,7 @@ private:
     unsigned int _penguinsSpawned = 0;
 
     bool _isChargingLaser = false;
-    bool _firedLaser = false;
+    bool _firedLaser = true;
     long long _laserChargeStartTime = 0LL;
     sf::Sprite _laserEyesSprite;
     int _animCounter = 0;
