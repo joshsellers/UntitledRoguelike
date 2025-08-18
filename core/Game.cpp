@@ -28,6 +28,7 @@
 #include "EndGameSequence.h"
 #include "../ui/UIControlsDisplay.h"
 #include "../inventory/RecentItemUnlockTracker.h"
+#include "FinalBossEffectManager.h"
 
 Game::Game(sf::View* camera, sf::RenderWindow* window) : 
     _player(std::shared_ptr<Player>(new Player(sf::Vector2f(0, 0), window, _isPaused))), _world(World(_player, _showDebug)) {
@@ -1659,6 +1660,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _cmdPrompt->processCommand("respawn");
         if (!DEBUG_MODE) _cmdPrompt->lock();
         
+        FinalBossEffectManager::reset();
         ProjectilePoolManager::removeAll();
         AbilityManager::resetAbilities();
         PlayerVisualEffectManager::clearPlayerEffects();

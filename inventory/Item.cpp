@@ -689,6 +689,12 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, velocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
         firedProjectile->setCrit(crit);
+
+        if (parent->getSaveId() == PLAYER && FinalBossEffectManager::effectIsActive(ANTIHOMING_BULLETS)) {
+            firedProjectile->targetSeeking = true;
+            firedProjectile->targetSeekStrength = -0.5f;
+        }
+
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
 
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::TARGET_SEEKING_BULLETS.getId())) firedProjectile->targetSeeking = true;

@@ -55,13 +55,15 @@ private:
         NONE = -1,
         SPAWN_ENEMIES,
         RESEED,
-        SLOW_BULLETS
+        SLOW_BULLETS,
+        ANTIHOMING_BULLETS
     } _currentCommand = NONE;
 
     const std::map<COMMAND, DevBossCommand> _commands = {
         {SPAWN_ENEMIES, {"summonEnemies();"}},
         {RESEED, {"world.resetSeed();"}},
-        {SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}}
+        {SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}},
+        {ANTIHOMING_BULLETS, {"player.projectiles.avoidTarget = true;"}}
     };
 
     bool _ranCommand = false;

@@ -42,6 +42,8 @@ DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 *
 
     _entityType = "devboss";
     _displayName = "The Developer";
+
+    FinalBossEffectManager::devBossIsActive = true;
 }
 
 void DevBoss::subUpdate() {
@@ -230,6 +232,11 @@ void DevBoss::runCommand(COMMAND cmd) {
             case SLOW_BULLETS:
             {
                 FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::SLOW_BULLETS, 5000LL);
+                break;
+            }
+            case ANTIHOMING_BULLETS:
+            {
+                FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::ANTIHOMING_BULLETS, 8000LL);
                 break;
             }
         }

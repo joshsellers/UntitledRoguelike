@@ -4,7 +4,8 @@
 #include <vector>
 
 enum FINAL_BOSS_EFFECT {
-    SLOW_BULLETS
+    SLOW_BULLETS,
+    ANTIHOMING_BULLETS
 };
 
 struct FinalBossEffect {
@@ -22,6 +23,8 @@ public:
     static bool effectIsActive(FINAL_BOSS_EFFECT effect);
 
     static void reset();
+
+    static inline bool devBossIsActive = false;
 private:
     static inline std::vector<FinalBossEffect> _activeEffects;
 };
