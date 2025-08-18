@@ -18,6 +18,7 @@
 #include "BigSnowMan.h"
 #include "FungusMan.h"
 #include "Funguy.h"
+#include "../../core/FinalBossEffectManager.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
@@ -149,7 +150,14 @@ void DevBoss::draw(sf::RenderTexture& surface) {
 void DevBoss::onStateChange(const BossState previousState, const BossState newState) {
     if (newState.stateId == RUN_COMMAND) {
         _animationState = TYPING;
-        _currentCommand = (COMMAND)randomInt(0, _commands.size() - 1);
+        std::vector<COMMAND> availableCommands;
+        for (const auto& command : _commands) {
+            if (command.first != _currentCommand
+                && !(_currentCommand == SLOW_BULLETS && FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::SLOW_BULLETS))) {
+                availableCommands.push_back(command.first);
+            }
+        }
+        _currentCommand = availableCommands.at((size_t)randomInt(0, availableCommands.size() - 1));
         _cmdLine.typeCommand(_commands.at(_currentCommand).text);
     } else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
 
@@ -214,6 +222,12 @@ void DevBoss::runCommand(COMMAND cmd) {
                 _permitStateChange = false;
                 _numPacksSpawned = 0;
                 _maxPackAmount = randomInt(4, 6);
+                break;
+            }
+
+            case SLOW_BULLETS:
+            {
+                FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::SLOW_BULLETS, 5000LL);
                 break;
             }
         }

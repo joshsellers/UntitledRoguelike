@@ -15,6 +15,7 @@
 #include "../mod/ScriptExtensions.h"
 #include "effect/PlayerVisualEffectManager.h"
 #include "ConditionalUnlockManager.h"
+#include "../core/FinalBossEffectManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -683,7 +684,9 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const int damageBoost = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage();
         const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
 
-        Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
+        const float velocity = parent->getSaveId() == PLAYER && FinalBossEffectManager::effectIsActive(SLOW_BULLETS) ? 1.0 : projData.baseVelocity;
+
+        Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, velocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
         firedProjectile->setCrit(crit);
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
