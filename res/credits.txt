@@ -72,14 +72,14 @@ Release Manager - Josh Sellers
 
 PLAYTESTERS
 -----------------------------------
-Spencer Brown
-Eli Brown
-Draven Harper
 August Morey
-Dylan Thompson
-Noah Plemons
 Ayden McCain
+Draven Harper
+Dylan Thompson
+Eli Brown
 Julian Dubinsky
+Noah Plemons
+Spencer Brown
 
 
 MARKETING
