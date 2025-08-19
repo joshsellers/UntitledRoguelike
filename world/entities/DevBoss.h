@@ -57,7 +57,8 @@ private:
         RESEED,
         SLOW_BULLETS,
         ANTIHOMING_BULLETS,
-        REVERSE_CONTROLS
+        REVERSE_CONTROLS,
+        START_PHASE_TWO
     } _currentCommand = NONE;
 
     const std::map<COMMAND, DevBossCommand> _commands = {
@@ -65,11 +66,17 @@ private:
         {RESEED, {"world.resetSeed();"}},
         {SLOW_BULLETS, {"player.projectiles.setVelocity(1.0);"}},
         {ANTIHOMING_BULLETS, {"player.projectiles.avoidTarget = true;"}},
-        {REVERSE_CONTROLS, {"player.invertControls();"}}
+        {REVERSE_CONTROLS, {"player.invertControls();"}},
+        {START_PHASE_TWO, {"heal();"}}
     };
 
     bool _ranCommand = false;
     void runCommand(COMMAND cmd);
+
+    bool _beganPhaseTwoCommand = false;
+    bool _phaseTransitionStarted = false;
+    long long _phaseTransitionStartTime = 0LL;
+    bool _secondPhaseStared = false;
 };
 
 #endif

@@ -108,60 +108,117 @@ void DevBoss::subUpdate() {
         _cmdLine.update(getPosition());
         _numSteps++;
     }
+
+    constexpr long long phaseTransitionLengthMillis = 3000LL;
+    if (!_beganPhaseTwoCommand && _permitStateChange && !_phaseTransitionStarted && !_secondPhaseStared && getHitPoints() <= getMaxHitPoints() / 2 && !_ranCommand) {
+        _beganPhaseTwoCommand = true;
+        _permitStateChange = false;
+
+        _currentCommand = START_PHASE_TWO;
+        const BossState newState = BossState(RUN_COMMAND, 5000LL, 5000LL);
+        onStateChange(_currentState, newState);
+        _currentState = newState;
+    } else if (_beganPhaseTwoCommand && !_phaseTransitionStarted && !_secondPhaseStared && _ranCommand) {
+        _phaseTransitionStarted = true;
+        // trigger terrain gen stuff here
+        _phaseTransitionStartTime = currentTimeMillis();
+        _animationState = HANDS_UP;
+    } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
+        constexpr float scaleDelta = 1.f / (((float)phaseTransitionLengthMillis / 1000.f) * 60.f);
+        _headSprite.setScale(_headSprite.getScale().x + scaleDelta, _headSprite.getScale().y + scaleDelta);
+    } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime >= phaseTransitionLengthMillis) {
+        _headSprite.setScale(2.f, 2.f);
+
+        _animationState = WALKING;
+        _phaseTransitionStarted = false;
+        _secondPhaseStared = true;
+        _permitStateChange = true;
+
+        // fix hitbox, set new bossstates
+        _hitBoxXOffset = -(TILE_SIZE * 2) + 10;
+        _hitBoxYOffset = 10;
+        _hitBox.width = 42;
+        _hitBox.height = 58;
+
+        _currentCommand = NONE;
+    }
 }
 
 void DevBoss::draw(sf::RenderTexture& surface) {
-    if (_animationState == WALKING) {
-        const int yFrame = isMoving() ? (_numSteps >> _animSpeed & 3) : 0;
+    if (!_secondPhaseStared) {
+        if (_animationState == WALKING) {
+            const int yFrame = isMoving() ? (_numSteps >> _animSpeed & 3) : 0;
+            _headSprite.setTextureRect({
+                (98 + (_isBlinking ? 2 : 0)) << SPRITE_SHEET_SHIFT,
+                (65 + yFrame * 2) << SPRITE_SHEET_SHIFT,
+                TILE_SIZE * 2,
+                TILE_SIZE * 2
+                });
+
+            _bodySprite.setTextureRect({
+                (98 + (int)_movingDir) << SPRITE_SHEET_SHIFT,
+                (73 + yFrame) << SPRITE_SHEET_SHIFT,
+                TILE_SIZE,
+                TILE_SIZE
+                });
+
+            surface.draw(_bodySprite);
+            surface.draw(_headSprite);
+        } else if (_animationState == TYPING) {
+            const int yFrame = _numSteps >> _animSpeed & 3;
+            _sprite.setTextureRect({
+                102 << SPRITE_SHEET_SHIFT,
+                (68 + yFrame * 3) << SPRITE_SHEET_SHIFT,
+                TILE_SIZE * 2,
+                TILE_SIZE * 3
+                });
+            surface.draw(_sprite);
+
+            _cmdLine.draw(surface);
+        } else {
+            _sprite.setTextureRect({
+                102 << SPRITE_SHEET_SHIFT,
+                65 << SPRITE_SHEET_SHIFT,
+                TILE_SIZE * 2,
+                TILE_SIZE * 3
+                });
+            surface.draw(_sprite);
+
+            if (_phaseTransitionStarted) {
+                _headSprite.setTextureRect({
+                    (98 + (_isBlinking ? 2 : 0)) << SPRITE_SHEET_SHIFT,
+                    (65) << SPRITE_SHEET_SHIFT,
+                    TILE_SIZE * 2,
+                    TILE_SIZE * 2
+                    });
+                surface.draw(_headSprite);
+            }
+        }
+    } else {
         _headSprite.setTextureRect({
             (98 + (_isBlinking ? 2 : 0)) << SPRITE_SHEET_SHIFT,
-            (65 + yFrame * 2) << SPRITE_SHEET_SHIFT,
-            TILE_SIZE * 2,
-            TILE_SIZE * 2
-        });
-
-        _bodySprite.setTextureRect({
-            (98 + (int)_movingDir) << SPRITE_SHEET_SHIFT,
-            (73 + yFrame) << SPRITE_SHEET_SHIFT,
-            TILE_SIZE,
-            TILE_SIZE
-        });
-
-        surface.draw(_bodySprite);
+                (65) << SPRITE_SHEET_SHIFT,
+                TILE_SIZE * 2,
+                TILE_SIZE * 2
+            });
         surface.draw(_headSprite);
-    } else if (_animationState == TYPING) {
-        const int yFrame = _numSteps >> _animSpeed & 3;
-        _sprite.setTextureRect({
-            102 << SPRITE_SHEET_SHIFT,
-            (68 + yFrame * 3) << SPRITE_SHEET_SHIFT,
-            TILE_SIZE * 2,
-            TILE_SIZE * 3
-        });
-        surface.draw(_sprite);
-
-        _cmdLine.draw(surface);
-    } else {
-        _sprite.setTextureRect({ 
-            102 << SPRITE_SHEET_SHIFT, 
-            65 << SPRITE_SHEET_SHIFT, 
-            TILE_SIZE * 2, 
-            TILE_SIZE * 3 
-        });
-        surface.draw(_sprite);
     }
 }
 
 void DevBoss::onStateChange(const BossState previousState, const BossState newState) {
     if (newState.stateId == RUN_COMMAND) {
         _animationState = TYPING;
-        std::vector<COMMAND> availableCommands;
-        for (const auto& command : _commands) {
-            if (command.first != _currentCommand
-                && !(_currentCommand == SLOW_BULLETS && FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::SLOW_BULLETS))) {
-                availableCommands.push_back(command.first);
+        if (_currentCommand != START_PHASE_TWO) {
+            std::vector<COMMAND> availableCommands;
+            for (const auto& command : _commands) {
+                if (command.first != _currentCommand
+                    && command.first != START_PHASE_TWO
+                    && !(_currentCommand == SLOW_BULLETS && FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::SLOW_BULLETS))) {
+                    availableCommands.push_back(command.first);
+                }
             }
+            _currentCommand = availableCommands.at((size_t)randomInt(0, availableCommands.size() - 1));
         }
-        _currentCommand = availableCommands.at((size_t)randomInt(0, availableCommands.size() - 1));
         _cmdLine.typeCommand(_commands.at(_currentCommand).text);
     } else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
 
@@ -169,6 +226,8 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
 }
 
 void DevBoss::runCurrentState() {
+    //if (_phaseTransitionStarted) return;
+
     switch (_currentState.stateId) {
         case FIRE_PROJECILE:
         {
@@ -193,6 +252,10 @@ void DevBoss::runCurrentState() {
                         _numPacksSpawned++;
                         if (_numPacksSpawned >= _maxPackAmount) _permitStateChange = true;
                     }
+                } else if (_ranCommand && _currentCommand == START_PHASE_TWO) {
+                    if (getHitPoints() < getMaxHitPoints()) {
+                        heal((getMaxHitPoints() - (getMaxHitPoints() / 2)) / (2 * 60));
+                    } else _ranCommand = false;
                 }
                 _animationState = HANDS_UP;
             }
