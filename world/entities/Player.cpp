@@ -8,6 +8,7 @@
 #include "../../inventory/abilities/Ability.h"
 #include "../../core/Tutorial.h"
 #include "../../core/ShaderManager.h"
+#include "../../core/FinalBossEffectManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -73,20 +74,21 @@ void Player::update() {
 
     float xa = 0, ya = 0;
 
+    const float invertedControlsMultiplier = FinalBossEffectManager::effectIsActive(INVERT_CONTROLS) ? -1.f : 1.f;
     if (DIAGONAL_MOVEMENT_ENABLED) {
         if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (yAxis < -20.f)) {
-            ya = -getBaseSpeed();
+            ya = -getBaseSpeed() * invertedControlsMultiplier;
             _movingDir = UP;
         } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (yAxis > 20.f)) {
-            ya = getBaseSpeed();
+            ya = getBaseSpeed() * invertedControlsMultiplier;
             _movingDir = DOWN;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (xAxis < -20.f)) {
-            xa = -getBaseSpeed();
+            xa = -getBaseSpeed() * invertedControlsMultiplier;
             _movingDir = LEFT;
         } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || (xAxis > 20.f)) {
-            xa = getBaseSpeed();
+            xa = getBaseSpeed() * invertedControlsMultiplier;
             _movingDir = RIGHT;
         }
     } else {
@@ -116,8 +118,8 @@ void Player::update() {
         const float absY = std::abs(yAxis);
         const float mag = std::min(100.f, std::sqrt(xAxis * xAxis + yAxis * yAxis)) / 100.f;
 
-        if (xAxis > 20.f || xAxis < -20.f) xa = getBaseSpeed() * std::cos(angle) * mag;
-        if (yAxis > 20.f || yAxis < -20.f) ya = getBaseSpeed() * std::sin(angle) * mag;
+        if (xAxis > 20.f || xAxis < -20.f) xa = invertedControlsMultiplier * getBaseSpeed() * std::cos(angle) * mag;
+        if (yAxis > 20.f || yAxis < -20.f) ya = invertedControlsMultiplier * getBaseSpeed() * std::sin(angle) * mag;
 
         _animSpeed = std::round(-2.f * mag + 4.f);
     }
@@ -460,6 +462,8 @@ void Player::drawTool(sf::RenderTexture& surface) {
                     }
                 }
             }
+
+            if (FinalBossEffectManager::effectIsActive(INVERT_CONTROLS)) angle *= -1.f;
 
             if (angle >= -45.f && angle < 45.f)
                 _facingDir = UP;

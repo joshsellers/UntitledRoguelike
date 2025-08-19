@@ -5,7 +5,8 @@
 
 enum FINAL_BOSS_EFFECT {
     SLOW_BULLETS,
-    ANTIHOMING_BULLETS
+    ANTIHOMING_BULLETS,
+    INVERT_CONTROLS
 };
 
 struct FinalBossEffect {

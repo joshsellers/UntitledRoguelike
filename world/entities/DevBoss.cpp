@@ -239,6 +239,11 @@ void DevBoss::runCommand(COMMAND cmd) {
                 FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::ANTIHOMING_BULLETS, 8000LL);
                 break;
             }
+            case REVERSE_CONTROLS:
+            {
+                FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::INVERT_CONTROLS, 3000LL);
+                break;
+            }
         }
     }
 }
@@ -355,5 +360,6 @@ void DevBoss::setWorld(World* world) {
         const unsigned int itemId = Item::getIdFromName("Dev's Blessing");
         pInventory.addItem(itemId, 1);
         pInventory.useItem(pInventory.findItem(itemId));
+        pInventory.removeItem(itemId, 1);
     }
 }
