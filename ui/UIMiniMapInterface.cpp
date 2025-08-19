@@ -200,7 +200,7 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
     surface.draw(controlLabel);
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_STICK));
+    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_STICK, true));
     button.setPosition(getRelativePos(x, y + ySpacing * 2));
     surface.draw(button);
 

@@ -120,9 +120,11 @@ void DevBoss::subUpdate() {
         _currentState = newState;
     } else if (_beganPhaseTwoCommand && !_phaseTransitionStarted && !_secondPhaseStared && _ranCommand) {
         _phaseTransitionStarted = true;
-        // trigger terrain gen stuff here
         _phaseTransitionStartTime = currentTimeMillis();
         _animationState = HANDS_UP;
+
+        // trigger terrain gen stuff here
+
     } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
         constexpr float scaleDelta = 1.f / (((float)phaseTransitionLengthMillis / 1000.f) * 60.f);
         _headSprite.setScale(_headSprite.getScale().x + scaleDelta, _headSprite.getScale().y + scaleDelta);
@@ -134,13 +136,14 @@ void DevBoss::subUpdate() {
         _secondPhaseStared = true;
         _permitStateChange = true;
 
-        // fix hitbox, set new bossstates
         _hitBoxXOffset = -(TILE_SIZE * 2) + 10;
         _hitBoxYOffset = 10;
         _hitBox.width = 42;
         _hitBox.height = 58;
 
         _currentCommand = NONE;
+
+        // set new bosstates
     }
 }
 
