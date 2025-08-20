@@ -579,7 +579,7 @@ int& Entity::getMaxHitPointsRef() {
 void Entity::takeDamage(int damage, bool crit) {
     if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint" && getEntityType() != "barberext" && getEntityType() != "barberint" 
         && getEntityType() != "shopkeep") {
-        if (DAMAGE_PARTICLES_ENABLED) {
+        if (DAMAGE_PARTICLES_ENABLED && !(getSaveId() == DEV_BOSS && getHitPoints() <= 0)) {
             sf::Vector2f pos = getPosition();
             if (_isProp) pos.x += (float)(_spriteWidth * TILE_SIZE) / 2;
 

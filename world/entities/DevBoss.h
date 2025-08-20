@@ -25,6 +25,8 @@ protected:
     void onStateChange(const BossState previousState, const BossState newState);
     void runCurrentState();
 
+    virtual void damage(int damage);
+
     enum BEHAVIOR_STATE {
         RUN_COMMAND,
         FIRE_PROJECILE
@@ -77,6 +79,10 @@ private:
     bool _phaseTransitionStarted = false;
     long long _phaseTransitionStartTime = 0LL;
     bool _secondPhaseStared = false;
+
+    bool _defeated = false;
+    bool _deathAnimationComplete = false;
+    long long _deathCompletionTimeMillis = 0LL;
 };
 
 #endif

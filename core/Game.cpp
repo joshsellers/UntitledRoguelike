@@ -2561,6 +2561,7 @@ bool Game::gameIsStarted() const {
 }
 
 void Game::onEndGameSequenceStart() {
+    _isPaused = true;
     _startMenu->hide();
     _HUDMenu->hide();
     _bossHUDMenu->hide(); 
@@ -2573,6 +2574,7 @@ void Game::onEndGameSequenceStart() {
 void Game::onEndGameSequenceEnd() {
     if (SELECTED_SAVE_FILE != SAVE_FILE_NOT_SELECTED) SaveManager::deleteSaveFile();
     _gameStarted = false;
+    _isPaused = false;
     buttonPressed("mainmenu");
 }
 

@@ -1144,6 +1144,24 @@ private:
                 AUTO_RELOAD_ENABLED = !AUTO_RELOAD_ENABLED;
                 return "Automatic reload " + (std::string)(AUTO_RELOAD_ENABLED ? "enabled" : "disabled");
             })
+        },
+
+        {
+            "setdamage",
+            Command("Set the player's damage multiplier",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    try {
+                        const float multiplier = std::stof(parsedCommand.at(1));
+                        _world->getPlayer()->setDamageMultiplier(multiplier);
+                        return "Damage multiplier set to " + std::to_string(multiplier);
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
         }
     };
 };
