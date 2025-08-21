@@ -28,8 +28,12 @@ protected:
     virtual void damage(int damage);
 
     enum BEHAVIOR_STATE {
+        DUMMY_STATE,
         RUN_COMMAND,
-        FIRE_PROJECILE
+        FIRE_PROJECILE,
+        RADIAL_PROJECTILES,
+        ROTATING_LASERS,
+        BOMBS
     };
 private:
     enum ANIMATION_STATE {

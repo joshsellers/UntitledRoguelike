@@ -25,6 +25,7 @@
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
+        BossState(BEHAVIOR_STATE::DUMMY_STATE, 10LL, 10LL),
         BossState(BEHAVIOR_STATE::RUN_COMMAND, 5000LL, 5000LL),
         BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
     }) {
@@ -145,7 +146,11 @@ void DevBoss::subUpdate() {
 
             _currentCommand = NONE;
 
-            // set new bosstates
+            _bossStates = {
+                BossState(RADIAL_PROJECTILES, 4000LL, 6000LL),
+                BossState(ROTATING_LASERS, 6000LL, 8000LL),
+                BossState(BOMBS, 2000LL, 5000LL)
+            };
         }
     } else if (!_deathAnimationComplete) {
         constexpr int ticksPerFrame = 10;
@@ -242,7 +247,7 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
             for (const auto& command : _commands) {
                 if (command.first != _currentCommand
                     && command.first != START_PHASE_TWO
-                    && !(_currentCommand == SLOW_BULLETS && FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::SLOW_BULLETS))) {
+                    && !(command.first == SLOW_BULLETS && FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::SLOW_BULLETS))) {
                     availableCommands.push_back(command.first);
                 }
             }
@@ -250,6 +255,8 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
         }
         _cmdLine.typeCommand(_commands.at(_currentCommand).text);
     } else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
+    else if (newState.stateId == RADIAL_PROJECTILES || newState.stateId == BOMBS) _animationState = WALKING;
+    else if (newState.stateId == ROTATING_LASERS) _animationState = HANDS_UP;
 
     if (previousState.stateId == RUN_COMMAND) _ranCommand = false;
 }
@@ -264,7 +271,7 @@ void DevBoss::runCurrentState() {
             if (currentTimeMillis() - _lastProjectileFireTimeMillis >= fireRate) {
                 const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
                 const auto& proj = fireTargetedProjectile(playerPos, ProjectileDataManager::getData("_PROJECTILE_ERROR"), "NONE", true, false, {}, true, true);
-                if (getHitBox().intersects(Viewport::getBounds())) proj->bounceOffViewport = true;
+                /*if (getHitBox().intersects(Viewport::getBounds())) */proj->bounceOffViewport = true;
                 _lastProjectileFireTimeMillis = currentTimeMillis();
             }
             break;
@@ -288,6 +295,26 @@ void DevBoss::runCurrentState() {
                 }
                 _animationState = HANDS_UP;
             }
+            break;
+        }
+        case BOMBS:
+        {
+            constexpr float bombChance = 0.15f;
+            if (randomChance(bombChance)) {
+                fireTargetedProjectile(randomInt(0, 360), ProjectileDataManager::getData("_PROJECTILE_BOMB"), "basicprojlaunch", true, false, 
+                    {
+                        0, 0 // calculate random pos at edge of screen somewhere
+                             // but maybe do this above so we can also calculate
+                             // angle to player (try to shoot from edges of screen
+                             // toward player)
+                    }
+                );
+            }
+            break;
+        }
+        case RADIAL_PROJECTILES:
+        {
+            // random angle and chance radial projectiles, with additional random chance to be seeking
             break;
         }
     }

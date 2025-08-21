@@ -1,2 +1,6 @@
 disableprog
 tms
+give:minigun
+give:nimbility implant:4
+setdamage:500
+bighp
