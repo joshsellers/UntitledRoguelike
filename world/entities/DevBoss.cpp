@@ -22,6 +22,8 @@
 #include "../../inventory/abilities/AbilityManager.h"
 #include "../../inventory/abilities/Ability.h"
 #include "../../core/EndGameSequence.h"
+#include "projectiles/ProjectilePoolManager.h"
+#include "../../core/SoundManager.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
@@ -209,8 +211,8 @@ void DevBoss::draw(sf::RenderTexture& surface) {
             _cmdLine.draw(surface);
         } else {
             _sprite.setTextureRect({
-                102 << SPRITE_SHEET_SHIFT,
-                65 << SPRITE_SHEET_SHIFT,
+                (_phaseTransitionStarted ? 99 : 102) << SPRITE_SHEET_SHIFT,
+                (_phaseTransitionStarted ? 83 : 65) << SPRITE_SHEET_SHIFT,
                 TILE_SIZE * 2,
                 TILE_SIZE * 3
                 });
@@ -301,14 +303,19 @@ void DevBoss::runCurrentState() {
         {
             constexpr float bombChance = 0.15f;
             if (randomChance(bombChance)) {
-                fireTargetedProjectile(randomInt(0, 360), ProjectileDataManager::getData("_PROJECTILE_BOMB"), "basicprojlaunch", true, false, 
-                    {
-                        0, 0 // calculate random pos at edge of screen somewhere
-                             // but maybe do this above so we can also calculate
-                             // angle to player (try to shoot from edges of screen
-                             // toward player)
-                    }
-                );
+                const sf::Vector2f playerPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH);
+                const sf::FloatRect vpBounds = Viewport::getBounds();
+                const bool sides = randomChance(0.5f);
+                const sf::Vector2f firePos = {
+                    sides ? randomChance(0.5f) ? vpBounds.left : vpBounds.left + vpBounds.width : randomInt(vpBounds.left, vpBounds.left + vpBounds.width),
+                    sides ? randomInt(vpBounds.top, vpBounds.top + vpBounds.height) : randomChance(0.5f) ? vpBounds.top : vpBounds.top + vpBounds.height
+                };
+
+                const float angle = std::atan2(playerPos.y - firePos.y, playerPos.x - firePos.x);
+                const ProjectileData& projData = ProjectileDataManager::getData("_PROJECTILE_BOMB");
+                Projectile* proj = ProjectilePoolManager::addProjectile(firePos, this, angle, projData.baseVelocity, projData, true, 0, false);
+                proj->explosionsOnlyDamagePlayer = true;
+                SoundManager::playSound("basicprojlaunch");
             }
             break;
         }

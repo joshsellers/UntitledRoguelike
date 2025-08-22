@@ -21,6 +21,7 @@ public:
     bool onlyDamagePlayer = false;
 
     bool optimizedExplosions = false;
+    bool explosionsOnlyDamagePlayer = false;
 
     int passThroughCount = 1;
 

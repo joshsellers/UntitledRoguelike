@@ -285,7 +285,8 @@ void Projectile::seekTarget(sf::Vector2f targetPos, sf::Vector2i targetSpriteSiz
 
 void Projectile::spawnExplosion() const {
     const sf::Vector2f spawnPos(_sprite.getGlobalBounds().left + _sprite.getGlobalBounds().width / 2, _sprite.getGlobalBounds().top - (3.f * (float)TILE_SIZE / 2.f));
-    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), optimizedExplosions, optimizedExplosions));
+    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), 
+        optimizedExplosions || explosionsOnlyDamagePlayer, optimizedExplosions && !explosionsOnlyDamagePlayer));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);
@@ -444,6 +445,7 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitIterations = 0;
 
     optimizedExplosions = false;
+    explosionsOnlyDamagePlayer = false;
 
     _criticalHit = false;
 
