@@ -193,7 +193,7 @@ void Projectile::update() {
         if (closestEnemy != nullptr) {
             seekTarget(closestEnemy->getPosition(), closestEnemy->getSpriteSize(), targetSeekStrength);
 
-            _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+            if (_data.rotateSprite) _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
         }
 
         if (!bounceOffViewport) {
@@ -202,7 +202,7 @@ void Projectile::update() {
         }
     } else if (targetSeeking && onlyDamagePlayer) {
         seekTarget(getWorld()->getPlayer()->getPosition(), { TILE_SIZE, TILE_SIZE * 2 }, targetSeekStrength);
-        _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+        if (_data.rotateSprite) _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
 
         _baseSpeed = 1;
         move(_velocityComponents.x, _velocityComponents.y);

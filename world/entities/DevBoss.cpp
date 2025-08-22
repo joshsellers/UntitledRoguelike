@@ -324,7 +324,17 @@ void DevBoss::runCurrentState() {
         }
         case RADIAL_PROJECTILES:
         {
-            // random angle and chance radial projectiles, with additional random chance to be seeking
+            constexpr float mouseChance = 0.05f;
+            if (randomChance(mouseChance)) {
+                const float angle = (float)randomInt(0, 360);
+                Projectile* proj = fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_MOUSE"), "NONE", true, false, {}, false);
+
+                constexpr float seekChance = 0.25f;
+                if (randomChance(seekChance)) {
+                    proj->targetSeeking = true;
+                    proj->targetSeekStrength = (float)randomInt(50, 100) / 1000.f;
+                }
+            }
             break;
         }
     }
