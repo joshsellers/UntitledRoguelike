@@ -182,7 +182,7 @@ void World::draw(sf::RenderTexture& surface) {
 
     if (!_isPlayerInShop) {
         for (Chunk& chunk : _chunks) {
-            surface.draw(chunk.sprite, ShaderManager::getShader(FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN) ? "genericwaves_frag" : "waves_frag"));
+            surface.draw(chunk.sprite, ShaderManager::getShader(FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN) ? "bossterrain_frag" : "waves_frag"));
         }
     }
 
@@ -1184,14 +1184,10 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             }
 
             if (FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN)) {
-                constexpr float darker = 0.5f;
-                const float nX = norm_0_1(dX, 0, CHUNK_SIZE) * (float)CHUNK_SIZE, nY = norm_0_1(dY, 0, CHUNK_SIZE) * (float)CHUNK_SIZE;
+                //const float nX = norm_0_1(dX, 0, CHUNK_SIZE) * (float)CHUNK_SIZE, nY = norm_0_1(dY, 0, CHUNK_SIZE) * (float)CHUNK_SIZE;
                 
-                const float fr = 255.f * ((float)(std::sin(nY * 0.2f)));
-                const float fg = ((float)g - dX) * darker;
-                const float fb = ((float)b + dX * dY) * darker;
-                //const sf::Uint32 fy = 255.f * (std::pow(fr, 2.2f) * 0.2126f + std::pow(fg, 2.2f) * 0.7152f + std::pow(fb, 2.2) * 0.0722f) * (float)getPlayer()->_numSteps;
-                rgb = (((int)fr << 8));
+                const float fg = 255.f * ((float)(std::sin(y * 0.02f) * std::cos(x * 0.02f)));
+                rgb = (((int)fg << 8));
                 if (rgb >> 16 > 0) rgb -= (rgb >> 16) << 16;
             }
             image.setPixel(x - chX, y - chY, sf::Color(((rgb) << 8) + 0xFF));
