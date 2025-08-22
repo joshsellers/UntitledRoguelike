@@ -128,7 +128,9 @@ void DevBoss::subUpdate() {
             _phaseTransitionStartTime = currentTimeMillis();
             _animationState = HANDS_UP;
 
-            // trigger terrain gen stuff here
+            getWorld()->disablePropGeneration = true;
+            getWorld()->resetChunks();
+            FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN, 10LL * 60000LL);
 
         } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
             constexpr float scaleDelta = 1.f / (((float)phaseTransitionLengthMillis / 1000.f) * 60.f);
@@ -174,6 +176,7 @@ void DevBoss::subUpdate() {
     } else if (_deathAnimationComplete && currentTimeMillis() - _deathCompletionTimeMillis >= 1000LL) {
         deactivate();
         getWorld()->bossDefeated();
+        getWorld()->disablePropGeneration = false;
         EndGameSequence::start();
     }
 }
