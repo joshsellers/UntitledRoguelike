@@ -87,6 +87,11 @@ private:
     bool _defeated = false;
     bool _deathAnimationComplete = false;
     long long _deathCompletionTimeMillis = 0LL;
+
+    bool _rotateLasers = false;
+    bool _spawnedInitialLasers = false;
+    long long _laserStartTime = 0LL;
+    float _laserAngle = 0.f;
 };
 
 #endif

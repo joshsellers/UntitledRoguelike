@@ -66,7 +66,6 @@ void ShaderManager::configureShaders() {
     _capsNoiseTexture.setRepeated(true);
     delete capsNoiseImage;
     getShader("waves_frag")->setUniform("capsNoiseTex", _capsNoiseTexture);
-    getShader("genericwaves_frag")->setUniform("capsNoiseTex", _capsNoiseTexture);
     //
 
     // damage_frag
@@ -82,7 +81,6 @@ void ShaderManager::updateShaders() {
     _wavesTimer += 0.05f;
 
     getShader("waves_frag")->setUniform("capsTime", _capsTimer / _capsNoiseSize);
-    getShader("genericwaves_frag")->setUniform("capsTime", _capsTimer / _capsNoiseSize);
     _capsTimer += 0.05;
     //
 }

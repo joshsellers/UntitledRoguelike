@@ -42,7 +42,7 @@ LaserBeam::LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const s
 }
 
 void LaserBeam::update() {
-    if (_parent == nullptr || currentTimeMillis() - _spawnTime >= _lifeTime) {
+    if (_parent == nullptr) {
         deactivate();
         return;
     }
@@ -59,6 +59,8 @@ void LaserBeam::update() {
     }
 
     if (_isAnimated) _animCounter++;
+    
+    if (currentTimeMillis() - _spawnTime >= _lifeTime) deactivate();
 }
 
 void LaserBeam::draw(sf::RenderTexture& surface) {

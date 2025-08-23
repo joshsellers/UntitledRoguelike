@@ -24,6 +24,7 @@
 #include "../../core/EndGameSequence.h"
 #include "projectiles/ProjectilePoolManager.h"
 #include "../../core/SoundManager.h"
+#include "LaserBeam.h"
 
 DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 * TILE_SIZE,
     {
@@ -264,7 +265,13 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
         _cmdLine.typeCommand(_commands.at(_currentCommand).text);
     } else if (newState.stateId == FIRE_PROJECILE) _animationState = WALKING;
     else if (newState.stateId == RADIAL_PROJECTILES || newState.stateId == BOMBS) _animationState = WALKING;
-    else if (newState.stateId == ROTATING_LASERS) _animationState = HANDS_UP;
+    else if (newState.stateId == ROTATING_LASERS) {
+        _animationState = HANDS_UP;
+        _rotateLasers = false;
+        _laserStartTime = currentTimeMillis();
+        _laserAngle = 0.f;
+        _spawnedInitialLasers = false;
+    }
 
     if (previousState.stateId == RUN_COMMAND) _ranCommand = false;
 }
@@ -337,6 +344,49 @@ void DevBoss::runCurrentState() {
                     proj->targetSeeking = true;
                     proj->targetSeekStrength = (float)randomInt(50, 100) / 1000.f;
                 }
+            }
+            break;
+        }
+        case ROTATING_LASERS:
+        {
+            constexpr long long initialLaserTime = 1500LL;
+            constexpr int numLasers = 4;
+            constexpr float yOffset = 32;
+            constexpr int width = 16;
+            constexpr int length = 8000;
+            constexpr int damage = 16;
+            if (!_spawnedInitialLasers && !_rotateLasers && currentTimeMillis() - _laserStartTime < initialLaserTime) {
+                for (int i = 0; i < numLasers; i++) {
+                    const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(this, 90.f * i, 0xFFFFFFFF, width, length, damage, {0, yOffset}, true, initialLaserTime));
+                    laser->setWorld(getWorld());
+                    laser->loadSprite(getWorld()->getSpriteSheet());
+                    laser->setTextureRect({
+                        132 << SPRITE_SHEET_SHIFT,
+                        137 << SPRITE_SHEET_SHIFT,
+                        6 * TILE_SIZE, 6 * TILE_SIZE
+                    }, 2, 1, true);
+                    getWorld()->addEntity(laser);
+                }
+
+                _spawnedInitialLasers = true;
+            } else if (!_rotateLasers && currentTimeMillis() - _laserStartTime >= initialLaserTime) _rotateLasers = true;
+            else if (_rotateLasers) {
+                constexpr long long rotatingLaserTime = 16LL;
+                for (int i = 0; i < numLasers; i++) {
+                    const auto& laser = std::shared_ptr<LaserBeam>(
+                        new LaserBeam(this, _laserAngle + 90.f * i, 0xFFFFFFFF, width, length, damage, { 0, yOffset }, true, rotatingLaserTime)
+                    );
+                    laser->setWorld(getWorld());
+                    laser->loadSprite(getWorld()->getSpriteSheet());
+                    laser->setTextureRect({
+                        132 << SPRITE_SHEET_SHIFT,
+                        137 << SPRITE_SHEET_SHIFT,
+                        6 * TILE_SIZE, 6 * TILE_SIZE
+                    }, 2, 1, true);
+                    getWorld()->addEntity(laser);
+                }
+
+                _laserAngle += 2.f;
             }
             break;
         }
