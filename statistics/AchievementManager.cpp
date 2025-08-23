@@ -4,6 +4,7 @@
 #include "../core/Tutorial.h"
 #include "../inventory/ConditionalUnlockManager.h"
 #include "LocalAchievementManager.h"
+#include "../core/SoundManager.h"
 
 void AchievementManagerInstance::start() {
     if (!STEAMAPI_INITIATED) return;
@@ -144,7 +145,8 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             ConditionalUnlockManager::increaseUnlockProgress("Coupon", 1);
             if (HARD_MODE_ENABLED) {
                 unlock(HARDMODE_UNTOUCHABLE);
-                ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
+                MessageManager::displayMessage("You unlocked the Altar!", 8, SPECIAL);
+                SoundManager::playSound("itemunlock");
             }
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {

@@ -340,22 +340,22 @@ const Item Item::SCYTHE(41, "_Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false
 
 const Item Item::MATMURA_HELMET(42, "Crypticus Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, true
+    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, false
 );
 
 const Item Item::MATMURA_CHESTPLATE(43, "Crypticus Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, true
+    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, false
 );
 
 const Item Item::MATMURA_LEGGINGS(44, "Crypticus Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, true
+    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, false
 );
 
 const Item Item::MATMURA_BOOTS(45, "Crypticus Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, true
+    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, false
 );
 
 const Item Item::BROADSWORD(46, "_Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
@@ -867,11 +867,11 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::LOCUS_LIFT.getId(),                      4},
     {Item::BONE.getId(),                            0},
     {Item::COIN_MAGNET.getId(),                     6},
-    {Item::SCYTHE.getId(),                          10},
-    {Item::MATMURA_HELMET.getId(),                  32},
-    {Item::MATMURA_CHESTPLATE.getId(),              32},
-    {Item::MATMURA_LEGGINGS.getId(),                32},
-    {Item::MATMURA_BOOTS.getId(),                   32},
+    {Item::SCYTHE.getId(),                          0},
+    {Item::MATMURA_HELMET.getId(),                  0},
+    {Item::MATMURA_CHESTPLATE.getId(),              0},
+    {Item::MATMURA_LEGGINGS.getId(),                0},
+    {Item::MATMURA_BOOTS.getId(),                   0},
     {Item::BROADSWORD.getId(),                      0},
     {Item::ENERGY_DRINK.getId(),                    4},
     {Item::AUTOLASER.getId(),                       0},

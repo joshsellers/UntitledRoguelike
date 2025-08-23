@@ -2,6 +2,7 @@
 #include "../World.h"
 #include "../../core/SoundManager.h"
 #include "../../core/MessageManager.h"
+#include "../../statistics/LocalAchievementManager.h"
 
 Altar::Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet, bool naturalSpawn) : 
 Entity(NO_SAVE, pos, 0, 96, 112, naturalSpawn), _isActivated(isActivated) {
@@ -96,7 +97,9 @@ void Altar::onActivation() {
 
     const auto& player = _world->getPlayer();
 
-    REWARD reward = (REWARD)randomInt(0, 6);
+    const bool armorUnlocked = LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS);
+
+    REWARD reward = (REWARD)randomInt(armorUnlocked ? 0 : 1, 6);
     switch (reward) {
         case ARMOR:
         {

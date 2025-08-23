@@ -69,7 +69,9 @@ private:
         "Amy Eightlegs but harder",
         "Treeckster",
         "Princeton the Penguin",
-        "Princeton the Penguin but harder"
+        "Princeton the Penguin but harder",
+        "The Developer",
+        "The Developer but harder"
     };
 };
 

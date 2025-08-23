@@ -732,7 +732,7 @@ void World::checkAltarSpawn() {
         constexpr float maxAltarChance = 50.f;
         const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
         if (altarChance != 0.f) {
-            if (randomChance(altarChance / 100.f)) {
+            if (randomChance(altarChance / 100.f) && LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
                 sf::Vector2f spawnPos;
                 const int dirFromPlayer = randomInt(0, 3);
                 const int maxDistFromPlayer = WIDTH;
@@ -1729,6 +1729,14 @@ void World::bossDefeated() {
             achievement = DEFEAT_PENGUINBOSS;
             ConditionalUnlockManager::increaseUnlockProgress("Penguin Cannon", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Seek Jewel", 1);
+            break;
+        case DEV_BOSS:
+            achievement = DEFEAT_DEVBOSS;
+            if (!LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS)) {
+                MessageManager::displayMessage("You unlocked Crypticus Armor!", 8, SPECIAL);
+                SoundManager::playSound("itemunlock");
+            }
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
             break;
     }
 
