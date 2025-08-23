@@ -218,8 +218,10 @@ int main() {
     sf::Cursor cursor;
     sf::Image cursorImage;
     if (!cursorImage.loadFromFile("res/cursor.png")) MessageManager::displayMessage("Could not load cursor icon", 5, WARN);
-    else cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), {0, 0});
-    window.setMouseCursor(cursor);
+    else {
+        cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0, 0 });
+        window.setMouseCursor(cursor);
+    }
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 
