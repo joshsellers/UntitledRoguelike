@@ -79,7 +79,7 @@ public:
     bool disableEnemySpawning = false;
     bool disablePropGeneration = false;
 
-    void resetChunks();
+    void resetChunks(bool force = false);
 
     void enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp = false);
     void exitBuilding();

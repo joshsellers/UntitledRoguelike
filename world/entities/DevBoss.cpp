@@ -129,7 +129,7 @@ void DevBoss::subUpdate() {
             _animationState = HANDS_UP;
 
             getWorld()->disablePropGeneration = true;
-            getWorld()->resetChunks();
+            getWorld()->resetChunks(true);
             FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN, 10LL * 60000LL);
 
         } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
@@ -155,6 +155,8 @@ void DevBoss::subUpdate() {
                 BossState(ROTATING_LASERS, 6000LL, 8000LL),
                 BossState(BOMBS, 2000LL, 5000LL)
             };
+
+            _ignoreViewport = true;
         }
     } else if (!_deathAnimationComplete) {
         constexpr int ticksPerFrame = 10;

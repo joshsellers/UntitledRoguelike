@@ -1507,14 +1507,16 @@ void World::reseed(const unsigned int seed) {
     gen.seed(_seed);
 }
 
-void World::resetChunks() {
-    if (_loadingChunks.size() == 0) {
+void World::resetChunks(bool force) {
+    if (_loadingChunks.size() == 0 || force) {
         while (!_chunkBuffer.empty()) _chunkBuffer.pop();
 
         _chunks.clear();
         _currentChunk = nullptr;
         _scatterBuffer.clear();
         _entityBuffer.clear();
+
+        if (force) _loadingChunks.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 
