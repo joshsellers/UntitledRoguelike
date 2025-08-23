@@ -132,6 +132,7 @@ void DevBoss::subUpdate() {
             getWorld()->resetChunks(true);
             FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN, 10LL * 60000LL);
 
+            SoundManager::playSound("transition");
         } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
             constexpr float scaleDelta = 1.f / (((float)phaseTransitionLengthMillis / 1000.f) * 60.f);
             _headSprite.setScale(_headSprite.getScale().x + scaleDelta, _headSprite.getScale().y + scaleDelta);
@@ -161,7 +162,7 @@ void DevBoss::subUpdate() {
     } else if (!_deathAnimationComplete) {
         constexpr int ticksPerFrame = 10;
         constexpr int frameCount = 14;
-        const int yFrame = ((_numSteps/ ticksPerFrame) % frameCount);
+        const int yFrame = ((_numSteps / ticksPerFrame) % frameCount);
         _headSprite.setTextureRect({
             102 << SPRITE_SHEET_SHIFT,
             (80 + yFrame * 2) << SPRITE_SHEET_SHIFT,

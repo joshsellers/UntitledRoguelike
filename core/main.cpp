@@ -222,6 +222,7 @@ int main() {
         cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0, 0 });
         window.setMouseCursor(cursor);
     }
+    //
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 
