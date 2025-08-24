@@ -320,6 +320,8 @@ void Projectile::setSplitInto(const std::string projectileDataIdentifier, const 
 }
 
 void Projectile::split() const {
+    if (_parent == nullptr || !_parent->isActive()) return;
+
     if (_splitProjectileDataIdentifer == "") {
         MessageManager::displayMessage("split() was called on a projectile with an undefined split projectile identifier", 5, WARN);
         return;
