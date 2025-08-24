@@ -1307,10 +1307,10 @@ void Game::update() {
                 _waveCounterMeter->setPercentFull(0.f);
             }
 
-            if (!_world.playerIsInShop() && _world.getCurrentWaveNumber() != 101) {
+            if (!_world.playerIsInShop() && _world.getCurrentWaveNumber() != 65) {
                 _waveCounterMeter->setText("WAVE " + std::to_string(_world._currentWaveNumber)
                     + timerString);
-            } else if (!_world.playerIsInShop() && _world.getCurrentWaveNumber() == 101) {
+            } else if (!_world.playerIsInShop() && _world.getCurrentWaveNumber() == 65) {
                 _waveCounterMeter->setText("The Developer");
             }
         }

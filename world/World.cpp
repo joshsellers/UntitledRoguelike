@@ -716,7 +716,7 @@ void World::onWaveCleared() {
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
-    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95 || _currentWaveNumber == 100) {
+    if ((_currentWaveNumber + 1) % 5 == 0 && _currentWaveNumber != 59 || _currentWaveNumber == 64) {
         MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
     }
 
@@ -1411,40 +1411,40 @@ void World::spawnBoss(int currentWaveNumber) {
 
     std::shared_ptr<Entity> boss = nullptr;
     switch (currentWaveNumber) {
-        case 8:
+        case 5:
             boss = std::shared_ptr<TreeBoss>(new TreeBoss(spawnPos));
             break;
-        case 16:
+        case 10:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
             break;
-        case 24:
+        case 15:
             boss = std::shared_ptr<CannonBoss>(new CannonBoss(spawnPos));
             break;
-        case 32:
+        case 20:
             boss = std::shared_ptr<CreamBoss>(new CreamBoss(spawnPos));
             break;
-        case 40:
+        case 25:
             boss = std::shared_ptr<ChefBoss>(new ChefBoss(spawnPos));
             break;
-        case 48:
+        case 30:
             boss = std::shared_ptr<BabyBoss>(new BabyBoss(spawnPos));
             break;
-        case 56:
+        case 35:
             boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
-        case 64:
+        case 40:
             boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
             break;
-        case 72:
+        case 45:
             boss = std::shared_ptr<FrogBoss>(new FrogBoss(spawnPos));
             break;
-        case 80:
+        case 50:
             boss = std::shared_ptr<OctopusBoss>(new OctopusBoss(spawnPos));
             break;
-        case 88:
+        case 55:
             boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));
             break;
-        case 101:
+        case 65:
             boss = std::shared_ptr<DevBoss>(new DevBoss(spawnPos));
             break;
     }
