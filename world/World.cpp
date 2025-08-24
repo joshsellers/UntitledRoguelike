@@ -1694,7 +1694,7 @@ void World::bossDefeated() {
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
-            ConditionalUnlockManager::increaseUnlockProgress("Canned Soup", 1);
+            ConditionalUnlockManager::increaseUnlockProgress("Can of Soup", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
             break;
         case BABY_BOSS:
