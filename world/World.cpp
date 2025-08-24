@@ -75,6 +75,7 @@
 #include "entities/PenguinBoss.h"
 #include "../inventory/RecentItemUnlockTracker.h"
 #include "../core/FinalBossEffectManager.h"
+#include "entities/DevBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -1442,6 +1443,9 @@ void World::spawnBoss(int currentWaveNumber) {
             break;
         case 88:
             boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));
+            break;
+        case 101:
+            boss = std::shared_ptr<DevBoss>(new DevBoss(spawnPos));
             break;
     }
 
