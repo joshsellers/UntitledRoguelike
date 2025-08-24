@@ -882,7 +882,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                 }
             }
 
-            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH)) {
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH) && LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
                 boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 18 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
