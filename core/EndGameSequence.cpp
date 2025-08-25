@@ -3,6 +3,7 @@
 #include "MessageManager.h"
 #include "../ui/UIElement.h"
 #include "music/MusicManager.h"
+#include "gamepad/GamePad.h"
 
 void EndGameSequence::start() {
     _startTimeMillis = currentTimeMillis();
@@ -56,6 +57,16 @@ void EndGameSequence::draw(sf::RenderTexture& surface) {
         }
 
         surface.draw(_creditsLabel);
+    }
+
+    if (_fadeComplete) {
+        sf::Text skipTip;
+        skipTip.setFont(*_creditsLabel.getFont());
+        skipTip.setPosition(UIElement::getRelativePos(1.f, 95.f));
+        skipTip.setFillColor(sf::Color(0xFFFFFFAA));
+        skipTip.setCharacterSize(UIElement::getRelativeWidth(1.25f));
+        skipTip.setString(GamePad::isConnected() ? "press any button to continue" : "press any key to continue");
+        surface.draw(skipTip);
     }
 }
 
