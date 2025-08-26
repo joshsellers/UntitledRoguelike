@@ -720,6 +720,8 @@ void World::onWaveCleared() {
         MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
     }
 
+    if (_currentWaveNumber == SHOPS_CLOSED_WAVE) MessageManager::displayMessage("The shops have closed their doors", 8);
+
     spawnBoss(_currentWaveNumber);
 }
 
@@ -868,7 +870,7 @@ void World::generateChunkScatters(Chunk& chunk) {
 
                         const bool shopSeen = shopHasBeenSeenAt(sf::Vector2f(x, y));
                         if (!shopSeen && onEnemySpawnCooldown() && !bossIsActive()) {
-                            if (Tutorial::isCompleted()) MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                            if (Tutorial::isCompleted() && getCurrentWaveNumber() < SHOPS_CLOSED_WAVE) MessageManager::displayMessage("There's a shop around here somewhere!", 5);
                             shopSeenAt(sf::Vector2f(x, y)); 
                         }
                         
@@ -1733,6 +1735,8 @@ void World::bossDefeated() {
             achievement = DEFEAT_PENGUINBOSS;
             ConditionalUnlockManager::increaseUnlockProgress("Penguin Cannon", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Seek Jewel", 1);
+
+            MessageManager::displayMessage("The shops will close their doors\nafter the next wave...", 8);
             break;
         case DEV_BOSS:
             achievement = DEFEAT_DEVBOSS;

@@ -24,6 +24,8 @@ constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 3;
 constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 1;
 constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
+constexpr int SHOPS_CLOSED_WAVE = 56;
+
 class World {
 public:
     World(std::shared_ptr<Player> player, bool& showDebug);

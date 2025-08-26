@@ -50,7 +50,7 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 void ShopExterior::update() {
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
-        if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive() || _doorBlownOpen) {
+        if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive() && getWorld()->getCurrentWaveNumber() < SHOPS_CLOSED_WAVE || _doorBlownOpen) {
             auto& entity = getWorld()->getPlayer();
             if (entity->isActive() && entity->getEntityType() == "player" && entity->getHitBox().intersects(getHitBox())) {
                 getWorld()->enterBuilding("shop", sf::Vector2f(_pos.x + 16, _pos.y - 48), _doorBlownOpen);
@@ -65,7 +65,7 @@ void ShopExterior::update() {
 
 void ShopExterior::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
-    if ((!getWorld()->onEnemySpawnCooldown() || getWorld()->bossIsActive()) && !_doorBlownOpen) surface.draw(_closedSprite);
+    if ((!getWorld()->onEnemySpawnCooldown() || getWorld()->bossIsActive() || getWorld()->getCurrentWaveNumber() >= SHOPS_CLOSED_WAVE) && !_doorBlownOpen) surface.draw(_closedSprite);
     else if (_doorBlownOpen) surface.draw(_blownUpSprite);
 }
 
