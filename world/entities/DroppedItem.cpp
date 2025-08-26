@@ -43,7 +43,7 @@ void DroppedItem::update() {
             return;
         }
 
-        if (_itemId == Item::PENNY.getId()) moveTowardPlayer();
+        if (_itemId == Item::PENNY.getId() && (_spawnedInShop || !getWorld()->playerIsInShop())) moveTowardPlayer();
 
         /*for (auto& entity : getWorld()->getCollectorMobs()) {
             if (entity->canPickUpItems() && entity->isActive() && 
