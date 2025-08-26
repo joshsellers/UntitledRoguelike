@@ -136,7 +136,7 @@ public:
         in.close();
 
         if (!FileIntegrityManager::verifyFile(_saveDir + "/" + saveFileName)) {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL, "NONE");
             DISABLE_ACHIEVEMENTS = true;
             DISABLE_UNLOCKS = true;
             DISABLE_STATS = true;
@@ -618,7 +618,7 @@ private:
         } else if (header == "PERF") {
             MID_GAME_PERF_BOOST = true;
         } else if (header == "MODDED") {
-            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL);
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL, "NONE");
             DISABLE_ACHIEVEMENTS = true;
             DISABLE_UNLOCKS = true;
             DISABLE_STATS = true;

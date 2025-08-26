@@ -680,7 +680,7 @@ void World::onWaveCleared() {
     RecentItemUnlockTracker::onWaveCleared();
 
     if (_waveCounter != 0) {
-        MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+        MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5, NORMAL, "NONE");
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
 
         if (getPlayer()->getHitPoints() < 10) {
@@ -712,12 +712,11 @@ void World::onWaveCleared() {
     }
     if (unlockedItemCount > 0) {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked!", 8, SPECIAL);
-        SoundManager::playSound("itemunlock");
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
     if ((_currentWaveNumber + 1) % 5 == 0 && _currentWaveNumber != 59 || _currentWaveNumber == 64) {
-        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10, NORMAL, "message", 2);
     }
 
     if (_currentWaveNumber == SHOPS_CLOSED_WAVE) MessageManager::displayMessage("The shops have closed their doors", 8);
@@ -870,7 +869,9 @@ void World::generateChunkScatters(Chunk& chunk) {
 
                         const bool shopSeen = shopHasBeenSeenAt(sf::Vector2f(x, y));
                         if (!shopSeen && onEnemySpawnCooldown() && !bossIsActive()) {
-                            if (Tutorial::isCompleted() && getCurrentWaveNumber() < SHOPS_CLOSED_WAVE) MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                            if (Tutorial::isCompleted() && getCurrentWaveNumber() < SHOPS_CLOSED_WAVE) {
+                                MessageManager::displayMessage("There's a shop around here somewhere!", 5, NORMAL, "NONE");
+                            }
                             shopSeenAt(sf::Vector2f(x, y)); 
                         }
                         
@@ -1717,7 +1718,6 @@ void World::bossDefeated() {
             achievement = DEFEAT_SHROOMBOSS;
             if (!LocalAchievementManager::isUnlocked(DEFEAT_SHROOMBOSS)) {
                 MessageManager::displayMessage("You unlocked the Fungus Biome!", 8, SPECIAL);
-                SoundManager::playSound("itemunlock");
             }
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
             break;
@@ -1736,13 +1736,12 @@ void World::bossDefeated() {
             ConditionalUnlockManager::increaseUnlockProgress("Penguin Cannon", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Seek Jewel", 1);
 
-            MessageManager::displayMessage("The shops will close their doors\nafter the next wave...", 8);
+            MessageManager::displayMessage("The shops will close their doors\nafter the next wave...", 8, NORMAL, "message", randomInt(2, 4));
             break;
         case DEV_BOSS:
             achievement = DEFEAT_DEVBOSS;
             if (!LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS)) {
                 MessageManager::displayMessage("You unlocked Crypticus Armor!", 8, SPECIAL);
-                SoundManager::playSound("itemunlock");
             }
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
             break;

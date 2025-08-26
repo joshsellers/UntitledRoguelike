@@ -40,18 +40,22 @@ const MessageType MESSAGE_TYPES[6] = {
 };
 
 struct Message {
-    Message(std::string text, int timeout, int messageType) {
+    Message(std::string text, int timeout, int messageType, std::string sound = "message", int delay = 0) {
         this->text = text;
         this->timeout = timeout;
         this->messageType = messageType;
+        this->delay = delay;
+        this->sound = sound;
 
         queueTimeStamp = currentTimeMillis();
     }
 
     std::string text;
     int timeout;
+    int delay;
     int messageType;
     int queueTimeStamp;
+    std::string sound;
 
     bool active = true;
 };
@@ -60,89 +64,34 @@ constexpr unsigned int PURGE_INTERVAL_SECONDS = 60;
 
 class MessageManager {
 public:
-    static void start() {
-        _isHalted = false;
+    static void start();
 
-        std::thread managementThread(MessageManager::manageMessages);
-        managementThread.detach();
-    }
-
-    static void stop() {
-        _isHalted = true;
-    }
+    static void stop();
 
     // For tutorial messages, timeout is tutorial step ID
-    static void displayMessage(std::string text, int timeout, int messageType = NORMAL) {
-        if (messageType != NORMAL && messageType != SPECIAL && messageType != TUTORIAL) text = "[" + MESSAGE_TYPES[messageType].name + "] " + text;
-        std::cout << text << std::endl;
-        Logger::log(text);
+    static void displayMessage(std::string text, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-        std::shared_ptr<Message> message = std::shared_ptr<Message>(new Message(text, timeout, messageType));
-        _messages.push_back(message);
+    static void displayMessage(int message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-        if (messageType != TUTORIAL) {
-            std::thread deactivationThread(&MessageManager::scheduleMessageDeactivation, message);
-            deactivationThread.detach();
-        }
-    }
+    static void displayMessage(float message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-    static void displayMessage(int message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static void displayMessage(double message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-    static void displayMessage(float message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static void displayMessage(long message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-    static void displayMessage(double message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static void displayMessage(long long message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-    static void displayMessage(long message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static void displayMessage(unsigned int message, int timeout, int messageType = NORMAL, std::string sound = "message", int delay = 0);
 
-    static void displayMessage(long long message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static std::vector<std::shared_ptr<Message>> getMessages();
 
-    static void displayMessage(unsigned int message, int timeout, int messageType = NORMAL) {
-        displayMessage(std::to_string(message), timeout, messageType);
-    }
+    static int getMessageCount();
 
-    static std::vector<std::shared_ptr<Message>> getMessages() {
-        return _messages;
-    }
+    static bool isPurging();
 
-    static int getMessageCount() {
-        int messageCount = 0;
-        for (auto& message : getMessages()) {
-            if (message->active && !(message->messageType == DEBUG && !DISPLAY_DEBUG_MESSAGES)) messageCount++;
-        }
+    static void clearTutorialMessage(int tutorialStepId);
 
-        return messageCount;
-    }
-
-    static bool isPurging() {
-        return _isPurging;
-    }
-
-    static void clearTutorialMessage(int tutorialStepId) {
-        for (int i = 0; i < _messages.size(); i++) {
-            if (_messages[i]->active && _messages[i]->messageType == TUTORIAL && _messages[i]->timeout == tutorialStepId) {
-                _messages[i]->active = false;
-                break;
-            }
-        }
-    }
-
-    static void clearAllTutorialMessages() {
-        for (int i = 0; i < _messages.size(); i++) {
-            if (_messages[i]->messageType == TUTORIAL) {
-                _messages[i]->active = false;
-            }
-        }
-    }
+    static void clearAllTutorialMessages();
 
 private:
     inline static std::vector<std::shared_ptr<Message>> _messages;
@@ -150,25 +99,9 @@ private:
     inline static bool _isHalted = false;
     inline static bool _isPurging = false;
 
-    static void manageMessages() {
-        while (!_isHalted) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(PURGE_INTERVAL_SECONDS * 1000));
+    static void manageMessages();
 
-            _isPurging = true;
-            for (int i = 0; i < _messages.size(); i++) {
-                auto& message = _messages[i];
-                if (!message->active) {
-                    _messages.erase(_messages.begin() + i);
-                }
-            }
-            _isPurging = false;
-        }
-    }
-
-    static void scheduleMessageDeactivation(std::shared_ptr<Message> message) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(message->timeout * 1000));
-        message->active = false;
-    }
+    static void scheduleMessageDeactivation(std::shared_ptr<Message> message);
 };
 
 #endif

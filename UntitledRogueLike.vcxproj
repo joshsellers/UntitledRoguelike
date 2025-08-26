@@ -23,6 +23,7 @@
     <ClCompile Include="core\FileIntegrityManager.cpp" />
     <ClCompile Include="core\FinalBossEffectManager.cpp" />
     <ClCompile Include="core\gamepad\GamePad.cpp" />
+    <ClCompile Include="core\MessageManager.cpp" />
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
     <ClCompile Include="inventory\RecentItemUnlockTracker.cpp" />
     <ClCompile Include="statistics\LocalAchievementManager.cpp" />

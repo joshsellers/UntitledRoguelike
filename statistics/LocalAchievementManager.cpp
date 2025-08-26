@@ -10,7 +10,6 @@ void LocalAchievementManager::unlock(ACHIEVEMENT achievement) {
     if (!isReady() || isUnlocked(achievement)) return;
     _unlockedAchievements[achievement] = true;
     MessageManager::displayMessage("Achievement unlocked: " + getAchievementName(achievement), 5, SPECIAL);
-    SoundManager::playSound("itemunlock");
     saveLocalAchievements();
 }
 

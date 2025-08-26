@@ -42,10 +42,10 @@ void FileIntegrityManager::verifyFiles() {
     }
 
     if (!verifiedAll && !progFileFailedVerification) {
-        MessageManager::displayMessage("One or more modified game files were detected.\nAchievements will be disabled.", 10, SPECIAL);
+        MessageManager::displayMessage("One or more modified game files were detected.\nAchievements will be disabled.", 10, SPECIAL, "NONE");
         DISABLE_ACHIEVEMENTS = true;
     } else if (!verifiedAll && progFileFailedVerification) {
-        MessageManager::displayMessage("One or more modified progression files were detected.\nAchievements, unlocks, and stats will be disabled.", 10, SPECIAL);
+        MessageManager::displayMessage("One or more modified progression files were detected.\nAchievements, unlocks, and stats will be disabled.", 10, SPECIAL, "NONE");
         DISABLE_ACHIEVEMENTS = true;
         DISABLE_UNLOCKS = true;
         DISABLE_STATS = true;

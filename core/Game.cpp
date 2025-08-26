@@ -1366,7 +1366,7 @@ void Game::displayEnemyWaveCountdownUpdates() {
         else if (secondsUntilNextWave == 10) timeRemainingString = "10 seconds";
 
         if (timeRemainingString != "NONE") {
-            MessageManager::displayMessage(timeRemainingString + " until next wave", 5);
+            MessageManager::displayMessage(timeRemainingString + " until next wave", 5, NORMAL, "NONE");
             _lastCooldownUpdateTime = currentTimeMillis();
         }
     }
@@ -2353,7 +2353,7 @@ void Game::toggleShopMenu() {
                     _shopMenu->show();
 
                     std::string controlsMsg = "Left click to buy/sell 1 item\nRight click to buy/sell a stack\nMiddle click to buy/sell 25";
-                    if (!GamePad::isConnected()) MessageManager::displayMessage(controlsMsg, 5);
+                    if (!GamePad::isConnected()) MessageManager::displayMessage(controlsMsg, 5, NORMAL, "NONE");
                     break;
                 }
             } else if (entity->isActive() && entity->getEntityType() == "shopatm") {

@@ -65,7 +65,6 @@ void ConditionalUnlockManager::unlockItem(std::string itemName) {
             StatManager::increaseStat(ITEMS_UNLOCKED, 1);
             saveUnlockedItems();
             MessageManager::displayMessage("New item unlocked: " + itemName, 8, SPECIAL);
-            SoundManager::playSound("itemunlock");
             RecentItemUnlockTracker::itemUnlocked(item->getId());
             return;
         }
