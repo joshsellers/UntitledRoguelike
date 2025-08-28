@@ -138,6 +138,8 @@ public:
 
     bool spawnedInShop() const;
 
+    bool useDefaultDamageIndicator() const;
+
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
 
@@ -238,6 +240,8 @@ protected:
     long long _timeDamageTaken = 0LL;
 
     bool _spawnedInShop = false;
+
+    bool _useDefaultDamageIndicator = true;
 
 private:
     const ENTITY_SAVE_ID _saveId;

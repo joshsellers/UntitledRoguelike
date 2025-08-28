@@ -722,6 +722,10 @@ bool Entity::spawnedInShop() const {
     return _spawnedInShop;
 }
 
+bool Entity::useDefaultDamageIndicator() const {
+    return _useDefaultDamageIndicator;
+}
+
 ENTITY_SAVE_ID Entity::getSaveId() const {
     return _saveId;
 }

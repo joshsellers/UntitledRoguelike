@@ -218,7 +218,7 @@ void World::draw(sf::RenderTexture& surface) {
                     ) ))) {
             entity->draw(surface);
 
-            if (entity->getSaveId() != PLAYER && !entity->isProp() && !entity->isBoss() && entity->isTakingDamage()) {
+            if (entity->getSaveId() != PLAYER && !entity->isProp() && !entity->isBoss() && entity->isTakingDamage() && entity->useDefaultDamageIndicator()) {
                 surface.draw(entity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
             }
         }

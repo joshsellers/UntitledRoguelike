@@ -1,5 +1,6 @@
 #include "Soldier.h"
 #include "../World.h"
+#include "../../core/ShaderManager.h"
 
 Soldier::Soldier(sf::Vector2f pos) : Entity(SOLDIER, pos, 1.f, TILE_SIZE, TILE_SIZE * 2, false), 
     _weaponId(Item::getIdFromName("_SNIPER_SOLDIER"))
@@ -20,6 +21,7 @@ Soldier::Soldier(sf::Vector2f pos) : Entity(SOLDIER, pos, 1.f, TILE_SIZE, TILE_S
     _magazineContents = 1;
     _magazineAmmoType = Item::ITEMS[_weaponId]->getAmmoId();
 
+    _useDefaultDamageIndicator = false;
     _canPickUpItems = false;
     _isMob = true;
     _isEnemy = true;
@@ -122,13 +124,13 @@ void Soldier::draw(sf::RenderTexture& surface) {
     if (_facingDir == UP || _facingDir == LEFT) {
         drawWeapon(surface);
 
-        surface.draw(_sprite);
+        surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
         drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
         drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
         drawApparel(_clothingFeetSprite, EQUIPMENT_TYPE::CLOTHING_FEET, surface);
     } else if (_facingDir == DOWN || _facingDir == RIGHT) {
-        surface.draw(_sprite);
+        surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         drawApparel(_clothingHeadSprite, EQUIPMENT_TYPE::CLOTHING_HEAD, surface);
         drawApparel(_clothingBodySprite, EQUIPMENT_TYPE::CLOTHING_BODY, surface);
         drawApparel(_clothingLegsSprite, EQUIPMENT_TYPE::CLOTHING_LEGS, surface);
@@ -241,7 +243,7 @@ void Soldier::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rend
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x - TILE_SIZE, _sprite.getPosition().y - TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
@@ -255,7 +257,7 @@ void Soldier::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Rend
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     }
 }

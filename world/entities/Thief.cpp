@@ -1,6 +1,7 @@
 #include "Thief.h"
 #include "../World.h"
 #include "../../core/Tutorial.h"
+#include "../../core/ShaderManager.h"
 
 Thief::Thief(sf::Vector2f pos, bool chasing) : Entity(THIEF, pos, 6.f, TILE_SIZE, TILE_SIZE * 2, false) {
     _chasing = chasing;
@@ -25,6 +26,7 @@ Thief::Thief(sf::Vector2f pos, bool chasing) : Entity(THIEF, pos, 6.f, TILE_SIZE
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
+    _useDefaultDamageIndicator = false;
     _isMob = true;
     _isEnemy = true;
 }
@@ -129,7 +131,7 @@ void Thief::draw(sf::RenderTexture& surface) {
         terrainType == TERRAIN_TYPE::WATER ? 16 : 32)
     );
 
-    surface.draw(_sprite);
+    surface.draw(_sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
     drawEquipables(surface);
 }
 
@@ -157,7 +159,7 @@ void Thief::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Render
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y - TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     } else {
         int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 3) * TILE_SIZE : 0;
@@ -171,7 +173,7 @@ void Thief::drawApparel(sf::Sprite& sprite, EQUIPMENT_TYPE equipType, sf::Render
             );
 
             sprite.setPosition(sf::Vector2f(_sprite.getPosition().x, _sprite.getPosition().y + TILE_SIZE));
-            surface.draw(sprite);
+            surface.draw(sprite, isTakingDamage() ? ShaderManager::getShader("damage_frag") : sf::RenderStates::Default);
         }
     }
 }
