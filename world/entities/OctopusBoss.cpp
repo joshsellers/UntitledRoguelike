@@ -9,7 +9,7 @@ OctopusBoss::OctopusBoss(sf::Vector2f pos) : Boss(OCTOPUS_BOSS, pos, 1.0, 12 * T
         BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000),
         BossState(BEHAVIOR_STATE::INK_RAY, 4000, 5000)
     }) {
-    setMaxHitPoints(80000);
+    setMaxHitPoints(57000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 8) / 2;
@@ -26,7 +26,7 @@ OctopusBoss::OctopusBoss(sf::Vector2f pos) : Boss(OCTOPUS_BOSS, pos, 1.0, 12 * T
     _displayName = "Amy Eightlegs";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(15000, 17000);
+    unsigned int pennyAmount = randomInt(12000, 13000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 

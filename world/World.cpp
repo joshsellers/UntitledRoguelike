@@ -1439,10 +1439,10 @@ void World::spawnBoss(int currentWaveNumber) {
             boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
             break;
         case 45:
-            boss = std::shared_ptr<FrogBoss>(new FrogBoss(spawnPos));
+            boss = std::shared_ptr<OctopusBoss>(new OctopusBoss(spawnPos));
             break;
         case 50:
-            boss = std::shared_ptr<OctopusBoss>(new OctopusBoss(spawnPos));
+            boss = std::shared_ptr<FrogBoss>(new FrogBoss(spawnPos));
             break;
         case 55:
             boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));

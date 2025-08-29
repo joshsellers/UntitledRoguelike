@@ -19,7 +19,7 @@ float MUSIC_VOLUME = 1.f;
 bool DAMAGE_PARTICLES_ENABLED = false;
 
 bool AUTOSAVE_ENABLED = true;
-long long AUTOSAVE_INTERVAL_SECONDS = 30;
+long long AUTOSAVE_INTERVAL_SECONDS = 60 * 5;
 
 bool BACKUP_ENABLED = false;
 

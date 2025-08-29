@@ -1,4 +1,4 @@
-#!SIG1315760272
+#!SIG660549754
 name = "Rocket Launcher"
 description = "Launches rockets"
 value = 599
@@ -12,3 +12,4 @@ barrelPos = 34, 1
 functionName = "firerocketlauncher"
 equipmentType = TOOL
 textureRect = 103, 0, 1, 1
+rarityTier = 2

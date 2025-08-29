@@ -13,7 +13,7 @@ FrogBoss::FrogBoss(sf::Vector2f pos) : Boss(FROG_BOSS, pos, 1.f, TILE_SIZE * 7, 
         BossState(SHOOT_FROGS, 2000LL, 3000LL)
     }
 ) {
-    setMaxHitPoints(57000);
+    setMaxHitPoints(80000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -((float)TILE_SIZE * 7.f) / 2.f + TILE_SIZE;
@@ -30,7 +30,7 @@ FrogBoss::FrogBoss(sf::Vector2f pos) : Boss(FROG_BOSS, pos, 1.f, TILE_SIZE * 7, 
     _displayName = "Remmy Ribbit";
 
     srand(currentTimeNano());
-    unsigned int pennyAmount = randomInt(12000, 13000);
+    unsigned int pennyAmount = randomInt(15000, 17000);
     getInventory().addItem(Item::PENNY.getId(), pennyAmount);
 }
 
