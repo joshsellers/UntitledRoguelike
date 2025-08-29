@@ -130,6 +130,7 @@ void DevBoss::subUpdate() {
             _animationState = HANDS_UP;
 
             getWorld()->disablePropGeneration = true;
+            getWorld()->disableMobSpawning = true;
             getWorld()->resetChunks(true);
             FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN, 10LL * 60000LL);
 
@@ -187,6 +188,7 @@ void DevBoss::subUpdate() {
     } else if (_deathAnimationComplete && currentTimeMillis() - _deathCompletionTimeMillis >= 1000LL) {
         deactivate();
         getWorld()->bossDefeated();
+        getWorld()->disableMobSpawning = false;
         getWorld()->disablePropGeneration = false;
         EndGameSequence::start();
     }
