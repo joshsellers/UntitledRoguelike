@@ -23,7 +23,8 @@ void MessageManager::displayMessage(std::string text, int timeout, int messageTy
     if (delay != 0) message->active = false;
     _messages.push_back(message);
 
-    if (messageType != DEBUG && delay == 0 && sound != "NONE" && timeout != 0) SoundManager::playSound(sound);
+    if (messageType != DEBUG && !((message->messageType == WARN || message->messageType == ERR) && !DISPLAY_DEBUG_MESSAGES) 
+        && delay == 0 && sound != "NONE" && timeout != 0) SoundManager::playSound(sound);
 
     if (messageType != TUTORIAL) {
         std::thread deactivationThread(&MessageManager::scheduleMessageDeactivation, message);

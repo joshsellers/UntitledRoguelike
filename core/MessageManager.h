@@ -31,12 +31,12 @@ constexpr int DEBUG = 3;
 constexpr int SPECIAL = 4;
 constexpr int TUTORIAL = 5;
 const MessageType MESSAGE_TYPES[6] = {
-    MessageType("NORMAL", 0xFFFFFFFF),
+    MessageType("NORMAL", 0x000000FF),
     MessageType("WARN", 0xFFFF00FF),
     MessageType("ERR", 0xFF0000FF),
     MessageType("DEBUG", 0x00FF00FF),
     MessageType("SPECIAL", 0xFFD700FF),
-    MessageType("TUTORIAL", 0xFFFFFFFF)
+    MessageType("TUTORIAL", 0x000000FF)
 };
 
 struct Message {
