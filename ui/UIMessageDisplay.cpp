@@ -3,7 +3,18 @@
 #include <iostream>
 #include "UIHandler.h"
 
-UIMessageDisplay::UIMessageDisplay(sf::Font font) : UIElement(30, 30 , 4, 4, false, false, font) {}
+UIMessageDisplay::UIMessageDisplay(sf::Font font) : UIElement(30, 30 , 4, 4, false, false, font) {
+    const auto& spriteSheet = UIHandler::getUISpriteSheet().get();
+    _leftEdge.setTexture(spriteSheet);
+    _leftTopCorner.setTexture(spriteSheet);
+    _leftBottomCorner.setTexture(spriteSheet);
+    _center.setTexture(spriteSheet);
+    _centerTop.setTexture(spriteSheet);
+    _centerBottom.setTexture(spriteSheet);
+    _rightEdge.setTexture(spriteSheet);
+    _rightTopCorner.setTexture(spriteSheet);
+    _rightBottomCorner.setTexture(spriteSheet);
+}
 
 void UIMessageDisplay::update() {
 }
@@ -39,76 +50,58 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
                 const int specialOffsetAmt = dbg ? 96 : 48;
                 const int specialOffset = special || dbg ? specialOffsetAmt : 0;
 
-                sf::RectangleShape leftEdge;
-                leftEdge.setSize({ pixelSize * 3.f, height });
-                leftEdge.setPosition(x, y);
-                leftEdge.setTexture(UIHandler::getUISpriteSheet().get());
-                leftEdge.setTextureRect({ 112 + specialOffset, 339, 3, 9 });
+                _leftEdge.setSize({ pixelSize * 3.f, height });
+                _leftEdge.setPosition(x, y);
+                _leftEdge.setTextureRect({ 112 + specialOffset, 339, 3, 9 });
 
-                sf::RectangleShape leftTopCorner;
-                leftTopCorner.setSize({ pixelSize * 2.f, pixelSize * 2.f });
-                leftTopCorner.setPosition(x + pixelSize * 1.f, y - pixelSize * 2.f);
-                leftTopCorner.setTexture(UIHandler::getUISpriteSheet().get());
-                leftTopCorner.setTextureRect({ 113 + specialOffset, 321, 2, 2 });
+                _leftTopCorner.setSize({ pixelSize * 2.f, pixelSize * 2.f });
+                _leftTopCorner.setPosition(x + pixelSize * 1.f, y - pixelSize * 2.f);
+                _leftTopCorner.setTextureRect({ 113 + specialOffset, 321, 2, 2 });
 
-                sf::RectangleShape leftBottomCorner;
-                leftBottomCorner.setSize({ pixelSize * 3.f, pixelSize * 3.f });
-                leftBottomCorner.setPosition(x, y + leftEdge.getGlobalBounds().height);
-                leftBottomCorner.setTexture(UIHandler::getUISpriteSheet().get());
-                leftBottomCorner.setTextureRect({ 112 + specialOffset, 332, 3, 3 });
+                _leftBottomCorner.setSize({ pixelSize * 3.f, pixelSize * 3.f });
+                _leftBottomCorner.setPosition(x, y + _leftEdge.getGlobalBounds().height);
+                _leftBottomCorner.setTextureRect({ 112 + specialOffset, 332, 3, 3 });
 
-                sf::RectangleShape center;
-                center.setSize({ width - leftEdge.getGlobalBounds().width, height });
-                center.setPosition(x + leftEdge.getGlobalBounds().width, y);
-                center.setTexture(UIHandler::getUISpriteSheet().get());
-                center.setTextureRect({ 96 + specialOffset, 339, 1, 9 });
+                _center.setSize({ width - _leftEdge.getGlobalBounds().width, height });
+                _center.setPosition(x + _leftEdge.getGlobalBounds().width, y);
+                _center.setTextureRect({ 96 + specialOffset, 339, 1, 9 });
 
-                sf::RectangleShape centerTop;
-                centerTop.setSize({ width - leftTopCorner.getGlobalBounds().width, pixelSize * 2.f });
-                centerTop.setPosition(leftTopCorner.getGlobalBounds().width + leftTopCorner.getPosition().x, y - pixelSize * 2.f);
-                centerTop.setTexture(UIHandler::getUISpriteSheet().get());
-                centerTop.setTextureRect({ 96 + specialOffset, 321, 1, 2 });
+                _centerTop.setSize({ width - _leftTopCorner.getGlobalBounds().width, pixelSize * 2.f });
+                _centerTop.setPosition(_leftTopCorner.getGlobalBounds().width + _leftTopCorner.getPosition().x, y - pixelSize * 2.f);
+                _centerTop.setTextureRect({ 96 + specialOffset, 321, 1, 2 });
 
-                sf::RectangleShape centerBottom;
-                centerBottom.setSize({ width - leftEdge.getGlobalBounds().width, pixelSize * 3.f });
-                centerBottom.setPosition(x + leftEdge.getGlobalBounds().width, y + center.getGlobalBounds().height);
-                centerBottom.setTexture(UIHandler::getUISpriteSheet().get());
-                centerBottom.setTextureRect({ 96 + specialOffset, 332, 1, 3 });
+                _centerBottom.setSize({ width - _leftEdge.getGlobalBounds().width, pixelSize * 3.f });
+                _centerBottom.setPosition(x + _leftEdge.getGlobalBounds().width, y + _center.getGlobalBounds().height);
+                _centerBottom.setTextureRect({ 96 + specialOffset, 332, 1, 3 });
 
-                sf::RectangleShape rightEdge;
-                rightEdge.setSize({ pixelSize * 3.f, height });
-                rightEdge.setPosition(x + leftEdge.getGlobalBounds().width + center.getGlobalBounds().width, y);
-                rightEdge.setTexture(UIHandler::getUISpriteSheet().get());
-                rightEdge.setTextureRect({ 128 + specialOffset, 339, 3, 9 });
+                _rightEdge.setSize({ pixelSize * 3.f, height });
+                _rightEdge.setPosition(x + _leftEdge.getGlobalBounds().width + _center.getGlobalBounds().width, y);
+                _rightEdge.setTextureRect({ 128 + specialOffset, 339, 3, 9 });
 
-                sf::RectangleShape rightTopCorner;
-                rightTopCorner.setSize({ pixelSize * 2.f, pixelSize * 2.f });
-                rightTopCorner.setPosition(x + leftEdge.getGlobalBounds().width + center.getGlobalBounds().width, y - pixelSize * 2.f);
-                rightTopCorner.setTexture(UIHandler::getUISpriteSheet().get());
-                rightTopCorner.setTextureRect({ 128 + specialOffset, 321, 2, 2 });
+                _rightTopCorner.setSize({ pixelSize * 2.f, pixelSize * 2.f });
+                _rightTopCorner.setPosition(x + _leftEdge.getGlobalBounds().width + _center.getGlobalBounds().width, y - pixelSize * 2.f);
+                _rightTopCorner.setTextureRect({ 128 + specialOffset, 321, 2, 2 });
 
-                sf::RectangleShape rightBottomCorner;
-                rightBottomCorner.setSize({ pixelSize * 3.f, pixelSize * 3.f });
-                rightBottomCorner.setPosition(x + leftEdge.getGlobalBounds().width + center.getGlobalBounds().width, y + rightEdge.getGlobalBounds().height);
-                rightBottomCorner.setTexture(UIHandler::getUISpriteSheet().get());
-                rightBottomCorner.setTextureRect({ 128 + specialOffset, 332, 3, 3 });
+                _rightBottomCorner.setSize({ pixelSize * 3.f, pixelSize * 3.f });
+                _rightBottomCorner.setPosition(x + _leftEdge.getGlobalBounds().width + _center.getGlobalBounds().width, y + _rightEdge.getGlobalBounds().height);
+                _rightBottomCorner.setTextureRect({ 128 + specialOffset, 332, 3, 3 });
 
-                const float offset = 1.f; //(center.getPosition().x - (leftEdge.getPosition().x + leftEdge.getGlobalBounds().width)) * 100.f;
-                leftEdge.move(offset, 0);
-                leftTopCorner.move(offset, 0);
-                leftBottomCorner.move(offset, 0);
+                const float gapCorrectionOffset = 1.f; //(center.getPosition().x - (leftEdge.getPosition().x + leftEdge.getGlobalBounds().width)) * 100.f;
+                _leftEdge.move(gapCorrectionOffset, 0);
+                _leftTopCorner.move(gapCorrectionOffset, 0);
+                _leftBottomCorner.move(gapCorrectionOffset, 0);
 
-                lastHeight = y + centerTop.getGlobalBounds().height + center.getGlobalBounds().height + centerBottom.getGlobalBounds().height;
+                lastHeight = y + _centerTop.getGlobalBounds().height + _center.getGlobalBounds().height + _centerBottom.getGlobalBounds().height;
 
-                surface.draw(leftEdge);
-                surface.draw(leftTopCorner);
-                surface.draw(leftBottomCorner);
-                surface.draw(center);
-                surface.draw(centerTop);
-                surface.draw(centerBottom);
-                surface.draw(rightEdge);
-                surface.draw(rightTopCorner);
-                surface.draw(rightBottomCorner);
+                surface.draw(_leftEdge);
+                surface.draw(_leftTopCorner);
+                surface.draw(_leftBottomCorner);
+                surface.draw(_center);
+                surface.draw(_centerTop);
+                surface.draw(_centerBottom);
+                surface.draw(_rightEdge);
+                surface.draw(_rightTopCorner);
+                surface.draw(_rightBottomCorner);
 
                 surface.draw(messageText);
             }
