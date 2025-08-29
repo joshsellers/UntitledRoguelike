@@ -92,6 +92,7 @@ private:
     bool _spawnedInitialLasers = false;
     long long _laserStartTime = 0LL;
     float _laserAngle = 0.f;
+    float _laserRotationDirectionMultiplier = 1.f;
 };
 
 #endif

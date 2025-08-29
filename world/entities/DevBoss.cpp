@@ -278,6 +278,8 @@ void DevBoss::onStateChange(const BossState previousState, const BossState newSt
         _laserStartTime = currentTimeMillis();
         _laserAngle = 0.f;
         _spawnedInitialLasers = false;
+
+        if (HARD_MODE_ENABLED) _laserRotationDirectionMultiplier = randomChance(0.5f) ? 1.f : -1.f;
     }
 
     if (previousState.stateId == RUN_COMMAND) _ranCommand = false;
@@ -393,7 +395,7 @@ void DevBoss::runCurrentState() {
                     getWorld()->addEntity(laser);
                 }
 
-                _laserAngle += 2.f;
+                _laserAngle += 2.f * _laserRotationDirectionMultiplier;
             }
             break;
         }
