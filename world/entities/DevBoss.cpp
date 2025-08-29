@@ -334,7 +334,7 @@ void DevBoss::runCurrentState() {
                 };
 
                 const float angle = std::atan2(playerPos.y - firePos.y, playerPos.x - firePos.x);
-                const ProjectileData& projData = ProjectileDataManager::getData("_PROJECTILE_BOMB");
+                const ProjectileData& projData = ProjectileDataManager::getData("_PROJECTILE_DEVBOSS_BOMB");
                 Projectile* proj = ProjectilePoolManager::addProjectile(firePos, this, angle, projData.baseVelocity, projData, true, 0, false);
                 proj->explosionsOnlyDamagePlayer = true;
                 SoundManager::playSound("basicprojlaunch");
