@@ -134,6 +134,13 @@ void DevBoss::subUpdate() {
             FinalBossEffectManager::activateEffect(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN, 10LL * 60000LL);
 
             SoundManager::playSound("transition");
+
+            for (const auto& entity : getWorld()->getEntities()) {
+                if (entity->isActive() && (entity->isMob() || entity->isEnemy() || entity->getSaveId() == DROPPED_ITEM) 
+                    && entity->getUID() != getUID() && entity->getUID() != getWorld()->getPlayer()->getUID()) {
+                    entity->deactivate();
+                }
+            }
         } else if (_phaseTransitionStarted && currentTimeMillis() - _phaseTransitionStartTime < phaseTransitionLengthMillis) {
             constexpr float scaleDelta = 1.f / (((float)phaseTransitionLengthMillis / 1000.f) * 60.f);
             _headSprite.setScale(_headSprite.getScale().x + scaleDelta, _headSprite.getScale().y + scaleDelta);
