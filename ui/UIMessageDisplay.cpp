@@ -41,14 +41,14 @@ void UIMessageDisplay::draw(sf::RenderTexture& surface) {
                 messageText.setPosition(sf::Vector2f(x, y - getRelativeHeight(0.5f)));
 
                 const float padding = getRelativeWidth(1.5f);
-
-                const float pixelSize = getRelativeWidth(0.5f);
                 x -= padding;
                 width += padding * 2;
 
                 const bool dbg = message->messageType == DEBUG || message->messageType == WARN || message->messageType == ERR;
                 const int specialOffsetAmt = dbg ? 96 : 48;
                 const int specialOffset = special || dbg ? specialOffsetAmt : 0;
+
+                const float pixelSize = getRelativeWidth(0.3f);
 
                 _leftEdge.setSize({ pixelSize * 3.f, height });
                 _leftEdge.setPosition(x, y);
