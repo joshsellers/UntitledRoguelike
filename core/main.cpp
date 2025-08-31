@@ -163,9 +163,9 @@ int main() {
     Logger::start();
     Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();
+    SoundManager::loadSounds();
     ModManager::loadAll();
     InputBindingManager::init();
-    SoundManager::loadSounds();
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
     MusicManager::start();

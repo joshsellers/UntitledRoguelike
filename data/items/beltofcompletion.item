@@ -1,0 +1,9 @@
+#!SIG3872262047
+name = "Belt of Completion"
+description = "Recognition of your efforts.\n\nAdds 2 max HP every time you clear a wave.\nAlso protects your torso a bit."
+isBuyable = true
+value = 350
+conditionalUnlock = true
+damage = 2
+equipmentType = ARMOR_BODY
+rarityTier = 3

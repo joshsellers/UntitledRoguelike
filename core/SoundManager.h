@@ -11,7 +11,7 @@ class SoundManager {
 public:
     static void playSound(std::string soundName) {
         if (sounds.find(soundName) == sounds.end()) {
-            MessageManager::displayMessage("No sound named \"" + soundName + "\"", _failedInit ? 0 : 5, ERR);
+            MessageManager::displayMessage("No sound named \"" + soundName + "\"", _failedInit ? 0 : 5, ERR, "NONE");
             return;
         }
         soloud.play(sounds[soundName]);

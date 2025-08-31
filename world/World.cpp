@@ -689,13 +689,25 @@ void World::onWaveCleared() {
         }
 
         checkAltarSpawn();
+
+        if (getPlayer()->getInventory().getEquippedItemId(EQUIPMENT_TYPE::CLOTHING_HEAD) == Item::getIdFromName("Crown of Completion")) {
+            getPlayer()->heal(5);
+        }
+
+        if (getPlayer()->getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_BODY) == Item::getIdFromName("Belt of Completion")) {
+            getPlayer()->setMaxHitPoints(getPlayer()->getMaxHitPoints() + 2);
+        }
     }
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
     if (_currentWaveNumber == 64) {
         AchievementManager::unlock(UNSTOPPABLE);
-        if (HARD_MODE_ENABLED) AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
+        ConditionalUnlockManager::increaseUnlockProgress("Crown of Completion", 1);
+        if (HARD_MODE_ENABLED) {
+            AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
+            ConditionalUnlockManager::increaseUnlockProgress("Belt of Completion", 1);
+        }
     } else if (_currentWaveNumber == 42) {
         MID_GAME_PERF_BOOST = true;
     }
@@ -716,7 +728,7 @@ void World::onWaveCleared() {
     }
 
     if ((_currentWaveNumber + 1) % 5 == 0 && _currentWaveNumber != 59 || _currentWaveNumber == 64) {
-        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10, NORMAL, "message", 2);
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10, NORMAL, "message", 3);
     }
 
     if (_currentWaveNumber == SHOPS_CLOSED_WAVE) MessageManager::displayMessage("The shops have closed their doors", 8);
