@@ -693,7 +693,7 @@ void World::onWaveCleared() {
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
-    if (_currentWaveNumber == 100) {
+    if (_currentWaveNumber == 64) {
         AchievementManager::unlock(UNSTOPPABLE);
         if (HARD_MODE_ENABLED) AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
     } else if (_currentWaveNumber == 42) {
