@@ -164,7 +164,8 @@ void Game::initUI() {
     ));
     _controlsDisplayMenu->addElement(controlsDisplay);*/
     
-    std::shared_ptr<UIControlsDisplay> mainControlsDisplay = std::shared_ptr<UIControlsDisplay>(new UIControlsDisplay(sf::Vector2f(2, 68), _font));
+    const sf::Vector2f controlsDispPos(2, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT == 16.f / 9.f ? 65.f : 68.f);
+    std::shared_ptr<UIControlsDisplay> mainControlsDisplay = std::shared_ptr<UIControlsDisplay>(new UIControlsDisplay(controlsDispPos, _font));
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::LEFT_STICK, "move");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_STICK, "aim");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_TRIGGER, "shoot");
