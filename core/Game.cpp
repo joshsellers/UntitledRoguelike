@@ -2670,7 +2670,7 @@ void Game::migrateLegacyProgressData() const {
 
         MessageManager::displayMessage(
             std::string("It looks like your game has been updated\nfrom an early access version."
-                "\n\nYour saved unlocks, stats, and achievements have\nbeen transferred to save slot 1, but your old\nsave files will no longer work.")
+                "\n\nYour saved unlocks, stats, and achievements have\nbeen transferred to save slot 1.")
             , 15
         );
     }
