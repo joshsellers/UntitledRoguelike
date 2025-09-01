@@ -732,6 +732,10 @@ void World::onWaveCleared() {
     }
 
     if (_currentWaveNumber == SHOPS_CLOSED_WAVE) MessageManager::displayMessage("The shops have closed their doors", 8);
+    else if (SHOPS_CLOSED_WAVE - _currentWaveNumber < 6 && _currentWaveNumber < 55) {
+        const int wavesToClose = SHOPS_CLOSED_WAVE - _currentWaveNumber;
+        MessageManager::displayMessage("The shops will close their doors in " + std::to_string(wavesToClose) + " wave" + (wavesToClose > 1 ? "s" : ""), 8, NORMAL, "message", 4);
+    }
 
     spawnBoss(_currentWaveNumber);
 }
