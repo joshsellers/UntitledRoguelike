@@ -1358,12 +1358,10 @@ void Game::update() {
 
 void Game::displayEnemyWaveCountdownUpdates() {
     if (_world.onEnemySpawnCooldown() && currentTimeMillis() - _lastCooldownUpdateTime > 1000 && !_world.playerIsInShop() && !_isPaused && !_world.bossIsActive()) {
-        int secondsUntilNextWave = _world.getTimeUntilNextEnemyWave() / 1000;
+        const int secondsUntilNextWave = _world.getTimeUntilNextEnemyWave() / 1000;
 
         std::string timeRemainingString = "NONE";
-        if (secondsUntilNextWave == 60) timeRemainingString = "1 minute";
-        else if (secondsUntilNextWave == 45) timeRemainingString = "45 seconds";
-        else if (secondsUntilNextWave == 30) timeRemainingString = "30 seconds";
+        if (secondsUntilNextWave == 30) timeRemainingString = "30 seconds";
         else if (secondsUntilNextWave == 10) timeRemainingString = "10 seconds";
 
         if (timeRemainingString != "NONE") {
