@@ -3,10 +3,10 @@
 #include "../../core/ShaderManager.h"
 
 LaserBeam::LaserBeam(const Entity* parent, const float angle, const sf::Uint32 color, const unsigned int width, const unsigned int length, 
-    const unsigned int damage, const sf::Vector2f posOffset, const bool onlyDamagePlayer, const long long lifeTime) :
+    const unsigned int damage, const sf::Vector2f posOffset, const bool onlyDamagePlayer, const long long lifeTime, const bool useBarrelPos) :
     Entity(NO_SAVE, parent->getPosition() + posOffset, 0, width, width, false), _angle(angle), _color(color), 
     _width(width), _length(length), _damage(damage), _onlyDamagePlayer(onlyDamagePlayer), _posOffset(posOffset), _parent(parent), 
-    _lifeTime(lifeTime), _spawnTime(currentTimeMillis()) {
+    _lifeTime(lifeTime), _spawnTime(currentTimeMillis()), _useBarrelPos(useBarrelPos) {
 
     _ignoreViewport = true;
 
@@ -21,15 +21,15 @@ LaserBeam::LaserBeam(const Entity* parent, const float angle, const sf::Uint32 c
 
 LaserBeam::LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const sf::Uint32 color, 
     const unsigned int width, const unsigned int length, const unsigned int damage, 
-    sf::Vector2f posOffset, const bool onlyDamagePlayer, const long long lifeTime) :
+    sf::Vector2f posOffset, const bool onlyDamagePlayer, const long long lifeTime, const bool useBarrelPos) :
     Entity(NO_SAVE, parent->getPosition() + posOffset, 0, width, width, false), _color(color),
     _width(width), _length(length), _damage(damage), _onlyDamagePlayer(onlyDamagePlayer), _posOffset(posOffset), _parent(parent),
-    _lifeTime(lifeTime), _spawnTime(currentTimeMillis()) {
+    _lifeTime(lifeTime), _spawnTime(currentTimeMillis()), _useBarrelPos(useBarrelPos) {
 
     _ignoreViewport = true;
 
     _targetPos = targetPos;
-    _pos = _parent->getPosition() + _posOffset;
+    _pos = (_useBarrelPos ? _parent->getCalculatedBarrelPos() : _parent->getPosition()) + _posOffset;
     const float dX = _pos.x - _targetPos.x;
     const float dY = _pos.y - _targetPos.y;
     _angle = radsToDeg(std::atan2(dY, dX)) + 180.f;
@@ -47,7 +47,7 @@ void LaserBeam::update() {
         return;
     }
 
-    _pos = _parent->getPosition() + _posOffset;
+    _pos = (_useBarrelPos ? _parent->getCalculatedBarrelPos() : _parent->getPosition()) + _posOffset;
     const float dX = _pos.x - _targetPos.x;
     const float dY = _pos.y - _targetPos.y;
     _targetPos = { getPosition().x + _length * std::cos(degToRads(_angle)), getPosition().y + _length * std::sin(degToRads(_angle)) };
@@ -56,6 +56,10 @@ void LaserBeam::update() {
 
     if (_onlyDamagePlayer) {
         if (collidesWith(getWorld()->getPlayer()->getHitBox())) getWorld()->getPlayer()->takeDamage(_damage);
+    } else {
+        for (const auto& enemy : getWorld()->getEnemies()) {
+            if (enemy->isActive() && collidesWith(enemy->getHitBox())) enemy->takeDamage(_damage);
+        }
     }
 
     if (_isAnimated) _animCounter++;
@@ -78,8 +82,9 @@ void LaserBeam::draw(sf::RenderTexture& surface) {
 }
 
 bool LaserBeam::collidesWith(sf::FloatRect& hitBox) const {
-    const int lineCount = _width / 3 + (((_width / 3) & 1) - 1);
-    const float distance = _width / ((float)lineCount - 1);
+    const bool tooSmall = _width < 16;
+    const int lineCount = tooSmall ? 3 : _width / 3 + (((_width / 3) & 1) - 1);
+    const float distance = tooSmall ? _width : _width / ((float)lineCount - 1);
 
     const float startDistance = distance * (int)(lineCount / 2);
     const sf::Vector2f startingLine[2] = { 

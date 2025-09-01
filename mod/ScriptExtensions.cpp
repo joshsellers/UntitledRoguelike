@@ -6,6 +6,7 @@
 #include "../world/entities/orbiters/Orbiter.h"
 #include "../world/entities/Scythe.h"
 #include "../core/Tutorial.h"
+#include "../world/entities/LaserBeam.h"
 
 bool ScriptExtensions::execute(const std::string functionName, Entity* entity, Interpreter* interpreter) {
     if (_functions.find(functionName) != _functions.end()) {
@@ -91,6 +92,24 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
                 Tutorial::completeStep((TUTORIAL_STEP)step);
             }
             return true;
+        }
+    },
+
+    {
+        "fireMatmuraLaser",
+        [](Entity* parent, Interpreter* interpreter) {
+            const int damage = Item::ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * parent->getDamageMultiplier();
+            const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(parent, parent->getTargetPos(), 0xFFFFFFFF, 4, 325, damage, {0, 0}, false, 16LL, true));
+            laser->setWorld(parent->getWorld());
+            laser->setTextureRect(
+                sf::IntRect(
+                    2128, 2017, 2 * TILE_SIZE, 2 * TILE_SIZE
+                ), 2, 1, true
+            );
+            parent->getWorld()->addEntity(laser);
+
+            parent->decrementMagazine();
+            return false;
         }
     }
 };

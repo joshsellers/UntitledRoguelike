@@ -1,0 +1,5 @@
+weaponIsLoaded = player.weaponIsLoaded();
+if: weaponIsLoaded {
+    runFunction("BUILTIN_fireMatmuraLaser");
+    #playSound("laser_pistol");
+}

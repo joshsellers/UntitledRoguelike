@@ -1,0 +1,18 @@
+#!SIG819042707
+name = "Matmura Cannon"
+description = "..."
+isBuyable = false
+value = 0
+equipmentType = TOOL
+isGun = true
+isAutomatic = true
+fireRate = 16
+reloadTime = 4000
+magazineSize = 500
+barrelPos = 26, -1
+damage = 2
+textureRect = 159, 0, 1, 1
+functionName = "firematmuracannon"
+isAnimated = true
+ticksPerFrame = 10
+frameCount = 3

@@ -92,14 +92,15 @@ void Altar::onActivation() {
         STAMINA,
         MUSHROOM,
         BAD_VIBES,
-        LIGHTNING
+        LIGHTNING,
+        CANNON
     };
 
     const auto& player = _world->getPlayer();
 
     const bool armorUnlocked = LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS);
 
-    REWARD reward = (REWARD)randomInt(armorUnlocked ? 0 : 1, 6);
+    REWARD reward = (REWARD)randomInt(armorUnlocked ? 0 : 1, randomChance(0.25) ? 7 : 6);
     switch (reward) {
         case ARMOR:
         {
@@ -160,6 +161,12 @@ void Altar::onActivation() {
             player->getInventory().addItem(Item::getIdFromName("Thor's phone"), lightningAmount);
 
             MessageManager::displayMessage("You have been gifted implements used by the gods", 5, NORMAL, "NONE");
+            break;
+        }
+        case CANNON:
+        {
+            player->getInventory().addItem(Item::getIdFromName("Matmura Cannon"), 1);
+            MessageManager::displayMessage("A powerful weapon has been bestowed upon you", 5, NORMAL, "NONE");
             break;
         }
     }

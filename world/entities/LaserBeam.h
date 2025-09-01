@@ -6,10 +6,10 @@
 class LaserBeam : public Entity {
 public:
     LaserBeam(const Entity* parent, const float angle, const sf::Uint32 color, const unsigned int width, const unsigned int length, const unsigned int damage, 
-        sf::Vector2f posOffset = {0, 0}, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL);
+        sf::Vector2f posOffset = {0, 0}, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL, const bool useBarrelPos = false);
 
     LaserBeam(const Entity* parent, const sf::Vector2f targetPos, const sf::Uint32 color, const unsigned int width, const unsigned int length, const unsigned int damage,
-        sf::Vector2f posOffset = { 0, 0 }, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL);
+        sf::Vector2f posOffset = { 0, 0 }, const bool onlyDamagePlayer = false, const long long lifeTime = 1250LL, const bool useBarrelPos = false);
 
     void update();
     void draw(sf::RenderTexture& surface);
@@ -27,6 +27,7 @@ private:
     const unsigned int _damage;
     const long long _lifeTime;
     const long long _spawnTime;
+    const bool _useBarrelPos;
     
     const bool _onlyDamagePlayer;
 
