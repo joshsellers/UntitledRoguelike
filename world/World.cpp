@@ -584,20 +584,20 @@ void World::removeInactiveEntitiesFromSubgroups() {
 
 void World::eraseChunks(int pX, int pY) {
     for (int i = 0; i < _chunks.size(); i++) {
-        Chunk& chunk = _chunks.at(i);
+        const Chunk& chunk = _chunks.at(i);
 
         if (chunkContains(chunk, sf::Vector2f(pX, pY))) continue;
 
-        int chX = chunk.pos.x;
-        int chY = chunk.pos.y;
+        const int chX = chunk.pos.x;
+        const int chY = chunk.pos.y;
 
-        bool left = std::abs(pX - chX) < CHUNK_LOAD_THRESHOLD;
-        bool top = std::abs(pY - chY) < CHUNK_LOAD_THRESHOLD;
-        bool right = std::abs(pX - (chX + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
-        bool bottom = std::abs(pY - (chY + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
+        const bool left = std::abs(pX - chX) < CHUNK_LOAD_THRESHOLD;
+        const bool top = std::abs(pY - chY) < CHUNK_LOAD_THRESHOLD;
+        const bool right = std::abs(pX - (chX + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
+        const bool bottom = std::abs(pY - (chY + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
 
-        bool inVerticleBounds = pX > chX && pX < chX + CHUNK_SIZE;
-        bool inHorizontalBounds = pY > chY && pY < chY + CHUNK_SIZE;
+        const bool inVerticleBounds = pX > chX && pX < chX + CHUNK_SIZE;
+        const bool inHorizontalBounds = pY > chY && pY < chY + CHUNK_SIZE;
 
         if ((!left && !right && !top && !bottom)
             || ((top || bottom) && (!inVerticleBounds && !left && !right))
