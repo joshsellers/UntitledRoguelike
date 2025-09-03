@@ -100,7 +100,9 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
         [](Entity* parent, Interpreter* interpreter) {
             const int damage = Item::ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * parent->getDamageMultiplier();
             const int width = AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) ? 16 : 4;
-            const auto& laser = std::shared_ptr<LaserBeam>(new LaserBeam(parent, parent->getTargetPos(), 0xFFFFFFFF, width, 325, damage, {0, 0}, false, 16LL, true));
+            const auto& laser = std::shared_ptr<LaserBeam>(
+                new LaserBeam(parent, parent->getTargetPos() + parent->getVelocity(), 0xFFFFFFFF, width, 325, damage, {parent->getVelocity().x, parent->getVelocity().y}, false, 16LL, true)
+                );
             laser->setWorld(parent->getWorld());
             laser->setTextureRect(
                 sf::IntRect(

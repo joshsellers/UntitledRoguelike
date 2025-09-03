@@ -1,4 +1,4 @@
-#!SIG819042707
+#!SIG1427757974
 name = "Matmura Cannon"
 description = "..."
 isBuyable = false
@@ -14,5 +14,5 @@ damage = 2
 textureRect = 159, 0, 1, 1
 functionName = "firematmuracannon"
 isAnimated = true
-ticksPerFrame = 10
+ticksPerFrame = 5
 frameCount = 3

@@ -926,7 +926,7 @@ void Player::fireAutomaticWeapon() {
         _lastAutoFireTimeMillis = currentTimeMillis();
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         Item::ITEMS[id]->use(this);
-
+        _isFiringAutomaticWeapon = true;
     } else if (!_gamePaused && !_inventoryMenuIsOpen &&
         (sf::Mouse::isButtonPressed(sf::Mouse::Left) || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)))
         && !_isReloading &&
