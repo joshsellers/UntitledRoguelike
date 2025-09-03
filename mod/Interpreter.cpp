@@ -18,7 +18,7 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
         if (inst == INSTRUCTION::LIT) {
             int value = 0;
             for (int j = 3; j >= 0; j--) {
-                int byte = bytecode.at((i + 1) + j);
+                const unsigned char byte = bytecode.at((i + 1) + j);
                 value += byte << (j * 8);
             }
             push((float)value);
