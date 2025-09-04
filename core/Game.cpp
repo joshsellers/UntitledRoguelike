@@ -2400,10 +2400,13 @@ void Game::atmWithdraw() const {
 
 void Game::changeMagMeterColor() {
     if (_gameStarted && !_isPaused) {
-        if (_player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Blood Gun")) {
+        const int equippedId = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
+        if (equippedId == Item::getIdFromName("Blood Gun")) {
             _magazineMeter->setColor(0xD21919FF);
-        } else if (_player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) == Item::getIdFromName("Penny Cannon")) {
+        } else if (equippedId == Item::getIdFromName("Penny Cannon")) {
             _magazineMeter->setColor(0xFFD700FF);
+        } else if (equippedId == Item::getIdFromName("Matmura Cannon")) {
+            _magazineMeter->setColor(0xCF00EAFF);
         } else {
             _magazineMeter->setColor(0x787878FF);
         }
