@@ -1,5 +1,5 @@
 weaponIsLoaded = player.weaponIsLoaded();
 if: weaponIsLoaded {
     player.fireAnimatedLaser(4, 325, 133, 126, 2, 2, 2, 1, true);
-    #playSound("laser_pistol");
+    playSound("laserbeam");
 }
