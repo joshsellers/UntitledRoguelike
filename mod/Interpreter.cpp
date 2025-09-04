@@ -9,6 +9,8 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "ScriptExtensions.h"
+#include "../world/entities/LaserBeam.h"
+#include "../world/World.h"
 
 int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
     int i = 0;
@@ -596,6 +598,59 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
         } else if (inst == INSTRUCTION::TAN) {
             const float angle = degToRads(pop());
             push(std::tan(angle));
+            i++;
+        } else if (inst == INSTRUCTION::PLLASER) {
+            if (entity != nullptr) {
+                const unsigned int color = pop();
+                const int length = pop();
+                const int widthParameter = pop();
+
+                const int damage = Item::ITEMS[entity->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * entity->getDamageMultiplier();
+                const int width = AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) ? widthParameter * 4 : widthParameter;
+                const auto& laser = std::shared_ptr<LaserBeam>(
+                    new LaserBeam(
+                        entity, entity->getTargetPos() + entity->getVelocity(), color, width, length, damage,
+                        { entity->getVelocity().x, entity->getVelocity().y }, false, 16LL, true
+                    ));
+                laser->setWorld(entity->getWorld());
+                entity->getWorld()->addEntity(laser);
+
+                entity->decrementMagazine();
+            } else {
+                MessageManager::displayMessage("player.fireLaser was called without a reference to the player", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLLANIMLASER) {
+            if (entity != nullptr) {
+                const bool useShader = pop();
+                const int ticksPerFrame = pop();
+                const int frameCount = pop();
+                const int frameHeight = pop();
+                const int frameWidth = pop();
+                const int yTile = pop();
+                const int xTile = pop();
+                const int length = pop();
+                const int widthParameter = pop();
+
+                const int damage = Item::ITEMS[entity->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * entity->getDamageMultiplier();
+                const int width = AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) ? widthParameter * 4 : widthParameter;
+                const auto& laser = std::shared_ptr<LaserBeam>(
+                    new LaserBeam(
+                        entity, entity->getTargetPos() + entity->getVelocity(), 0xFFFFFFFF, width, length, damage,
+                        { entity->getVelocity().x, entity->getVelocity().y }, false, 16LL, true
+                    ));
+                laser->setWorld(entity->getWorld());
+                laser->setTextureRect(
+                    sf::IntRect(
+                        xTile << SPRITE_SHEET_SHIFT, yTile << SPRITE_SHEET_SHIFT, frameWidth * TILE_SIZE, frameHeight * TILE_SIZE
+                    ), frameCount, ticksPerFrame, useShader
+                );
+                entity->getWorld()->addEntity(laser);
+
+                entity->decrementMagazine();
+            } else {
+                MessageManager::displayMessage("player.fireAnimatedLaser was called without a reference to the player", 5, ERR);
+            }
             i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);

@@ -84,7 +84,10 @@ enum class INSTRUCTION {
     SQRT = 0x48,
     SIN = 0x49,
     COS = 0x4A,
-    TAN = 0x4B
+    TAN = 0x4B,
+
+    PLLASER = 0x4C,
+    PLLANIMLASER = 0x4D
 };
 
 #endif

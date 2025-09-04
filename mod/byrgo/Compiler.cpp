@@ -72,7 +72,9 @@ std::string Compiler::compile(std::string assembly) {
         {"sqrt",                            INSTRUCTION::SQRT},
         {"sin",                             INSTRUCTION::SIN},
         {"cos",                             INSTRUCTION::COS},
-        {"tan",                             INSTRUCTION::TAN}
+        {"tan",                             INSTRUCTION::TAN},
+        {"player.fireLaser",                INSTRUCTION::PLLASER},
+        {"player.fireAnimatedLaser",        INSTRUCTION::PLLANIMLASER}
     };
 
     std::vector<int> bytecode;
@@ -108,6 +110,9 @@ std::string Compiler::compile(std::string assembly) {
             } else if (isNumber(value)) {
                 bytecode.push_back((int)INSTRUCTION::LIT);
                 bytecode.push_back(std::stoi(value));
+            } else if (stringStartsWith(value, "0x")) {
+                bytecode.push_back((int)INSTRUCTION::LIT);
+                bytecode.push_back(std::stoul(value, nullptr, 16));
             } else if (value != "NULL") {
                 bytecode.push_back((int)INSTRUCTION::LIT);
                 int varIndex = 0;
