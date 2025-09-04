@@ -9,7 +9,7 @@ OctopusBoss::OctopusBoss(sf::Vector2f pos) : Boss(OCTOPUS_BOSS, pos, 1.0, 12 * T
         BossState(BEHAVIOR_STATE::INK_BUBBLE, 4000, 6000),
         BossState(BEHAVIOR_STATE::INK_RAY, 4000, 5000)
     }) {
-    setMaxHitPoints(57000);
+    setMaxHitPoints(62000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 8) / 2;

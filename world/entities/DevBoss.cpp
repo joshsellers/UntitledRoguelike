@@ -32,7 +32,7 @@ DevBoss::DevBoss(sf::Vector2f pos) : Boss(DEV_BOSS, pos, 1.f, 2 * TILE_SIZE, 3 *
         BossState(BEHAVIOR_STATE::RUN_COMMAND, 5000LL, 5000LL),
         BossState(BEHAVIOR_STATE::FIRE_PROJECILE, 5000LL, 5000LL)
     }) {
-    setMaxHitPoints(179000);
+    setMaxHitPoints(180000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 2) / 2 + 5;

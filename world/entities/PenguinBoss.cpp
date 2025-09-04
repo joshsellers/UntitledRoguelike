@@ -11,7 +11,7 @@ PenguinBoss::PenguinBoss(sf::Vector2f pos) : Boss(PENGUIN_BOSS, pos, 1.f, TILE_S
         BossState(HOMING_SNOWBALLS, 1500LL, 3000LL),
         BossState(SPAWN_PENGUINS, 2500LL, 4500LL)
     }) {
-    setMaxHitPoints(117000);
+    setMaxHitPoints(120000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -(TILE_SIZE * 9) / 2 + (float)TILE_SIZE * 2.f;

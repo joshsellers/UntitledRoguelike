@@ -13,7 +13,7 @@ FrogBoss::FrogBoss(sf::Vector2f pos) : Boss(FROG_BOSS, pos, 1.f, TILE_SIZE * 7, 
         BossState(SHOOT_FROGS, 2000LL, 3000LL)
     }
 ) {
-    setMaxHitPoints(80000);
+    setMaxHitPoints(86000);
     heal(getMaxHitPoints());
 
     _hitBoxXOffset = -((float)TILE_SIZE * 7.f) / 2.f + TILE_SIZE;
