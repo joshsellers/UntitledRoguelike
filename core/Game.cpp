@@ -168,7 +168,7 @@ void Game::initUI() {
     std::shared_ptr<UIControlsDisplay> mainControlsDisplay = std::shared_ptr<UIControlsDisplay>(new UIControlsDisplay(controlsDispPos, _font));
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::LEFT_STICK, "move");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_STICK, "aim");
-    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_TRIGGER, "shoot");
+    mainControlsDisplay->addLabel(GAMEPAD_BUTTON::RIGHT_TRIGGER, "shoot/reload");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::LEFT_BUMPER, "roll");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::X, "reload/interact");
     mainControlsDisplay->addLabel(GAMEPAD_BUTTON::SELECT, "inventory");
