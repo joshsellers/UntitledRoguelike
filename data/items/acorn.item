@@ -1,0 +1,10 @@
+#!SIG3625973521
+name = "Acorn"
+description = "Become like him"
+isConsumable = true
+isBuyable = true
+value = 160
+rarityTier = 3
+conditionalUnlock = true
+functionName = "acorn"
+textureRect = 24, 18, 1, 1

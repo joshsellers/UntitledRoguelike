@@ -1,3 +1,4 @@
+#!SIG2591076638
 name = "_PROJECTILE_SPORE_SHOT"
 description = "This item should not be obtainable."
 damage = 15

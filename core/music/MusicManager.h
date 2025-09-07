@@ -10,12 +10,12 @@ public:
     static void start();
     static void shutdown();
 
-    static void setSituation(MUSIC_SITUTAION situation);
-    static MUSIC_SITUTAION getSituation();
+    static void setSituation(MUSIC_SITUATION situation);
+    static MUSIC_SITUATION getSituation();
 
 private:
-    static inline MUSIC_SITUTAION _lastSituation = MUSIC_SITUTAION::NONE;
-    static inline MUSIC_SITUTAION _situation = MUSIC_SITUTAION::NONE;
+    static inline MUSIC_SITUATION _lastSituation = MUSIC_SITUATION::NONE;
+    static inline MUSIC_SITUATION _situation = MUSIC_SITUATION::NONE;
 
     static void run();
     static inline bool _isHalted = false;
@@ -26,6 +26,10 @@ private:
     static inline std::vector<std::string> _bossSongs;
     static inline std::vector<std::string> _shopSongs;
     static inline std::vector<std::string> _deathSongs;
+    static inline std::vector<std::string> _finalBossSongs;
+    static inline std::vector<std::string> _creditsSongs;
+
+    static inline int _creditsSongIndex = -1;
 };
 
 #endif

@@ -1,3 +1,4 @@
+#!SIG1277257045
 itemName = "_PROJECTILE_ROCKET_LAUNCHER"
 velocity = 6
 lifeTime = 500

@@ -60,6 +60,7 @@ public:
     bool isHostile() const;
 
     sf::Sprite getSprite() const;
+    sf::Sprite& getSpriteRef();
 
     bool displayBottom() const;
     bool displayOnTop() const;
@@ -99,6 +100,8 @@ public:
     int getHitPoints() const;
     int& getHitPointsRef();
 
+    bool isTakingDamage() const;
+
     virtual int getStamina() const;
     virtual int getMaxStamina() const;
     virtual void setMaxStamina(int amount);
@@ -130,6 +133,12 @@ public:
     virtual void decrementMagazine();
     virtual void emptyMagazine();
     bool isReloading() const;
+
+    bool ignoresViewport() const;
+
+    bool spawnedInShop() const;
+
+    bool useDefaultDamageIndicator() const;
 
     ENTITY_SAVE_ID getSaveId() const;
     virtual std::string getSaveData() const;
@@ -168,7 +177,7 @@ protected:
     sf::Vector2f _wanderTargetPos;
 
     bool _isMob = false;
-    const bool _isProp = false;
+    bool _isProp = false;
     bool _isEnemy = false;
     bool _isBoss = false;
     bool _isMiniboss = false;
@@ -223,6 +232,16 @@ protected:
     bool _checkedFear = false;
     bool _isScared = false;
     int _fearTimer = 0;
+
+    // this should hardly ever be set to true
+    bool _ignoreViewport = false;
+
+    bool _overrideDamageShaderBehavior = false;
+    long long _timeDamageTaken = 0LL;
+
+    bool _spawnedInShop = false;
+
+    bool _useDefaultDamageIndicator = true;
 
 private:
     const ENTITY_SAVE_ID _saveId;

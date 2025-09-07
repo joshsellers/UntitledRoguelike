@@ -1,3 +1,4 @@
+#!SIG1292313411
 name = "Bottle of Milk"
 description = "Increases max HP by 10 and makes you feel a little better\n\nRestores 10 HP"
 isConsumable = true

@@ -4,10 +4,12 @@
 #include "../../world/entities/Lightning.h"
 #include "../../core/ShaderManager.h"
 #include "../effect/PlayerVisualEffectManager.h"
+#include "../../world/entities/FallingBomb.h"
 
 const Ability Ability::DAMAGE_AURA(0, "Bad Vibes", 
     { {"damage", 3.f}, {"radius", 64.f}, {"damagefreq", 10.f}, {"anim", 0.f}, {"expansion rate", 1.f} },
     [](Player* player, Ability* ability) {
+        int enemyCount = 0;
         if (currentTimeMillis() - ability->_lastAttackTimeMillis >= ability->getParameter("damagefreq")) {
             float maxRadius = ability->getParameter("radius");
             float radius = ((int)(ability->getParameter("anim") / 1) % ((int)maxRadius));
@@ -63,13 +65,17 @@ const Ability Ability::DAMAGE_AURA(0, "Bad Vibes",
                             break;
                         }
                     }
+
+                    if (enemy->getSaveId() != CACTOID && enemy->getSaveId() != MUSHROID) enemyCount++;
                 }
             }
 
             if (attacked) ability->_lastAttackTimeMillis = currentTimeMillis();
         }
 
-        ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansion rate"));
+        if (enemyCount > 0) {
+            ability->setParameter("anim", ability->getParameter("anim") + ability->getParameter("expansion rate"));
+        } else ability->setParameter("anim", 0.f);
     },
 
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {
@@ -301,6 +307,76 @@ const Ability Ability::BOUNCING_PROJECTILES(17, "Bouncing Projectiles",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::PERMANENT_ARMOR(18, "Permanent Armor",
+    { {"protection", 0.0f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::AIR_STRIKE(19, "Air Strike",
+    { {"rate", 1000.f}, {"chance", 0.25f} },
+    [](Player* player, Ability* ability) {
+        const float chance = ability->getParameter("chance");
+        const long long rate = (long long)ability->getParameter("rate");
+
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= rate && player->getWorld()->getEnemyCount() > 0) {
+            ability->_lastFireTimeMillis = currentTimeMillis();
+            if (!randomChance(chance)) return;
+
+            const sf::Vector2f playerPos = player->getPosition();
+            const sf::Vector2f pos(playerPos.x + randomInt(-WIDTH / 2, WIDTH / 2), playerPos.y + randomInt(-HEIGHT / 2, HEIGHT / 2));
+
+            const auto& bomb = std::shared_ptr<FallingBomb>(new FallingBomb(pos));
+            bomb->setWorld(player->getWorld());
+            bomb->loadSprite(player->getWorld()->getSpriteSheet());
+            player->getWorld()->addEntity(bomb);
+        }
+    },
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::BIG_BULLETS(20, "Big Bullets", 
+    {},
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::CONTACT_DAMAGE(21, "Contact Damage", 
+    { {"damage", 5.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::TARGET_SEEKING_BULLETS(22, "Target Seeking Bullets", 
+    {},
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
+const Ability Ability::TREE_MAN(23, "Tree Man",
+    { {"fireChance", 0.10f} },
+    [](Player* player, Ability* ability) {
+        constexpr long long fireRate = 750LL;
+        if (currentTimeMillis() - ability->_lastFireTimeMillis >= fireRate && player->getWorld()->getEnemyCount() > 0) {
+            const float chance = ability->getParameter("fireChance");
+            if (randomChance(chance)) {
+                const int projCount = 6;
+                const float angleIncrement = 360.f / projCount;
+                const float angleOffset = (float)randomInt(0, 360);
+                for (int i = 0; i < projCount; i++) {
+                    const sf::Vector2f spawnPos(player->getPosition().x + PLAYER_WIDTH / 2, player->getPosition().y + PLAYER_HEIGHT / 2);
+                    fireTargetedProjectile(
+                        degToRads(angleIncrement * i + angleOffset), ProjectileDataManager::getData("_PROJECTILE_TREEMAN_LOG"), spawnPos, player, 0, true
+                    );
+                }
+            }
+
+            ability->_lastFireTimeMillis = currentTimeMillis();
+        }
+    },
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
@@ -314,7 +390,7 @@ void Ability::fireTargetedProjectile(float angle, const ProjectileData projData,
     const sf::Vector2f centerPoint(projSpawnPoint.x, projSpawnPoint.y);
     sf::Vector2f spawnPos(centerPoint.x, centerPoint.y);
 
-    ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
+    const auto& proj = ProjectilePoolManager::addProjectile(spawnPos, player, angle, projData.baseVelocity, projData,
         false, damageBoost, addParentVelocity);
 }
 

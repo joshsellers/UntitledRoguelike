@@ -1,0 +1,7 @@
+#!SIG3458686876
+itemName = "_PROJECTILE_FROG"
+velocity = 16
+lifeTime = 3000
+onlyHitEnemies = false
+hitBox = 4, 4, 10, 10
+rotate = true

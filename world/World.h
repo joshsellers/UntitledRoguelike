@@ -24,6 +24,8 @@ constexpr int INITIAL_MAX_ACTIVE_ENEMIES = 3;
 constexpr int MIN_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 1;
 constexpr int MAX_ENEMY_SPAWN_COOLDOWN_TIME_MILLISECONDS = 1000 * 60 * 2;
 
+constexpr int SHOPS_CLOSED_WAVE = 56;
+
 class World {
 public:
     World(std::shared_ptr<Player> player, bool& showDebug);
@@ -79,9 +81,9 @@ public:
     bool disableEnemySpawning = false;
     bool disablePropGeneration = false;
 
-    void resetChunks();
+    void resetChunks(bool force = false);
 
-    void enterBuilding(std::string buildingID, sf::Vector2f buildingPos);
+    void enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp = false);
     void exitBuilding();
     bool playerIsInShop() const;
 
@@ -101,6 +103,11 @@ public:
     void altarActivatedAt(sf::Vector2f pos);
     bool altarHasBeenActivatedAt(sf::Vector2f pos) const;
 
+    void shopDoorBlownUpAt(sf::Vector2f pos);
+    bool shopDoorIsBlownOpenAt(sf::Vector2f pos) const;
+
+    std::vector<Chunk>& getChunks();
+
     friend class Game;
     friend class SaveManager;
     friend class UICommandPrompt;
@@ -116,6 +123,7 @@ private:
     
     std::shared_ptr<Player> _player;
     std::shared_ptr<ShopKeep> _shopKeep;
+    sf::Vector2f _shopIntPos;
 
     std::vector<std::shared_ptr<Entity>> _entities;
     std::vector<std::shared_ptr<Entity>> _scatterBuffer;
@@ -136,6 +144,8 @@ private:
     std::vector<unsigned int> _deadShopKeeps;
 
     std::vector<sf::Vector2f> _activatedAltars;
+
+    std::vector<sf::Vector2f> _shopsWithDoorBlownOpen;
 
     void spawnMobs();
     void spawnEnemies();

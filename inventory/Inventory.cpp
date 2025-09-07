@@ -105,7 +105,7 @@ void Inventory::dropItem(unsigned int itemId, unsigned int amount) {
 
     sf::Vector2f pos(px, py);
     std::shared_ptr<DroppedItem> droppedItem = std::shared_ptr<DroppedItem>(
-        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), _parent->getSaveId() == PLAYER)
+        new DroppedItem(pos, 1.f, itemId, amount, Item::ITEMS[itemId]->getTextureRect(), _parent->getSaveId() == PLAYER || _parent->getSaveId() == THIEF)
     );
     droppedItem->setWorld(_parent->getWorld());
     droppedItem->loadSprite(_parent->getWorld()->getSpriteSheet());
@@ -162,7 +162,7 @@ void Inventory::equip(int index, EQUIPMENT_TYPE equipType) {
         if (equipType == EQUIPMENT_TYPE::BOAT && !_parent->isSwimming() && index != NOTHING_EQUIPPED) {
             MessageManager::displayMessage("You can only equip the boat in the water silly", 5);
             return;
-        } else if (!Tutorial::isCompleted() && equipType == EQUIPMENT_TYPE::TOOL && Item::ITEMS[getItemIdAt(index)]->getId() == Item::BOW.getId()) {
+        } else if (index != NOTHING_EQUIPPED && !Tutorial::isCompleted() && equipType == EQUIPMENT_TYPE::TOOL && Item::ITEMS[getItemIdAt(index)]->getId() == Item::BOW.getId()) {
             Tutorial::completeStep(TUTORIAL_STEP::EQUIP_BOW);
         }
         _equippedItems[(int)equipType] = index;

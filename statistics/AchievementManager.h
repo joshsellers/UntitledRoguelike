@@ -6,7 +6,7 @@
 #include <string>
 #include "Statistic.h"
 
-constexpr int NUM_ACHIEVEMENTS = 39;
+constexpr int NUM_ACHIEVEMENTS = 49;
 enum ACHIEVEMENT {
     MILLIONAIRE,
     DEFEAT_CHEESEBOSS,
@@ -46,18 +46,31 @@ enum ACHIEVEMENT {
     HARDMODE_DEFEAT_SHROOMBOSS,
     ECONOMICAL,
     SHROOMY,
-    SLAUGHTERER
+    SLAUGHTERER,
+    BREAKING_AND_ENTERING,
+    DEFEAT_FROGBOSS,
+    HARDMODE_DEFEAT_FROGBOSS,
+    DEFEAT_OCTOPUSBOSS,
+    HARDMODE_DEFEAT_OCTOPUSBOSS,
+    TREECKSTER,
+    DEFEAT_PENGUINBOSS,
+    HARDMODE_DEFEAT_PENGUINBOSS,
+    DEFEAT_DEVBOSS,
+    HARDMODE_DEFEAT_DEVBOSS
 };
 
 class AchievementManagerInstance {
 public:
     void start();
 
-    void unlock(ACHIEVEMENT achievement);
+    void unlock(ACHIEVEMENT achievement, bool callLocalManager = true);
 
     void resetAchievements();
 
     bool achievementsReady() const;
+
+    void migrateAchievements();
+
 private:
     bool isUnlocked(ACHIEVEMENT achievement);
 
@@ -68,6 +81,8 @@ private:
     bool _achievementsReady = false;
 
     inline static bool _achievementStats[NUM_ACHIEVEMENTS];
+
+    bool _needToMigrateAchivements = false;
 };
 
 class AchievementManager {
@@ -76,7 +91,7 @@ public:
         return _instance;
     }
 
-    inline static const std::vector<std::string> achievementNames = {
+    inline static const std::vector<std::string> achievementSteamIds = {
         "ACH_MILLIONAIRE",
         "ACH_CHEESEBOSS",
         "ACH_HARDMODE_CHEESEBOSS",
@@ -115,15 +130,25 @@ public:
         "ACH_HARDMODE_SHROOMBOSS",
         "ACH_ECONOMICAL",
         "ACH_SHROOMY",
-        "ACH_SLAUGHTERER"
+        "ACH_SLAUGHTERER",
+        "ACH_BREAKING_AND_ENTERING",
+        "ACH_FROGBOSS",
+        "ACH_HARDMODE_FROGBOSS",
+        "ACH_OCTOPUSBOSS",
+        "ACH_HARDMODE_OCTOPUSBOSS",
+        "ACH_TREECKSTER",
+        "ACH_PENGUINBOSS",
+        "ACH_HARDMODE_PENGUINBOSS",
+        "ACH_DEVBOSS",
+        "ACH_HARDMODE_DEVBOSS"
     };
 
     static void start() {
         getInstance().start();
     }
 
-    static void unlock(ACHIEVEMENT achievement) {
-        getInstance().unlock(achievement);
+    static void unlock(ACHIEVEMENT achievement, bool callLocalManager = true) {
+        getInstance().unlock(achievement, callLocalManager);
     }
 
     static void resetAchievements() {

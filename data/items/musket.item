@@ -1,3 +1,4 @@
+#!SIG126064513
 name = "Musket"
 description = "Slow reload but big damage"
 isBuyable = true

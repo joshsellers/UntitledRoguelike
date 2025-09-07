@@ -1,0 +1,40 @@
+hasAbility = player.hasAbility("Air Strike");
+if: not hasAbility {
+    player.addAbility("Air Strike");
+    return true;
+}
+
+if: hasAbility {
+    parameterChoice = random(0, 1);
+    currentChance = player.getAbilityParameter("Air Strike", "chance");
+    currentRate = player.getAbilityParameter("Air Strike", "rate");
+
+    maxedOut = true;
+
+    if: parameterChoice == 1 and currentRate <= 50 {
+        parameterChoice = 0;
+    }
+
+    if: parameterChoice == 0 and currentChance < 1 {
+        player.setAbilityParameter("Air Strike", "chance", currentChance + 1 / 10);
+        msg = "Increased Airstrike chance";
+        maxedOut = false;
+    }
+
+    if: parameterChoice == 0 and currentChance >= 1 {
+        parameterChoice = 1;
+    }
+
+    if: parameterChoice == 1 and currentRate > 50 {
+        player.setAbilityParameter("Air Strike", "rate", currentRate - 50);
+        msg = "Increased Airstrike rate";
+        maxedOut = false;
+    }
+
+    if: maxedOut {
+        displayMessage("You can't use any more of these.", 5);
+        return false;
+    }
+
+    displayMessage(msg, 5);
+}

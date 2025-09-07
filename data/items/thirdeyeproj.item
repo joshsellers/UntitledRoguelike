@@ -1,3 +1,4 @@
+#!SIG4081154053
 name = "_PROJECTILE_THIRD_EYE"
 description = "This item should not be obtainable."
 damage = 3

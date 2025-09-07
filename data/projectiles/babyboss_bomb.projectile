@@ -1,3 +1,4 @@
+#!SIG497326780
 itemName = "_PROJECTILE_BABYBOSS_BOMB"
 velocity = 10
 lifeTime = 5000

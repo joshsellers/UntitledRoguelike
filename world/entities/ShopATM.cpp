@@ -77,7 +77,7 @@ void ShopATM::update() {
             InputBindingManager::getGamepadButtonName(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::INTERACT))
             : InputBindingManager::getKeyName(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::INTERACT));
 
-        MessageManager::displayMessage("Drop coins to deposit.\nPress/hold " + withdrawButtonName + " to withdraw one penny.", 10);
+        MessageManager::displayMessage("Drop coins to deposit.\nPress/hold " + withdrawButtonName + " to withdraw one penny.", 10, NORMAL, "NONE");
         _lastTouchTime = currentTimeMillis();
     }
 }

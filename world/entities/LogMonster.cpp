@@ -26,7 +26,7 @@ LogMonster::LogMonster(sf::Vector2f pos) : Boss(LOG_MONSTER, pos, 2.5, TILE_SIZE
     srand(currentTimeNano());
     unsigned int pennyAmount = randomInt(0, 5);
     if (pennyAmount > 0) getInventory().addItem(Item::PENNY.getId(), pennyAmount);
-    getInventory().addItem(Item::WOOD.getId(), 1);
+    if (randomChance(0.05f)) getInventory().addItem(Item::WOOD.getId(), 1);
 
     deactivateBossMode();
 }

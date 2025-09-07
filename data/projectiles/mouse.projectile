@@ -1,0 +1,7 @@
+#!SIG2038717395
+itemName = "_PROJECTILE_MOUSE"
+velocity = 4.0
+rotate = false
+onlyHitEnemies = false
+lifeTime = 8000
+hitBox = 5, 5, 8, 8

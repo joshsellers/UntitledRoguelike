@@ -1,0 +1,10 @@
+#!SIG1337175163
+name = "Bark Cuirass"
+description = "Armor made of tree flesh\n\n4 protection"
+damage = 4
+equipmentType = ARMOR_BODY
+isBuyable = true
+value = 22
+conditionalUnlock = true
+rarityTier = 2
+textureRect = 82, 30, 1, 1

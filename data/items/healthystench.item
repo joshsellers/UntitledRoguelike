@@ -1,0 +1,11 @@
+#!SIG1646172248
+name = "Healthy Stench"
+description = "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes"
+isStackable = false
+isConsumable = true
+isBuyable = true
+unlockWaveNumber = 63
+value = 399
+rarityTier = 3
+functionName = "usehealthystench"
+textureRect = 2, 13, 1, 1

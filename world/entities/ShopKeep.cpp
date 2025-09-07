@@ -49,12 +49,15 @@ void ShopKeep::initInventory(bool visited) {
     };
 
     for (const auto& item : Item::ITEMS) {
-        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()) {
+        if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE && item->getEquipmentType() < EQUIPMENT_TYPE::ARMOR_HEAD && item->isBuyable()
+            && item->getId() != Item::getIdFromName("Leaf Hat") && (item->getId() != Item::getIdFromName("Ski Mask"))) {
             clothingOptions.at((int)item->getEquipmentType()).push_back(item->getId());
         }
     }
 
     for (int i = 0; i < clothingOptions.size(); i++) {
+        constexpr float skipChance = 0.25f;
+        if (randomChance(skipChance)) continue;
         _equippedApparel[i] = clothingOptions.at(i).at((size_t)randomInt(0, clothingOptions.at(i).size() - 1));
     }
 
@@ -82,12 +85,20 @@ void ShopKeep::initInventory(bool visited) {
                 bool isClothing = equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
                     || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
                     || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET;
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET
+                    || equipType == EQUIPMENT_TYPE::ARMOR_HEAD
+                    || equipType == EQUIPMENT_TYPE::ARMOR_BODY
+                    || equipType == EQUIPMENT_TYPE::ARMOR_LEGS
+                    || equipType == EQUIPMENT_TYPE::ARMOR_FEET;
                 bool isBoat = equipType == EQUIPMENT_TYPE::BOAT;
 
                 if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) continue;
                 else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) continue;
                 if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) continue;
+                else if (item->getId() == Item::getIdFromName("Burst Jewel") && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) continue;
+                else if (item->getId() == Item::getIdFromName("Bloat Jewel") && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) continue;
+                else if (item->getId() == Item::getIdFromName("Seek Jewel") && AbilityManager::playerHasAbility(Ability::TARGET_SEEKING_BULLETS.getId())) continue;
+                else if (item->getId() == Item::getIdFromName("Map") && getWorld()->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) continue;
 
                 availableItems.push_back(item->getId());
             }
@@ -144,6 +155,7 @@ void ShopKeep::initInventory(bool visited) {
             if ((item->isGun() || isClothing || isBoat) && getWorld()->getPlayer()->getInventory().hasItem(item->getId())) remove = true;
             else if (item->getId() == Item::COIN_MAGNET.getId() && getWorld()->getPlayer()->getCoinMagnetCount() == 12) remove = true;
             if (item->getId() == Item::getIdFromName("Rebound Jewel") && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) remove = true;
+            else if (item->getId() == Item::getIdFromName("Map") && getWorld()->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) remove = true;
 
             if (remove) {
                 const unsigned int itemIndex = getInventory().findItem(item->getId());
@@ -192,6 +204,7 @@ void ShopKeep::initInventory(bool visited) {
     //
 
     if (!Tutorial::isCompleted() && !getInventory().hasItem(Item::BOW.getId())) getInventory().addItem(Item::BOW.getId(), 1);
+    if (!Tutorial::isCompleted() && getInventory().hasItem(Item::AXE.getId())) getInventory().removeItem(Item::AXE.getId(), 1);
 }
 
 void ShopKeep::update() {

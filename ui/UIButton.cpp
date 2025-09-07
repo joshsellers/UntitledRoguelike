@@ -2,12 +2,15 @@
 #include <thread>
 #include <iostream>
 #include "UIHandler.h"
+#include "UIControlsDisplay.h"
+#include "../core/gamepad/GamePad.h"
 
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
-    UIButtonListener* listener, std::string buttonCode)
+    UIButtonListener* listener, std::string buttonCode, bool centerOnCoords, bool showControlButtonIcon)
     : UIElement(
-        x, y, width, height, true, true, font
+        x, y, width, height, true, true, font, centerOnCoords
     ) {
+    _showControlButtonIcon = showControlButtonIcon;
 
     _rTexture.create(_width, 16 * 3);
     sf::RectangleShape center;
@@ -56,6 +59,18 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
     _text.setFillColor(sf::Color::White);
     _text.setString(labelText);
 
+    if (_showControlButtonIcon) {
+        _controlButtonShape.setTexture(UIHandler::getUISpriteSheet().get());
+        constexpr float controlButtonSize = 2.5f;
+        constexpr float controlButtonPadding = 0.5f;
+        _controlButtonShape.setSize({ getRelativeWidth(controlButtonSize), getRelativeWidth(controlButtonSize) });
+        _controlButtonShape.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
+        _controlButtonShape.setPosition(
+            _shape.getPosition().x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
+            _shape.getPosition().y + _shape.getSize().y / 2.f - _controlButtonShape.getSize().y / 2.f
+        );
+    }
+
     _buttonCode = buttonCode;
     _listener = listener;
 }
@@ -78,7 +93,9 @@ void UIButton::update() {
     _wasJustSelected = _isSelected;
 }
 
-void UIButton::draw(sf::RenderTexture& surface) {}
+void UIButton::draw(sf::RenderTexture& surface) {
+    if (_showControlButtonIcon && GamePad::isConnected() && _isSelected) surface.draw(_controlButtonShape);
+}
 
 void UIButton::setLabelText(std::string labelText) {
     _text.setString(labelText);

@@ -1,3 +1,4 @@
+#!SIG699660342
 name = "_PROJECTILE_PENNY"
 description = "This item should not be obtainable."
 damage = 10

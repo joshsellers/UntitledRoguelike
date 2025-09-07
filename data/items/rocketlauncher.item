@@ -1,8 +1,9 @@
+#!SIG660549754
 name = "Rocket Launcher"
 description = "Launches rockets"
 value = 599
 isBuyable = true
-unlockWaveNumber = 32
+conditionalUnlock = true
 isGun = true
 isAutomatic = false
 magazineSize = 1
@@ -11,3 +12,4 @@ barrelPos = 34, 1
 functionName = "firerocketlauncher"
 equipmentType = TOOL
 textureRect = 103, 0, 1, 1
+rarityTier = 2

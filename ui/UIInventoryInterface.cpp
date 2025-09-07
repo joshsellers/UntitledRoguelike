@@ -4,6 +4,8 @@
 #include "../world/entities/Entity.h"
 #include "UIHandler.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "UIControlsDisplay.h"
+#include "../inventory/RecentItemUnlockTracker.h"
 
 UIInventoryInterface::UIInventoryInterface(Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet) :
     UIInventoryInterface(2, 11, source, font, spriteSheet) {}
@@ -12,6 +14,7 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     _source(source), _spriteSheet(spriteSheet), UIElement(x, y, 3, 3, false, false, font), _originalY(_y) {
 
     _disableAutomaticTextAlignment = true;
+    _displayControls = true;
 
     float fontSize = 3.f;
     int relativeFontSize = (float)WINDOW_WIDTH * (fontSize / 100);
@@ -51,6 +54,9 @@ UIInventoryInterface::UIInventoryInterface(float x, float y, Inventory& source, 
     ));
     _headerBg.setTexture(UIHandler::getUISpriteSheet().get());
     _headerBg.setTextureRect(sf::IntRect(0, 16, 80, 16));
+
+    _buttonSprite.setTexture(UIHandler::getUISpriteSheet().get());
+    _buttonSprite.setSize(sf::Vector2f(getRelativeHeight(4.f), getRelativeHeight(4.f)));
 }
 
 void UIInventoryInterface::update() {
@@ -90,6 +96,9 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         const EQUIPMENT_TYPE itemType = item->getEquipmentType();
         if (!isItemCorrectType(itemType)) continue;
 
+        const bool isRecentUnlock = RecentItemUnlockTracker::isRecentUnlock(item->getId()) && _source.getParent()->getEntityType() == "shopkeep";
+        if (isRecentUnlock) RecentItemUnlockTracker::itemSeen(item->getId());
+
         sf::Vector2f itemPos(getRelativePos(sf::Vector2f(_x, _y + (ITEM_SPACING * filteredIndex) + 1.f)));
 
         sf::Text label;
@@ -113,7 +122,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
         sf::RectangleShape bg(sf::Vector2f(_width + (_width / 8) * 2, _height + (_height / 8) * 2));
         bg.setPosition(sf::Vector2f(itemPos.x - (_width / 8), itemPos.y - (_width / 8)));
         bg.setTexture(UIHandler::getUISpriteSheet().get());
-        bg.setTextureRect(sf::IntRect(96, 64, 24, 24));
+        bg.setTextureRect(isRecentUnlock ? sf::IntRect(160, 256, 24, 24) : sf::IntRect(96, 64, 24, 24));
 
         sf::Sprite itemSprite;
         itemSprite.setTexture(*_spriteSheet);
@@ -126,7 +135,7 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
 
         if (touchingItem) {
             //bg.setFillColor(sf::Color(0x0000FFFF));
-            bg.setTextureRect(sf::IntRect(128, 64, 24, 24));
+            bg.setTextureRect(isRecentUnlock ? sf::IntRect(192, 256, 24, 24) : sf::IntRect(128, 64, 24, 24));
         } else {
             //bg.setFillColor(sf::Color(0x000099FF));
         }
@@ -272,6 +281,40 @@ void UIInventoryInterface::draw(sf::RenderTexture& surface) {
             surface.draw(_tooltipText);
 
             drawAdditionalTooltip(surface, mousedOverItemIndex);
+            
+
+            if (_displayControls && GamePad::isConnected()) {
+                sf::Text controlLabel;
+                controlLabel.setFont(_font);
+                controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+                controlLabel.setOutlineThickness(2.f);
+
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
+                _buttonSprite.setPosition(getRelativePos(26.5, 80)); 
+                std::string aString = "";
+                if (item->isConsumable()) aString = "use";
+                else if (item->getEquipmentType() != EQUIPMENT_TYPE::NOT_EQUIPABLE)  aString = _source.isEquipped(_gamepadUnfilteredSelectedItemIndex) ? "unequip" : "equip";
+                
+                if (aString != "") surface.draw(_buttonSprite);
+                
+                controlLabel.setString(aString);
+                controlLabel.setPosition(getRelativePos(29.5, 80.5));
+                surface.draw(controlLabel);
+
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::Y));
+                _buttonSprite.setPosition(getRelativePos(26.5, 84));
+                surface.draw(_buttonSprite);
+                controlLabel.setString("drop one");
+                controlLabel.setPosition(getRelativePos(29.5, 84.5));
+                surface.draw(controlLabel);
+
+                _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
+                _buttonSprite.setPosition(getRelativePos(26.5, 88));
+                surface.draw(_buttonSprite);
+                controlLabel.setString("drop all");
+                controlLabel.setPosition(getRelativePos(29.5, 89));
+                surface.draw(controlLabel);
+            }
         }
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error in UIInventoryInterface::draw: " + (std::string)ex.what(), 5, ERR);
@@ -559,6 +602,15 @@ void UIInventoryInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent m
 }
 
 void UIInventoryInterface::textEntered(const sf::Uint32 character) {}
+
+void UIInventoryInterface::show() {
+    _isActive = true;
+
+    if (GamePad::isConnected() && _source.getCurrentSize() > 0) {
+        _gamepadSelectedItemIndex = 0;
+        _gamepadUnfilteredSelectedItemIndex = 0;
+    }
+}
 
 void UIInventoryInterface::hide() {
     _isActive = false;

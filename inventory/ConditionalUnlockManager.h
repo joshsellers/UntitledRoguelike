@@ -20,7 +20,8 @@ public:
     static void loadUnlockedItems();
     static void saveUnlockedItems();
 
-    static void resetUnlocks();
+    static void hardResetUnlocks();
+    static void softResetUnlocks();
 
     static void catItemUsed(unsigned int itemId);
 

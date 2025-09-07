@@ -1,0 +1,16 @@
+hasAbility = player.hasAbility("Contact Damage");
+if: not hasAbility {
+    player.addAbility("Contact Damage");
+    player.addEffect("Sharp Teeth");
+
+    return true;
+}
+
+currentDamage = player.getAbilityParameter("Contact Damage", "damage");
+damageIncrease = random(1, 3);
+newDamage = damageIncrease + currentDamage;
+player.setAbilityParameter("Contact Damage", "damage", newDamage);
+
+displayMessage("Increased bite damage by {damageIncrease}", 5);
+
+return true;

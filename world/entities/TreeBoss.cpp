@@ -1,6 +1,8 @@
 #include "TreeBoss.h"
 #include "../../core/Util.h"
 #include "../World.h"
+#include "../../statistics/AchievementManager.h"
+#include "../../inventory/ConditionalUnlockManager.h"
 
 TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 5,
     {
@@ -9,6 +11,7 @@ TreeBoss::TreeBoss(sf::Vector2f pos) : Boss(TREE_BOSS, pos, 1, TILE_SIZE * 3, TI
         //BossState(BEHAVIOR_STATE::SHOOT_LOGS_1, 3000LL, 4000LL)
     }) 
 {
+    _gen.seed(currentTimeNano());
     setMaxHitPoints(HARD_MODE_ENABLED ? 700 : 475);
     heal(getMaxHitPoints());
 
@@ -46,14 +49,14 @@ void TreeBoss::draw(sf::RenderTexture& surface) {
         int xOffset = ((_numSteps >> 3) & 1) * TILE_SIZE;
 
         _wavesSprite.setTextureRect(sf::IntRect(0 + xOffset, 160, TILE_SIZE, TILE_SIZE));
-        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - (float)TILE_SIZE * 3.f / 2.f + 16, getPosition().y + (TILE_SIZE * 5 - 8)));
+        _wavesSprite.setPosition(sf::Vector2f(getPosition().x - (float)TILE_SIZE * 3.f / 2.f + 16, getPosition().y + (TILE_SIZE * 6 - 8)));
         surface.draw(_wavesSprite);
     }
 
-    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 5 : 0;
+    int yOffset = isMoving() || isSwimming() ? ((_numSteps >> _animSpeed) & 7) * TILE_SIZE * 6 : 0;
 
     _sprite.setTextureRect(sf::IntRect(
-        1504, 640 + yOffset, TILE_SIZE * 3, isSwimming() ? TILE_SIZE * 3 : TILE_SIZE * 5
+        1504, 640 + yOffset, TILE_SIZE * 3, isSwimming() ? TILE_SIZE * 3 : TILE_SIZE * 6
     ));
 
     surface.draw(_sprite);
@@ -61,13 +64,23 @@ void TreeBoss::draw(sf::RenderTexture& surface) {
 
 void TreeBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
-    _sprite.setTextureRect(sf::IntRect(1504, 640, TILE_SIZE * 3, TILE_SIZE * 5));
+    _sprite.setTextureRect(sf::IntRect(1504, 640, TILE_SIZE * 3, TILE_SIZE * 6));
     _sprite.setPosition(getPosition());
     _sprite.setOrigin((float)TILE_SIZE * 3 / 2, 0);
 
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 10, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
+}
+
+void TreeBoss::setWorld(World* world) {
+    _world = world;
+
+    _playerIsTree = playerIsWearing("Leaf Hat") && playerIsWearing("Bark Cuirass") && playerIsWearing("Bark Greaves") && playerIsWearing("Bark Sabatons");
+    if (_playerIsTree) {
+        AchievementManager::unlock(TREECKSTER);
+        ConditionalUnlockManager::increaseUnlockProgress("Acorn", 1);
+    }
 }
 
 void TreeBoss::subUpdate() {
@@ -83,10 +96,20 @@ void TreeBoss::subUpdate() {
     _hitBox.left = getPosition().x + _hitBoxXOffset;
     _hitBox.top = getPosition().y + _hitBoxYOffset;
 
+    if (_playerIsTree) {
+        _playerIsTree = playerIsWearing("Leaf Hat") && playerIsWearing("Bark Cuirass") && playerIsWearing("Bark Greaves") && playerIsWearing("Bark Sabatons");
+
+        const sf::Vector2f feetPos(getPosition().x, getPosition().y + _spriteHeight);
+        wander(feetPos, _gen);
+        return;
+    }
+
     if (_chaseTarget.x == 0.f && _chaseTarget.y == 0.f) resetChaseTarget();
 }
 
 void TreeBoss::onStateChange(const BossState previousState, const BossState newState) {
+    if (_playerIsTree) return;
+
     if (newState.stateId == CHASE) {
         _baseSpeed = 4.5f;
         resetChaseTarget();
@@ -95,6 +118,8 @@ void TreeBoss::onStateChange(const BossState previousState, const BossState newS
 }
 
 void TreeBoss::runCurrentState() {
+    if (_playerIsTree) return;
+
     switch (_currentState.stateId) {
         case CHASE:
         {
@@ -127,7 +152,7 @@ void TreeBoss::runCurrentState() {
                     angle += (float)i * 45.f;
                     if (angle >= 360.f) angle -= 360.f;
 
-                    fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_TREEBOSS_LOG"), "NONE", true, false, { TILE_SIZE / 2, 0 });
+                    fireTargetedProjectile(degToRads(angle), ProjectileDataManager::getData("_PROJECTILE_TREEBOSS_LOG"), "NONE", true, false, { TILE_SIZE / 2, 16 });
                     _lastFireTimeMillis = currentTimeMillis();
                 }
             }
@@ -262,4 +287,16 @@ void TreeBoss::resetChaseTarget() {
     const float distRat = targetDist / dist;
 
     _chaseTarget = sf::Vector2f(((1 - distRat) * cLoc.x + distRat * playerPos.x), ((1 - distRat) * cLoc.y + distRat * playerPos.y));
+}
+
+bool TreeBoss::playerIsWearing(std::string itemName) {
+    const auto& inv = getWorld()->getPlayer()->getInventory();
+    const unsigned int itemId = Item::getIdFromName(itemName);
+    const int index = inv.findItem(itemId);
+
+    if (index != NO_ITEM) {
+        return inv.isEquipped(index);
+    }
+
+    return false;
 }

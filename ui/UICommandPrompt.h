@@ -56,6 +56,16 @@
 #include "../world/entities/Mushroid.h"
 #include "../world/entities/FungusMan.h"
 #include "../world/entities/Funguy.h"
+#include "../world/entities/FrogBoss.h"
+#include "../world/entities/FallingBomb.h"
+#include "../world/entities/Thief.h"
+#include "../world/entities/OctopusBoss.h"
+#include "../world/entities/Scythe.h"
+#include "../core/EndGameSequence.h"
+#include "../core/FileIntegrityManager.h"
+#include "../world/entities/PenguinBoss.h"
+#include "../world/entities/HypnoPenguin.h"
+#include "../world/entities/DevBoss.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -352,6 +362,22 @@ private:
                             entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
                         } else if (entityName == "funguy") {
                             entity = std::shared_ptr<Funguy>(new Funguy(pos));
+                        } else if (entityName == "frogboss") {
+                            entity = std::shared_ptr<FrogBoss>(new FrogBoss(pos));
+                        } else if (entityName == "fallingbomb") {
+                            entity = std::shared_ptr<FallingBomb>(new FallingBomb(pos));
+                        } else if (entityName == "thief") {
+                            entity = std::shared_ptr<Thief>(new Thief(pos, true));
+                        } else if (entityName == "octopusboss") {
+                            entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
+                        } else if (entityName == "scythe") {
+                            entity = std::shared_ptr<Scythe>(new Scythe(pos));
+                        } else if (entityName == "penguinboss") {
+                            entity = std::shared_ptr<PenguinBoss>(new PenguinBoss(pos));
+                        } else if (entityName == "hypnopenguin") {
+                            entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
+                        } else if (entityName == "devboss") {
+                            entity = std::shared_ptr<DevBoss>(new DevBoss(pos));
                         } else {
                             return entityName + " is not a valid entity name";
                         }
@@ -967,7 +993,7 @@ private:
             "resetunlocks",
             Command("Reset all conditional item unlocks",
             [this](std::vector<std::string>& parsedCommand)->std::string {
-                ConditionalUnlockManager::resetUnlocks();
+                ConditionalUnlockManager::hardResetUnlocks();
                 return "Reset item unlocks";
             })
         },
@@ -1018,6 +1044,123 @@ private:
                 DISABLE_STATS = false;
                 DISABLE_UNLOCKS = false;
                 return "Enabled progress persistence";
+            })
+        },
+
+        {
+            "randitems",
+            Command("Give the play a bunch of random items",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    try {
+                        const int itemAmount = std::stoi(parsedCommand.at(1));
+                        for (int i = 0; i < itemAmount; i++) {
+                            const unsigned int itemId = randomInt(0, Item::ITEMS.size() - 1);
+                            if (stringStartsWith(Item::ITEMS.at(itemId)->getName(), "_")) {
+                                i--;
+                                continue;
+                            }
+                            _world->getPlayer()->getInventory().addItem(itemId, 1);
+                        }
+
+                        return "Gave player " + std::to_string(itemAmount) + " items";
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "rollcredits",
+            Command("Start the end game sequence",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                EndGameSequence::start();
+                return "Started the end game sequence";
+            })
+        },
+
+        {
+            "sign",
+            Command("Sign a file",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const std::string path = parsedCommand[1];
+                    FileIntegrityManager::signFile(path);
+                    return "Attempted to sign " + path;
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "verify",
+            Command("Verify a file",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const std::string path = parsedCommand[1];
+                    const bool verified = FileIntegrityManager::verifyFile(path);
+                    return (verified ? "Verified " : "Failed to verify ") + path;
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
+            })
+        },
+
+        {
+            "signall",
+            Command("Sign all game files",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                FileIntegrityManager::signFiles();
+                return "Attempted to sign all game files";
+            })
+        },
+
+        {
+            "verifyall",
+            Command("Verify all game files",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                FileIntegrityManager::verifyFiles();
+                return "Verified all game files";
+            })
+        },
+
+        {
+            "tmra",
+            Command("Toggle MOVEMENT_RESETS_AIM",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                MOVEMENT_RESETS_AIM = !MOVEMENT_RESETS_AIM;
+                return "MOVEMENT_RESETS_AIM set to " + (std::string)(MOVEMENT_RESETS_AIM ? "true" : "false");
+            })
+        },
+
+        {
+            "tar",
+            Command("Toggle auto-reload",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                AUTO_RELOAD_ENABLED = !AUTO_RELOAD_ENABLED;
+                return "Automatic reload " + (std::string)(AUTO_RELOAD_ENABLED ? "enabled" : "disabled");
+            })
+        },
+
+        {
+            "setdamage",
+            Command("Set the player's damage multiplier",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    try {
+                        const float multiplier = std::stof(parsedCommand.at(1));
+                        _world->getPlayer()->setDamageMultiplier(multiplier);
+                        return "Damage multiplier set to " + std::to_string(multiplier);
+                    } catch (std::exception ex) {
+                        return ex.what();
+                    }
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };

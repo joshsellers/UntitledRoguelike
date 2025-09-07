@@ -1,3 +1,4 @@
+#!SIG3509832793
 itemName = "_PROJECTILE_LARGE_SHROOM"
 velocity = 16
 lifeTime = 3000

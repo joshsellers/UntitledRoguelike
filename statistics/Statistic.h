@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 enum STATISTIC {
     DIST_TRAVELLED,
@@ -21,7 +22,8 @@ enum STATISTIC {
     ITEMS_SOLD,
     HIGHEST_WAVE_REACHED,
     ITEMS_UNLOCKED,
-    ATM_AMOUNT
+    ATM_AMOUNT,
+    SHOPS_BLOWN_UP
 };
 
 inline std::map<STATISTIC, std::string> STAT_NAMES = {
@@ -35,13 +37,18 @@ inline std::map<STATISTIC, std::string> STAT_NAMES = {
     {TIMES_DIED,            "Deaths"},
     {WAVES_CLEARED,         "Waves cleared"},
     {SHOTS_FIRED,           "Shots fired"},
-    {PENNIES_COLLECTED,     "Pennies collected"},
+    {PENNIES_COLLECTED,     "Pennies looted"},
     {TIMES_ROLLED,          "Rolls"},
     {ITEMS_PURCHASED,       "Items bought"},
     {ITEMS_SOLD,            "Items sold"},
     {HIGHEST_WAVE_REACHED,  "Highest wave reached"},
     {ITEMS_UNLOCKED,        "Items unlocked"},
-    {ATM_AMOUNT,            "ATM Balance"}
+    {ATM_AMOUNT,            "ATM Balance"},
+    {SHOPS_BLOWN_UP,        "Shop doors blown up"}
+};
+
+inline std::vector<STATISTIC> HIDDEN_STATS = {
+    SHOPS_BLOWN_UP
 };
 
 #endif

@@ -39,7 +39,14 @@ enum ENTITY_SAVE_ID {
     BLINKER,
     MUSHROID,
     FUNGUS_MAN,
-    FUNGUY
+    FUNGUY,
+    FROG_BOSS,
+    THIEF,
+    OCTOPUS_BOSS,
+    SCYTHE,
+    PENGUIN_BOSS,
+    HYPNO_PENGUIN,
+    DEV_BOSS
 };
 
 #endif

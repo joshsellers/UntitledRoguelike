@@ -17,6 +17,8 @@ extern bool VSYNC_ENABLED;
 extern float SFX_VOLUME;
 extern float MUSIC_VOLUME;
 
+extern bool DAMAGE_PARTICLES_ENABLED;
+
 extern bool AUTOSAVE_ENABLED;
 extern long long AUTOSAVE_INTERVAL_SECONDS;
 
@@ -40,7 +42,14 @@ extern bool USING_MOUSE;
 
 extern bool DIAGONAL_MOVEMENT_ENABLED;
 
+extern bool MOVEMENT_RESETS_AIM;
+
+extern bool AUTO_RELOAD_ENABLED;
+
 extern bool UPCOMING_FEATURES_ENABLED;
+
+extern constexpr int SAVE_FILE_NOT_SELECTED = -1;
+extern int SELECTED_SAVE_FILE;
 
 extern bool DEBUG_MODE;
 

@@ -1,3 +1,4 @@
+#!SIG2607071272
 name = "_PROJECTILE_CHEFBOSS_PIZZA"
 description = "This item should not be obtainable."
 damage = 25

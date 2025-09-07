@@ -1,10 +1,11 @@
-name = "Speed pill"
+#!SIG1770813065
+name = "Speed Pill"
 description = "Go a bit faster"
 isStackable = false
 isConsumable = true
 functionName = "speedpill"
 isBuyable = true
 rarityTier = 2
-unlockWaveNumber = 10
+conditionalUnlock = true
 value = 399
 textureRect = 8, 13, 1, 1

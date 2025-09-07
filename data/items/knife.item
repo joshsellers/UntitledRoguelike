@@ -1,0 +1,13 @@
+#!SIG273638548
+name = "Knife"
+description = "For throwing"
+isGun = true
+equipmentType = TOOL
+isAutomatic = false
+magazineSize = 1
+reloadTime = 250
+conditionalUnlock = true
+isBuyable = true
+value = 5
+functionName = "throwknife"
+textureRect = 145, 0, 1, 1

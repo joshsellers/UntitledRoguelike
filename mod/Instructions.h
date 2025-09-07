@@ -70,7 +70,24 @@ enum class INSTRUCTION {
 
     NOT = 0x3F,
 
-    PLRMITEM = 0x40
+    PLRMITEM = 0x40,
+
+    ESETPOS = 0x41,
+    EGETPOSX = 0x42,
+    EGETPOSY = 0x43,
+    EROT = 0x44,
+    ESETSCALE = 0x45,
+
+    RANDPROB = 0x46,
+
+    POW = 0x47,
+    SQRT = 0x48,
+    SIN = 0x49,
+    COS = 0x4A,
+    TAN = 0x4B,
+
+    PLLASER = 0x4C,
+    PLLANIMLASER = 0x4D
 };
 
 #endif

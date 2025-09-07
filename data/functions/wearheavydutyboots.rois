@@ -1,0 +1,20 @@
+hasEffect = player.hasEffect("Heavy Duty Boots");
+if: hasEffect {
+    displayMessage("You're already wearing a pair of those", 5);
+    return false;
+}
+
+player.addEffect("Heavy Duty Boots");
+
+hasAbility = player.hasAbility("Permanent Armor");
+if: not hasAbility {
+    player.addAbility("Permanent Armor");
+}
+
+currentProtection = player.getAbilityParameter("Permanent Armor", "protection");
+player.setAbilityParameter("Permanent Armor", "protection", currentProtection + 5);
+
+speedMultiplier = player.getSpeedMultiplier();
+player.setSpeedMultiplier(speedMultiplier - (1 / 5));
+
+return true;

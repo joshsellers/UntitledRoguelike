@@ -1,0 +1,5 @@
+#!SIG3079396995
+name = "_PROJECTILE_DEVBOSS_BOMB"
+description = "This item should not be obtainable."
+damage = 8
+textureRect = 98, 78, 1, 1

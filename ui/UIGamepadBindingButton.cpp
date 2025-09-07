@@ -2,7 +2,7 @@
 #include "../core/MessageManager.h"
 
 UIGamepadBindingButton::UIGamepadBindingButton(float x, float y, float width, float height, sf::Font font, InputBindingManager::BINDABLE_ACTION action) :
-    UIButton(x, y, width, height, "", font, nullptr, ""), _action(action) {
+    UIButton(x, y, width, height, "", font, nullptr, "", false, false), _action(action) {
     _gamepadBinding = InputBindingManager::getGamepadBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getGamepadButtonName(_gamepadBinding));
 

@@ -446,6 +446,15 @@ void UIItemCatalogue::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseW
 
 void UIItemCatalogue::textEntered(const sf::Uint32 character) {}
 
+void UIItemCatalogue::show() {
+    _isActive = true;
+
+    if (GamePad::isConnected() && _source.getCurrentSize() > 0) {
+        _gamepadSelectedItemIndex = 0;
+        _gamepadUnfilteredSelectedItemIndex = 0;
+    }
+}
+
 void UIItemCatalogue::hide() {
     _isActive = false;
     _gamepadSelectedItemIndex = -1;

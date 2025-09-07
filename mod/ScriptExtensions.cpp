@@ -4,6 +4,9 @@
 #include "../inventory/abilities/Ability.h"
 #include "../world/World.h"
 #include "../world/entities/orbiters/Orbiter.h"
+#include "../world/entities/Scythe.h"
+#include "../core/Tutorial.h"
+#include "../world/entities/LaserBeam.h"
 
 bool ScriptExtensions::execute(const std::string functionName, Entity* entity, Interpreter* interpreter) {
     if (_functions.find(functionName) != _functions.end()) {
@@ -64,6 +67,30 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             orbiter->loadSprite(parent->getWorld()->getSpriteSheet());
             parent->getWorld()->addEntity(orbiter);
 
+            return true;
+        }
+    },
+
+    {
+        "spawnScythe",
+        [](Entity* parent, Interpreter* interpreter) {
+            const auto& scythe = std::shared_ptr<Scythe>(new Scythe({
+                parent->getWorld()->getPlayer()->getPosition().x + (float)TILE_SIZE / 2.f, parent->getWorld()->getPlayer()->getPosition().y + TILE_SIZE
+            }));
+            scythe->setWorld(parent->getWorld());
+            scythe->loadSprite(parent->getWorld()->getSpriteSheet());
+            parent->getWorld()->addEntity(scythe);
+            return true;
+        }
+    },
+
+    {
+        "completeTutorialStep",
+        [](Entity* parent, Interpreter* interpreter) {
+            const int step = interpreter->pop();
+            if (!Tutorial::isCompleted()) {
+                Tutorial::completeStep((TUTORIAL_STEP)step);
+            }
             return true;
         }
     }

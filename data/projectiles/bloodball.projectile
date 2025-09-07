@@ -1,3 +1,4 @@
+#!SIG3940988339
 itemName = "_PROJECTILE_BLOOD_GUN"
 velocity = 4
 lifeTime = 2250

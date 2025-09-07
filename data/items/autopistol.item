@@ -1,3 +1,4 @@
+#!SIG3883892940
 name = "Autopistol"
 description = "An automatic pistol"
 equipmentType = TOOL

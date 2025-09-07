@@ -16,8 +16,10 @@ bool VSYNC_ENABLED = false;
 float SFX_VOLUME = 1.f;
 float MUSIC_VOLUME = 1.f;
 
+bool DAMAGE_PARTICLES_ENABLED = false;
+
 bool AUTOSAVE_ENABLED = true;
-long long AUTOSAVE_INTERVAL_SECONDS = 30;
+long long AUTOSAVE_INTERVAL_SECONDS = 60 * 5;
 
 bool BACKUP_ENABLED = false;
 
@@ -39,7 +41,13 @@ bool USING_MOUSE = true;
 
 bool DIAGONAL_MOVEMENT_ENABLED = true;
 
+bool MOVEMENT_RESETS_AIM = true;
+
+bool AUTO_RELOAD_ENABLED = true;
+
 bool UPCOMING_FEATURES_ENABLED = true;
+
+int SELECTED_SAVE_FILE = SAVE_FILE_NOT_SELECTED;
 
 #ifdef DBGBLD
 bool DEBUG_MODE = true;

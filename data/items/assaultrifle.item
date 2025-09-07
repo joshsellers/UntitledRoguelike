@@ -1,0 +1,15 @@
+#!SIG3025767224
+name = "Assault Rifle"
+description = "Big scary shoots fast"
+isGun = true
+isAutomatic = true
+equipmentType = TOOL
+textureRect = 36, 0, 1, 1
+conditionalUnlock = true
+value = 200
+isBuyable = true
+barrelPos = 20, 3
+magazineSize = 30
+fireRate = 150
+reloadTime = 2000
+functionName = "firear"

@@ -11,6 +11,13 @@ void UIMenu::update() {
     if (_pendingActivation) {
         for (auto& element : _elements) {
             element->show();
+
+            if (!USING_MOUSE && useGamepadConfiguration) {
+                if (element->isActive()
+                    && element->_selectionId == _selectionGrid.at(_selectedItemY).at(_selectedItemX)) {
+                    element->_isSelected = true;
+                } else element->_isSelected = false;
+            }
         }
         _pendingActivation = false;
     }
@@ -32,6 +39,17 @@ std::vector<std::shared_ptr<UIElement>> UIMenu::getElements() const {
 
 void UIMenu::clearElements() {
     _elements.clear();
+}
+
+void UIMenu::removeElementBySelectionId(int selectionId) {
+    if (!useGamepadConfiguration) return;
+
+    _elements.erase(
+        std::remove_if(_elements.begin(), _elements.end(), 
+            [selectionId](std::shared_ptr<UIElement> element) {
+                return element->getSelectionId() == selectionId; 
+            }), _elements.end()
+    );
 }
 
 void UIMenu::controllerButtonReleased(GAMEPAD_BUTTON button) {
@@ -134,6 +152,11 @@ void UIMenu::show() {
     //    element->show();
     //}
     _pendingActivation = true;
+
+    if (!USING_MOUSE && useGamepadConfiguration) {
+        if (_selectedItemX == -1) _selectedItemX = 0;
+        if (_selectedItemY == -1) _selectedItemY = 0;
+    }
 }
 
 void UIMenu::hide() {

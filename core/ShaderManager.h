@@ -18,7 +18,7 @@ private:
     inline static std::map<std::string, sf::Shader> _shaders;
 
     inline static std::vector<std::string> _shaderNames = {
-        "waves_frag", "damage_frag"
+        "waves_frag", "damage_frag", "genericwaves_frag", "bossterrain_frag"
     };
 
     inline static const int _wavesNoiseSize = 500;

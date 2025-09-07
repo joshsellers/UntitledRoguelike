@@ -1,3 +1,4 @@
+#!SIG3325716528
 itemName = "_PROJECTILE_TREEBOSS_LOG"
 velocity = 2.0
 lifeTime = 5000

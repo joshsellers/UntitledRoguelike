@@ -17,7 +17,15 @@ public:
     void keyReleased(sf::Keyboard::Key& key);
     void textEntered(const sf::Uint32 character);
 private:
-
+    sf::RectangleShape _leftEdge;
+    sf::RectangleShape _leftTopCorner;
+    sf::RectangleShape _leftBottomCorner;
+    sf::RectangleShape _center;
+    sf::RectangleShape _centerTop;
+    sf::RectangleShape _centerBottom;
+    sf::RectangleShape _rightEdge;
+    sf::RectangleShape _rightTopCorner;
+    sf::RectangleShape _rightBottomCorner;
 };
 
 #endif

@@ -1,0 +1,7 @@
+#!SIG1626641491
+itemName = "_PROJECTILE_INK_BUBBLE-3"
+velocity = 1.25
+hitBox = 7, 7, 4, 4
+rotate = false
+onlyHitEnemies = false
+lifeTime = 10000

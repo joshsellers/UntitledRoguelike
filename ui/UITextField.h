@@ -6,7 +6,7 @@
 
 class UITextField : public UIElement {
 public:
-    UITextField(const sf::String label, float x, float y, sf::Font font);
+    UITextField(const sf::String label, float x, float y, sf::Font font, bool centerOnCoords = false);
 
     void update();
     void draw(sf::RenderTexture& surface);

@@ -3,6 +3,7 @@
 
 #include "MobSpawnData.h"
 
+constexpr int THIEF_CHANCE = 1000;
 const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::WATER, {
         //MobSpawnData(MOB_TYPE::SHARK, 10, 1, 2)
@@ -11,29 +12,38 @@ const BiomeMobSpawnData MOB_SPAWN_DATA[9] = {
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS, {
         MobSpawnData(MOB_TYPE::TURTLE, 1, 1, 1, 0),
         MobSpawnData(MOB_TYPE::FROG, 5, 1, 3, 0),
-        MobSpawnData(MOB_TYPE::DOG, 100, 1, 1, 0)
+        MobSpawnData(MOB_TYPE::DOG, 100, 1, 1, 0),
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
-        MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15, 0)
+        MobSpawnData(MOB_TYPE::PENGUIN, 0, 4, 15, 0),
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::DESERT, {
-        MobSpawnData(MOB_TYPE::CACTOID, 10, 1, 1, 0)
+        MobSpawnData(MOB_TYPE::CACTOID, 10, 1, 1, 0),
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::SAVANNA, {
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
+    }),
 
-    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {}),
+    BiomeMobSpawnData(TERRAIN_TYPE::FLESH, {
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
+    }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::GRASS_FOREST, {
-        MobSpawnData(MOB_TYPE::FROG, 6, 2, 4, 0)
+        MobSpawnData(MOB_TYPE::FROG, 6, 2, 4, 0),
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::RIVER, {}),
 
     BiomeMobSpawnData(TERRAIN_TYPE::FUNGUS, {
-        MobSpawnData(MOB_TYPE::MUSHROID, 10, 1, 1, 0)
+        MobSpawnData(MOB_TYPE::MUSHROID, 12, 1, 1, 0),
+        MobSpawnData(MOB_TYPE::THIEF, THIEF_CHANCE, 1, 1, 1)
     })
 };
 
@@ -58,7 +68,7 @@ const BiomeMobSpawnData ENEMY_SPAWN_DATA[9] = {
     }),
 
     BiomeMobSpawnData(TERRAIN_TYPE::TUNDRA, {
-        MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6, 36),
+        //MobSpawnData(MOB_TYPE::SNOW_MAN, 0, 2, 6, 36),
         MobSpawnData(MOB_TYPE::BIG_SNOW_MAN, 3, 1, 2, PROJ_ENEMIES_WAVE),
         MobSpawnData(MOB_TYPE::YETI, 1, 4, 8, 0),
         //MobSpawnData(MOB_TYPE::CHEESE_BOSS, CHEESE_BOSS_CHANCE, 1, 1, 50),

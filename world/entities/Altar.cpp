@@ -2,9 +2,10 @@
 #include "../World.h"
 #include "../../core/SoundManager.h"
 #include "../../core/MessageManager.h"
+#include "../../statistics/LocalAchievementManager.h"
 
-Altar::Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet) : 
-Entity(NO_SAVE, pos, 0, 96, 112, true), _isActivated(isActivated) {
+Altar::Altar(sf::Vector2f pos, bool isActivated, std::shared_ptr<sf::Texture> spriteSheet, bool naturalSpawn) : 
+Entity(NO_SAVE, pos, 0, 96, 112, naturalSpawn), _isActivated(isActivated) {
     _pos = pos;
     loadSprite(spriteSheet);
 
@@ -91,12 +92,15 @@ void Altar::onActivation() {
         STAMINA,
         MUSHROOM,
         BAD_VIBES,
-        LIGHTNING
+        LIGHTNING,
+        CANNON
     };
 
     const auto& player = _world->getPlayer();
 
-    REWARD reward = (REWARD)randomInt(0, 6);
+    const bool armorUnlocked = LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS);
+
+    REWARD reward = (REWARD)randomInt(armorUnlocked ? 0 : 1, randomChance(0.25) ? 7 : 6);
     switch (reward) {
         case ARMOR:
         {
@@ -105,7 +109,7 @@ void Altar::onActivation() {
             player->getInventory().addItem(Item::MATMURA_LEGGINGS.getId(), 1);
             player->getInventory().addItem(Item::MATMURA_BOOTS.getId(), 1);
 
-            MessageManager::displayMessage("A powerful armor has been bestowed upon you", 5);
+            MessageManager::displayMessage("A powerful armor has been bestowed upon you", 5, NORMAL, "NONE");
             break;
         }
         case DAMAGE:
@@ -113,7 +117,7 @@ void Altar::onActivation() {
             const float damageIncrease = (float)randomInt(100, 200) / 100.f;
             player->increaseDamageMultiplier(damageIncrease);
 
-            MessageManager::displayMessage("You have been blessed with power", 5);
+            MessageManager::displayMessage("You have been blessed with power", 5, NORMAL, "NONE");
             break;
         }
         case HP:
@@ -122,7 +126,7 @@ void Altar::onActivation() {
             player->setMaxHitPoints(player->getMaxHitPoints() + maxHpIncrease);
             player->heal(player->getMaxHitPoints());
 
-            MessageManager::displayMessage("You have been granted the gift of good health", 5);
+            MessageManager::displayMessage("You have been granted the gift of good health", 5, NORMAL, "NONE");
             break;
         } 
         case STAMINA:
@@ -132,7 +136,7 @@ void Altar::onActivation() {
             player->setMaxStamina(player->getMaxStamina() + maxStaminaIncrease);
             player->increaseStaminaRefreshRate(restoreIncrease);
 
-            MessageManager::displayMessage("You have been honored with endurance", 5);
+            MessageManager::displayMessage("You have been honored with endurance", 5, NORMAL, "NONE");
             break;
         }
         case MUSHROOM:
@@ -140,7 +144,7 @@ void Altar::onActivation() {
             const int mushroomAmount = randomInt(10, 15);
             player->getInventory().addItem(Item::getIdFromName("Funny Mushroom"), mushroomAmount);
 
-            MessageManager::displayMessage("You have been granted " + std::to_string(mushroomAmount) + " samples of a powerful fungus", 5);
+            MessageManager::displayMessage("You have been granted " + std::to_string(mushroomAmount) + " samples of a powerful fungus", 5, NORMAL, "NONE");
             break;
         }
         case BAD_VIBES:
@@ -148,7 +152,7 @@ void Altar::onActivation() {
             const int badVibesAmount = randomInt(15, 20);
             player->getInventory().addItem(Item::BAD_VIBES_POTION.getId(), badVibesAmount);
 
-            MessageManager::displayMessage(std::to_string(badVibesAmount) + " bottles of a powerful potion have been imparted unto you", 5);
+            MessageManager::displayMessage(std::to_string(badVibesAmount) + " bottles of a powerful potion have been imparted unto you", 5, NORMAL, "NONE");
             break;
         }
         case LIGHTNING:
@@ -156,10 +160,17 @@ void Altar::onActivation() {
             const int lightningAmount = randomInt(5, 10);
             player->getInventory().addItem(Item::getIdFromName("Thor's phone"), lightningAmount);
 
-            MessageManager::displayMessage("You have been gifted implements used by the gods", 5);
+            MessageManager::displayMessage("You have been gifted implements used by the gods", 5, NORMAL, "NONE");
+            break;
+        }
+        case CANNON:
+        {
+            player->getInventory().addItem(Item::getIdFromName("Matmura Cannon"), 1);
+            MessageManager::displayMessage("A powerful weapon has been bestowed upon you", 5, NORMAL, "NONE");
             break;
         }
     }
 
     getWorld()->altarActivatedAt(getPosition());
+    _isProp = true;
 }

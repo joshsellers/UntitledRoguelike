@@ -9,6 +9,7 @@ public:
     virtual void controllerButtonPressed(GAMEPAD_BUTTON button) = 0;
 
     virtual void gamepadDisconnected() = 0;
+    virtual void gamepadConnected() = 0;
 };
 
 #endif

@@ -1,0 +1,8 @@
+hasAbility = player.hasAbility("Explosive Rounds");
+if: not hasAbility {
+    player.addAbility("Explosive Rounds");
+    player.addEffect("Burst Jewel");
+    return true;
+}
+
+return false;

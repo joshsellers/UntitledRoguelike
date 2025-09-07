@@ -78,6 +78,8 @@ private:
 
 
     void skipStringLit(int& index, std::vector<int> bytecode);
+
+    void formatString(std::string& str);
 };
 
 #endif

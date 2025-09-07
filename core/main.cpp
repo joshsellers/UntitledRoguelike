@@ -18,6 +18,10 @@
 #include "../world/TerrainGenParameters.h"
 #include "../mod/ModManager.h"
 #include "../inventory/ConditionalUnlockManager.h"
+#include "SaveManager.h"
+#include "../statistics/LocalAchievementManager.h"
+#include "EndGameSequence.h"
+
 
 #ifndef DBGBLD
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -61,6 +65,13 @@ void readSettings(std::ifstream& in) {
             try {
                 std::vector<std::string> parsedLine = splitString(line, "=");
                 MUSIC_VOLUME = std::stof(parsedLine[1]);
+            } catch (std::exception ex) {
+                MessageManager::displayMessage(ex.what(), 5, ERR);
+            }
+        } else if (line.rfind("dparticles", 0) == 0) {
+            try {
+                const std::vector<std::string> parsedLine = splitString(line, "=");
+                DAMAGE_PARTICLES_ENABLED = (bool)std::stoi(parsedLine[1]);
             } catch (std::exception ex) {
                 MessageManager::displayMessage(ex.what(), 5, ERR);
             }
@@ -137,7 +148,7 @@ void checkCrash() {
         if (crashData.autoSaveTimeString != "NONE" && crashData.saveFileName != "NONE") {
             MessageManager::displayMessage("It looks like pennylooter did not shut down\ncorrectly last time.", 15);
             MessageManager::displayMessage(
-                "Your world named \"" + crashData.saveFileName + "\" was last autosaved on " + crashData.autoSaveTimeString, 15
+                "Your game was last autosaved on " + crashData.autoSaveTimeString, 15
             );
         } else {
             MessageManager::displayMessage(
@@ -152,14 +163,13 @@ int main() {
     Logger::start();
     Logger::log("v" + VERSION + " (" + BUILD_NUMBER + ")");
     MessageManager::start();
+    SoundManager::loadSounds();
     ModManager::loadAll();
     InputBindingManager::init();
-    SoundManager::loadSounds();
     ShaderManager::compileShaders();
     ShaderManager::configureShaders();
-    StatManager::loadOverallStats();
     MusicManager::start();
-    MusicManager::setSituation(MUSIC_SITUTAION::MAIN_MENU);
+    MusicManager::setSituation(MUSIC_SITUATION::MAIN_MENU);
     ProjectilePoolManager::init();
 
     if (!TerrainGenInitializer::loadParameters()) {
@@ -170,9 +180,10 @@ int main() {
     AchievementManager::start();
 
     Item::initItems();
-    ConditionalUnlockManager::loadUnlockedItems();
 
     checkLocalLowExists();
+
+    FileIntegrityManager::verifyFiles();
 
     if (WIDTH % 16 != 0) MessageManager::displayMessage("WIDTH % 16 != 0", 5, DEBUG);
     if (HEIGHT % 16 != 0) MessageManager::displayMessage("HEIGHT % 16 != 0", 5, DEBUG);
@@ -203,12 +214,47 @@ int main() {
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     //
 
+    // Set cursor
+    sf::Cursor cursor;
+    sf::Image cursorImage;
+    if (!cursorImage.loadFromFile("res/cursor.png")) MessageManager::displayMessage("Could not load cursor icon", 5, WARN);
+    else {
+        cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0, 0 });
+        window.setMouseCursor(cursor);
+    }
+    //
+
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(WIDTH, HEIGHT));
 
     srand(currentTimeMillis());
     
+    // Controller
+    bool controllerConnected = false;
+    int controllerId = -1;
+    for (int i = 0; i < 7; i++) {
+        if (sf::Joystick::isConnected(i)) {
+            controllerConnected = true;
+            controllerId = i;
+            break;
+        }
+    }
+    if (controllerId != -1) GamePad::setControllerId(controllerId);
+    MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
+    MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
+
+    bool mouseCooldownActive = false;
+    constexpr long long mouseCooldownLength = 5000LL;
+    const long long mouseCooldownStartTime = currentTimeMillis();
+    if (GamePad::isConnected()) {
+        mouseCooldownActive = true;
+        USING_MOUSE = false;
+        window.setMouseCursorVisible(false);
+    }
+    //
+
     std::shared_ptr<Game> game = std::shared_ptr<Game>(new Game(&camera, &window));
     GamePad::addListener(game);
+    EndGameSequence::addListener(game);
 
     sf::Event event;
 
@@ -227,25 +273,11 @@ int main() {
     sf::Sprite uiSurfaceSprite;
     uiSurfaceSprite.setTexture(uiSurfaceTexture);
 
-    // Controller
-    bool controllerConnected = false;
-    int controllerId = -1;
-    for (int i = 0; i < 7; i++) {
-        if (sf::Joystick::isConnected(i)) {
-            controllerConnected = true;
-            controllerId = i;
-            break;
-        }
-    }
-    if (controllerId != - 1) GamePad::setControllerId(controllerId);
-    MessageManager::displayMessage("Controller is " + (std::string)(controllerConnected ? "" : "not ") + "connected", 0);
-    MessageManager::displayMessage("Controller id: " + std::to_string(controllerId), 0);
-
     while (window.isOpen()) {
         while (window.pollEvent(event)) {
             switch (event.type) {
             case sf::Event::Closed:
-                window.close();
+                game->buttonPressed("exit");
                 break;
             case sf::Event::KeyPressed:
                 game->keyPressed(event.key.code);
@@ -264,11 +296,15 @@ int main() {
                 );
                 break;
             case sf::Event::MouseMoved:
-                window.setMouseCursorVisible(true);
-                USING_MOUSE = true;
-                game->mouseMoved(
-                    event.mouseMove.x, event.mouseMove.y
-                );
+                if (!mouseCooldownActive) {
+                    window.setMouseCursorVisible(true);
+                    USING_MOUSE = true;
+                    game->mouseMoved(
+                        event.mouseMove.x, event.mouseMove.y
+                    );
+                } else if (currentTimeMillis() - mouseCooldownStartTime >= mouseCooldownLength) {
+                    mouseCooldownActive = false;
+                }
                 break;
             case sf::Event::MouseWheelScrolled:
                 game->mouseWheelScrolled(event.mouseWheelScroll);

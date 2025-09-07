@@ -1,0 +1,7 @@
+#!SIG4130699228
+itemName = "_PROJECTILE_ERROR"
+velocity = 4.0
+hitBox = 0, 0, 32, 32
+rotate = false
+onlyHitEnemies = false
+lifeTime = 8000

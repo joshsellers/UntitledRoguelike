@@ -15,6 +15,7 @@
 #include "../mod/ScriptExtensions.h"
 #include "effect/PlayerVisualEffectManager.h"
 #include "ConditionalUnlockManager.h"
+#include "../core/FinalBossEffectManager.h"
 
 const Item Item::TOP_HAT(0, "Top hat", sf::IntRect(0, 13, 1, 1), false, 0, false,
     "A fancy hat",
@@ -129,7 +130,7 @@ const Item Item::RIFLE_ROUND(18, "Rifle Round", sf::IntRect(36, 3, 1, 1), true, 
 );
 const ProjectileData Item::DATA_RIFLE_ROUND(Item::RIFLE_ROUND.getId(), 8, sf::IntRect(6, 8, 4, 4), true, true);
 
-const Item Item::ASSAULT_RIFLE(19, "Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
+const Item Item::ASSAULT_RIFLE(19, "_Assault Rifle", sf::IntRect(36, 0, 1, 1), false, RIFLE_ROUND.getId(), false,
     "Big scary shoots fast",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(20, 3), true, 200, true,
     [](Entity* parent) {
@@ -148,15 +149,15 @@ const Item Item::LIGHT_LASER_CHARGE(21, "Light Laser Charge", sf::IntRect(43, 3,
     EQUIPMENT_TYPE::AMMO, 8, 0, 0, sf::Vector2f(), false, 150
 );
 
-const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
+const Item Item::_PROJECTILE_LIGHT_LASER_CHARGE(22, "_DEPRECATED_LIGHT_LASER_PROJECTILE", sf::IntRect(43, 4, 1, 1), false, 0, false,
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 8, 0, 0, sf::Vector2f(), false
 );
 const ProjectileData Item::DATA_PROJECTILE_LIGHT_LASER_CHARGE(Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(), 10, sf::IntRect(6, 8, 4, 4), true, true);
 
-const Item Item::LASER_PISTOL(23, "Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+const Item Item::LASER_PISTOL(23, "_Laser Pistol", sf::IntRect(43, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pew Pew",
-    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 80, true,
+    EQUIPMENT_TYPE::TOOL, 4, 0, 0, sf::Vector2f(14, 4), true, 80, false,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -196,8 +197,6 @@ const Item Item::SLIME_BALL(28, "Slime Ball", sf::IntRect(6, 4, 1, 1), false, 0,
         slimeBall->loadSprite(parent->getWorld()->getSpriteSheet());
         slimeBall->setWorld(parent->getWorld());
         parent->getWorld()->addEntity(slimeBall);
-
-        if (!Tutorial::isCompleted()) Tutorial::completeStep(TUTORIAL_STEP::EQUIP_SLIMEBALL);
         return true;
     }, 0, false, 0, 0, true
 );
@@ -341,22 +340,22 @@ const Item Item::SCYTHE(41, "_Scythe", sf::IntRect(57, 0, 1, 1), false, 0, false
 
 const Item Item::MATMURA_HELMET(42, "Crypticus Helmet", sf::IntRect(13, 30, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, true
+    EQUIPMENT_TYPE::ARMOR_HEAD, 15, 0, 0, sf::Vector2f(), false, 150, false
 );
 
 const Item Item::MATMURA_CHESTPLATE(43, "Crypticus Chestplate", sf::IntRect(13, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, true
+    EQUIPMENT_TYPE::ARMOR_BODY, 15, 0, 0, sf::Vector2f(), false, 125, false
 );
 
 const Item Item::MATMURA_LEGGINGS(44, "Crypticus Leggings", sf::IntRect(17, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, true
+    EQUIPMENT_TYPE::ARMOR_LEGS, 15, 0, 0, sf::Vector2f(), false, 100, false
 );
 
 const Item Item::MATMURA_BOOTS(45, "Crypticus Boots", sf::IntRect(21, 43, 1, 1), false, 0, false,
     "Mysterious armor\n15 protection",
-    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, true
+    EQUIPMENT_TYPE::ARMOR_FEET, 15, 0, 0, sf::Vector2f(), false, 75, false
 );
 
 const Item Item::BROADSWORD(46, "_Broadsword", sf::IntRect(57, 4, 1, 1), false, 0, false,
@@ -373,9 +372,9 @@ const Item Item::ENERGY_DRINK(47, "Energy Drink", sf::IntRect(112 >> SPRITE_SHEE
     }
 );
 
-const Item Item::AUTOLASER(48, "Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
+const Item Item::AUTOLASER(48, "_Autolaser", sf::IntRect(61, 0, 1, 1), false, LIGHT_LASER_CHARGE.getId(), false,
     "Pewpew\n\nAn automatic laser rifle\nUses light laser charges",
-    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 300, true,
+    EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(22, 1), true, 300, false,
     [](Entity* parent) {
         fireTargetedProjectile(parent, DATA_PROJECTILE_LIGHT_LASER_CHARGE, "laser_pistol");
         return false;
@@ -393,7 +392,7 @@ const Item Item::_PROJECTILE_RAILGUN_DART(50, "_RAILGUN_DART_PROJECTILE", sf::In
 );
 const ProjectileData Item::DATA_PROJECTILE_RAILGUN_DART(Item::_PROJECTILE_RAILGUN_DART.getId(), 15, sf::IntRect(8, 8, 8, 8), true, true);
 
-const Item Item::RAILGUN(51, "Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
+const Item Item::RAILGUN(51, "_Railgun", sf::IntRect(68, 0, 1, 1), false, RAILGUN_DART.getId(), false,
     "Harness the power of electromagnets\nto solve your problems",
     EQUIPMENT_TYPE::TOOL, 1, 0, 0, sf::Vector2f(40, 1), true, 500, true,
     [](Entity* parent) {
@@ -441,7 +440,7 @@ const Item Item::BOW(57, "Bow", sf::IntRect(1312 >> SPRITE_SHEET_SHIFT, 0, 1, 1)
     "Helps you get nice forearms",
     EQUIPMENT_TYPE::TOOL, 0, 0, 0, sf::Vector2f(6, 0), true, 5, true,
     [](Entity* parent) {
-        fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW);
+        fireTargetedProjectile(parent, DATA_PROJECTILE_ARROW, "basicprojlaunch");
         return false;
     }, 1, false, 0, 500
 );
@@ -590,9 +589,9 @@ const Item Item::_PROJECTILE_POLLEN(70, "_POLLEN_PROJECTILE", sf::IntRect(89, 40
 
 const ProjectileData Item::DATA_PROJECTILE_POLLEN(Item::_PROJECTILE_POLLEN.getId(), 3.f, sf::IntRect(2, 2, 12, 12), false);
 
-const Item Item::HEALING_MIST(71, "Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
+const Item Item::HEALING_MIST(71, "_Healthy Stench", sf::IntRect(2, 13, 1, 1), true, 16, true,
     "Once activated, heals 5% of your\nmax HP every 5 seconds for 2 minutes\n\nActivate by equipping",
-    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19999, true,
+    EQUIPMENT_TYPE::NOT_EQUIPABLE, 0, 0, 0, sf::Vector2f(), false, 19999, false,
     [](Entity* parent) {
         const unsigned int id = Ability::HEALILNG_MIST.getId();
         if (!AbilityManager::givePlayerAbility(id)) {
@@ -669,7 +668,11 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const float angle = (float)((std::atan2(y, x)));
 
         EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
-        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId())) explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
+        if (parent->getSaveId() == PLAYER 
+            && AbilityManager::playerHasAbility(Ability::EXPLOSIVE_ROUNDS.getId()) 
+            && parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != Item::getIdFromName("Rocket Launcher")) {
+            explosionBehavior = EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT;
+        }
 
         const int projDamage = ITEMS[projData.itemId]->getDamage();
         const float critChance = AbilityManager::getParameter(Ability::CRIT_CHANCE.getId(), "chance");
@@ -681,10 +684,20 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const int damageBoost = ITEMS[parent->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage();
         const int damage = crit ? (damageBoost * 2) + projDamage : damageBoost;
 
-        Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, projData.baseVelocity, projData, 
+        const float velocity = parent->getSaveId() == PLAYER && FinalBossEffectManager::effectIsActive(SLOW_BULLETS) ? 1.0 : projData.baseVelocity;
+
+        Projectile* firedProjectile = ProjectilePoolManager::addProjectile(spawnPos, parent, angle, velocity, projData, 
             onlyHitPlayer, damage, true, passThroughCount, explosionBehavior);
         firedProjectile->setCrit(crit);
+
+        if (parent->getSaveId() == PLAYER && FinalBossEffectManager::effectIsActive(ANTIHOMING_BULLETS)) {
+            firedProjectile->targetSeeking = true;
+            firedProjectile->targetSeekStrength = -0.5f;
+        }
+
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BOUNCING_PROJECTILES.getId())) firedProjectile->bounceOffViewport = true;
+
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::TARGET_SEEKING_BULLETS.getId())) firedProjectile->targetSeeking = true;
 
         if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::SPLITTING_PROJECTILES.getId())) {
             const unsigned int splitCount = AbilityManager::getParameter(Ability::SPLITTING_PROJECTILES.getId(), "splitCount");
@@ -820,7 +833,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::SOMBRERO.getId(),                        3},
     {Item::AXE.getId(),                             0},
     {Item::DAGGER.getId(),                          0},
-    {Item::BULLET_455.getId(),                      3},
+    {Item::BULLET_455.getId(),                      0},
     {Item::HOWDAH.getId(),                          3},
     {Item::POD.getId(),                             0},
     {Item::POD_LAUNCHER.getId(),                    0},
@@ -831,15 +844,15 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::RED_TEE_SHIRT.getId(),                   6},
     {Item::OVERALLS.getId(),                        6},
     {Item::BOOTS.getId(),                           6},
-    {Item::RIFLE_ROUND.getId(),                     17},
-    {Item::ASSAULT_RIFLE.getId(),                   16},
+    {Item::RIFLE_ROUND.getId(),                     0},
+    {Item::ASSAULT_RIFLE.getId(),                   0},
     {Item::PENNY.getId(),                           0},
-    {Item::LIGHT_LASER_CHARGE.getId(),              18},
+    {Item::LIGHT_LASER_CHARGE.getId(),              0},
     {Item::_PROJECTILE_LIGHT_LASER_CHARGE.getId(),  0},
-    {Item::LASER_PISTOL.getId(),                    18},
-    {Item::PROPANE.getId(),                         20},
+    {Item::LASER_PISTOL.getId(),                    0},
+    {Item::PROPANE.getId(),                         0},
     {Item::_PROJECTILE_PROPANE.getId(),             0},
-    {Item::BLOW_TORCH.getId(),                      20},
+    {Item::BLOW_TORCH.getId(),                      50},
     {Item::_PROJECTILE_SLIME_BALL.getId(),          0},
     {Item::SLIME_BALL.getId(),                      12},
     {Item::BANANA.getId(),                          0},
@@ -854,22 +867,22 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::LOCUS_LIFT.getId(),                      4},
     {Item::BONE.getId(),                            0},
     {Item::COIN_MAGNET.getId(),                     6},
-    {Item::SCYTHE.getId(),                          10},
-    {Item::MATMURA_HELMET.getId(),                  32},
-    {Item::MATMURA_CHESTPLATE.getId(),              32},
-    {Item::MATMURA_LEGGINGS.getId(),                32},
-    {Item::MATMURA_BOOTS.getId(),                   32},
-    {Item::BROADSWORD.getId(),                      8},
+    {Item::SCYTHE.getId(),                          0},
+    {Item::MATMURA_HELMET.getId(),                  0},
+    {Item::MATMURA_CHESTPLATE.getId(),              0},
+    {Item::MATMURA_LEGGINGS.getId(),                0},
+    {Item::MATMURA_BOOTS.getId(),                   0},
+    {Item::BROADSWORD.getId(),                      0},
     {Item::ENERGY_DRINK.getId(),                    4},
-    {Item::AUTOLASER.getId(),                       24},
-    {Item::RAILGUN_DART.getId(),                    30},
+    {Item::AUTOLASER.getId(),                       0},
+    {Item::RAILGUN_DART.getId(),                    0},
     {Item::_PROJECTILE_RAILGUN_DART.getId(),        0},
-    {Item::RAILGUN.getId(),                         30},
-    {Item::GASOLINE.getId(),                        34},
+    {Item::RAILGUN.getId(),                         0},
+    {Item::GASOLINE.getId(),                        0},
     {Item::_PROJECITLE_CHAINSAW.getId(),            0},
-    {Item::CHAINSAW.getId(),                        34},
+    {Item::CHAINSAW.getId(),                        60},
     {Item::_PROJECTILE_CHEESE_SLICE.getId(),        0},
-    {Item::ARROW.getId(),                           2},
+    {Item::ARROW.getId(),                           0},
     {Item::BOW.getId(),                             2},
     {Item::CHEESE_SLICE.getId(),                    0},
     {Item::_PROJECTILE_TEAR_DROP.getId(),           0},
@@ -884,7 +897,7 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
     {Item::_PROJECTILE_THORN.getId(),               0},
     {Item::_PROJECTILE_ROCK.getId(),                0},
     {Item::_PROJECTILE_POLLEN.getId(),              0},
-    {Item::HEALING_MIST.getId(),                    90}
+    {Item::HEALING_MIST.getId(),                    0}
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {

@@ -20,6 +20,7 @@ public:
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 
+    void show();
     void hide();
 
     void setSource(Inventory sourceInventory);

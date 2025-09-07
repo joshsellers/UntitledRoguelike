@@ -1,3 +1,4 @@
+#!SIG2439542679
 name = "_PROJECTILE_LARGE_SHROOM"
 description = "This item should not be obtainable."
 damage = 13

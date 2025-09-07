@@ -28,7 +28,10 @@ void Bouncer::update() {
     if (_isEnemy && getWorld() != nullptr && !_checkedPlayerCollision) {
         _hitBox.left = _pos.x + _hitBoxXOffset;
         _hitBox.top = _pos.y + _hitBoxYOffset;
-        if (getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
+        const sf::FloatRect& playerHitBox = getWorld()->getPlayer()->getHitBox();
+        constexpr float expansion = 60.f;
+        const sf::FloatRect expandedPlayerHitBox(playerHitBox.left - expansion, playerHitBox.top - expansion, playerHitBox.width + expansion * 2, playerHitBox.height + expansion * 2);
+        if (expandedPlayerHitBox.intersects(getHitBox())) {
             deactivate();
         }
         _checkedPlayerCollision = true;

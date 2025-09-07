@@ -1,0 +1,10 @@
+#!SIG151104133
+name = "Bloat Jewel"
+description = "A gem that holds mysterious power..."
+conditionalUnlock = true
+isBuyable = true
+value = 500
+rarityTier = 3
+isConsumable = true
+functionName = "bloatjewel"
+textureRect = 25, 17, 1, 1

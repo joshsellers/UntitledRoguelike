@@ -1,3 +1,4 @@
+#!SIG1685834254
 itemName = "_PROJECTILE_AUTO_PISTOL"
 velocity = 5
 lifeTime = 5000

@@ -16,8 +16,9 @@ Entity::Entity(ENTITY_SAVE_ID saveId, sf::Vector2f pos, float baseSpeed, const i
     _baseSpeed = baseSpeed;
 
     _wanderTargetPos = _pos;
-
-    _uid = generateUID();
+                                                          
+    if (saveId == PLAYER) _uid = "abadbabe-beef-beef-beef-abadbabed00d";
+    else _uid = generateUID();
 }
 
 void Entity::move(float xa, float ya) {
@@ -462,6 +463,10 @@ sf::Sprite Entity::getSprite() const {
     return _sprite;
 }
 
+sf::Sprite& Entity::getSpriteRef() {
+    return _sprite;
+}
+
 bool Entity::displayBottom() const {
     return _displayBottom;
 }
@@ -574,13 +579,17 @@ int& Entity::getMaxHitPointsRef() {
 void Entity::takeDamage(int damage, bool crit) {
     if (getEntityType() != "player" && getEntityType() != "shopext" && getEntityType() != "shopint" && getEntityType() != "barberext" && getEntityType() != "barberint" 
         && getEntityType() != "shopkeep") {
-        sf::Vector2f pos = getPosition();
-        if (_isProp) pos.x += (float)(_spriteWidth * TILE_SIZE) / 2;
+        if (DAMAGE_PARTICLES_ENABLED && !(getSaveId() == DEV_BOSS && getHitPoints() <= 0)) {
+            sf::Vector2f pos = getPosition();
+            if (_isProp) pos.x += (float)(_spriteWidth * TILE_SIZE) / 2;
 
-        std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(pos, damage, crit));
-        damageParticle->setWorld(getWorld());
-        damageParticle->loadSprite(getWorld()->getSpriteSheet());
-        getWorld()->addEntity(damageParticle);
+            std::shared_ptr<DamageParticle> damageParticle = std::shared_ptr<DamageParticle>(new DamageParticle(pos, damage, crit));
+            damageParticle->setWorld(getWorld());
+            damageParticle->loadSprite(getWorld()->getSpriteSheet());
+            getWorld()->addEntity(damageParticle);
+        }
+
+        if (!_isProp && !_overrideDamageShaderBehavior) _timeDamageTaken = currentTimeMillis();
     }
     this->damage(damage);
 
@@ -592,6 +601,11 @@ void Entity::damage(int damage) {
     if (_hitPoints <= 0) {
         _isActive = false;
     }
+}
+
+bool Entity::isTakingDamage() const {
+    constexpr long long damageDisplayTime = 225LL;
+    return currentTimeMillis() - _timeDamageTaken < damageDisplayTime;
 }
 
 void Entity::heal(int hitPoints) {
@@ -698,6 +712,18 @@ void Entity::emptyMagazine() {
 
 bool Entity::isReloading() const {
     return _isReloading;
+}
+
+bool Entity::ignoresViewport() const {
+    return _ignoreViewport;
+}
+
+bool Entity::spawnedInShop() const {
+    return _spawnedInShop;
+}
+
+bool Entity::useDefaultDamageIndicator() const {
+    return _useDefaultDamageIndicator;
 }
 
 ENTITY_SAVE_ID Entity::getSaveId() const {

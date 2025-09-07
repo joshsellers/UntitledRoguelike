@@ -1,0 +1,7 @@
+#!SIG3588596273
+itemName = "_PROJECTILE_TREEMAN_LOG"
+velocity = 2.0
+lifeTime = 1750
+hitBox = 0, 0, 16, 16
+rotate = true
+allowPlayerProjectileEffects = false

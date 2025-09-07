@@ -1,3 +1,4 @@
+#!SIG2840309115
 itemName = "_PROJECTILE_SMALL_TOOTH"
 velocity = 2.0
 rotate = true

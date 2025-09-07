@@ -16,6 +16,7 @@ public:
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
     void controllerButtonPressed(GAMEPAD_BUTTON button);
+    void gamepadConnected();
     void gamepadDisconnected();
 
     void keyPressed(sf::Keyboard::Key& key);

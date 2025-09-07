@@ -61,7 +61,20 @@ std::string Compiler::compile(std::string assembly) {
         {"player.getStaminaRestoreRate",    INSTRUCTION::PLGETSTAMINARESTORE},
         {"player.setSpeedMultiplier",       INSTRUCTION::PLSETSPEEDMULT},
         {"player.getSpeedMultiplier",       INSTRUCTION::PLGETSPEEDMULT},
-        {"player.removeItem",               INSTRUCTION::PLRMITEM}
+        {"player.removeItem",               INSTRUCTION::PLRMITEM},
+        {"entity.setPosition",              INSTRUCTION::ESETPOS},
+        {"entity.getXPosition",             INSTRUCTION::EGETPOSX},
+        {"entity.getYPosition",             INSTRUCTION::EGETPOSY},
+        {"entity.rotate",                   INSTRUCTION::EROT},
+        {"entity.setScale",                 INSTRUCTION::ESETSCALE},
+        {"randomChance",                    INSTRUCTION::RANDPROB},
+        {"pow",                             INSTRUCTION::POW},
+        {"sqrt",                            INSTRUCTION::SQRT},
+        {"sin",                             INSTRUCTION::SIN},
+        {"cos",                             INSTRUCTION::COS},
+        {"tan",                             INSTRUCTION::TAN},
+        {"player.fireLaser",                INSTRUCTION::PLLASER},
+        {"player.fireAnimatedLaser",        INSTRUCTION::PLLANIMLASER}
     };
 
     std::vector<int> bytecode;
@@ -77,6 +90,14 @@ std::string Compiler::compile(std::string assembly) {
                 bytecode.push_back((int)INSTRUCTION::STR);
                 std::string str = value;
                 replaceAll(str, "\"", "");
+
+                if (stringContains(str, "{") && stringContains(str, "}")) {
+                    const std::string varName = splitString(splitString(str, "{")[1], "}")[0];
+                    int varIndex = 0;
+                    findVar(varName, varIndex);
+                    replaceAll(str, varName, std::to_string(varIndex));
+                }
+
                 int strSize = (int)str.size();
                 if (strSize > 255) {
                     MessageManager::displayMessage("String should not be greater than 255 characters", 5, WARN);
@@ -89,6 +110,9 @@ std::string Compiler::compile(std::string assembly) {
             } else if (isNumber(value)) {
                 bytecode.push_back((int)INSTRUCTION::LIT);
                 bytecode.push_back(std::stoi(value));
+            } else if (stringStartsWith(value, "0x")) {
+                bytecode.push_back((int)INSTRUCTION::LIT);
+                bytecode.push_back(std::stoul(value, nullptr, 16));
             } else if (value != "NULL") {
                 bytecode.push_back((int)INSTRUCTION::LIT);
                 int varIndex = 0;

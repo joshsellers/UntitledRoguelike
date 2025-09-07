@@ -35,6 +35,7 @@ public:
     void mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll);
     void textEntered(const sf::Uint32 character);
 
+    void show();
     void hide();
 
     void setFilter(FILTER_TYPE filter);
@@ -88,6 +89,10 @@ protected:
     void unfilterGamepadIndex();
 
     int _discountedItemId = -1;
+
+    bool _displayControls = false;
+
+    sf::RectangleShape _buttonSprite;
 };
 
 #endif

@@ -1,9 +1,10 @@
+#!SIG87547638
 name = "Can of Soup"
 description = "Nutritious\n\nHeals between 50 and 100 HP"
 isBuyable = true
 value = 350
 isStackable = false
-unlockWaveNumber = 22
+conditionalUnlock = true
 rarityTier = 2
 isConsumable = true
 functionName = "cannedsoup"

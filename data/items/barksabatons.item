@@ -1,0 +1,10 @@
+#!SIG3437913672
+name = "Bark Sabatons"
+description = "Armor made of tree flesh\n\n4 protection"
+damage = 4
+equipmentType = ARMOR_FEET
+isBuyable = true
+value = 22
+conditionalUnlock = true
+rarityTier = 2
+textureRect = 90, 30, 1, 1

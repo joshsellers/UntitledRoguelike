@@ -1,3 +1,4 @@
+#!SIG3185758992
 name = "Chef's Hat"
 description = "Flaunt your culinary expertise\n\nMakes food items restore 25% more HP"
 equipmentType = CLOTHING_HEAD

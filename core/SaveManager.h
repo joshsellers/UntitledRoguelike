@@ -12,6 +12,10 @@
 #include "../inventory/abilities/Ability.h"
 #include "../world/entities/BeeFamiliar.h"
 #include "../world/entities/Blinker.h"
+#include "../world/MiniMapGenerator.h"
+#include "../world/entities/Thief.h"
+#include "FileIntegrityManager.h"
+#include "../inventory/RecentItemUnlockTracker.h"
 
 class SaveManager {
 public:
@@ -58,19 +62,37 @@ public:
             out << "SCORE:" << std::to_string(PLAYER_SCORE) << std::endl;
             if (HARD_MODE_ENABLED) out << "HARD:" + std::to_string(HARD_MODE_ENABLED) << std::endl;
             if (MID_GAME_PERF_BOOST) out << "PERF:" + std::to_string(MID_GAME_PERF_BOOST) << std::endl;
+
+
+            bool alreadyMarked = false;
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == _currentSaveFileName) {
+                    out << "MODDED:1" << std::endl;
+                    alreadyMarked = true;
+                    break;
+                }
+            }
+
+            if (!alreadyMarked && FileIntegrityManager::startupVerificationFailed()) out << "MODDED:1" << std::endl;
+
             saveStats(out);
+            saveRecentUnlocks(out);
             savePlayerData(out);
             saveWorldData(out);
             saveAbilities(out);
             saveEffects(out);
             saveShopData(out);
             saveEntityData(out);
+            saveMiniMapData(out);
 
             out.close();
 
-            if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2);
+            FileIntegrityManager::signFile(fileName);
+
+            if (displaySuccessfulSaveMessage) MessageManager::displayMessage("Game saved succesfully", 2, DEBUG);
         } catch (std::exception ex) {
             MessageManager::displayMessage("Error writing to save file: " + (std::string)ex.what(), 5, ERR);
+            MessageManager::displayMessage("There was an error saving the game.\n\nYou can contact the developer on instagram @pennylooter or at rolmigame@gmail.com", 10);
         }
 
         StatManager::saveOverallStats();
@@ -81,13 +103,15 @@ public:
 
         std::ifstream in(_saveDir + "/" + saveFileName);
         if (!in.good()) {
-            MessageManager::displayMessage("Could not find save file", 5, WARN);
+            MessageManager::displayMessage("Could not find save file: " + saveFileName, 5, WARN);
             loadedSuccessfully = false;
             in.close();
             return loadedSuccessfully;
         } else {
             std::string line;
             while (getline(in, line)) {
+                if (stringStartsWith(line, "#")) continue;
+
                 try {
                     std::vector<std::string> data = splitString(line, ":");
                     std::string fullHeader = data[0] + ":";
@@ -110,6 +134,23 @@ public:
         }
 
         in.close();
+
+        if (!FileIntegrityManager::verifyFile(_saveDir + "/" + saveFileName)) {
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL, "NONE");
+            DISABLE_ACHIEVEMENTS = true;
+            DISABLE_UNLOCKS = true;
+            DISABLE_STATS = true;
+
+            bool found = false;
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == saveFileName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) _modifiedSaveFiles.push_back(saveFileName);
+        }
 
         return loadedSuccessfully;
     }
@@ -145,6 +186,7 @@ public:
 private:
     inline const static std::string _saveDir = "save";
     inline static std::string _currentSaveFileName = "NONE";
+    inline static std::vector<std::string> _modifiedSaveFiles;
 
     inline static World* _world = nullptr;
     inline static ShopManager* _shopManager = nullptr;
@@ -200,6 +242,81 @@ private:
                 out << ":" << std::to_string(seed);
             }
             out << std::endl;
+        }
+
+        if (_world->_shopsWithDoorBlownOpen.size() != 0) {
+            out << "BLOWNUPSHOPS";
+            for (auto& shop : _world->_shopsWithDoorBlownOpen) {
+                out << ":" << std::to_string(shop.x) << "," << std::to_string(shop.y);
+            }
+            out << std::endl;
+        }
+    }
+
+    static void saveMiniMapData(std::ofstream& out) {
+        if (_world->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+            out << "MAPDATA";
+            const std::map<TERRAIN_TYPE, std::string> encoding =
+            {
+                {TERRAIN_TYPE::EMPTY, "0"},
+                {TERRAIN_TYPE::MOUNTAIN_LOW, "1"},
+                {TERRAIN_TYPE::MOUNTAIN_MID, "2"},
+                {TERRAIN_TYPE::MOUNTAIN_HIGH, "3"},
+                {TERRAIN_TYPE::SAND, "4"},
+                {TERRAIN_TYPE::WATER, "5"},
+                {TERRAIN_TYPE::GRASS, "6"},
+                {TERRAIN_TYPE::TUNDRA, "8"},
+                {TERRAIN_TYPE::DESERT, "9"},
+                {TERRAIN_TYPE::SAVANNA, "A"},
+                {TERRAIN_TYPE::FLESH, "B"},
+                {TERRAIN_TYPE::GRASS_FOREST, "C"},
+                {TERRAIN_TYPE::RIVER, "D"},
+                {TERRAIN_TYPE::FUNGUS, "E"}
+            };
+
+            const int mapSize = MiniMapGenerator::CHUNK_SIZE_SCALED * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS;
+            const int chunkSize = MiniMapGenerator::CHUNK_SIZE_SCALED;
+            for (int y = 0; y < mapSize - chunkSize; y += chunkSize) {
+                for (int x = 0; x < mapSize - chunkSize; x += chunkSize) {
+                    const TERRAIN_TYPE firstSubChunk = MiniMapGenerator::getData(x + y * mapSize);
+                    if (firstSubChunk != TERRAIN_TYPE::EMPTY) {
+                        out << ":" << std::to_string(x) << "," << std::to_string(y) << ".";
+                        bool sameTerrainType = true;
+                        for (int ya = y; ya < y + chunkSize; ya++) {
+                            for (int xa = x; xa < x + chunkSize; xa++) {
+                                const TERRAIN_TYPE currentSubChunk = MiniMapGenerator::getData(xa + ya * mapSize);
+                                if (currentSubChunk == firstSubChunk && sameTerrainType) {
+                                    if (xa == x && ya == y) out << encoding.at(currentSubChunk);
+                                    continue;
+                                } else {
+                                    if (sameTerrainType) {
+                                        for (int i = 0; i < (xa - x) + (ya - y) * chunkSize - 1; i++) {
+                                            out << encoding.at(firstSubChunk);
+                                        }
+                                    }
+
+                                    out << encoding.at(currentSubChunk);
+                                    sameTerrainType = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!MiniMapGenerator::getPoiLocations().empty()) {
+                out << std::endl << "MAPPOIS";
+                for (const auto& location : MiniMapGenerator::getPoiLocations()) {
+                    out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+                }
+            }
+
+            if (!MiniMapGenerator::getPinLocations().empty()) {
+                out << std::endl << "MAPPINS";
+                for (const auto& location : MiniMapGenerator::getPinLocations()) {
+                    out << ":" << std::to_string(location.x) + "," << std::to_string(location.y);
+                }
+            }
         }
     }
 
@@ -307,7 +424,7 @@ private:
     static void saveStats(std::ofstream& out) {
         out << "STATS";
         for (int i = 0; i < StatManager::NUM_STATS; i++) {
-            out << ":" << std::to_string(StatManager::getStatThisSave((STATISTIC)i));
+            out << ":" << std::to_string(StatManager::getStatThisRun((STATISTIC)i));
         }
         out << std::endl;
 
@@ -316,6 +433,16 @@ private:
             out << ":" << ConditionalUnlockManager::_catItems[i];
         }
         out << std::endl;
+    }
+
+    static void saveRecentUnlocks(std::ofstream& out) {
+        if (RecentItemUnlockTracker::_recentItemIds.size() > 0) {
+            out << "RUNLK";
+            for (const auto& item : RecentItemUnlockTracker::_recentItemIds) {
+                out << ":" << std::to_string(item.first) << "," << std::to_string(item.second);
+            }
+            out << std::endl;
+        }
     }
     
     inline static std::vector<std::vector<std::string>> _deferredOrbiters;
@@ -438,15 +565,79 @@ private:
             }
 
             _world->init(seed);
+        } else if (header == "MAPDATA") {
+            const std::map<char, TERRAIN_TYPE> encoding =
+            {
+                {'0', TERRAIN_TYPE::EMPTY},
+                {'1', TERRAIN_TYPE::MOUNTAIN_LOW},
+                {'2', TERRAIN_TYPE::MOUNTAIN_MID},
+                {'3', TERRAIN_TYPE::MOUNTAIN_HIGH},
+                {'4', TERRAIN_TYPE::SAND},
+                {'5', TERRAIN_TYPE::WATER},
+                {'6', TERRAIN_TYPE::GRASS},
+                {'8', TERRAIN_TYPE::TUNDRA},
+                {'9', TERRAIN_TYPE::DESERT},
+                {'A', TERRAIN_TYPE::SAVANNA},
+                {'B', TERRAIN_TYPE::FLESH},
+                {'C', TERRAIN_TYPE::GRASS_FOREST},
+                {'D', TERRAIN_TYPE::RIVER},
+                {'E', TERRAIN_TYPE::FUNGUS}
+            };
+
+            for (const std::string& chunk : data) {
+                const auto rawChunkData = splitString(chunk, ".");
+                const auto rawCoordData = splitString(rawChunkData[0], ",");
+                const std::string& rawSubChunkData = rawChunkData[1];
+
+                const sf::Vector2i coords(std::stoi(rawCoordData[0]), std::stoi(rawCoordData[1]));
+                const int chunkSize = MiniMapGenerator::CHUNK_SIZE_SCALED;
+                for (int y = 0; y < chunkSize; y++) {
+                    for (int x = 0; x < chunkSize; x++) {
+                        const char& subChunk = rawSubChunkData.size() == 1 ? rawSubChunkData.at(0) : rawSubChunkData.at(x + y * chunkSize);
+                        MiniMapGenerator::_data[(coords.x + x) + (coords.y + y) * chunkSize * MiniMapGenerator::MAP_SIZE_DEFAULT_CHUNKS] = encoding.at(subChunk);
+                    }
+                }
+            }
+        } else if (header == "MAPPOIS") {
+            for (const auto& rawLocation : data) {
+                const auto splitData = splitString(rawLocation, ",");
+                MiniMapGenerator::_poiLocations.push_back(sf::Vector2i(std::stoi(splitData[0]), std::stoi(splitData[1])));
+            }
+        } else if (header == "MAPPINS") {
+            for (const auto& rawLocation : data) {
+                const auto splitData = splitString(rawLocation, ",");
+                MiniMapGenerator::_markerLocations.push_back(sf::Vector2i(std::stoi(splitData[0]), std::stoi(splitData[1])));
+            }
+        } else if (header == "RUNLK") {
+            for (const auto& rawEntry : data) {
+                const auto parsedEntry = splitString(rawEntry, ",");
+                RecentItemUnlockTracker::_recentItemIds.push_back({ std::stoul(parsedEntry[0]), parsedEntry[1] == "1" });
+            }
         } else if (header == "HARD") {
             HARD_MODE_ENABLED = true;
         } else if (header == "PERF") {
             MID_GAME_PERF_BOOST = true;
+        } else if (header == "MODDED") {
+            MessageManager::displayMessage("This save file has been modified.\nAchievements, unlocks, and stats will be\ndisabled until the game is restarted.", 10, SPECIAL, "NONE");
+            DISABLE_ACHIEVEMENTS = true;
+            DISABLE_UNLOCKS = true;
+            DISABLE_STATS = true;
+            bool found = false;
+
+            const std::string saveFileName = std::to_string(SELECTED_SAVE_FILE) + ".save";
+            for (const auto& moddedSaveName : _modifiedSaveFiles) {
+                if (moddedSaveName == saveFileName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) _modifiedSaveFiles.push_back(saveFileName);
         } else if (header == "SCORE") {
             PLAYER_SCORE = std::stof(data[0]);
         } else if (header == "STATS") {
             for (int i = 0; i < data.size(); i++) {
-                StatManager::setStatThisSave((STATISTIC)i, std::stof(data[i]));
+                StatManager::setStatThisRun((STATISTIC)i, std::stof(data[i]));
             }
         } else if (header == "CAT") {
             for (int i = 0; i < data.size() && i < 3; i++) {
@@ -507,6 +698,12 @@ private:
                 std::vector<std::string> parsedData = splitString(altarPosData, ",");
                 sf::Vector2f altarPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
                 _world->altarActivatedAt(altarPos);
+            }
+        } else if (header == "BLOWNUPSHOPS") {
+            for (auto& shopDoorData : data) {
+                std::vector<std::string> parsedData = splitString(shopDoorData, ",");
+                sf::Vector2f shopPos(std::stof(parsedData[0]), std::stof(parsedData[1]));
+                _world->shopDoorBlownUpAt(shopPos);
             }
         } else if (header == "DEADSHOPKEEPS") {
             for (auto& seedData : data) {
@@ -833,6 +1030,31 @@ private:
                     break;
                 case FUNGUS_MAN:
                     entity = std::shared_ptr<FungusMan>(new FungusMan(pos));
+                    break;
+                case FROG_BOSS:
+                    entity = std::shared_ptr<FrogBoss>(new FrogBoss(pos));
+                    break;
+                case THIEF:
+                {
+                    const unsigned int pennyAmt = std::stoul(data[4]);
+                    entity = std::shared_ptr<Thief>(new Thief(pos, pennyAmt == 0));
+                    if (pennyAmt != 0) entity->getInventory().addItem(Item::PENNY.getId(), pennyAmt);
+                    break;
+                }
+                case OCTOPUS_BOSS:
+                    entity = std::shared_ptr<OctopusBoss>(new OctopusBoss(pos));
+                    break;
+                case SCYTHE:
+                    entity = std::shared_ptr<Scythe>(new Scythe(pos));
+                    break;
+                case PENGUIN_BOSS:
+                    entity = std::shared_ptr<PenguinBoss>(new PenguinBoss(pos));
+                    break;
+                case HYPNO_PENGUIN:
+                    entity = std::shared_ptr<HypnoPenguin>(new HypnoPenguin(pos));
+                    break;
+                case DEV_BOSS:
+                    entity = std::shared_ptr<DevBoss>(new DevBoss(pos));
                     break;
             }
 

@@ -72,6 +72,7 @@ public:
 
     void controllerButtonReleased(GAMEPAD_BUTTON button);
     void controllerButtonPressed(GAMEPAD_BUTTON button);
+    void gamepadConnected();
     void gamepadDisconnected();
 
     void toggleVisible();
@@ -169,8 +170,9 @@ private:
     bool _isBlinking = false;
     long long _blinkStartTime = 0LL;
 
-    long long _timeDamageTaken = 0LL;
-    bool isTakingDamage() const;
+    sf::Vector2f _collisionForce;
+
+    float _gamepadAimAngle;
 };
 
 #endif

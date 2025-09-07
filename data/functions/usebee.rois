@@ -1,2 +1,3 @@
 runFunction("Bee", "BUILTIN_addOrbiter");
+runFunction(2, "BUILTIN_completeTutorialStep");
 return true;

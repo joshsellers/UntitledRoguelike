@@ -66,6 +66,16 @@
 #include "entities/Mushroid.h"
 #include "entities/Funguy.h"
 #include "entities/FungusMan.h"
+#include "MiniMapGenerator.h"
+#include "entities/FrogBoss.h"
+#include "entities/Thief.h"
+#include "entities/ShopShelf.h"
+#include "../statistics/LocalAchievementManager.h"
+#include "entities/OctopusBoss.h"
+#include "entities/PenguinBoss.h"
+#include "../inventory/RecentItemUnlockTracker.h"
+#include "../core/FinalBossEffectManager.h"
+#include "entities/DevBoss.h"
 
 World::World(std::shared_ptr<Player> player, bool& showDebug) : _showDebug(showDebug) {
     _player = player;
@@ -161,7 +171,9 @@ void World::update() {
                 || entity->getEntityType() == "barberext"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
-                || entity->getEntityType() == "shopatm") entity->update();
+                || entity->getEntityType() == "shopatm"
+                || entity->getEntityType() == "shopshelf"
+                || entity->getEntityType() == "droppeditem") entity->update();
         }
     }
 }
@@ -171,7 +183,7 @@ void World::draw(sf::RenderTexture& surface) {
 
     if (!_isPlayerInShop) {
         for (Chunk& chunk : _chunks) {
-            surface.draw(chunk.sprite, ShaderManager::getShader("waves_frag"));
+            surface.draw(chunk.sprite, ShaderManager::getShader(FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN) ? "bossterrain_frag" : "waves_frag"));
         }
     }
 
@@ -189,16 +201,27 @@ void World::draw(sf::RenderTexture& surface) {
 
     sf::FloatRect cameraBounds = Viewport::getBounds();
     for (const auto& entity : _entities) {
-        if (!entity->isDormant() && !_isPlayerInShop && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()))
-            || (_isPlayerInShop && (entity->getEntityType() == "shopint" 
-                || entity->getEntityType() == "player" 
-                || entity->getEntityType() == "shopcounter" 
+        if (!entity->isDormant() && !_isPlayerInShop && !entity->spawnedInShop() && (cameraBounds.intersects(entity->getSprite().getGlobalBounds()) || entity->ignoresViewport())
+            || (_isPlayerInShop && (entity->getEntityType() == "shopint"
+                || entity->getEntityType() == "player"
+                || entity->getEntityType() == "shopcounter"
                 || entity->getEntityType() == "shopkeep"
                 || entity->getEntityType() == "barberint"
                 || entity->getEntityType() == "barbercounter"
                 || entity->getEntityType() == "barberchair"
                 || entity->getEntityType() == "barber"
-                || entity->getEntityType() == "shopatm"))) entity->draw(surface);
+                || entity->getEntityType() == "shopatm"
+                || entity->getEntityType() == "shopshelf"
+                || (
+                    entity->getEntityType() == "droppeditem" && entity->isActive() && entity->spawnedInShop()
+                    && entity->getSprite().getGlobalBounds().intersects(sf::FloatRect(_shopIntPos.x, _shopIntPos.y, SHOP_INTERIOR_WIDTH, SHOP_INTERIOR_HEIGHT))
+                    ) ))) {
+            entity->draw(surface);
+
+            if (entity->getSaveId() != PLAYER && !entity->isProp() && !entity->isBoss() && entity->isTakingDamage() && entity->useDefaultDamageIndicator()) {
+                surface.draw(entity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
+            }
+        }
         
         if (_showHitBoxes && entity->isDamageable()) {
             sf::RectangleShape hitBox;
@@ -299,6 +322,9 @@ void World::spawnMobs() {
                                 break;
                             case MOB_TYPE::MUSHROID:
                                 mob = std::shared_ptr<Mushroid>(new Mushroid(sf::Vector2f(xi, yi)));
+                                break;
+                            case MOB_TYPE::THIEF:
+                                mob = std::shared_ptr<Thief>(new Thief(sf::Vector2f(xi, yi), true));
                                 break;
                             default:
                                 return;
@@ -558,20 +584,20 @@ void World::removeInactiveEntitiesFromSubgroups() {
 
 void World::eraseChunks(int pX, int pY) {
     for (int i = 0; i < _chunks.size(); i++) {
-        Chunk& chunk = _chunks.at(i);
+        const Chunk& chunk = _chunks.at(i);
 
         if (chunkContains(chunk, sf::Vector2f(pX, pY))) continue;
 
-        int chX = chunk.pos.x;
-        int chY = chunk.pos.y;
+        const int chX = chunk.pos.x;
+        const int chY = chunk.pos.y;
 
-        bool left = std::abs(pX - chX) < CHUNK_LOAD_THRESHOLD;
-        bool top = std::abs(pY - chY) < CHUNK_LOAD_THRESHOLD;
-        bool right = std::abs(pX - (chX + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
-        bool bottom = std::abs(pY - (chY + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
+        const bool left = std::abs(pX - chX) < CHUNK_LOAD_THRESHOLD;
+        const bool top = std::abs(pY - chY) < CHUNK_LOAD_THRESHOLD;
+        const bool right = std::abs(pX - (chX + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
+        const bool bottom = std::abs(pY - (chY + CHUNK_SIZE)) < CHUNK_LOAD_THRESHOLD;
 
-        bool inVerticleBounds = pX > chX && pX < chX + CHUNK_SIZE;
-        bool inHorizontalBounds = pY > chY && pY < chY + CHUNK_SIZE;
+        const bool inVerticleBounds = pX > chX && pX < chX + CHUNK_SIZE;
+        const bool inHorizontalBounds = pY > chY && pY < chY + CHUNK_SIZE;
 
         if ((!left && !right && !top && !bottom)
             || ((top || bottom) && (!inVerticleBounds && !left && !right))
@@ -638,10 +664,10 @@ void World::dumpChunkBuffer() {
 void World::manageCurrentWave() {
     if (_maxEnemiesReached && !_cooldownActive && getEnemyCount() == 0) {
         onWaveCleared();
-        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
     } else if (_cooldownActive && currentTimeMillis() - _cooldownStartTime >= _enemySpawnCooldownTimeMilliseconds) {
         _cooldownActive = false;
-        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+        if (!bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::WAVE);
     } else if (bossIsActive()) incrementEnemySpawnCooldownTimeWhilePaused();
 }
 
@@ -651,21 +677,38 @@ void World::onWaveCleared() {
     _enemiesSpawnedThisRound = 0;
     _cooldownStartTime = currentTimeMillis();
 
+    RecentItemUnlockTracker::onWaveCleared();
+
     if (_waveCounter != 0) {
-        MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5);
+        MessageManager::displayMessage("Wave " + std::to_string(_waveCounter) + " cleared", 5, NORMAL, "NONE");
         StatManager::increaseStat(WAVES_CLEARED, 1.f);
 
-        if (getPlayer()->getHitPoints() < 10) AchievementManager::unlock(SURVIVOR);
+        if (getPlayer()->getHitPoints() < 10) {
+            AchievementManager::unlock(SURVIVOR);
+            ConditionalUnlockManager::increaseUnlockProgress("Knife", 1);
+        }
 
         checkAltarSpawn();
+
+        if (getPlayer()->getInventory().getEquippedItemId(EQUIPMENT_TYPE::CLOTHING_HEAD) == Item::getIdFromName("Crown of Completion")) {
+            getPlayer()->heal(5);
+        }
+
+        if (getPlayer()->getInventory().getEquippedItemId(EQUIPMENT_TYPE::ARMOR_BODY) == Item::getIdFromName("Belt of Completion")) {
+            getPlayer()->setMaxHitPoints(getPlayer()->getMaxHitPoints() + 2);
+        }
     }
 
     if (!Tutorial::isCompleted() && _waveCounter == 1) Tutorial::completeStep(TUTORIAL_STEP::CLEAR_WAVE_1);
     _currentWaveNumber++;
-    if (_currentWaveNumber == 100) {
+    if (_currentWaveNumber == 64) {
         AchievementManager::unlock(UNSTOPPABLE);
-        if (HARD_MODE_ENABLED) AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
-    } else if (_currentWaveNumber == 50) {
+        ConditionalUnlockManager::increaseUnlockProgress("Crown of Completion", 1);
+        if (HARD_MODE_ENABLED) {
+            AchievementManager::unlock(HARDMODE_UNSTOPPABLE);
+            ConditionalUnlockManager::increaseUnlockProgress("Belt of Completion", 1);
+        }
+    } else if (_currentWaveNumber == 42) {
         MID_GAME_PERF_BOOST = true;
     }
 
@@ -673,22 +716,25 @@ void World::onWaveCleared() {
     if (_currentWaveNumber > StatManager::getOverallStat(HIGHEST_WAVE_REACHED)) {
         StatManager::increaseStat(HIGHEST_WAVE_REACHED, _currentWaveNumber - StatManager::getOverallStat(HIGHEST_WAVE_REACHED));
         for (const auto& item : Item::ITEMS) {
-            if (_currentWaveNumber == item->getRequiredWave()) unlockedItemCount++;
+            if (_currentWaveNumber == item->getRequiredWave()) {
+                unlockedItemCount++;
+                RecentItemUnlockTracker::itemUnlocked(item->getId());
+            }
         }
     }
     if (unlockedItemCount > 0) {
         MessageManager::displayMessage(std::to_string(unlockedItemCount) + " new shop item" + (unlockedItemCount > 1 ? "s" : "") + " unlocked!", 8, SPECIAL);
-        SoundManager::playSound("itemunlock");
         StatManager::increaseStat(ITEMS_UNLOCKED, unlockedItemCount);
     }
 
-    if ((_currentWaveNumber + 1) % 8 == 0 && _currentWaveNumber != 95) {
-        // !TODO: increase the number in the if statement below
-        // as new bosses are added, remove the if statement
-        // once all bosses are added
-        if (_currentWaveNumber < 64) {
-            MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10);
-        }
+    if ((_currentWaveNumber + 1) % 5 == 0 && _currentWaveNumber != 59 || _currentWaveNumber == 64) {
+        MessageManager::displayMessage("Something scary will appear after you beat the next wave.\nBe prepared", 10, NORMAL, "message", 3);
+    }
+
+    if (_currentWaveNumber == SHOPS_CLOSED_WAVE) MessageManager::displayMessage("The shops have closed their doors", 8);
+    else if (SHOPS_CLOSED_WAVE - _currentWaveNumber < 6 && _currentWaveNumber < 55) {
+        const int wavesToClose = SHOPS_CLOSED_WAVE - _currentWaveNumber;
+        MessageManager::displayMessage("The shops will close their doors in " + std::to_string(wavesToClose) + " wave" + (wavesToClose > 1 ? "s" : ""), 8, NORMAL, "message", 4);
     }
 
     spawnBoss(_currentWaveNumber);
@@ -704,7 +750,7 @@ void World::checkAltarSpawn() {
         constexpr float maxAltarChance = 50.f;
         const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
         if (altarChance != 0.f) {
-            if (randomChance(altarChance / 100.f)) {
+            if (randomChance(altarChance / 100.f) && LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
                 sf::Vector2f spawnPos;
                 const int dirFromPlayer = randomInt(0, 3);
                 const int maxDistFromPlayer = WIDTH;
@@ -724,18 +770,14 @@ void World::checkAltarSpawn() {
                 }
 
                 std::shared_ptr<Altar> altar = std::shared_ptr<Altar>(new Altar(
-                    spawnPos, false, getSpriteSheet()
+                    spawnPos, false, getSpriteSheet(), false
                 ));
                 altar->setWorld(this);
                 addEntity(altar);
 
-                if (getTerrainDataAt(spawnPos) != TERRAIN_TYPE::EMPTY) {
-                    AltarArrow::altarSpawned(spawnPos);
+                AltarArrow::altarSpawned(spawnPos);
 
-                    AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
-                } else {
-                    MessageManager::displayMessage("Did not spawn altar because it would have spawned in empty terrain", 5, DEBUG);
-                }
+                AbilityManager::setParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage", 0.f);
             }
 
             MessageManager::displayMessage("Altar chance: " + std::to_string(altarChance) + "%", 5, DEBUG);
@@ -768,6 +810,11 @@ void World::buildChunk(sf::Vector2f pos) {
     _chunkBuffer.push(chunk);
 
     _mutex.unlock();
+
+    if (getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+        std::thread minimapThread(&MiniMapGenerator::blitChunk, chunk);
+        minimapThread.detach();
+    }
 
     if (!disablePropGeneration) {
         std::thread scatterSpawnThread(&World::generateChunkScatters, this, chunk);
@@ -831,14 +878,21 @@ void World::generateChunkScatters(Chunk& chunk) {
                 if (shopDist(gen) == 0 && !isPropDestroyedAt(sf::Vector2f(x, y))) {
                     const TERRAIN_TYPE shopDoorTerrain = getTerrainDataAt(&chunk, sf::Vector2f(x + 192 / 2, y + 96));
                     if (shopDoorTerrain != TERRAIN_TYPE::WATER && shopDoorTerrain != TERRAIN_TYPE::EMPTY) {
-                        std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet));
+                        std::shared_ptr<ShopExterior> shop = std::shared_ptr<ShopExterior>(new ShopExterior(sf::Vector2f(x, y), _spriteSheet, shopDoorIsBlownOpenAt(sf::Vector2f(x, y))));
                         shop->setWorld(this);
                         _scatterBuffer.push_back(shop);
                         spawnedShopThisChunk = true;
 
                         const bool shopSeen = shopHasBeenSeenAt(sf::Vector2f(x, y));
                         if (!shopSeen && onEnemySpawnCooldown() && !bossIsActive()) {
-                            MessageManager::displayMessage("There's a shop around here somewhere!", 5);
+                            if (Tutorial::isCompleted() && getCurrentWaveNumber() < SHOPS_CLOSED_WAVE) {
+                                MessageManager::displayMessage("There's a shop around here somewhere!", 5, NORMAL, "NONE");
+                            }
+                            shopSeenAt(sf::Vector2f(x, y)); 
+                        }
+                        
+                        if (!shopSeen && getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) {
+                            MiniMapGenerator::markPoi(sf::Vector2f(x, y));
                             shopSeenAt(sf::Vector2f(x, y));
                         } else if (!shopSeen) {
                             shopSeenAt(sf::Vector2f(x, y));
@@ -847,7 +901,7 @@ void World::generateChunkScatters(Chunk& chunk) {
                 }
             }
 
-            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH)) {
+            if (!spawnedAltarThisChunk && (terrainType == TERRAIN_TYPE::MOUNTAIN_HIGH) && LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
                 const sf::Vector2f pos = sf::Vector2f(x, y);
                 boost::random::uniform_int_distribution<> altarDist(0, altarSpawnRate * (terrainType == TERRAIN_TYPE::TUNDRA ? 18 : 1));
                 if (altarDist(gen) == 0 && !isPropDestroyedAt(pos)) {
@@ -1076,7 +1130,8 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
             const sf::Vector2f fungusPrec = TerrainGenInitializer::getParameters()->fungusPrec;
 
             bool flesh = rareBiomeTemp > fleshTemp.x && rareBiomeTemp < fleshTemp.y && rareBiomePrec > fleshPrec.x && rareBiomePrec < fleshPrec.y;
-            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y&& rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y;
+            bool fungus = rareBiomeTemp > fungusTemp.x && rareBiomeTemp < fungusTemp.y && rareBiomePrec > fungusPrec.x && rareBiomePrec < fungusPrec.y 
+                && LocalAchievementManager::isUnlocked(ACHIEVEMENT::DEFEAT_SHROOMBOSS);
 
             if (_seed == 124959026) flesh = true;
             else if (_seed == 4134632056) fungus = true;
@@ -1148,6 +1203,13 @@ sf::Image World::generateChunkTerrain(Chunk& chunk) {
                 rgb = (rgb << 8) + (b + randomInt(0, 10));
             }
 
+            if (FinalBossEffectManager::effectIsActive(FINAL_BOSS_EFFECT::MONOCHROME_TERRAIN)) {
+                //const float nX = norm_0_1(dX, 0, CHUNK_SIZE) * (float)CHUNK_SIZE, nY = norm_0_1(dY, 0, CHUNK_SIZE) * (float)CHUNK_SIZE;
+                
+                const float fg = 255.f * ((float)(std::sin(y * 0.02f) * std::cos(x * 0.02f)));
+                rgb = (((int)fg << 8));
+                if (rgb >> 16 > 0) rgb -= (rgb >> 16) << 16;
+            }
             image.setPixel(x - chX, y - chY, sf::Color(((rgb) << 8) + 0xFF));
         }
     }
@@ -1368,34 +1430,47 @@ void World::spawnBoss(int currentWaveNumber) {
 
     std::shared_ptr<Entity> boss = nullptr;
     switch (currentWaveNumber) {
-        case 8:
+        case 5:
             boss = std::shared_ptr<TreeBoss>(new TreeBoss(spawnPos));
             break;
-        case 16:
+        case 10:
             boss = std::shared_ptr<CheeseBoss>(new CheeseBoss(spawnPos));
             break;
-        case 24:
+        case 15:
             boss = std::shared_ptr<CannonBoss>(new CannonBoss(spawnPos));
             break;
-        case 32:
+        case 20:
             boss = std::shared_ptr<CreamBoss>(new CreamBoss(spawnPos));
             break;
-        case 40:
+        case 25:
             boss = std::shared_ptr<ChefBoss>(new ChefBoss(spawnPos));
             break;
-        case 48:
+        case 30:
             boss = std::shared_ptr<BabyBoss>(new BabyBoss(spawnPos));
             break;
-        case 56:
+        case 35:
             boss = std::shared_ptr<TeethBoss>(new TeethBoss(spawnPos));
             break;
-        case 64:
+        case 40:
             boss = std::shared_ptr<MushroomBoss>(new MushroomBoss(spawnPos));
+            break;
+        case 45:
+            boss = std::shared_ptr<OctopusBoss>(new OctopusBoss(spawnPos));
+            break;
+        case 50:
+            boss = std::shared_ptr<FrogBoss>(new FrogBoss(spawnPos));
+            break;
+        case 55:
+            boss = std::shared_ptr<PenguinBoss>(new PenguinBoss(spawnPos));
+            break;
+        case 65:
+            boss = std::shared_ptr<DevBoss>(new DevBoss(spawnPos));
             break;
     }
 
     if (boss != nullptr) {
-        MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
+        if (boss->getSaveId() == DEV_BOSS) MusicManager::setSituation(MUSIC_SITUATION::FINAL_BOSS);
+        else MusicManager::setSituation(MUSIC_SITUATION::BOSS);
 
         boss->loadSprite(getSpriteSheet());
         boss->setWorld(this);
@@ -1430,6 +1505,20 @@ bool World::altarHasBeenActivatedAt(sf::Vector2f pos) const {
     return false;
 }
 
+void World::shopDoorBlownUpAt(sf::Vector2f pos) {
+    _shopsWithDoorBlownOpen.push_back(pos);
+}
+
+bool World::shopDoorIsBlownOpenAt(sf::Vector2f pos) const {
+    for (auto& shop : _shopsWithDoorBlownOpen)
+        if (shop.x == pos.x && shop.y == pos.y) return true;
+    return false;
+}
+
+std::vector<Chunk>& World::getChunks() {
+    return _chunks;
+}
+
 void World::altarActivatedAt(sf::Vector2f pos) {
     _activatedAltars.push_back(pos);
     AltarArrow::altarActivated();
@@ -1441,18 +1530,20 @@ void World::reseed(const unsigned int seed) {
     gen.seed(_seed);
 }
 
-void World::resetChunks() {
-    if (_loadingChunks.size() == 0) {
+void World::resetChunks(bool force) {
+    if (_loadingChunks.size() == 0 || force) {
         while (!_chunkBuffer.empty()) _chunkBuffer.pop();
 
         _chunks.clear();
         _currentChunk = nullptr;
         _scatterBuffer.clear();
         _entityBuffer.clear();
+
+        if (force) _loadingChunks.clear();
     } else MessageManager::displayMessage("Tried to reset chunks while chunks were loading", 10, DEBUG);
 }
 
-void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
+void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos, bool doorBlownUp) {
     _isPlayerInShop = true;
     if (buildingID == "shop") {
         bool visitedShop = false;
@@ -1471,9 +1562,10 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         else if (_visitedShops.at(shopIndex)) visitedShop = true;
         else if (!_visitedShops.at(shopIndex)) _visitedShops.at(shopIndex) = true;
 
-        MusicManager::setSituation(MUSIC_SITUTAION::SHOP);
+        MusicManager::setSituation(MUSIC_SITUATION::SHOP);
 
-        std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet()));
+        _shopIntPos = buildingPos;
+        std::shared_ptr<ShopInterior> shopInterior = std::shared_ptr<ShopInterior>(new ShopInterior(buildingPos, getSpriteSheet(), doorBlownUp));
         shopInterior->setWorld(this);
         addEntity(shopInterior);
 
@@ -1493,6 +1585,16 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
             addEntity(corpse);
         }
 
+        const sf::Vector2f shelfBasePos(buildingPos.x + 128 - TILE_SIZE - 1 + 7, buildingPos.y + 56 - 9 - TILE_SIZE * 2);
+        constexpr float shelfSpacing = 36.f;
+        constexpr int shelfCount = 3;
+        for (int i = 0; i < shelfCount; i++) {
+            auto& shelf = std::shared_ptr<ShopShelf>(new ShopShelf({shelfBasePos.x, shelfBasePos.y + shelfSpacing * i}));
+            shelf->setWorld(this);
+            shelf->loadSprite(getSpriteSheet());
+            addEntity(shelf);
+        }
+
         float atmChance = 0.1f;
         if (AbilityManager::playerHasAbility(Ability::DEBIT_CARD.getId())) {
             atmChance += AbilityManager::getParameter(Ability::DEBIT_CARD.getId(), "chance");
@@ -1502,7 +1604,7 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
         const unsigned int seed = shopkeepPos.x + shopkeepPos.y * (shopkeepPos.x - shopkeepPos.y);
         srand(seed);
         if (randomChance(atmChance)) {
-            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96, buildingPos.y), getSpriteSheet()));
+            std::shared_ptr<ShopATM> shopAtm = std::shared_ptr<ShopATM>(new ShopATM(sf::Vector2f(buildingPos.x + 96 - TILE_SIZE + 3, buildingPos.y), getSpriteSheet()));
             shopAtm->setWorld(this);
             addEntity(shopAtm);
         }
@@ -1536,9 +1638,9 @@ void World::enterBuilding(std::string buildingID, sf::Vector2f buildingPos) {
 }
 
 void World::exitBuilding() {
-    if (onEnemySpawnCooldown() && !bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
-    else if (bossIsActive()) MusicManager::setSituation(MUSIC_SITUTAION::BOSS);
-    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+    if (onEnemySpawnCooldown() && !bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
+    else if (bossIsActive()) MusicManager::setSituation(MUSIC_SITUATION::BOSS);
+    else MusicManager::setSituation(MUSIC_SITUATION::WAVE);
 
     _isPlayerInShop = false;
 
@@ -1581,8 +1683,8 @@ bool World::bossIsActive() const {
 }
 
 void World::bossDefeated() {
-    if (onEnemySpawnCooldown()) MusicManager::setSituation(MUSIC_SITUTAION::COOLDOWN);
-    else MusicManager::setSituation(MUSIC_SITUTAION::WAVE);
+    if (onEnemySpawnCooldown()) MusicManager::setSituation(MUSIC_SITUATION::COOLDOWN);
+    else MusicManager::setSituation(MUSIC_SITUATION::WAVE);
 
     _bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
@@ -1591,30 +1693,73 @@ void World::bossDefeated() {
     switch (getCurrentBoss()->getSaveId()) {
         case CHEESE_BOSS:
             achievement = DEFEAT_CHEESEBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("SMG", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Assault Rifle", 1);
             break;
         case CANNON_BOSS:
             achievement = DEFEAT_CANNONBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Rocket Launcher", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Laser Pistol", 1);
             break;
         case TREE_BOSS:
             achievement = DEFEAT_TREEBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Leaf Hat", 1);
+            if (HARD_MODE_ENABLED) {
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Cuirass", 1);
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Greaves", 1);
+                ConditionalUnlockManager::increaseUnlockProgress("Bark Sabatons", 1);
+            }
             break;
         case CREAM_BOSS:
             achievement = DEFEAT_CREAMBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Scythe", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Bloat Jewel", 1);
             break;
         case CHEF_BOSS:
             achievement = DEFEAT_CHEFBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Can of Soup", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Chef's Hat", 1);
             break;
         case BABY_BOSS:
             achievement = DEFEAT_BABYBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Railgun", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Minigun", 1);
             break;
         case TEETH_BOSS:
             achievement = DEFEAT_TEETHBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Speed Pill", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Sharp Teeth", 1);
             break;
         case MUSHROOM_BOSS:
             achievement = DEFEAT_SHROOMBOSS;
-            ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
+            if (!LocalAchievementManager::isUnlocked(DEFEAT_SHROOMBOSS)) {
+                MessageManager::displayMessage("You unlocked the Fungus Biome!", 8, SPECIAL);
+            }
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Head", 1);
+            break;
+        case FROG_BOSS:
+            achievement = DEFEAT_FROGBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Burst Jewel", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Airstrike", 1);
+            break;
+        case OCTOPUS_BOSS:
+            achievement = DEFEAT_OCTOPUSBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Autolaser", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Radioactive Octopus", 1);
+            break;
+        case PENGUIN_BOSS:
+            achievement = DEFEAT_PENGUINBOSS;
+            ConditionalUnlockManager::increaseUnlockProgress("Penguin Cannon", 1);
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Seek Jewel", 1);
+
+            MessageManager::displayMessage("The shops will close their doors\nafter the next wave...", 8, NORMAL, "message", randomInt(2, 4));
+            break;
+        case DEV_BOSS:
+            achievement = DEFEAT_DEVBOSS;
+            if (!LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS)) {
+                MessageManager::displayMessage("You unlocked Crypticus Armor!", 8, SPECIAL);
+            }
+            if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
             break;
     }
 

@@ -1,3 +1,4 @@
+#!SIG634683391
 name = "_PROJECTILE_LARGE_TOOTH"
 description = "This item should not be obtainable."
 damage = 30

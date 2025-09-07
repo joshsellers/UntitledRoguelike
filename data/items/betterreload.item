@@ -1,3 +1,4 @@
+#!SIG1235167177
 name = "Nimbility Implant"
 description = "A permanent implant that rewires your brain\nso that your fingers move faster\n and more precisely.\n\nDecreases reload time by 25%\nIncreases crit chance by 2%"
 isStackable = false

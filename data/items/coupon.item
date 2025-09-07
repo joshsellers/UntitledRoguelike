@@ -1,3 +1,4 @@
+#!SIG3719534626
 name = "Coupon"
 description = "Increases the chance for shops to\nhave a discount by 10%"
 isConsumable = true

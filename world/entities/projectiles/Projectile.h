@@ -12,7 +12,7 @@ public:
     virtual void update();
     void draw(sf::RenderTexture& surface);
 
-    void setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount);
+    void setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount, const unsigned int splitIterations = 1);
 
     void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
@@ -21,10 +21,13 @@ public:
     bool onlyDamagePlayer = false;
 
     bool optimizedExplosions = false;
+    bool explosionsOnlyDamagePlayer = false;
 
     int passThroughCount = 1;
 
     bool bounceOffViewport = false;
+    bool targetSeeking = false;
+    float targetSeekStrength = 0.05f;
 
     void setCrit(const bool crit);
 
@@ -62,8 +65,11 @@ protected:
     bool _splitOnHit = false;
     bool _splitOnDecay = false;
     unsigned int _splitProjectileCount = 0;
+    unsigned int _splitIterations = 0;
 
     bool _criticalHit = false;
+
+    void seekTarget(sf::Vector2f targetPos, sf::Vector2i targetSpriteSize, float steerAmount = 0.05f, bool constantVelocity = true);
 
     void reset(sf::Vector2f pos, Entity* parent, float directionAngle, float velocity, const ProjectileData data, bool onlyHitPlayer = false, 
         int damageBoost = 0, bool addParentVelocity = true, int passThroughCount = 1, EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA);

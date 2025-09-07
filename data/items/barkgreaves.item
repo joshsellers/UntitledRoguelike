@@ -1,0 +1,10 @@
+#!SIG2353803627
+name = "Bark Greaves"
+description = "Armor made of tree flesh\n\n4 protection"
+damage = 4
+equipmentType = ARMOR_LEGS
+isBuyable = true
+value = 22
+conditionalUnlock = true
+rarityTier = 2
+textureRect = 86, 30, 1, 1

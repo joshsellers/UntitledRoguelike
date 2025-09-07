@@ -1,0 +1,15 @@
+#!SIG2369171947
+name = "Autolaser"
+description = "PewPew"
+isGun = true
+equipmentType = TOOL
+barrelPos = 22, 1
+textureRect = 61, 0, 1, 1
+isBuyable = true
+value = 300
+isAutomatic = true
+magazineSize = 20
+fireRate = 175
+reloadTime = 1200
+functionName = "fireautolaser"
+conditionalUnlock = true

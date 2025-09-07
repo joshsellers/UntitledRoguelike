@@ -1,0 +1,8 @@
+hasAbility = player.hasAbility("Big Bullets");
+if: not hasAbility {
+    player.addAbility("Big Bullets");
+    player.addEffect("Bloat Jewel");
+    return true;
+}
+
+return false;

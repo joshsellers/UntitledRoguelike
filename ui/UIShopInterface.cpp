@@ -2,6 +2,8 @@
 #include "../inventory/ShopManager.h"
 #include "../core/gamepad/GamePad.h"
 #include "../statistics/StatManager.h"
+#include "../world/entities/Entity.h"
+#include "UIControlsDisplay.h"
 
 UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Inventory& source, sf::Font font, std::shared_ptr<sf::Texture> spriteSheet)
     : UIInventoryInterface(buyMode ? 2 : 76, 11, source, font, spriteSheet), _shopManager(shopManager) {
@@ -9,6 +11,8 @@ UIShopInterface::UIShopInterface(ShopManager& shopManager, bool buyMode, Invento
     _text.setString(_buyMode ? "SHOP" : "INVENTORY"); 
     sf::Vector2f basePos(getRelativePos(sf::Vector2f(_x - 1.5f, _y)));
     _text.setPosition(basePos.x + getRelativeWidth(12.5f) - _text.getGlobalBounds().width / 2.f, getRelativeHeight(4.f));
+
+    _displayControls = false;
 }
 
 void UIShopInterface::buttonPressed(std::string buttonCode) {
@@ -114,6 +118,54 @@ void UIShopInterface::subDraw(sf::RenderTexture& surface) {
 
     if (_buyMode && _shopManager.getDiscount().second != 0.f) _discountedItemId = _shopManager.getDiscount().first;
     else _discountedItemId = -1;
+
+    if (GamePad::isConnected()) {
+        sf::Text controlLabel;
+        controlLabel.setFont(_font);
+        controlLabel.setCharacterSize(getRelativeWidth(1.25f));
+        const float x = 43.f;
+        const float xTextPadding = 3.5f;
+        const float y = 70.f;
+        const float ySpacing = 4.f;
+
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_BUMPER));
+        _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 0));
+        surface.draw(_buttonSprite);
+
+        controlLabel.setString("switch to buy menu");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
+        surface.draw(controlLabel);
+
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_BUMPER));
+        _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 1));
+        surface.draw(_buttonSprite);
+
+        controlLabel.setString("switch to sell menu");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
+        surface.draw(controlLabel);
+
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
+        _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 2));
+        surface.draw(_buttonSprite);
+
+        controlLabel.setString("buy/sell");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
+        surface.draw(controlLabel);
+
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::Y));
+        _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 3));
+        surface.draw(_buttonSprite);
+        controlLabel.setString("buy/sell all");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
+        surface.draw(controlLabel);
+
+        _buttonSprite.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
+        _buttonSprite.setPosition(getRelativePos(x, y + ySpacing * 4));
+        surface.draw(_buttonSprite);
+        controlLabel.setString("buy/sell 25");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 4 + 1.f));
+        surface.draw(controlLabel);
+    }
 }
 
 void UIShopInterface::darkenUnselectedMenu(sf::RenderTexture& surface) {

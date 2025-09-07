@@ -1,0 +1,5 @@
+#!SIG2895884743
+name = "_PROJECTILE_ASSAULT_RIFLE"
+description = "This item should not be obtainable."
+damage = 6
+textureRect = 36, 3, 1, 1 

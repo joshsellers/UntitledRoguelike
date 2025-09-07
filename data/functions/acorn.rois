@@ -1,0 +1,19 @@
+playerHasAbility = player.hasAbility("Tree Man");
+if: not playerHasAbility {
+    player.addAbility("Tree Man");
+    player.addEffect("Tree Man");
+
+    return true;
+}
+
+currentChance = player.getAbilityParameter("Tree Man", "fireChance");
+if: currentChance < 1 {
+    increaseAmount = random(2, 5);
+
+    player.setAbilityParameter("Tree Man", "fireChance", currentChance + increaseAmount / 100);
+    displayMessage("Increased log fire rate", 5);
+    return true;
+}
+
+displayMessage("You can't use any more of these.", 5);
+return false;

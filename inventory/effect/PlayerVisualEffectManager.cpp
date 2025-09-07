@@ -10,8 +10,8 @@ void PlayerVisualEffectManager::drawEffects(Player* player, sf::RenderTexture& s
             sf::Vector2f playerPos = player->getPosition();
 
             constexpr int spriteHeight = 3;
-            int yOffset = player->isMoving() || player->isSwimming() ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
-            if (playerHasEffect("Dev's Blessing")) yOffset = 0;
+            int yOffset = player->isMoving() || player->isSwimming() || (playerHasEffect("Dev's Blessing") && effect.name == "Dev's Blessing") ? ((player->_numSteps >> player->_animSpeed) & 3) * TILE_SIZE * spriteHeight : 0;
+            if (playerHasEffect("Dev's Blessing") && effect.name != "Dev's Blessing") yOffset = 0;
 
             sf::IntRect effectTextureRect(effect.texturePos.x, effect.texturePos.y, spriteHeight * TILE_SIZE, (player->isSwimming() ? TILE_SIZE * 2 : spriteHeight * TILE_SIZE));
             int spriteY = effectTextureRect.top;

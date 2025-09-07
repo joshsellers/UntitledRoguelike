@@ -6,6 +6,8 @@
 #include "ProjectileDataManager.h"
 #include "ProjectilePoolManager.h"
 #include "../../../core/Viewport.h"
+#include "../../../inventory/abilities/AbilityManager.h"
+#include "../../../inventory/abilities/Ability.h"
 
 constexpr long long LIFETIME = 5000LL;
 
@@ -29,6 +31,13 @@ Projectile::Projectile(sf::Vector2f pos, Entity* parent, float directionAngle, f
         _hitBoxYOffset = _data.hitBox.top;
         _hitBox.width = _data.hitBox.width;
         _hitBox.height = _data.hitBox.height;
+
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) && data.allowPlayerProjectileEffects) {
+            _hitBoxXOffset *= 2;
+            _hitBoxYOffset *= 2;
+            _hitBox.width *= 2;
+            _hitBox.height *= 2;
+        }
 
         if (_explosionBehavior == EXPLOSION_BEHAVIOR::DEFER_TO_DATA) _explosionBehavior = _data.explosionBehavior;
     } else {
@@ -75,7 +84,7 @@ void Projectile::update() {
                 _isActive = false;
                 return;
             }
-        } else if (_parent->getEntityType() != "player") {
+        } else if (_parent->getSaveId() != PLAYER) {
             for (auto& entity : getWorld()->getEntities()) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
@@ -167,6 +176,38 @@ void Projectile::update() {
         }
     }
 
+    if (targetSeeking && (_data.onlyHitEnemies || _parent->getSaveId() == PLAYER)) {
+        const float range = 100000.f;
+        float smallestDistance = range;
+        std::shared_ptr<Entity> closestEnemy = nullptr;
+        for (const auto& enemy : getWorld()->getEnemies()) {
+            if (enemy->isActive()) {
+                const float distSquared = std::pow(enemy->getPosition().x - getPosition().x, 2) + std::pow((enemy->getPosition().y + enemy->getSpriteSize().y / 2.f) - getPosition().y, 2);
+                if (distSquared < smallestDistance) {
+                    smallestDistance = distSquared;
+                    closestEnemy = enemy;
+                }
+            }
+        }
+
+        if (closestEnemy != nullptr) {
+            seekTarget(closestEnemy->getPosition(), closestEnemy->getSpriteSize(), targetSeekStrength);
+
+            if (_data.rotateSprite) _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+        }
+
+        if (!bounceOffViewport) {
+            _baseSpeed = 1;
+            move(_velocityComponents.x, _velocityComponents.y);
+        }
+    } else if (targetSeeking && onlyDamagePlayer) {
+        seekTarget(getWorld()->getPlayer()->getPosition(), { TILE_SIZE, TILE_SIZE * 2 }, targetSeekStrength);
+        if (_data.rotateSprite) _sprite.setRotation(radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x)));
+
+        _baseSpeed = 1;
+        move(_velocityComponents.x, _velocityComponents.y);
+    }
+
     if (bounceOffViewport) {
         _baseSpeed = 1;
         move(_velocityComponents.x, _velocityComponents.y);
@@ -195,11 +236,11 @@ void Projectile::update() {
             _velocityComponents.y = -_velocityComponents.y;
         }
 
-        if (bounced) {
+        if (bounced && _data.rotateSprite) {
             const float angle = radsToDeg(std::atan2(_velocityComponents.y, _velocityComponents.x));
             _sprite.setRotation(angle);
         }
-    } else {
+    } else if (!targetSeeking) {
         _pos.x = _velocityComponents.x * (float)_currentTime + _originalPos.x;
         _pos.y = _velocityComponents.y * (float)_currentTime + _originalPos.y;
     }
@@ -212,9 +253,40 @@ void Projectile::update() {
     _currentTime++;
 }
 
+void Projectile::seekTarget(sf::Vector2f targetPos, sf::Vector2i targetSpriteSize, float steerAmount, bool constantVelocity) {
+    if (constantVelocity) {
+        sf::Vector2f toTarget = targetPos + 0.5f * sf::Vector2f(targetSpriteSize.x, targetSpriteSize.y) - getPosition();
+
+        float targetLength = std::sqrt(toTarget.x * toTarget.x + toTarget.y * toTarget.y);
+        if (targetLength != 0.f) {
+            toTarget /= targetLength;
+        }
+
+        float currentSpeed = std::sqrt(_velocityComponents.x * _velocityComponents.x + _velocityComponents.y * _velocityComponents.y);
+        sf::Vector2f velocityDir = _velocityComponents;
+        if (currentSpeed != 0.f) {
+            velocityDir /= currentSpeed;
+        }
+
+        velocityDir = (1.f - steerAmount) * velocityDir + steerAmount * toTarget;
+
+        float newDirLength = std::sqrt(velocityDir.x * velocityDir.x + velocityDir.y * velocityDir.y);
+        if (newDirLength != 0.f) {
+            velocityDir /= newDirLength;
+        }
+        _velocityComponents = velocityDir * currentSpeed;
+    } else {
+        const float angle = std::atan2((targetPos.y + targetSpriteSize.y / 2.f) - getPosition().y, targetSpriteSize.x - getPosition().x);
+
+        _velocityComponents.x += steerAmount * std::cos(angle);
+        _velocityComponents.y += steerAmount * std::sin(angle);
+    }
+}
+
 void Projectile::spawnExplosion() const {
     const sf::Vector2f spawnPos(_sprite.getGlobalBounds().left + _sprite.getGlobalBounds().width / 2, _sprite.getGlobalBounds().top - (3.f * (float)TILE_SIZE / 2.f));
-    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), optimizedExplosions, optimizedExplosions));
+    const auto& explosion = std::shared_ptr<Explosion>(new Explosion(spawnPos, Item::ITEMS[_itemId]->getDamage(), 
+        optimizedExplosions || explosionsOnlyDamagePlayer, optimizedExplosions && !explosionsOnlyDamagePlayer));
     explosion->setWorld(getWorld());
     explosion->loadSprite(getWorld()->getSpriteSheet());
     getWorld()->addEntity(explosion);
@@ -239,14 +311,17 @@ void Projectile::draw(sf::RenderTexture& surface) {
     surface.draw(_sprite);
 }
 
-void Projectile::setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount) {
+void Projectile::setSplitInto(const std::string projectileDataIdentifier, const bool splitOnHit, const bool splitOnDecay, const unsigned int projectileCount, const unsigned int splitIterations) {
     _splitProjectileDataIdentifer = projectileDataIdentifier;
     _splitOnHit = splitOnHit;
     _splitOnDecay = splitOnDecay;
     _splitProjectileCount = projectileCount;
+    _splitIterations = splitIterations;
 }
 
 void Projectile::split() const {
+    if (_parent == nullptr || !_parent->isActive()) return;
+
     if (_splitProjectileDataIdentifer == "") {
         MessageManager::displayMessage("split() was called on a projectile with an undefined split projectile identifier", 5, WARN);
         return;
@@ -261,6 +336,21 @@ void Projectile::split() const {
 
         proj->setCrit(_criticalHit);
         proj->bounceOffViewport = bounceOffViewport;
+
+        if (_splitIterations > 1) {
+            const std::vector<std::string> identifierParsed = splitString(_splitProjectileDataIdentifer, "-");
+            if (identifierParsed.size() < 2) {
+                MessageManager::displayMessage("Bad identifier for split projectile with split iteration of > 1", 5, WARN);
+                return;
+            }
+
+            const unsigned int iteration = std::stoul(identifierParsed[1]);
+            if (iteration < _splitIterations - 1) {
+                const unsigned int nextIteration = iteration + 1;
+                const std::string identifier = identifierParsed[0] + "-" + std::to_string(nextIteration);
+                proj->setSplitInto(identifier, _splitOnHit, _splitOnDecay, _splitProjectileCount, _splitIterations);
+            }
+        }
     }
 }
 
@@ -273,6 +363,7 @@ void Projectile::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(item->getTextureRect());
     _sprite.setOrigin(0, item->getTextureRect().height / 2);
+
     if (_data.rotateSprite) _sprite.setRotation(_directionAngle * (180.f / PI));
     else _sprite.setRotation(0);
 
@@ -326,7 +417,18 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _hitBoxXOffset = _data.hitBox.left;
     _hitBoxYOffset = _data.hitBox.top;
     _hitBox.width = _data.hitBox.width;
-    _hitBox.height = _data.hitBox.height; 
+    _hitBox.height = _data.hitBox.height;
+
+    if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) && data.allowPlayerProjectileEffects) {
+        _hitBoxXOffset *= 2;
+        _hitBoxYOffset *= 2;
+        _hitBox.width *= 2;
+        _hitBox.height *= 2;
+        _sprite.setScale(2.f, 2.f);
+    } else {
+        _sprite.setScale(1.f, 1.f);
+    }
+
     _hitBox.left = _sprite.getGlobalBounds().left + _hitBoxXOffset;
     _hitBox.top = _sprite.getGlobalBounds().top + _hitBoxYOffset;
 
@@ -342,11 +444,15 @@ void Projectile::reset(sf::Vector2f pos, Entity* parent, float directionAngle, f
     _splitOnHit = false;
     _splitOnDecay = false;
     _splitProjectileCount = 0;
+    _splitIterations = 0;
 
     optimizedExplosions = false;
+    explosionsOnlyDamagePlayer = false;
 
     _criticalHit = false;
 
     bounceOffViewport = false;
+    targetSeeking = false;
+    targetSeekStrength = 0.05f;
     _baseSpeed = 0;
 }

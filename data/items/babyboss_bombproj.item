@@ -1,3 +1,4 @@
+#!SIG1021112871
 name = "_PROJECTILE_BABYBOSS_BOMB"
 description = "This item should not be obtainable."
 damage = 20

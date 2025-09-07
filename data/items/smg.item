@@ -1,3 +1,4 @@
+#!SIG129030288
 name = "SMG"
 description = "Shoots real fast"
 equipmentType = TOOL
@@ -8,7 +9,7 @@ isAutomatic = true
 magazineSize = 30
 fireRate = 75
 reloadTime = 2000
-unlockWaveNumber = 16
+conditionalUnlock = true
 isBuyable = true
 value = 200
 functionName = "firesmg"

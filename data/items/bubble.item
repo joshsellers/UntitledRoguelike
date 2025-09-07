@@ -1,3 +1,4 @@
+#!SIG1606796743
 name = "Bubble"
 description = "A bubble that floats around you\nand shoots bubbles"
 isConsumable = true

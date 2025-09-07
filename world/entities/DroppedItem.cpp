@@ -15,7 +15,7 @@ DroppedItem::DroppedItem(sf::Vector2f pos, float originOffset, unsigned int item
 
     _usesDormancyRules = true;
     _maxTimeOutOfChunk = 60;
-    _dormancyTimeout = MID_GAME_PERF_BOOST ? 60 * 30 : 60 * 5 * 60;
+    _dormancyTimeout = MID_GAME_PERF_BOOST ? 60 * 10 : 60 * 2 * 60;
 
     _entityType = "droppeditem";
 
@@ -39,11 +39,11 @@ void DroppedItem::update() {
             }
             _isActive = false;
 
-            if (!Tutorial::isCompleted() && _itemId == Item::SLIME_BALL.getId()) Tutorial::completeStep(TUTORIAL_STEP::PICK_UP_SLIMEBALL);
+            if (!Tutorial::isCompleted() && _itemId == Item::getIdFromName("Bee")) Tutorial::completeStep(TUTORIAL_STEP::PICK_UP_BEE);
             return;
         }
 
-        if (_itemId == Item::PENNY.getId()) moveTowardPlayer();
+        if (_itemId == Item::PENNY.getId() && (_spawnedInShop || !getWorld()->playerIsInShop())) moveTowardPlayer();
 
         /*for (auto& entity : getWorld()->getCollectorMobs()) {
             if (entity->canPickUpItems() && entity->isActive() && 
@@ -84,6 +84,18 @@ void DroppedItem::draw(sf::RenderTexture& surface) {
         ));
     }
     surface.draw(_sprite);
+
+    if (!Tutorial::isCompleted() && _itemId == Item::getIdFromName("Bee")) {
+        sf::CircleShape circle;
+        circle.setFillColor(sf::Color::Transparent);
+        const float oscSpeed = 0.05f;
+        const unsigned int alpha = (std::sin((float)_animCounter * oscSpeed) * 0.5f + 0.5f) * 255.f;
+        circle.setOutlineColor(sf::Color(((0xFF0000) << 8) + alpha));
+        circle.setOutlineThickness(2.f);
+        circle.setPosition({ _pos.x, _originalY - 3.5f });
+        circle.setRadius(8.5f);
+        surface.draw(circle);
+    }
 }
 
 void DroppedItem::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
@@ -102,6 +114,11 @@ unsigned int DroppedItem::getItemId() const {
 
 unsigned int DroppedItem::getAmount() const {
     return _amount;
+}
+
+void DroppedItem::setWorld(World* world) {
+    _world = world;
+    if (_world->playerIsInShop()) _spawnedInShop = true;
 }
 
 void DroppedItem::moveTowardPlayer() {

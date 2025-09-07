@@ -1,8 +1,8 @@
 #include "UITextField.h"
 #include "UIHandler.h"
 
-UITextField::UITextField(const sf::String label, float x, float y, sf::Font font) 
-    : UIElement(x, y, 1, 1, false, false, font) {
+UITextField::UITextField(const sf::String label, float x, float y, sf::Font font, bool centerOnCoords) 
+    : UIElement(x, y, 1, 1, false, false, font, centerOnCoords) {
     _disableAutomaticTextAlignment = true;
 
     float fontSize = 1;

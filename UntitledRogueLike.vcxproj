@@ -19,21 +19,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core\EndGameSequence.cpp" />
+    <ClCompile Include="core\FileIntegrityManager.cpp" />
+    <ClCompile Include="core\FinalBossEffectManager.cpp" />
+    <ClCompile Include="core\gamepad\GamePad.cpp" />
+    <ClCompile Include="core\MessageManager.cpp" />
     <ClCompile Include="inventory\ConditionalUnlockManager.cpp" />
+    <ClCompile Include="inventory\RecentItemUnlockTracker.cpp" />
+    <ClCompile Include="statistics\LocalAchievementManager.cpp" />
+    <ClCompile Include="ui\UIAchievementDisplay.cpp" />
+    <ClCompile Include="ui\UIControlsDisplay.cpp" />
     <ClCompile Include="ui\UIItemCatalogue.cpp" />
+    <ClCompile Include="ui\UIMiniMapInterface.cpp" />
     <ClCompile Include="world\entities\BabyBoss.cpp" />
     <ClCompile Include="world\entities\BeeFamiliar.cpp" />
     <ClCompile Include="world\entities\BigSnowMan.cpp" />
     <ClCompile Include="world\entities\Bouncer.cpp" />
+    <ClCompile Include="world\entities\DevBoss.cpp" />
+    <ClCompile Include="world\entities\DevBossCmdLine.cpp" />
+    <ClCompile Include="world\entities\FallingBomb.cpp" />
     <ClCompile Include="world\entities\FallingNuke.cpp" />
     <ClCompile Include="mod\byrgo\Bygro.cpp" />
     <ClCompile Include="mod\byrgo\Compiler.cpp" />
     <ClCompile Include="mod\byrgo\Parser.cpp" />
     <ClCompile Include="mod\byrgo\Tokenizer.cpp" />
     <ClCompile Include="world\entities\FallingObjectShadow.cpp" />
+    <ClCompile Include="world\entities\FrogBoss.cpp" />
     <ClCompile Include="world\entities\FungusMan.cpp" />
     <ClCompile Include="world\entities\Funguy.cpp" />
+    <ClCompile Include="world\entities\HypnoPenguin.cpp" />
+    <ClCompile Include="world\entities\ImpactExplosion.cpp" />
     <ClCompile Include="world\entities\LargeMushroom.cpp" />
+    <ClCompile Include="world\entities\LaserBeam.cpp" />
     <ClCompile Include="world\entities\MegaBombBoy.cpp" />
     <ClCompile Include="world\entities\BombBoy.cpp" />
     <ClCompile Include="world\entities\Explosion.cpp" />
@@ -43,6 +60,9 @@
     <ClCompile Include="mod\ScriptExtensions.cpp" />
     <ClCompile Include="world\entities\Mushroid.cpp" />
     <ClCompile Include="world\entities\MushroomBoss.cpp" />
+    <ClCompile Include="world\entities\OctopusBoss.cpp" />
+    <ClCompile Include="world\entities\PenguinBoss.cpp" />
+    <ClCompile Include="world\entities\Scythe.cpp" />
     <ClCompile Include="world\entities\ShopATM.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
     <ClCompile Include="world\entities\Lightning.cpp" />
@@ -54,12 +74,14 @@
     <ClCompile Include="mod\Interpreter.cpp" />
     <ClCompile Include="mod\ModManager.cpp" />
     <ClCompile Include="inventory\effect\PlayerVisualEffectManager.cpp" />
+    <ClCompile Include="world\entities\ShopShelf.cpp" />
     <ClCompile Include="world\entities\SmallMushroom.cpp" />
     <ClCompile Include="world\entities\Soldier.cpp" />
     <ClCompile Include="world\entities\Spore.cpp" />
     <ClCompile Include="world\entities\SwellingShroom.cpp" />
     <ClCompile Include="world\entities\TeethBoss.cpp" />
     <ClCompile Include="world\entities\Blinker.cpp" />
+    <ClCompile Include="world\entities\Thief.cpp" />
     <ClCompile Include="world\entities\TreeBoss.cpp" />
     <ClCompile Include="world\entities\projectiles\ProjectileDataManager.cpp" />
     <ClCompile Include="world\entities\TulipMonster.cpp" />
@@ -200,15 +222,28 @@
     <ClCompile Include="world\entities\TallGrass.cpp" />
     <ClCompile Include="world\entities\Turtle.cpp" />
     <ClCompile Include="world\entities\Yeti.cpp" />
+    <ClCompile Include="world\MiniMapGenerator.cpp" />
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core\EndGameSequenceListener.h" />
+    <ClInclude Include="core\EndGameSequence.h" />
+    <ClInclude Include="core\FileIntegrityManager.h" />
+    <ClInclude Include="core\FinalBossEffectManager.h" />
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
+    <ClInclude Include="inventory\RecentItemUnlockTracker.h" />
+    <ClInclude Include="statistics\LocalAchievementManager.h" />
+    <ClInclude Include="ui\UIAchievementDisplay.h" />
+    <ClInclude Include="ui\UIControlsDisplay.h" />
     <ClInclude Include="ui\UIItemCatalogue.h" />
+    <ClInclude Include="ui\UIMiniMapInterface.h" />
     <ClInclude Include="world\entities\BabyBoss.h" />
     <ClInclude Include="world\entities\BeeFamiliar.h" />
     <ClInclude Include="world\entities\BigSnowMan.h" />
     <ClInclude Include="world\entities\Bouncer.h" />
+    <ClInclude Include="world\entities\DevBoss.h" />
+    <ClInclude Include="world\entities\DevBossCmdLine.h" />
+    <ClInclude Include="world\entities\FallingBomb.h" />
     <ClInclude Include="world\entities\FallingNuke.h" />
     <ClInclude Include="mod\byrgo\Bygro.h" />
     <ClInclude Include="mod\byrgo\Compiler.h" />
@@ -216,9 +251,13 @@
     <ClInclude Include="mod\byrgo\Parser.h" />
     <ClInclude Include="mod\byrgo\Tokenizer.h" />
     <ClInclude Include="world\entities\FallingObjectShadow.h" />
+    <ClInclude Include="world\entities\FrogBoss.h" />
     <ClInclude Include="world\entities\FungusMan.h" />
     <ClInclude Include="world\entities\Funguy.h" />
+    <ClInclude Include="world\entities\HypnoPenguin.h" />
+    <ClInclude Include="world\entities\ImpactExplosion.h" />
     <ClInclude Include="world\entities\LargeMushroom.h" />
+    <ClInclude Include="world\entities\LaserBeam.h" />
     <ClInclude Include="world\entities\MegaBombBoy.h" />
     <ClInclude Include="world\entities\BombBoy.h" />
     <ClInclude Include="world\entities\Explosion.h" />
@@ -228,7 +267,10 @@
     <ClInclude Include="mod\ScriptExtensions.h" />
     <ClInclude Include="world\entities\Mushroid.h" />
     <ClInclude Include="world\entities\MushroomBoss.h" />
+    <ClInclude Include="world\entities\OctopusBoss.h" />
+    <ClInclude Include="world\entities\PenguinBoss.h" />
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
+    <ClInclude Include="world\entities\Scythe.h" />
     <ClInclude Include="world\entities\ShopATM.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
@@ -242,12 +284,14 @@
     <ClInclude Include="mod\Interpreter.h" />
     <ClInclude Include="mod\ModManager.h" />
     <ClInclude Include="inventory\effect\PlayerVisualEffectManager.h" />
+    <ClInclude Include="world\entities\ShopShelf.h" />
     <ClInclude Include="world\entities\SmallMushroom.h" />
     <ClInclude Include="world\entities\Soldier.h" />
     <ClInclude Include="world\entities\Spore.h" />
     <ClInclude Include="world\entities\SwellingShroom.h" />
     <ClInclude Include="world\entities\TeethBoss.h" />
     <ClInclude Include="world\entities\Blinker.h" />
+    <ClInclude Include="world\entities\Thief.h" />
     <ClInclude Include="world\entities\TreeBoss.h" />
     <ClInclude Include="world\entities\projectiles\ProjectileDataManager.h" />
     <ClInclude Include="world\entities\TulipMonster.h" />
@@ -350,6 +394,7 @@
     <ClInclude Include="world\entities\TallGrass.h" />
     <ClInclude Include="world\entities\Turtle.h" />
     <ClInclude Include="world\entities\Yeti.h" />
+    <ClInclude Include="world\MiniMapGenerator.h" />
     <ClInclude Include="world\MobSpawnConfigs.h" />
     <ClInclude Include="world\MobSpawnData.h" />
     <ClInclude Include="world\ParticleSystem.h" />
@@ -420,6 +465,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>pennylooter</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

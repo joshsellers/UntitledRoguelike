@@ -9,6 +9,8 @@
 #include "../inventory/abilities/AbilityManager.h"
 #include "../inventory/abilities/Ability.h"
 #include "ScriptExtensions.h"
+#include "../world/entities/LaserBeam.h"
+#include "../world/World.h"
 
 int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
     int i = 0;
@@ -18,7 +20,7 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
         if (inst == INSTRUCTION::LIT) {
             int value = 0;
             for (int j = 3; j >= 0; j--) {
-                int byte = bytecode.at((i + 1) + j);
+                const unsigned char byte = bytecode.at((i + 1) + j);
                 value += byte << (j * 8);
             }
             push((float)value);
@@ -29,6 +31,9 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
             for (int j = 0; j < strSize; j++) {
                 str += (char)bytecode.at(i + 2 + j);
             }
+
+            if (stringContains(str, "{") && stringContains(str, "}")) formatString(str);
+
             strPush(str);
             i += strSize + 2;
         } else if (inst == INSTRUCTION::IF) {
@@ -529,6 +534,124 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
                 MessageManager::displayMessage("player.getSpeedMultiplier was called in a function that was not provided with a ref to the player", 5, ERR);
             }
             i++;
+        } else if (inst == INSTRUCTION::ESETPOS) {
+            if (entity != nullptr) {
+                const float y = pop();
+                const float x = pop();
+                entity->move(x - entity->getPosition().x, y - entity->getPosition().y);
+            } else {
+                MessageManager::displayMessage("entity.setPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EGETPOSX) {
+            if (entity != nullptr) {
+                push(entity->getPosition().x);
+            } else {
+                MessageManager::displayMessage("entity.getXPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EGETPOSY) {
+            if (entity != nullptr) {
+                push(entity->getPosition().y);
+            } else {
+                MessageManager::displayMessage("entity.getYPosition() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::EROT) {
+            if (entity != nullptr) {
+                const float angle = pop();
+                entity->getSprite().rotate(angle);
+            } else {
+                MessageManager::displayMessage("entity.rotate() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::ESETSCALE) {
+            if (entity != nullptr) {
+                const float scaleY = pop();
+                const float scaleX = pop();
+                entity->getSprite().setScale(scaleX, scaleY);
+            } else {
+                MessageManager::displayMessage("entity.setScale() was called in a function that was not provided with a reference to an entity", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::RANDPROB) {
+            const float chance = pop() / 100.f;
+            push(randomChance(chance));
+            i++;
+        } else if (inst == INSTRUCTION::POW) {
+            const float exponent = pop();
+            const float base = pop();
+            push(std::pow(base, exponent));
+            i++;
+        } else if (inst == INSTRUCTION::SQRT) {
+            const float radicand = pop();
+            push(std::sqrt(radicand));
+            i++;
+        } else if (inst == INSTRUCTION::SIN) {
+            const float angle = degToRads(pop());
+            push(std::sin(angle));
+            i++;
+        } else if (inst == INSTRUCTION::COS) {
+            const float angle = degToRads(pop());
+            push(std::cos(angle));
+            i++;
+        } else if (inst == INSTRUCTION::TAN) {
+            const float angle = degToRads(pop());
+            push(std::tan(angle));
+            i++;
+        } else if (inst == INSTRUCTION::PLLASER) {
+            if (entity != nullptr) {
+                const unsigned int color = pop();
+                const int length = pop();
+                const int widthParameter = pop();
+
+                const int damage = Item::ITEMS[entity->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * entity->getDamageMultiplier();
+                const int width = AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) ? widthParameter * 4 : widthParameter;
+                const auto& laser = std::shared_ptr<LaserBeam>(
+                    new LaserBeam(
+                        entity, entity->getTargetPos() + entity->getVelocity(), color, width, length, damage,
+                        { entity->getVelocity().x, entity->getVelocity().y }, false, 16LL, true
+                    ));
+                laser->setWorld(entity->getWorld());
+                entity->getWorld()->addEntity(laser);
+
+                entity->decrementMagazine();
+            } else {
+                MessageManager::displayMessage("player.fireLaser was called without a reference to the player", 5, ERR);
+            }
+            i++;
+        } else if (inst == INSTRUCTION::PLLANIMLASER) {
+            if (entity != nullptr) {
+                const bool useShader = pop();
+                const int ticksPerFrame = pop();
+                const int frameCount = pop();
+                const int frameHeight = pop();
+                const int frameWidth = pop();
+                const int yTile = pop();
+                const int xTile = pop();
+                const int length = pop();
+                const int widthParameter = pop();
+
+                const int damage = Item::ITEMS[entity->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getDamage() * entity->getDamageMultiplier();
+                const int width = AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId()) ? widthParameter * 4 : widthParameter;
+                const auto& laser = std::shared_ptr<LaserBeam>(
+                    new LaserBeam(
+                        entity, entity->getTargetPos() + entity->getVelocity(), 0xFFFFFFFF, width, length, damage,
+                        { entity->getVelocity().x, entity->getVelocity().y }, false, 16LL, true
+                    ));
+                laser->setWorld(entity->getWorld());
+                laser->setTextureRect(
+                    sf::IntRect(
+                        xTile << SPRITE_SHEET_SHIFT, yTile << SPRITE_SHEET_SHIFT, frameWidth * TILE_SIZE, frameHeight * TILE_SIZE
+                    ), frameCount, ticksPerFrame, useShader
+                );
+                entity->getWorld()->addEntity(laser);
+
+                entity->decrementMagazine();
+            } else {
+                MessageManager::displayMessage("player.fireAnimatedLaser was called without a reference to the player", 5, ERR);
+            }
+            i++;
         } else {
             MessageManager::displayMessage("Unknown instruction: " + std::to_string((int)inst), 5, ERR);
             i++;
@@ -542,4 +665,9 @@ int Interpreter::interpret(std::vector<int> bytecode, Entity* entity) {
 void Interpreter::skipStringLit(int& index, std::vector<int> bytecode) {
     int strSize = bytecode.at(index + 1);
     index += strSize + 1;
+}
+
+void Interpreter::formatString(std::string& str) {
+    const int addr = std::stoi(splitString(splitString(str, "{")[1], "}")[0]);
+    replaceAll(str, "{" + std::to_string(addr) + "}", std::to_string((int)_register[addr]));
 }

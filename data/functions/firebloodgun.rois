@@ -1,6 +1,6 @@
 weaponLoaded = player.weaponIsLoaded();
 
 if: weaponLoaded {
-    #playSound("basicprojlaunch");
+    playSound("squeltch");
     player.fireProjectile("_PROJECTILE_BLOOD_GUN", 2);
 }

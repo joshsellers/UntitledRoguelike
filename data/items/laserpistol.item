@@ -1,0 +1,15 @@
+#!SIG3664465492
+name = "Laser Pistol"
+description = "Pew Pew"
+textureRect = 43, 0, 1, 1
+isGun = true
+equipmentType = TOOL
+damage = 4
+barrelPos = 14, 4
+isBuyable = true
+conditionalUnlock = true
+value = 80
+isAutomatic = false
+magazineSize = 12
+reloadTime = 200
+functionName = "firelaserpistol"

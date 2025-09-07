@@ -16,11 +16,12 @@
 #include "../ui/UILabel.h"
 #include "../../SteamworksHeaders/steam_api.h"
 #include "../ui/UISlider.h"
+#include "../ui/UIMiniMapInterface.h"
 
 
 const std::string GAME_NAME = "pennylooter";
 
-class Game : public UIButtonListener, public GamePadListener {
+class Game : public UIButtonListener, public GamePadListener, public EndGameSequenceListener {
 public:
 	Game(sf::View* camera, sf::RenderWindow* window);
 
@@ -41,9 +42,15 @@ public:
 
 	void controllerButtonPressed(GAMEPAD_BUTTON button);
 	void controllerButtonReleased(GAMEPAD_BUTTON button);
+	void gamepadConnected();
 	void gamepadDisconnected();
 
 	void textEntered(sf::Uint32 character);
+
+	bool gameIsStarted() const;
+
+	virtual void onEndGameSequenceStart();
+	virtual void onEndGameSequenceEnd();
 
 private:
 	void initUI();
@@ -88,6 +95,19 @@ private:
 	std::shared_ptr<UIMenu> _deathMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _audioMenu = std::shared_ptr<UIMenu>(new UIMenu());
 	std::shared_ptr<UIMenu> _unlocksMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _miniMapMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _saveSelectionMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _saveStartMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _progressMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _achievementsMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _controlsDisplayMenu = std::shared_ptr<UIMenu>(new UIMenu());
+	std::shared_ptr<UIMenu> _confirmationMenu = std::shared_ptr<UIMenu>(new UIMenu());
+
+	std::shared_ptr<UILabel> _confirmationLabel;
+	std::string _confirmationCode = "NONE";
+
+	std::shared_ptr<UILabel> _selectSaveSlotLabel;
+	std::shared_ptr<UILabel> _selectedSlotLabel;
 
 	std::shared_ptr<UISlider> _musicSlider;
 	std::shared_ptr<UISlider> _sfxSlider;
@@ -105,6 +125,9 @@ private:
 
 	std::shared_ptr<UIButton> _vsyncToggleButton_mainMenu;
 	std::shared_ptr<UIButton> _vsyncToggleButton_pauseMenu;
+
+	std::shared_ptr<UIButton> _dparticlesToggleButton_mainMenu;
+	std::shared_ptr<UIButton> _dparticlesToggleButton_pauseMenu;
 
 	std::shared_ptr<UIButton> _hardModeToggleButton;
 
@@ -167,10 +190,15 @@ private:
 	void togglePauseMenu();
 	void toggleInventoryMenu();
 	void toggleShopMenu();
+	void toggleMiniMapMenu();
+	bool _firstTimeOpeningMap = true;
 
 	void interruptPause();
 
 	void displayStartupMessages() const;
+	void migrateLegacyProgressData() const;
+
+	void runStartupCommands() const;
 
 	void startLoading();
 
@@ -190,6 +218,9 @@ private:
 	bool _interactReleased = true;
 
 	void changeMagMeterColor();
+
+	void openConfirmationScreen(std::string msg, std::string confirmationCode);
+	bool _exitConfirmed = false;
 
 	STEAM_CALLBACK(Game, onSteamOverlayActivated, GameOverlayActivated_t);
 };

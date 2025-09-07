@@ -89,6 +89,10 @@ bool stringEndsWith(std::string const& fullString, std::string const& ending) {
     }
 }
 
+bool stringContains(std::string str, std::string contained) {
+    return str.find(contained) != std::string::npos;
+}
+
 bool isNumber(std::string s) {
     return !s.empty() && s.find_first_not_of("0123456789.") == std::string::npos;
 }
@@ -105,6 +109,18 @@ float degToRads(float angle) {
 
 float radsToDeg(float angle) {
     return angle * 180.f / M_PI;
+}
+
+bool linesIntersect(float p0_x, float p0_y, float p1_x, float p1_y, float p2_x, float p2_y, float p3_x, float p3_y) {
+    float s1_x, s1_y, s2_x, s2_y;
+    s1_x = p1_x - p0_x;     s1_y = p1_y - p0_y;
+    s2_x = p3_x - p2_x;     s2_y = p3_y - p2_y;
+
+    float s, t;
+    s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    return s >= 0 && s <= 1 && t >= 0 && t <= 1;
 }
 
 // fast pow for int, credit to https://stackoverflow.com/a/101613/13188071
@@ -124,6 +140,14 @@ int ipow(int base, int exp) {
 
 double round_prec(double n, int prec) {
     return std::round(n * ipow(10, prec)) / ipow(10, prec);
+}
+
+std::string intToHex(int i) {
+    std::stringstream stream;
+    stream << "0x"
+        << std::setfill('0') << std::setw(sizeof(int) * 2)
+        << std::hex << i;
+    return stream.str();
 }
 
 std::string generateUID() {
@@ -158,6 +182,17 @@ std::string generateUID() {
     return ss.str();
 }
 
+std::string hash(std::string text) {
+    unsigned int hash = 0x811c9dc5u;
+    for (int i = 0; i < text.length(); i++) {
+        hash = (hash ^ (unsigned int)text.at(i)) * 0x1000193u;
+    }
+    hash = (hash ^ (hash >> 16)) * 0x7feb352du;
+    hash = (hash ^ (hash >> 15)) * 0x846ca68bu;
+
+    return std::to_string(hash ^ (hash >> 16));
+}
+
 std::string getLocalLowPath() {
     std::string pathStr = "err";
     char* buf = nullptr;
@@ -187,14 +222,16 @@ void updateSettingsFile(std::string path) {
 
     try {
         std::ofstream out(path);
-        int fullscreenSetting = FULLSCREEN ? 1 : 0;
-        int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
-        int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+        const int fullscreenSetting = FULLSCREEN ? 1 : 0;
+        const int tutorialCompleted = Tutorial::isCompleted() ? 1 : 0;
+        const int vsyncEnabled = VSYNC_ENABLED ? 1 : 0;
+        const int dparticlesEnabled = DAMAGE_PARTICLES_ENABLED ? 1 : 0;
         out << "fullscreen=" << std::to_string(fullscreenSetting) << std::endl;
         out << "tutorial=" << std::to_string(tutorialCompleted) << std::endl;
         out << "vsync=" << std::to_string(vsyncEnabled) << std::endl;
         out << "sfx=" << std::to_string(SFX_VOLUME) << std::endl;
         out << "music=" << std::to_string(MUSIC_VOLUME) << std::endl;
+        out << "dparticles=" << std::to_string(dparticlesEnabled) << std::endl;
         out.close();
     } catch (std::exception ex) {
         MessageManager::displayMessage("Error writing to settings file: " + (std::string)ex.what(), 5, ERR);

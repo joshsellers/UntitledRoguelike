@@ -1,3 +1,4 @@
+#!SIG3865180772
 itemName = "_PROJECTILE_LARGE_TOOTH"
 velocity = 3.0
 hitBox = 0, 0, 32, 32
