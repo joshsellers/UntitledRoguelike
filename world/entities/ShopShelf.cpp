@@ -60,7 +60,7 @@ void ShopShelf::setWorld(World* world) {
     _world = world;
 
     for (int i = 0; i < ITEMS_PER_SHELF * SHELF_COUNT; i++) {
-        const float hasItemChance = 1.f * getWorld()->getCurrentWaveNumber() / 50.f;
+        const float hasItemChance = 1.f * getWorld()->getCurrentWaveNumber() / (float)SHOPS_CLOSED_WAVE;
         _items.push_back(randomChance(hasItemChance) ? randomInt(0, (SHELF_SHEET_SIZE * SHELF_SHEET_SIZE) - 1) : NO_ITEM);
     }
 }
