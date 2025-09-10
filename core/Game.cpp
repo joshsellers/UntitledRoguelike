@@ -1273,15 +1273,9 @@ void Game::update() {
 
         int equippedTool = _player->getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);
         if (equippedTool != NOTHING_EQUIPPED && Item::ITEMS[equippedTool]->isGun()) {
-            int ammoIndex = _player->getInventory().getEquippedIndex(EQUIPMENT_TYPE::AMMO);
-            int ammoCount = ammoIndex == NOTHING_EQUIPPED ? 0 : _player->getInventory().getItemAmountAt(ammoIndex);
-
             _magazineMeter->show();
-            if (ammoIndex != NOTHING_EQUIPPED && _player->getInventory().getItemIdAt(ammoIndex) == Item::ITEMS[equippedTool]->getAmmoId()) {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
-            } else {
-                _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
-            }
+            _magazineMeter->setText(sf::String(std::to_string(_player->getMagazineContents())));
+            if (_player->getMagazineContents() == 0) changeMagMeterColor();
         } else {
             _magazineMeter->hide();
         }
@@ -1335,6 +1329,7 @@ void Game::update() {
             _gameLoading = false;
             _gameStarted = true;
             _HUDMenu->show();
+            changeMagMeterColor();
             if (GamePad::isConnected()) _controlsDisplayMenu->show();
             
             MUSIC_SITUATION situation = MUSIC_SITUATION::WAVE;
