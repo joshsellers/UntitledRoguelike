@@ -22,6 +22,7 @@ protected:
         SHOOT_FROGS
     };
 private:
+    sf::Sprite _shadowSprite;
     sf::Sprite _wavesSprite;
     sf::Sprite _headSprite;
     int _headFrame = 0;

@@ -71,6 +71,8 @@ void FrogBoss::draw(sf::RenderTexture& surface) {
             2096 + _jumpFrame * TILE_SIZE * 7, 304, TILE_SIZE * 7, isSwimming() ? TILE_SIZE * 8 : TILE_SIZE * 10
         ));
 
+        if (_jumpState == FALLING || !getHitBox().intersects(Viewport::getBounds())) surface.draw(_shadowSprite);
+
         surface.draw(_sprite);
     }
 }
@@ -177,7 +179,7 @@ void FrogBoss::runCurrentState() {
 
                 const float angle = (float)((std::atan2(y, x)));
 
-                constexpr float fireChance = 0.15f;
+                const float fireChance = HARD_MODE_ENABLED ? 0.15f : 0.05f;
 
                 if (randomChance(fireChance)) {
                     fireTargetedProjectile(
@@ -200,7 +202,7 @@ void FrogBoss::runCurrentState() {
             break;
         }
         case JUMP: {
-            constexpr float airSpeed = 24.f;
+            const float airSpeed = HARD_MODE_ENABLED ? 20.f : 14.f;
             switch (_jumpState) {
                 case CHARGING: {
                     constexpr int ticksPerFrame = 4;
@@ -224,6 +226,7 @@ void FrogBoss::runCurrentState() {
                         _pos.x = _world->getPlayer()->getPosition().x + (float)PLAYER_WIDTH / 2;
                         _pos.y = _world->getPlayer()->getPosition().y - TILE_SIZE * 10 - Viewport::getBounds().height / 2.f;
                         _landingTarget = { _world->getPlayer()->getPosition().x + (float)PLAYER_WIDTH / 2, _world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2 };
+                        _shadowSprite.setPosition(_landingTarget);
                     }
                     break;
                 }
@@ -234,7 +237,9 @@ void FrogBoss::runCurrentState() {
                         if (getHitBox().intersects(_world->getPlayer()->getHitBox())) {
                             _world->getPlayer()->takeDamage(60);
                         }
-                        const auto& impact = std::shared_ptr<ImpactExplosion>(new ImpactExplosion({ getPosition().x, getPosition().y + TILE_SIZE * 8 }, 12, 4));
+                        const int layerCount = HARD_MODE_ENABLED ? 12 : 10;
+                        const int propogationRate = HARD_MODE_ENABLED ? 4 : 2;
+                        const auto& impact = std::shared_ptr<ImpactExplosion>(new ImpactExplosion({ getPosition().x, getPosition().y + TILE_SIZE * 8 }, layerCount, propogationRate));
                         impact->setWorld(getWorld());
                         getWorld()->addEntity(impact);
                     }
@@ -249,7 +254,7 @@ void FrogBoss::runCurrentState() {
         }
         case SPAWN_ORBITERS: {
             if (!_orbitersSpawned) {
-                constexpr int orbiterCount = 8;
+                const int orbiterCount = HARD_MODE_ENABLED ? 8 : 6;
                 for (int i = 0; i < orbiterCount; i++) {
                     const auto& orbiter = std::shared_ptr<Orbiter>(new Orbiter(360.f / orbiterCount * i, OrbiterType::FROG.getId(), _world->getPlayer().get()));
                     orbiter->setWorld(getWorld());
@@ -280,4 +285,9 @@ void FrogBoss::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _wavesSprite.setTexture(*spriteSheet);
     _wavesSprite.setTextureRect(sf::IntRect(0, 160, 16, 16));
     _wavesSprite.setPosition(sf::Vector2f(getPosition().x, getPosition().y + TILE_SIZE));
+
+    _shadowSprite.setTexture(*spriteSheet);
+    _shadowSprite.setTextureRect(sf::IntRect(896, 1696, TILE_SIZE * 3, TILE_SIZE));
+    _shadowSprite.setOrigin((float)TILE_SIZE * 3 / 2, 0);
+    _shadowSprite.setPosition(getPosition());
 }
