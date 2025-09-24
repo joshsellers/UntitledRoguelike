@@ -11,6 +11,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "MobSpawnData.h"
 #include "entities/ShopKeep.h"
+#include "SpatialHash.h"
 
 constexpr int CHUNK_LOAD_THRESHOLD = 400;
 // original size 270
@@ -107,6 +108,8 @@ public:
     bool shopDoorIsBlownOpenAt(sf::Vector2f pos) const;
 
     std::vector<Chunk>& getChunks();
+
+    std::vector<std::shared_ptr<Entity>> getNearbyEntites(sf::Vector2f pos) const;
 
     friend class Game;
     friend class SaveManager;
@@ -212,6 +215,8 @@ private:
     // this should be in a different class but oh well
     // also might not work right if done from a different class tho
     void givePlayerDefaultAbilities() const;
+
+    SpatialHash _spatialHash;
 };
 
 #endif

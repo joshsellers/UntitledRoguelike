@@ -259,6 +259,11 @@ void World::draw(sf::RenderTexture& surface) {
         ProjectilePoolManager::draw(surface);
         AbilityManager::drawAbilities(_player.get(), surface);
     }
+
+    const auto& nearEntities = _spatialHash.queryNearby(_player->getPosition());
+    for (const auto& nearEntity : nearEntities) {
+        surface.draw(nearEntity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
+    }
 }
 
 void World::spawnMobs() {
@@ -494,6 +499,7 @@ void World::purgeEntityBuffer() {
 }
 
 void World::updateEntities() {
+    _spatialHash.clear();
     /*for (int i = 0; i < _entities.size(); i++) {
         auto& entity = _entities.at(i);
         if (!entity->isActive()) _entities.erase(_entities.begin() + i);
@@ -503,6 +509,8 @@ void World::updateEntities() {
     bool foundPlayer = false;
 
     for (const auto& entity : _entities) {
+        _spatialHash.insert(entity);
+
         if (entity->isOrbiter()) continue;
 
         if (entity == nullptr) {
@@ -1308,6 +1316,8 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
     }
 
     if (entity->isOrbiter() && !defer) _orbiters.push_back(entity);
+
+    _spatialHash.insert(entity);
 }
 
 bool World::showDebug() const {
@@ -1517,6 +1527,10 @@ bool World::shopDoorIsBlownOpenAt(sf::Vector2f pos) const {
 
 std::vector<Chunk>& World::getChunks() {
     return _chunks;
+}
+
+std::vector<std::shared_ptr<Entity>> World::getNearbyEntites(sf::Vector2f pos) const {
+    return _spatialHash.queryNearby(pos);
 }
 
 void World::altarActivatedAt(sf::Vector2f pos) {

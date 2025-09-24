@@ -223,6 +223,7 @@
     <ClCompile Include="world\entities\Turtle.cpp" />
     <ClCompile Include="world\entities\Yeti.cpp" />
     <ClCompile Include="world\MiniMapGenerator.cpp" />
+    <ClCompile Include="world\SpatialHash.cpp" />
     <ClCompile Include="world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -399,6 +400,7 @@
     <ClInclude Include="world\MobSpawnData.h" />
     <ClInclude Include="world\ParticleSystem.h" />
     <ClInclude Include="world\PerlinNoise.hpp" />
+    <ClInclude Include="world\SpatialHash.h" />
     <ClInclude Include="world\TerrainColor.h" />
     <ClInclude Include="world\TerrainGenParameters.h" />
     <ClInclude Include="world\World.h" />

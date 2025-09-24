@@ -106,7 +106,7 @@ void Projectile::update() {
                 }
             }
         } else if (_data.onlyHitEnemies) {
-            for (auto& entity : getWorld()->getEnemies()) {
+            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
                     && entity->getEntityType() != _parent->getEntityType()) {
