@@ -119,7 +119,7 @@ const sf::Vector2f Entity::separate(sf::Vector2f acceleration, bool sameTypeOnly
 
     sf::Vector2f steer(0, 0);
     int count = 0;
-    for (auto& entity : _world->getEnemies()) {
+    for (auto& entity : _world->getNearbyEntites(getPosition(), true)) {
         if (entity->isActive() && !entity->compare(this) 
             && (!sameTypeOnly || entity->getEntityType() == getEntityType())) {
             float dx = getPosition().x - entity->getPosition().x;

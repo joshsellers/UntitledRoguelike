@@ -109,7 +109,7 @@ public:
 
     std::vector<Chunk>& getChunks();
 
-    std::vector<std::shared_ptr<Entity>> getNearbyEntites(sf::Vector2f pos) const;
+    std::vector<std::shared_ptr<Entity>> getNearbyEntites(sf::Vector2f pos, bool onlyEnemies = false) const;
 
     friend class Game;
     friend class SaveManager;

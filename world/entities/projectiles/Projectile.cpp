@@ -85,7 +85,7 @@ void Projectile::update() {
                 return;
             }
         } else if (_parent->getSaveId() != PLAYER) {
-            for (auto& entity : getWorld()->getEntities()) {
+            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
                     && entity->getEntityType() != _parent->getEntityType()) {
@@ -106,7 +106,7 @@ void Projectile::update() {
                 }
             }
         } else if (_data.onlyHitEnemies) {
-            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
+            for (auto& entity : getWorld()->getNearbyEntites(getPosition(), true)) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
                     && entity->getEntityType() != _parent->getEntityType()) {
@@ -140,7 +140,7 @@ void Projectile::update() {
                 }
             }
         } else {
-            for (auto& entity : getWorld()->getEntities()) {
+            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
                 if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
                     && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
                     && entity->getEntityType() != _parent->getEntityType()) {

@@ -260,10 +260,12 @@ void World::draw(sf::RenderTexture& surface) {
         AbilityManager::drawAbilities(_player.get(), surface);
     }
 
-    const auto& nearEntities = _spatialHash.queryNearby(_player->getPosition());
-    for (const auto& nearEntity : nearEntities) {
-        surface.draw(nearEntity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
-    }
+    /*if (_showDebug) {
+        const auto& nearEntities = _spatialHash.queryNearby(_player->getPosition());
+        for (const auto& nearEntity : nearEntities) {
+            surface.draw(nearEntity->getSpriteRef(), ShaderManager::getShader("damage_frag"));
+        }
+    }*/
 }
 
 void World::spawnMobs() {
@@ -499,7 +501,6 @@ void World::purgeEntityBuffer() {
 }
 
 void World::updateEntities() {
-    _spatialHash.clear();
     /*for (int i = 0; i < _entities.size(); i++) {
         auto& entity = _entities.at(i);
         if (!entity->isActive()) _entities.erase(_entities.begin() + i);
@@ -509,8 +510,6 @@ void World::updateEntities() {
     bool foundPlayer = false;
 
     for (const auto& entity : _entities) {
-        _spatialHash.insert(entity);
-
         if (entity->isOrbiter()) continue;
 
         if (entity == nullptr) {
@@ -518,7 +517,7 @@ void World::updateEntities() {
             continue;
         }
 
-        if (!Tutorial::isCompleted() && entity->getEntityType() == "player") foundPlayer = true;
+        if (!Tutorial::isCompleted() && entity->getSaveId() == PLAYER) foundPlayer = true;
 
         if (!entity->isProp() && entity->isActive() && !entity->usesDormancyRules()) {
             entity->update();
@@ -558,7 +557,9 @@ void World::updateEntities() {
             entity->resetOutOfChunkTimer();
             entity->update();
         }
-        else if (!entity->isDormant()) entity->update();
+        else if (!entity->isDormant()) {
+            entity->update();
+        }
     }
 
     if (!foundPlayer && !Tutorial::isCompleted()) {
@@ -569,6 +570,9 @@ void World::updateEntities() {
     for (const auto& orbiter : _orbiters) {
         if (orbiter->isActive()) orbiter->update();
     }
+
+    _spatialHash.clear();
+    for (auto& entity : getEntities()) _spatialHash.insert(entity);
 }
 
 void World::removeInactiveEntitiesFromSubgroups() {
@@ -1529,8 +1533,8 @@ std::vector<Chunk>& World::getChunks() {
     return _chunks;
 }
 
-std::vector<std::shared_ptr<Entity>> World::getNearbyEntites(sf::Vector2f pos) const {
-    return _spatialHash.queryNearby(pos);
+std::vector<std::shared_ptr<Entity>> World::getNearbyEntites(sf::Vector2f pos, bool onlyEnemies) const {
+    return _spatialHash.queryNearby(pos, onlyEnemies);
 }
 
 void World::altarActivatedAt(sf::Vector2f pos) {

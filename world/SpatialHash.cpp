@@ -10,48 +10,24 @@ void SpatialHash::insert(std::shared_ptr<Entity> entity) {
     _grid[key].push_back(entity);
 }
 
-std::vector<std::shared_ptr<Entity>> SpatialHash::queryNearby(sf::Vector2f pos) const {
+std::vector<std::shared_ptr<Entity>> SpatialHash::queryNearby(sf::Vector2f pos, bool onlyEnemies) const {
     std::vector<std::shared_ptr<Entity>> result;
 
     const sf::Vector2i cell = getCell(pos);
 
-    for (int dx = -1; dx <= 1; dx++) {
-        for (int dy = -1; dy <= 1; dy++) {
+    constexpr int neighborRange = 1;
+    for (int dx = -neighborRange; dx <= neighborRange; dx++) {
+        for (int dy = -neighborRange; dy <= neighborRange; dy++) {
             const int key = hash(cell.x + dx, cell.y + dy);
             if (_grid.count(key)) {
                 for (const auto& entity : _grid.at(key)) {
-                    result.push_back(entity);
+                    if (entity->isEnemy() || !onlyEnemies) result.push_back(entity);
                 }
             }
         }
     }
 
     return result;
-}
-
-void SpatialHash::entityMoved(std::shared_ptr<Entity> entity) {
-    remove(entity);
-    insert(entity);
-}
-
-void SpatialHash::remove(std::shared_ptr<Entity> entity) {
-    const sf::Vector2i cell = getCell(entity->getPosition());
-    const int key = hash(cell.x, cell.y);
-
-    for (int dx = -1; dx <= 1; dx++) {
-        for (int dy = -1; dy <= 1; dy++) {
-            const int key = hash(cell.x + dx, cell.y + dy);
-            if (_grid.count(key)) {
-                for (int i = 0; i < _grid[key].size(); i++) {
-                    const auto& storedEntity = _grid[key].at(i);
-                    if (entity->getUID() == storedEntity->getUID()) {
-                        _grid[key].erase(_grid[key].begin() + i);
-                        break;
-                    }
-                }
-            }
-        }
-    }
 }
 
 void SpatialHash::clear() {

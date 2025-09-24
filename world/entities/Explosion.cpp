@@ -33,7 +33,7 @@ void Explosion::init(sf::Vector2f pos, int damage) {
 void Explosion::update() {
     if (_currentFrame >= 1 && _currentFrame <= 6) {
         if (!_onlyDamagePlayer && !_onlyDamageEnemies) {
-            for (const auto& entity : getWorld()->getEntities()) {
+            for (const auto& entity : getWorld()->getNearbyEntites(getPosition())) {
                 if (entity->getEntityType() != "explosion" && entity->getSaveId() != BABY_BOSS && entity->isActive() && entity->getHitBox().intersects(getHitBox())) {
                     entity->takeDamage(_damage);
                 }
@@ -42,13 +42,13 @@ void Explosion::update() {
             if (getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) getWorld()->getPlayer()->takeDamage(_damage);
         } else if (_onlyDamagePlayer && _onlyDamageEnemies) {
             if (getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) getWorld()->getPlayer()->takeDamage(_damage);
-            for (const auto& enemy : getWorld()->getEnemies()) {
+            for (const auto& enemy : getWorld()->getNearbyEntites(getPosition(), true)) {
                 if (enemy->getSaveId() != BABY_BOSS && enemy->isActive() && enemy->getHitBox().intersects(getHitBox())) {
                     enemy->takeDamage(_damage);
                 }
             }
         } else if (!_onlyDamagePlayer && _onlyDamageEnemies) {
-            for (const auto& enemy : getWorld()->getEnemies()) {
+            for (const auto& enemy : getWorld()->getNearbyEntites(getPosition(), true)) {
                 if (enemy->getSaveId() != BABY_BOSS && enemy->isActive() && enemy->getHitBox().intersects(getHitBox())) {
                     enemy->takeDamage(_damage);
                 }

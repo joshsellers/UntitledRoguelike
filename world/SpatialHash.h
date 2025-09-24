@@ -8,10 +8,7 @@
 class SpatialHash {
 public:
     void insert(std::shared_ptr<Entity> entity);
-    std::vector<std::shared_ptr<Entity>> queryNearby(sf::Vector2f pos) const;
-
-    void entityMoved(std::shared_ptr<Entity> entity);
-    void remove(std::shared_ptr<Entity> entity);
+    std::vector<std::shared_ptr<Entity>> queryNearby(sf::Vector2f pos, bool onlyEnemies = false) const;
 
     void clear();
 private:

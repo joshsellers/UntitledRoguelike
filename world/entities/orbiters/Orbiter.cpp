@@ -106,7 +106,7 @@ void Orbiter::projectileAttack() {
 }
 
 void Orbiter::contactAttack() {
-    for (auto& entity : getWorld()->getEnemies()) {
+    for (auto& entity : getWorld()->getNearbyEntites(getPosition(), true)) {
         if (entity->isActive() && !entity->isDormant() 
             && !entity->compare(this) && !entity->compare(getParent()) && entity->isDamageable() && entity->getEntityType() != "dontblockplayershots"
             && entity->getHitBox().intersects(getHitBox())) {
