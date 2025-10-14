@@ -1,11 +1,11 @@
-#!SIG81405311
+#!SIG3738928858
 id = 181
 name = "Dice Powder"
 description = "The shopkeep ground up some dice\nand put it in a vile.\n\nEat it and see what happens."
 isConsumable = true
 textureRect = 26, 18, 1, 1
-#isBuyable = true
-#conditionalUnlock = true
-#value = 200
+isBuyable = true
+conditionalUnlock = true
+value = 200
 rarityTier = 3
 functionName = "usedicepowder"

@@ -1777,6 +1777,7 @@ void World::bossDefeated() {
             if (!LocalAchievementManager::isUnlocked(DEFEAT_DEVBOSS)) {
                 MessageManager::displayMessage("You unlocked Crypticus Armor!", 8, SPECIAL);
             }
+            ConditionalUnlockManager::increaseUnlockProgress("Dice Powder", 1);
             if (HARD_MODE_ENABLED) ConditionalUnlockManager::increaseUnlockProgress("Dev's Blessing", 1);
             break;
     }
