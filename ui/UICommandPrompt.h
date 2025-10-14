@@ -1162,6 +1162,22 @@ private:
                     return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
                 }
             })
+        },
+
+        {
+            "nextitemid",
+            Command("Get the next item id",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                return std::to_string(Item::ITEMS.size());
+            })
+        },
+
+        {
+            "nexteffectid",
+            Command("Get the next effect id",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                return std::to_string(PlayerVisualEffectManager::getEffectCount());
+            })
         }
     };
 };
