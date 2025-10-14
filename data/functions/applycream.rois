@@ -4,8 +4,8 @@ if: not hasAbility {
     player.addEffect("Finger Cream");
 }
 
-fireRateChange = 1/50;
-aimConeChange = 2;
+fireRateChange = 1/20;
+aimConeChange = 4;
 
 currentFireRate = player.getAbilityParameter("Finger Cream", "fireRateMultiplier");
 canChangeFireRate = currentFireRate > 0;
