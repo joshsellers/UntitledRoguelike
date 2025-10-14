@@ -1,4 +1,5 @@
-#!SIG499985354
+#!SIG3749176336
+id = 105
 name = "Crown of Completion"
 description = "Recognition of your efforts.\n\nHeals 5 HP every time you clear a wave."
 rarityTier = 3

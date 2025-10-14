@@ -1,4 +1,5 @@
-#!SIG129030288
+#!SIG537271630
+id = 159
 name = "SMG"
 description = "Shoots real fast"
 equipmentType = TOOL

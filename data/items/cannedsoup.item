@@ -1,4 +1,5 @@
-#!SIG87547638
+#!SIG2050419254
+id = 95
 name = "Can of Soup"
 description = "Nutritious\n\nHeals between 50 and 100 HP"
 isBuyable = true

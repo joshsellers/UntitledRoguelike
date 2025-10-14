@@ -1,4 +1,5 @@
-#!SIG2401798123
+#!SIG4075674329
+id = 111
 name = "Dev's Blessing"
 description = "Spread your wings and fly\n\nFlight over water & speed up"
 isConsumable = true

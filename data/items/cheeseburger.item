@@ -1,4 +1,5 @@
-#!SIG3781381372
+#!SIG2860438974
+id = 100
 name = "Cheeseburger"
 description = "Plain cheeseburger with no ketchup, mustard,\nor pickles.\n\nRestores 45 HP"
 isConsumable = true

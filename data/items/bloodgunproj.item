@@ -1,4 +1,5 @@
-#!SIG2233303849
+#!SIG2794580641
+id = 89
 name = "_PROJECTILE_BLOOD_GUN"
 description = "This item should not be obtainable."
 damage = 75

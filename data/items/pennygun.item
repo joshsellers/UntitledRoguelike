@@ -1,4 +1,5 @@
-#!SIG1128945444
+#!SIG465552569
+id = 143
 name = "Penny Cannon"
 description = "For when you have money to burn"
 equipmentType = TOOL

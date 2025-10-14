@@ -1,4 +1,5 @@
-#!SIG3757142393
+#!SIG2772029271
+id = 169
 name = "Funny Mushroom"
 description = "Open your third eye"
 textureRect = 3, 13, 1, 1

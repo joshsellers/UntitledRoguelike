@@ -1,4 +1,5 @@
-#!SIG3883892940
+#!SIG3559940405
+id = 77
 name = "Autopistol"
 description = "An automatic pistol"
 equipmentType = TOOL

@@ -1,4 +1,5 @@
-#!SIG2688912238
+#!SIG2996619122
+id = 142
 name = "_PROJECTILE_PENGUIN"
 description = "This item should not be obtainable."
 damage = 12

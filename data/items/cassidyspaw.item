@@ -1,4 +1,5 @@
-#!SIG1283932194
+#!SIG2206528748
+id = 98
 name = "Cassidy's Paw"
 description = "Speed and damage up"
 isConsumable = true

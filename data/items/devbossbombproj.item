@@ -1,4 +1,5 @@
-#!SIG3079396995
+#!SIG279305309
+id = 109
 name = "_PROJECTILE_DEVBOSS_BOMB"
 description = "This item should not be obtainable."
 damage = 8

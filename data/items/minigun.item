@@ -1,4 +1,5 @@
-#!SIG2307604406
+#!SIG3740079157
+id = 134
 name = "Minigun"
 description = "It's a minigun"
 conditionalUnlock = true

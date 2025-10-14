@@ -1,4 +1,5 @@
-#!SIG151104133
+#!SIG14675942
+id = 87
 name = "Bloat Jewel"
 description = "A gem that holds mysterious power..."
 conditionalUnlock = true

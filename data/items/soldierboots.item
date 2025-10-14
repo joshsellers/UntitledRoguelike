@@ -1,4 +1,5 @@
-#!SIG3676537133
+#!SIG4097447801
+id = 165
 name = "Military Boots"
 description = "Impersonate a military official\n\nProtects your feet a little bit"
 damage = 1

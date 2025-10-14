@@ -1,4 +1,5 @@
-#!SIG1332406383
+#!SIG3349695902
+id = 78
 name = "_PROJECTILE_AUTO_PISTOL"
 description = "This item should not be obtainable."
 damage = 8

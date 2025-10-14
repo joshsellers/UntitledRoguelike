@@ -1,4 +1,5 @@
-#!SIG4033365089
+#!SIG3458374612
+id = 104
 name = "_PROJECTILE_CREAM_ORB"
 description = "This item should not be obtainable"
 damage = 10

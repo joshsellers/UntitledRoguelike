@@ -1,4 +1,5 @@
-#!SIG1535313221
+#!SIG4185700746
+id = 172
 name = "Stem Cells"
 description = "Adaptive cells, to be administered to the\ndamage-dealing parts of your body.\n\nIncreases damage multiplier."
 isConsumable = true

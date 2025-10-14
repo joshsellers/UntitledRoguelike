@@ -1,4 +1,5 @@
-#!SIG750224299
+#!SIG3296732388
+id = 156
 name = "Ski Mask"
 description = "For committing crimes in"
 equipmentType = CLOTHING_HEAD

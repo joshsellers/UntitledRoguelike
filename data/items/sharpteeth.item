@@ -1,4 +1,5 @@
-#!SIG3269984729
+#!SIG4180314342
+id = 154
 name = "Sharp Teeth"
 description = "Bite them back"
 isBuyable = true

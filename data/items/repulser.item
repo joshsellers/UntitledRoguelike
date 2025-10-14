@@ -1,4 +1,5 @@
-#!SIG4128113362
+#!SIG1319580346
+id = 150
 name = "Repulser"
 description = "Push your friends away\n\nCauses orbiters to orbit farther away.\nUsing more of these will further increase\norbit radius."
 isBuyable = true

@@ -1,4 +1,5 @@
-#!SIG164241651
+#!SIG2981167940
+id = 110
 name = "_PROJECTILE_DEV_BOSS"
 description = "This item should not be obtainable."
 textureRect = 98, 81, 5, 5

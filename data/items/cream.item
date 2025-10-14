@@ -1,4 +1,5 @@
-#!SIG2998186709
+#!SIG2445145137
+id = 103
 name = "_PROJECTILE_CREAM"
 description = "This item should not be obtainable"
 textureRect = 59, 104, 1, 1

@@ -150,7 +150,9 @@ void ModManager::loadItem(std::ifstream& in) {
         }
 
         if (tokens.size() > 2 && tokens.at(1) == "=") {
-            if (tokens.at(0) == "name") {
+            if (tokens.at(0) == "id") {
+                itemId = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "name") {
                 std::string strName = tokens.at(2);
                 replaceAll(strName, "\"", "");
                 name = strName;
@@ -472,7 +474,9 @@ void ModManager::loadPlayerVisualEffect(std::ifstream& in) {
         const std::vector<std::string> tokens = tokenize(line);
 
         if (tokens.size() > 2 && tokens.at(1) == "=") {
-            if (tokens.at(0) == "name") {
+            if (tokens.at(0) == "id") {
+                id = std::stoul(tokens.at(2));
+            } else if (tokens.at(0) == "name") {
                 std::string strName = tokens.at(2);
                 replaceAll(strName, "\"", "");
                 name = strName;

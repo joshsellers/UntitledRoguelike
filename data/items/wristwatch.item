@@ -1,4 +1,5 @@
-#!SIG1824763921
+#!SIG4044123215
+id = 178
 name = "Wristwatch"
 description = "What time is it?\n\nIncreases cooldown time between waves.\nThe more you use, the longer cooldowns will last."
 isConsumable = true

@@ -1,4 +1,5 @@
-#!SIG2887444906
+#!SIG21737014
+id = 73
 name = "Airstrike"
 description = "Drop bombs from the sky"
 conditionalUnlock = true

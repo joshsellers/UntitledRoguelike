@@ -1,4 +1,5 @@
-#!SIG69967963
+#!SIG3301195271
+id = 117
 name = "_PROJECTILE_INK_BUBBLE-0"
 description = "This item should not be obtainable."
 damage = 25

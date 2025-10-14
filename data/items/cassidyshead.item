@@ -1,4 +1,5 @@
-#!SIG741984288
+#!SIG1311861917
+id = 97
 name = "Cassidy's Head"
 description = "Tap into your inner feline\n\nChance to double the value of coin drops"
 isConsumable = true

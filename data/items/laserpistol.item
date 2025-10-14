@@ -1,4 +1,5 @@
-#!SIG3664465492
+#!SIG3682343139
+id = 127
 name = "Laser Pistol"
 description = "Pew Pew"
 textureRect = 43, 0, 1, 1

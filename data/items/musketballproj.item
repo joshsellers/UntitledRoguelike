@@ -1,4 +1,5 @@
-#!SIG1411285705
+#!SIG4117335048
+id = 137
 name = "_PROJECTILE_MUSKET_BALL"
 description = "This item should not be obtainable."
 damage = 25

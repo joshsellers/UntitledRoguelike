@@ -1,4 +1,5 @@
-#!SIG2254140238
+#!SIG1161123655
+id = 113
 name = "_PROJECTILE_FROG"
 description = "This item should not be obtainable."
 textureRect = 104, 38, 1, 1

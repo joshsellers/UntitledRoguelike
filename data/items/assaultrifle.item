@@ -1,4 +1,5 @@
-#!SIG3025767224
+#!SIG1466576395
+id = 75
 name = "Assault Rifle"
 description = "Big scary shoots fast"
 isGun = true

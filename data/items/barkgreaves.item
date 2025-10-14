@@ -1,4 +1,5 @@
-#!SIG2353803627
+#!SIG3667145154
+id = 81
 name = "Bark Greaves"
 description = "Armor made of tree flesh\n\n4 protection"
 damage = 4

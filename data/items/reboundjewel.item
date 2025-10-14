@@ -1,4 +1,5 @@
-#!SIG373855363
+#!SIG303678984
+id = 149
 name = "Rebound Jewel"
 description = "A gem that holds mysterious power..."
 conditionalUnlock = true

@@ -1,4 +1,5 @@
-#!SIG1173966880
+#!SIG887680006
+id = 155
 name = "Shopkeep's Heart"
 description = "Buy the shopkeep's heart, and consume it to\nrestore 100% of your HP.\n\nThis kills the shopkeep."
 isBuyable = true

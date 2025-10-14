@@ -1,4 +1,5 @@
-#!SIG2948110771
+#!SIG3442837656
+id = 161
 name = "Sniper Rifle"
 description = "Keep your enemies... farther away"
 isGun = true

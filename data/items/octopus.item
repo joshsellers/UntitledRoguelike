@@ -1,4 +1,5 @@
-#!SIG2895032279
+#!SIG3864210473
+id = 138
 name = "Radioactive Octopus"
 description = "I AM THE OCTOPUS"
 isConsumable = true

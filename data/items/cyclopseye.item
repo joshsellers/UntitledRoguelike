@@ -1,4 +1,5 @@
-#!SIG2255007111
+#!SIG2554022840
+id = 106
 name = "Cyclops Eye"
 description = "Equip it and it will cry for you"
 isConsumable = true

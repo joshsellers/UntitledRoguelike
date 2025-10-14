@@ -1,4 +1,5 @@
-#!SIG1202360601
+#!SIG2737077569
+id = 129
 name = "_LIGHT_LASER_PROJECTILE"
 description = "This item should not be obtainable."
 damage = 8

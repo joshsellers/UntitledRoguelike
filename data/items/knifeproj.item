@@ -1,4 +1,5 @@
-#!SIG2188773496
+#!SIG2824046331
+id = 123
 name = "_PROJECTILE_CHEFBOSS_KNIFE"
 description = "This item should not be obtainable."
 damage = 30

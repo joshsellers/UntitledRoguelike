@@ -1,4 +1,5 @@
-#!SIG65403439
+#!SIG1549670226
+id = 168
 name = "Military Vest"
 description = "Impersonate a military official\n\nProtects your torso a little bit"
 damage = 1

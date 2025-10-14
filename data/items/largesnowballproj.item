@@ -1,4 +1,5 @@
-#!SIG2402517833
+#!SIG1296070391
+id = 126
 name = "_PROJECTILE_LARGE_SNOWBALL"
 description = "This item should not be obtainable."
 textureRect = 33, 21, 1, 1
