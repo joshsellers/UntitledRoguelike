@@ -105,8 +105,8 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             parent->heal(randomInt(5, parent->getMaxHitPoints()));
 
             const auto& player = parent->getWorld()->getPlayer();
-            const float speedMultiplierAbs = (float)randomInt(5, 200) / 100.f;
-            player->setSpeedMultiplier(randomChance(0.5f) ? speedMultiplierAbs : -speedMultiplierAbs);
+            const float speedMultiplier = (float)randomInt(-95, 200) / 100.f;
+            player->setSpeedMultiplier(speedMultiplier);
             player->setDamageMultiplier((float)randomInt(5, 500) / 100.f);
             player->setStaminaRefreshRate(randomInt(1, 100));
             player->setMaxStamina(randomInt(10, 3000));
@@ -115,7 +115,7 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             for (int i = 0; i < Item::ITEMS.size(); i++) {
                 const auto& item = Item::ITEMS.at(i);
                 if (item->isBuyable() && item->isUnlocked(player->getWorld()->getCurrentWaveNumber()) && !stringStartsWith(item->getName(), "_") 
-                    && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO) {
+                    && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO && item->getId() != Item::PENNY.getId()) {
                     possibleItems.push_back(item->getId());
                 }
             }
@@ -138,7 +138,12 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
                     AbilityManager::givePlayerAbility(abilityId);
                     const auto& params = Ability::ABILITIES.at(abilityId)->getParameters();
                     for (const auto& parameter : params) {
-                        AbilityManager::setParameter(abilityId, parameter.first, randomInt(0, 50000) / 100.f);
+                        const float val = randomInt(0, 50000) / 100.f;
+                        float minVal = 0;
+                        float maxVal = 500.f;
+                        if (abilityId == Ability::AIR_STRIKE.getId() && parameter.first == "rate") minVal = 500.f;
+                        else if (abilityId == Ability::DAMAGE_AURA.getId() && parameter.first == "expansion rate") maxVal = 4.75f;
+                        AbilityManager::setParameter(abilityId, parameter.first, std::min(maxVal, std::max(minVal, val)));
                     }
                 }
             }

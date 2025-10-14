@@ -11,7 +11,7 @@ if: hasAbility {
 
     maxedOut = true;
 
-    if: parameterChoice == 1 and currentRate <= 50 {
+    if: parameterChoice == 1 and currentRate <= 500 {
         parameterChoice = 0;
     }
 
