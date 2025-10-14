@@ -29,7 +29,8 @@ void Funguy::update() {
 
     if (getWorld()->getPlayer()->isActive() && getWorld()->getPlayer()->getHitBox().intersects(getHitBox())) {
         getWorld()->getPlayer()->takeDamage(5);
-        getWorld()->getPlayer()->knockBack(15.f, getMovingDir());
+        //getWorld()->getPlayer()->knockBack(15.f, getMovingDir());
+        damage(getMaxHitPoints());
     }
 
     sf::Vector2f goalPos((int)_world->getPlayer()->getPosition().x + PLAYER_WIDTH / 2, (int)_world->getPlayer()->getPosition().y + PLAYER_WIDTH * 2);
