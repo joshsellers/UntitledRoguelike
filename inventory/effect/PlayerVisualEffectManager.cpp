@@ -73,6 +73,10 @@ unsigned int PlayerVisualEffectManager::getEffectCount() {
     return _effectTypes.size();
 }
 
+std::vector<PlayerVisualEffect> PlayerVisualEffectManager::getEffectTypes() {
+    return _effectTypes;
+}
+
 void PlayerVisualEffectManager::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     _sprite.setTexture(*spriteSheet);
 }

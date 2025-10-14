@@ -16,6 +16,7 @@ public:
 
     static void addEffectType(PlayerVisualEffect effect);
     static unsigned int getEffectCount();
+    static std::vector<PlayerVisualEffect> getEffectTypes();
 
     static void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 

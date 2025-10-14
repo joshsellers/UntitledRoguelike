@@ -1,0 +1,8 @@
+runFunction("BUILTIN_dicepowder");
+
+hasEffect = player.hasEffect("Dice Powder");
+if: not hasEffect {
+    player.addEffect("Dice Powder");
+}
+
+return false;

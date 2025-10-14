@@ -7,6 +7,7 @@
 #include "../world/entities/Scythe.h"
 #include "../core/Tutorial.h"
 #include "../world/entities/LaserBeam.h"
+#include "../inventory/effect/PlayerVisualEffectManager.h"
 
 bool ScriptExtensions::execute(const std::string functionName, Entity* entity, Interpreter* interpreter) {
     if (_functions.find(functionName) != _functions.end()) {
@@ -91,6 +92,63 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             if (!Tutorial::isCompleted()) {
                 Tutorial::completeStep((TUTORIAL_STEP)step);
             }
+            return true;
+        }
+    },
+
+    {
+        "dicepowder",
+        [](Entity* parent, Interpreter* interpreter) {
+            parent->setMaxHitPoints(randomInt(5, 500));
+            parent->heal(parent->getMaxHitPoints());
+            parent->heal(-parent->getMaxHitPoints());
+            parent->heal(randomInt(5, parent->getMaxHitPoints()));
+
+            const auto& player = parent->getWorld()->getPlayer();
+            const float speedMultiplierAbs = (float)randomInt(5, 200) / 100.f;
+            player->setSpeedMultiplier(randomChance(0.5f) ? speedMultiplierAbs : -speedMultiplierAbs);
+            player->setDamageMultiplier((float)randomInt(5, 500) / 100.f);
+            player->setStaminaRefreshRate(randomInt(1, 100));
+            player->setMaxStamina(randomInt(10, 3000));
+            
+            std::vector<unsigned int> possibleItems;
+            for (int i = 0; i < Item::ITEMS.size(); i++) {
+                const auto& item = Item::ITEMS.at(i);
+                if (item->isBuyable() && item->isUnlocked(player->getWorld()->getCurrentWaveNumber()) && !stringStartsWith(item->getName(), "_") 
+                    && item->getEquipmentType() != EQUIPMENT_TYPE::AMMO) {
+                    possibleItems.push_back(item->getId());
+                }
+            }
+
+            const int numItems = player->getInventory().getCurrentSize() - 1;
+            while (player->getInventory().getCurrentSize() != 0) {
+                player->getInventory().removeItemAt(0, player->getInventory().getItemAmountAt(0));
+            }
+
+            for (int i = 0; i < numItems; i++) {
+                const auto& item = Item::ITEMS.at(possibleItems.at(randomInt(0, possibleItems.size() - 1)));
+                player->getInventory().addItem(item->getId(), item->isStackable() ? randomInt(1, item->getStackLimit()) : 1);
+            }
+
+            AbilityManager::resetAbilities();
+            const int abilityCount = randomInt(1, Ability::ABILITIES.size() - 1);
+            for (int i = 0; i < abilityCount; i++) {
+                const unsigned int abilityId = randomInt(0, Ability::ABILITIES.size() - 1);
+                if (!AbilityManager::playerHasAbility(abilityId)) {
+                    AbilityManager::givePlayerAbility(abilityId);
+                    const auto& params = Ability::ABILITIES.at(abilityId)->getParameters();
+                    for (const auto& parameter : params) {
+                        AbilityManager::setParameter(abilityId, parameter.first, randomInt(0, 50000) / 100.f);
+                    }
+                }
+            }
+
+            PlayerVisualEffectManager::clearPlayerEffects();
+            const int effectCount = randomInt(1, PlayerVisualEffectManager::getEffectCount() - 1);
+            for (int i = 0; i < effectCount; i++) {
+                PlayerVisualEffectManager::addEffectToPlayer(PlayerVisualEffectManager::getEffectTypes().at(randomInt(0, PlayerVisualEffectManager::getEffectCount() - 1)).name);
+            }
+
             return true;
         }
     }
