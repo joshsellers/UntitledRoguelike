@@ -146,7 +146,9 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
             PlayerVisualEffectManager::clearPlayerEffects();
             const int effectCount = randomInt(1, PlayerVisualEffectManager::getEffectCount() - 1);
             for (int i = 0; i < effectCount; i++) {
-                PlayerVisualEffectManager::addEffectToPlayer(PlayerVisualEffectManager::getEffectTypes().at(randomInt(0, PlayerVisualEffectManager::getEffectCount() - 1)).name);
+                const size_t id = (size_t)randomInt(0, PlayerVisualEffectManager::getEffectCount() - 1);
+                if (stringStartsWith(PlayerVisualEffectManager::getEffectTypes().at(id).name, "HAIRTEST")) continue;
+                PlayerVisualEffectManager::addEffectToPlayer(PlayerVisualEffectManager::getEffectTypes().at(id).name);
             }
 
             return true;
