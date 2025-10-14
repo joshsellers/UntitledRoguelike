@@ -65,7 +65,8 @@ void PlayerVisualEffectManager::clearPlayerEffects() {
 }
 
 void PlayerVisualEffectManager::addEffectType(PlayerVisualEffect effect) {
-    _effectTypes.push_back(effect);
+    if (effect.id > getEffectCount()) _effectTypes.push_back(effect);
+    else _effectTypes.insert(_effectTypes.begin() + effect.id, effect);
 }
 
 unsigned int PlayerVisualEffectManager::getEffectCount() {

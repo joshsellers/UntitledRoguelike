@@ -271,8 +271,8 @@ void ModManager::loadItem(std::ifstream& in) {
             MessageManager::displayMessage("Did not find ammo item \"" + ammoItemName + "\" for item \"" + name + "\"", 5, WARN);
         }
     }
-
-    Item::ITEMS.push_back(std::shared_ptr<Item>(new Item(itemId, name, textureRect, isStackable, stackLimit, isConsumable,
+    
+    const auto& item = std::shared_ptr<Item>(new Item(itemId, name, textureRect, isStackable, stackLimit, isConsumable,
         description, equipType, damage, hitBoxPos, hitBoxSize,
         barrelPos,
         isGun,
@@ -282,7 +282,10 @@ void ModManager::loadItem(std::ifstream& in) {
         magazineSize,
         isAutomatic,
         fireRateMillis,
-        reloadTimeMillis, isStartingItem, true, functionName, conditionalUnlock)));
+        reloadTimeMillis, isStartingItem, true, functionName, conditionalUnlock));
+
+    if (itemId > Item::ITEMS.size()) Item::ITEMS.push_back(item);
+    else Item::ITEMS.insert(Item::ITEMS.begin() + itemId, item);
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 
