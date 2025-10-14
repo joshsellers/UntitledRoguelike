@@ -921,7 +921,7 @@ void Player::fireAutomaticWeapon() {
         getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL) != NOTHING_EQUIPPED &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isGun() &&
         Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->isAutomatic() &&
-        currentTimeMillis() - _lastAutoFireTimeMillis >= Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getFireRateMilliseconds()
+        currentTimeMillis() - _lastAutoFireTimeMillis >= (AbilityManager::playerHasAbility(Ability::FINGER_CREAM.getId()) ? (long long)((float)Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getFireRateMilliseconds() * AbilityManager::getParameter(Ability::FINGER_CREAM.getId(), "fireRateMultiplier")) : Item::ITEMS[getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL)]->getFireRateMilliseconds())
         && !isSwimming() && !isDodging()) {
         _lastAutoFireTimeMillis = currentTimeMillis();
         unsigned int id = getInventory().getEquippedItemId(EQUIPMENT_TYPE::TOOL);

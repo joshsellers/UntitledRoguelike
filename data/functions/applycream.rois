@@ -1,0 +1,26 @@
+hasAbility = player.hasAbility("Finger Cream");
+if: not hasAbility {
+    player.addAbility("Finger Cream");
+    player.addEffect("Finger Cream");
+}
+
+fireRateChange = 1/50;
+aimConeChange = 2;
+
+currentFireRate = player.getAbilityParameter("Finger Cream", "fireRateMultiplier");
+canChangeFireRate = currentFireRate > 0;
+if: canChangeFireRate {
+    player.setAbilityParameter("Finger Cream", "fireRateMultiplier", currentFireRate - fireRateChange);
+}
+
+currentAimCone = player.getAbilityParameter("Finger Cream", "aimRange");
+canChangeAimCone = currentAimCone < 180;
+if: canChangeAimCone {
+    player.setAbilityParameter("Finger Cream", "aimRange", currentAimCone + aimConeChange);
+}
+
+if: not canChangeFireRate and not canChangeAimCone {
+    displayMessage("You can't use any more Finger Cream.", 5);
+}
+
+return canChangeFireRate or canChangeAimCone;

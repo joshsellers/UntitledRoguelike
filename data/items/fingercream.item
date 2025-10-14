@@ -1,0 +1,10 @@
+id = 180
+name = "Finger Cream"
+description = "Lubricant for your fingers to make you shoot faster.\nMay reduce accuracy.\n\nNo effect for non-automatic weapons."
+rarityTier = 2
+conditionalUnlock = true
+isBuyable = true
+value = 199
+isConsumable = true
+textureRect = 25, 18, 1, 1
+functionName = "applycream"

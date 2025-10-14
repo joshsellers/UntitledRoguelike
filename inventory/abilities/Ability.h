@@ -33,6 +33,7 @@ public:
     static const Ability CONTACT_DAMAGE;
     static const Ability TARGET_SEEKING_BULLETS;
     static const Ability TREE_MAN;
+    static const Ability FINGER_CREAM;
 
     static std::vector<Ability*> ABILITIES;
 

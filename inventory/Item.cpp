@@ -665,7 +665,12 @@ void Item::fireTargetedProjectile(Entity* parent, const ProjectileData projData,
         const double x = (double)(parent->getTargetPos().x - cBarrelPos.x);
         const double y = (double)(parent->getTargetPos().y - cBarrelPos.y);
 
-        const float angle = (float)((std::atan2(y, x)));
+        float angle = (float)((std::atan2(y, x)));
+        if (parent->getSaveId() == PLAYER && AbilityManager::playerHasAbility(Ability::FINGER_CREAM.getId())) {
+            const float aimRange = AbilityManager::getParameter(Ability::FINGER_CREAM.getId(), "aimRange");
+            const float angleDegs = radsToDeg(angle);
+            angle = degToRads(angleDegs + (float)randomInt(-aimRange * 100, aimRange * 100) / 100.f);
+        }
 
         EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::DEFER_TO_DATA;
         if (parent->getSaveId() == PLAYER 

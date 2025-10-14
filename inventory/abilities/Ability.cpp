@@ -377,6 +377,12 @@ const Ability Ability::TREE_MAN(23, "Tree Man",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::FINGER_CREAM(24, "Finger Cream",
+    { {"fireRateMultiplier", 1.f}, {"aimRange", 0.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
