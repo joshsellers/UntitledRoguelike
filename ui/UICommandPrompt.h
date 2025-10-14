@@ -1178,6 +1178,15 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 return std::to_string(PlayerVisualEffectManager::getEffectCount());
             })
+        },
+
+        {
+            "tua",
+            Command("Toggle all items unlocked",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                UNLOCK_ALL_ITEMS = !UNLOCK_ALL_ITEMS;
+                return "UNLOCK_ALL_ITMES set to " + std::string(UNLOCK_ALL_ITEMS ? "true" : "false");
+            })
         }
     };
 };

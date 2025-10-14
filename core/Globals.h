@@ -28,6 +28,8 @@ extern bool DISABLE_ACHIEVEMENTS;
 extern bool DISABLE_STATS;
 extern bool DISABLE_UNLOCKS;
 
+extern bool UNLOCK_ALL_ITEMS;
+
 extern bool HARD_MODE_ENABLED;
 
 extern bool MID_GAME_PERF_BOOST;

@@ -906,6 +906,8 @@ std::map<unsigned int, unsigned int> Item::ITEM_UNLOCK_WAVE_NUMBERS = {
 };
 
 bool Item::isUnlocked(unsigned int waveNumber) const {
+    if (UNLOCK_ALL_ITEMS) return true;
+
     if (conditionalUnlock()) return ConditionalUnlockManager::isUnlocked(getName());
 
     return waveNumber >= ITEM_UNLOCK_WAVE_NUMBERS.at(getId()) && isBuyable();

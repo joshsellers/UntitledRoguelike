@@ -27,6 +27,8 @@ bool DISABLE_ACHIEVEMENTS = false;
 bool DISABLE_STATS = false;
 bool DISABLE_UNLOCKS = false;
 
+bool UNLOCK_ALL_ITEMS = false;
+
 bool HARD_MODE_ENABLED = false;
 
 bool MID_GAME_PERF_BOOST = false;
