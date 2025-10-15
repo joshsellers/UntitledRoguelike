@@ -47,7 +47,8 @@ std::map<std::string, UnlockProgressTracker> ConditionalUnlockManager::_unlockPr
     {"Seek Jewel", 1},
     {"Crown of Completion", 1},
     {"Belt of Completion", 1},
-    {"Dice Powder", 2}
+    {"Dice Powder", 2},
+    {"Reset Button", 1}
 };
 
 const bool ConditionalUnlockManager::isUnlocked(std::string itemName) {

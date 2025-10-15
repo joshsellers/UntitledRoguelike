@@ -158,5 +158,36 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
 
             return true;
         }
+    },
+
+    {
+        "prestige",
+        [](Entity* parent, Interpreter* interpreter) {
+            const auto& world = parent->getWorld();
+            parent->move(-parent->getPosition().x, -parent->getPosition().y);
+            world->reseed(currentTimeMillis());
+            world->resetChunks(true);
+            world->loadChunksAroundPlayer();
+            world->setDisplayedWaveNumber(1);
+            PLAYER_SCORE = 1.f;
+            world->setMaxActiveEnemies(INITIAL_MAX_ACTIVE_ENEMIES);
+            world->_maxEnemiesReached = false;
+            world->_destroyedProps.clear();
+            world->_seenShops.clear();
+            world->_activatedAltars.clear();
+            world->_deadShopKeeps.clear();
+            world->_shopsWithDoorBlownOpen.clear();
+            world->_visitedShops.clear();
+            world->_bossIsActive = false;
+            world->_enemiesSpawnedThisRound = 0;
+            world->_isPlayerInShop = false;
+            
+            for (const auto& entity : world->getEntities()) {
+                if (entity->getSaveId() != ORBITER && entity->getSaveId() != PLAYER) {
+                    entity->deactivate();
+                }
+            }
+            return true;
+        }
     }
 };

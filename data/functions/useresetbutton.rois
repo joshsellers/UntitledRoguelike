@@ -1,0 +1,7 @@
+hasEffect = player.hasEffect("Reset Button");
+if: not hasEffect {
+    player.addEffect("Reset Button");
+}
+
+result = runFunction("BUILTIN_prestige");
+return result;

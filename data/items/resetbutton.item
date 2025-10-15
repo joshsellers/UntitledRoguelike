@@ -1,0 +1,10 @@
+#!SIG1715515548
+id = 182
+name = "Reset Button"
+description = "Start over... kind of."
+textureRect = 27, 18, 1, 1
+isConsumable = true
+conditionalUnlock = true
+isBuyable = true
+value = 999
+functionName = "useresetbutton"

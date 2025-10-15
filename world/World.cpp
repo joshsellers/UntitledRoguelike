@@ -1696,6 +1696,10 @@ void World::setDisplayedWaveNumber(int waveNumber) {
     _currentWaveNumber = waveNumber;
 }
 
+void World::setWaveCounter(int waveCounter) {
+    _waveCounter = waveCounter;
+}
+
 bool World::bossIsActive() const {
     return _bossIsActive;
 }

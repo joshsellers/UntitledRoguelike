@@ -117,6 +117,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         unlock(TENACIOUS);
     } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
         unlock(TRIAL_AND_ERROR);
+        ConditionalUnlockManager::increaseUnlockProgress("Reset Button", 1);
     } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
         unlock(EXTERMINATOR);
         ConditionalUnlockManager::increaseUnlockProgress("Cassidy's Tail", 1);

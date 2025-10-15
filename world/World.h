@@ -96,6 +96,7 @@ public:
     void startNewGameCooldown();
 
     void setDisplayedWaveNumber(int waveNumber);
+    void setWaveCounter(int waveCounter);
 
     bool bossIsActive() const;
     void bossDefeated();
@@ -114,7 +115,8 @@ public:
     friend class Game;
     friend class SaveManager;
     friend class UICommandPrompt;
-
+    friend class ScriptExtensions;
+    
 private:
     std::shared_ptr<sf::Texture> _spriteSheet;
 

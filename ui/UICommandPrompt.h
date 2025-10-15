@@ -66,6 +66,8 @@
 #include "../world/entities/PenguinBoss.h"
 #include "../world/entities/HypnoPenguin.h"
 #include "../world/entities/DevBoss.h"
+#include "../mod/Interpreter.h"
+#include "../mod/ScriptExtensions.h"
 
 const bool LOCK_CMD_PROMPT = !DEBUG_MODE;
 constexpr const char UNLOCK_HASH[11] = "2636727673";
@@ -1186,6 +1188,21 @@ private:
             [this](std::vector<std::string>& parsedCommand)->std::string {
                 UNLOCK_ALL_ITEMS = !UNLOCK_ALL_ITEMS;
                 return "UNLOCK_ALL_ITMES set to " + std::string(UNLOCK_ALL_ITEMS ? "true" : "false");
+            })
+        },
+
+        {
+            "runse",
+            Command("Run a Bygro script extension function",
+            [this](std::vector<std::string>& parsedCommand)->std::string {
+                if (parsedCommand.size() > 1) {
+                    const std::string functionName = parsedCommand.at(1);
+                    Interpreter interpreter;
+                    const bool result = ScriptExtensions::execute(functionName, _world->getPlayer().get(), &interpreter);
+                    return functionName + " returned " + std::string(result ? "true" : "false");
+                } else {
+                    return "Not enough parameters for commmand: " + (std::string)("\"") + parsedCommand[0] + "\"";
+                }
             })
         }
     };
