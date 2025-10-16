@@ -19,7 +19,7 @@ Blinker::Blinker(sf::Vector2f pos) : Bouncer(BLINKER, pos, 2.5f, TILE_SIZE, TILE
 }
 
 void Blinker::preupdate() {
-    constexpr long long spawnCooldownLength = 1000LL;
+    constexpr long long spawnCooldownLength = 2000LL;
     if (!_spawnCooldownActive && getHitBox().intersects(getWorld()->getPlayer()->getHitBox())) {
         getWorld()->getPlayer()->takeDamage(10);
     } else if (_spawnCooldownActive) {
