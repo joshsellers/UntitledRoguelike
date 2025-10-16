@@ -16,6 +16,9 @@ protected:
     void damage(int damage);
 private:
     bool _isBlinking = false;
+
+    long long _spawnTimeMillis = 0LL;
+    bool _spawnCooldownActive = true;
 };
 
 #endif

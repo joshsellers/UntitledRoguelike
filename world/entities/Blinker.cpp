@@ -14,11 +14,16 @@ Blinker::Blinker(sf::Vector2f pos) : Bouncer(BLINKER, pos, 2.5f, TILE_SIZE, TILE
     if (randomChance(0.5f)) {
         getInventory().addItem(Item::PENNY.getId(), randomInt(1, 5));
     }
+
+    _spawnTimeMillis = currentTimeMillis();
 }
 
 void Blinker::preupdate() {
-    if (getHitBox().intersects(getWorld()->getPlayer()->getHitBox())) {
+    constexpr long long spawnCooldownLength = 1000LL;
+    if (!_spawnCooldownActive && getHitBox().intersects(getWorld()->getPlayer()->getHitBox())) {
         getWorld()->getPlayer()->takeDamage(10);
+    } else if (_spawnCooldownActive) {
+        if (currentTimeMillis() - _spawnTimeMillis >= spawnCooldownLength) _spawnCooldownActive = false;
     }
 
     if (randomChance(0.04f)) _isBlinking = true;
