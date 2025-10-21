@@ -234,7 +234,9 @@
     <ClInclude Include="inventory\ConditionalUnlockManager.h" />
     <ClInclude Include="inventory\RecentItemUnlockTracker.h" />
     <ClInclude Include="statistics\LocalAchievementManager.h" />
+    <ClInclude Include="ui\AppearanceConfigs.h" />
     <ClInclude Include="ui\UIAchievementDisplay.h" />
+    <ClInclude Include="ui\UIApperanceConfig.h" />
     <ClInclude Include="ui\UIControlsDisplay.h" />
     <ClInclude Include="ui\UIItemCatalogue.h" />
     <ClInclude Include="ui\UIMiniMapInterface.h" />
