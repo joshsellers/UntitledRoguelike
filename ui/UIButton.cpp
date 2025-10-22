@@ -8,9 +8,11 @@
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
     UIButtonListener* listener, std::string buttonCode, bool centerOnCoords, bool showControlButtonIcon)
     : UIElement(
-        x, y, width, height, true, true, font, centerOnCoords
+        x, y, width, height - 0.5, true, true, font, centerOnCoords, true
     ) {
     _showControlButtonIcon = showControlButtonIcon;
+
+    setAppearance(BUTTON_CONFIG, centerOnCoords);
 
     _rTexture.create(_width, 16 * 3);
     sf::RectangleShape center;
@@ -60,14 +62,15 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
     _text.setString(labelText);
 
     if (_showControlButtonIcon) {
+        constructShapes();
         _controlButtonShape.setTexture(UIHandler::getUISpriteSheet().get());
         constexpr float controlButtonSize = 2.5f;
         constexpr float controlButtonPadding = 0.5f;
         _controlButtonShape.setSize({ getRelativeWidth(controlButtonSize), getRelativeWidth(controlButtonSize) });
         _controlButtonShape.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
         _controlButtonShape.setPosition(
-            _shape.getPosition().x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
-            _shape.getPosition().y + _shape.getSize().y / 2.f - _controlButtonShape.getSize().y / 2.f
+            _pos.x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
+            _pos.y + _controlButtonShape.getSize().y / 2.f - getBounds().height / 2.f
         );
     }
 
@@ -76,16 +79,16 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
 }
 
 void UIButton::update() {
-    sf::FloatRect bounds = _shape.getGlobalBounds();
+    const sf::FloatRect bounds = getBounds();
     if (!_mouseDown && (bounds.contains(_mx, _my) || _isSelected)) {
-        _shape.setTextureRect(_hoverTexture);
+        setAppearance(BUTTON_HOVER_CONFIG);
     } else if (bounds.contains(_mx, _my) || (_mouseDown && _isSelected)) {
-        _shape.setTextureRect(_clickTexture);
+        setAppearance(BUTTON_CLICKED_CONFIG);
     } else {
-        _shape.setTextureRect(_defaultTexture);
+        setAppearance(BUTTON_CONFIG);
     }
 
-    if (!USING_MOUSE && !_mouseDown && !_isSelected) _shape.setTextureRect(_defaultTexture);
+    if (!USING_MOUSE && !_mouseDown && !_isSelected) setAppearance(BUTTON_CONFIG);
 
     if (pressWhenSelected && _isSelected && !_wasJustSelected) {
         _listener->buttonPressed(_buttonCode);
@@ -118,7 +121,7 @@ void UIButton::mouseButtonPressed(const int mx, const int my, const int button) 
 
 void UIButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
-    sf::FloatRect bounds = _shape.getGlobalBounds();
+    sf::FloatRect bounds = getBounds();
     if (bounds.contains(mx, my)) {
         /*std::thread callbackThread(
             &UIButtonListener::buttonPressed, _listener, _buttonCode

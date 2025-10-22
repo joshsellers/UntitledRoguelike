@@ -51,6 +51,11 @@ private:
     sf::IntRect _clickTexture;
 
     sf::RenderTexture _rTexture;
+
+    sf::Vector2f _origin;
+    float _padding;
+
+    unsigned int _cursorBlinkTimer = 0;
 };
 
 #endif

@@ -1166,6 +1166,12 @@
     <ClInclude Include="world\SpatialHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIApperanceConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\AppearanceConfigs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UntitledRogueLike.rc">
