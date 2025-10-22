@@ -25,7 +25,7 @@ inline UIAppearanceConfig BUTTON_CLICKED_CONFIG = BUTTON_CONFIG.offsetBy(32, 0);
 inline UIAppearanceConfig SLIDER_HANDLE_CONFIG = BASE_COMPONENT_CONFIG;
 inline UIAppearanceConfig SLIDER_RAIL_CONFIG = BASE_COMPONENT_CONFIG;
 
-inline UIAppearanceConfig TEXTFIELD_CONFIG = BUTTON_CONFIG.offsetBy(0, 32);
+inline UIAppearanceConfig TEXTFIELD_CONFIG = BUTTON_CONFIG.offsetBy(0, 16);
 inline UIAppearanceConfig TEXTFIELD_HOVER_CONFIG = TEXTFIELD_CONFIG.offsetBy(16, 0);
 inline UIAppearanceConfig TEXTFIELD_ARMED_CONFIG = TEXTFIELD_CONFIG.offsetBy(32, 0);
 

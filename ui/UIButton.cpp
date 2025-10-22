@@ -12,7 +12,7 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
     ) {
     _showControlButtonIcon = showControlButtonIcon;
 
-    setAppearance(BUTTON_CONFIG, true);
+    setAppearance(BUTTON_CONFIG, centerOnCoords);
 
     _rTexture.create(_width, 16 * 3);
     sf::RectangleShape center;
@@ -78,7 +78,7 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
 }
 
 void UIButton::update() {
-    sf::FloatRect bounds = getBounds();
+    const sf::FloatRect bounds = getBounds();
     if (!_mouseDown && (bounds.contains(_mx, _my) || _isSelected)) {
         setAppearance(BUTTON_HOVER_CONFIG);
     } else if (bounds.contains(_mx, _my) || (_mouseDown && _isSelected)) {

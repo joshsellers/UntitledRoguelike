@@ -2,8 +2,10 @@
 #include "UIHandler.h"
 
 UITextField::UITextField(const sf::String label, float x, float y, sf::Font font, bool centerOnCoords) 
-    : UIElement(x, y, 1, 1, false, false, font, centerOnCoords) {
-    _disableAutomaticTextAlignment = true;
+    : UIElement(x, y, 1, 1, false, false, font, centerOnCoords, true) {
+    //_disableAutomaticTextAlignment = true;
+
+    setAppearance(TEXTFIELD_CONFIG, centerOnCoords);
 
     float fontSize = 1;
     int relativeFontSize = getRelativeWidth(fontSize);
@@ -27,7 +29,10 @@ UITextField::UITextField(const sf::String label, float x, float y, sf::Font font
 
     _shape.setSize(sf::Vector2f(_width, _height));
     _shape.setTexture(&_rTexture.getTexture());
-    _shape.setTextureRect(sf::IntRect(0, 0, _width, 16));
+    _shape.setTextureRect(sf::IntRect(0, 0, _width, 16)); 
+    
+    _padding = getRelativeWidth(1.f);
+    _origin = { _pos.x + _size.x / 2.f + _padding, _pos.y + _size.y / 2.f };
 }
 
 void UITextField::update() {
@@ -40,13 +45,19 @@ void UITextField::draw(sf::RenderTexture& surface) {
     _hoverTexture = sf::IntRect(0, 16, _width, 16);
     _clickTexture = sf::IntRect(0, 32, _width, 16);
 
-    if (((_shape.getGlobalBounds().contains(_mPos.x, _mPos.y) && !_mouseDown) || _isSelected) && !_isArmed) {
-        _shape.setTextureRect(_hoverTexture);
-    } else if ((!_mouseDown || !_shape.getGlobalBounds().contains(_mPos.x, _mPos.y)) && !_isArmed) {
-        _shape.setTextureRect(_defaultTexture);
+    if (((getBounds().contains(_mPos.x, _mPos.y) && !_mouseDown) || _isSelected) && !_isArmed) {
+        setAppearance(TEXTFIELD_HOVER_CONFIG);
+    } else if ((!_mouseDown || !getBounds().contains(_mPos.x, _mPos.y)) && !_isArmed) {
+        setAppearance(TEXTFIELD_CONFIG);
     } else if (_isArmed) {
-        _shape.setTextureRect(_clickTexture);
+        setAppearance(TEXTFIELD_ARMED_CONFIG);
     }
+
+    _size.x = _text.getGlobalBounds().width + _padding * 2;
+    _size.y = std::max(3.f, _text.getGlobalBounds().height);
+
+    _pos.x = _origin.x - _size.x / 2.f - _padding;
+    _pos.y = _origin.y - _size.y / 2.f;
 
     float padding = getRelativeWidth(1.f);
 
@@ -57,8 +68,16 @@ void UITextField::draw(sf::RenderTexture& surface) {
 
     float x = getRelativeWidth(_x) - width / 2;
     float y = getRelativeHeight(_y);
-    _text.setPosition(sf::Vector2f(clampWidth ? getRelativeWidth(_x) - _text.getGlobalBounds().width / 2 : x, y));
-    _label.setPosition(sf::Vector2f(getRelativeWidth(_x) - (_label.getGlobalBounds().width / 2), y - _shape.getGlobalBounds().height));
+    //_text.setPosition(sf::Vector2f(clampWidth ? getRelativeWidth(_x) - _text.getGlobalBounds().width / 2 : x, y));
+    //_label.setPosition(sf::Vector2f(_pos.x + getBounds().width / 2.f + (_label.getGlobalBounds().width / 2), _pos.y - getBounds().height));
+    _label.setOrigin(_label.getLocalBounds().width / 2.f + _label.getLocalBounds().left, _label.getLocalBounds().height / 2.f + _label.getLocalBounds().top);
+    const sf::FloatRect bounds = getBounds();
+    const float w = bounds.width;
+    const float h = bounds.height;
+    _label.setPosition(
+        bounds.left + w / 2.f,
+        bounds.top - h / 2.f
+    );
 
     _rTexture.create(width, 16 * 3);
     sf::RectangleShape center;
@@ -97,7 +116,20 @@ void UITextField::draw(sf::RenderTexture& surface) {
 
     _width = width;
 
-    surface.draw(_shape);
+    if (_isArmed) {
+        sf::Text cursor;
+        cursor.setString(" |");
+        cursor.setFont(*_text.getFont());
+        cursor.setCharacterSize(_text.getCharacterSize() + getRelativeWidth(0.5f));
+        cursor.setFillColor(_text.getFillColor());
+        cursor.setOrigin(cursor.getLocalBounds().width / 2.f + cursor.getLocalBounds().left, cursor.getLocalBounds().height / 2.f + cursor.getLocalBounds().top);
+        cursor.setPosition(_text.getPosition().x + _text.getGlobalBounds().width / 2.f, _text.getPosition().y);
+        constexpr unsigned int blinkRate = 24;
+        if ((_cursorBlinkTimer / blinkRate) % 2) surface.draw(cursor);
+
+        _cursorBlinkTimer++;
+    }
+    //surface.draw(_shape);
     surface.draw(_text);
     surface.draw(_label);
 }
@@ -111,7 +143,7 @@ void UITextField::mouseButtonPressed(const int mx, const int my, const int butto
 }
 
 void UITextField::mouseButtonReleased(const int mx, const int my, const int button) {
-    _isArmed = _shape.getGlobalBounds().contains(mx, my);
+    _isArmed = getBounds().contains(mx, my);
     _mouseDown = false;
 }
 
