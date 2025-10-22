@@ -1,7 +1,7 @@
 #include "UIKeyboardBindingButton.h"
 
 UIKeyboardBindingButton::UIKeyboardBindingButton(float x, float y, float width, float height, sf::Font font, InputBindingManager::BINDABLE_ACTION action) :
-    UIButton(x, y, width, height, "", font, nullptr, ""), _action(action) {
+    UIButton(x, y, width, height, "", font, nullptr, "", false, false), _action(action) {
     _keyBinding = InputBindingManager::getKeyboardBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
 
@@ -12,19 +12,19 @@ void UIKeyboardBindingButton::update() {
     _keyBinding = InputBindingManager::getKeyboardBinding(_action);
     setLabelText(InputBindingManager::getActionName(_action) + ": " + InputBindingManager::getKeyName(_keyBinding));
 
-    sf::FloatRect bounds = _shape.getGlobalBounds();
+    sf::FloatRect bounds = getBounds();
     if (!_mouseDown && (bounds.contains(getMousePos().x, getMousePos().y)) && !_isSelected) {
-        _shape.setTextureRect(getHoverTexture());
+        setAppearance(BUTTON_HOVER_CONFIG);
     } else if (_isSelected) {
-        _shape.setTextureRect(getClickTexture());
+        setAppearance(BUTTON_CLICKED_CONFIG);
     } else {
-        _shape.setTextureRect(getDefaultTexture());
+        setAppearance(BUTTON_CONFIG);
     }
 }
 
 void UIKeyboardBindingButton::mouseButtonReleased(const int mx, const int my, const int button) {
     _mouseDown = false;
-    sf::FloatRect bounds = _shape.getGlobalBounds();
+    sf::FloatRect bounds = getBounds();
     if (bounds.contains(mx, my)) {
         _isSelected = true;
     } else _isSelected = false;

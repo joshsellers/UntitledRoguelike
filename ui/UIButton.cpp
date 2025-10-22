@@ -62,14 +62,15 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
     _text.setString(labelText);
 
     if (_showControlButtonIcon) {
+        constructShapes();
         _controlButtonShape.setTexture(UIHandler::getUISpriteSheet().get());
         constexpr float controlButtonSize = 2.5f;
         constexpr float controlButtonPadding = 0.5f;
         _controlButtonShape.setSize({ getRelativeWidth(controlButtonSize), getRelativeWidth(controlButtonSize) });
         _controlButtonShape.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
         _controlButtonShape.setPosition(
-            _shape.getPosition().x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
-            _shape.getPosition().y + _shape.getSize().y / 2.f - _controlButtonShape.getSize().y / 2.f
+            _pos.x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
+            _pos.y + _controlButtonShape.getSize().y / 2.f - getBounds().height / 2.f
         );
     }
 
