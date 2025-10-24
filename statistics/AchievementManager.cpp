@@ -129,19 +129,20 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         unlock(TRIGGER_HAPPY);
         ConditionalUnlockManager::increaseUnlockProgress("Quantum Visor", 1);
     } else if (stat == DAMAGE_TAKEN) {
-        _wavesWithoutDamage = 0;
-        _tookDamageThisWave = true;
+        StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, 0);
+        StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, true);
         if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) unlock(MASOCHIST);
     } else if (stat == WAVES_CLEARED) {
-        if (!_tookDamageThisWave) {
-            _wavesWithoutDamage++;
+        if (!StatManager::getStatThisRun(TOOK_DAMAGE_THIS_WAVE)) {
+            StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) + 1);
         }
-        _tookDamageThisWave = false;
+        StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, false);
+        MessageManager::displayMessage(StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE), 5, DEBUG);
 
-        if (_wavesWithoutDamage == 5) {
+        if (StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) == 5) {
             unlock(SLIPPERY);
             if (HARD_MODE_ENABLED) unlock(HARDMODE_SLIPPERY);
-        } else if (_wavesWithoutDamage == 10) {
+        } else if (StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) == 10) {
             unlock(UNTOUCHABLE);
             ConditionalUnlockManager::increaseUnlockProgress("Coupon", 1);
             if (HARD_MODE_ENABLED) {

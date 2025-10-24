@@ -23,7 +23,9 @@ enum STATISTIC {
     HIGHEST_WAVE_REACHED,
     ITEMS_UNLOCKED,
     ATM_AMOUNT,
-    SHOPS_BLOWN_UP
+    SHOPS_BLOWN_UP,
+    WAVES_WITHOUT_DAMAGE,
+    TOOK_DAMAGE_THIS_WAVE
 };
 
 inline std::map<STATISTIC, std::string> STAT_NAMES = {
@@ -44,11 +46,15 @@ inline std::map<STATISTIC, std::string> STAT_NAMES = {
     {HIGHEST_WAVE_REACHED,  "Highest wave reached"},
     {ITEMS_UNLOCKED,        "Items unlocked"},
     {ATM_AMOUNT,            "ATM Balance"},
-    {SHOPS_BLOWN_UP,        "Shop doors blown up"}
+    {SHOPS_BLOWN_UP,        "Shop doors blown up"},
+    {WAVES_WITHOUT_DAMAGE,  "Waves cleared without taking damage"},
+    {TOOK_DAMAGE_THIS_WAVE, "Took damage this wave?"}
 };
 
 inline std::vector<STATISTIC> HIDDEN_STATS = {
-    SHOPS_BLOWN_UP
+    SHOPS_BLOWN_UP,
+    WAVES_WITHOUT_DAMAGE,
+    TOOK_DAMAGE_THIS_WAVE
 };
 
 #endif
