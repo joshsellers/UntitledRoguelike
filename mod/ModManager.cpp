@@ -284,8 +284,7 @@ void ModManager::loadItem(std::ifstream& in) {
         fireRateMillis,
         reloadTimeMillis, isStartingItem, true, functionName, conditionalUnlock));
 
-    if (itemId > Item::ITEMS.size()) Item::ITEMS.push_back(item);
-    else Item::ITEMS.insert(Item::ITEMS.begin() + itemId, item);
+    insertItem(item);
         
     Item::ITEM_UNLOCK_WAVE_NUMBERS[itemId] = unlockWaveNumber;
 
@@ -303,6 +302,28 @@ void ModManager::loadItem(std::ifstream& in) {
 
     if (isAnimated) {
         Item::ANIMATION_CONFIGS[itemId] = WeaponAnimationConfig(itemId, ticksPerFrame, frameCount);
+    }
+}
+
+void ModManager::insertItem(std::shared_ptr<Item> item) {
+    auto& items = Item::ITEMS;
+    if (items.size() == 0) {
+        items.push_back(item);
+        return;
+    }
+
+    for (int i = 0; i < items.size(); i++) {
+        const auto& exisingItem = items.at(i);
+        if (exisingItem->getId() == item->getId() - 1 && i < items.size() - 1) {
+            items.insert(items.begin() + (i + 1), item);
+            return;
+        } else if (exisingItem->getId() > item->getId()) {
+            items.insert(items.begin() + (i), item);
+            return;
+        } else if (i == items.size() - 1) {
+            items.push_back(item);
+            return;
+        }
     }
 }
 

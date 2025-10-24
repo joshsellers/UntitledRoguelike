@@ -65,8 +65,24 @@ void PlayerVisualEffectManager::clearPlayerEffects() {
 }
 
 void PlayerVisualEffectManager::addEffectType(PlayerVisualEffect effect) {
-    if (effect.id > getEffectCount()) _effectTypes.push_back(effect);
-    else _effectTypes.insert(_effectTypes.begin() + effect.id, effect);
+    if (_effectTypes.size() == 0) {
+        _effectTypes.push_back(effect);
+        return;
+    }
+
+    for (int i = 0; i < _effectTypes.size(); i++) {
+        const auto& effectType = _effectTypes.at(i);
+        if (effectType.id == effect.id - 1 && i < _effectTypes.size() - 1) {
+            _effectTypes.insert(_effectTypes.begin() + (i + 1), effect);
+            return;
+        } else if (effectType.id > effect.id) {
+            _effectTypes.insert(_effectTypes.begin() + (i), effect);
+            return;
+        } else if (i == _effectTypes.size() - 1) {
+            _effectTypes.push_back(effect);
+            return;
+        }
+    }
 }
 
 unsigned int PlayerVisualEffectManager::getEffectCount() {

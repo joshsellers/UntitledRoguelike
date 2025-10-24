@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 
 class Item;
 
@@ -19,6 +20,7 @@ private:
 
     static void loadItems();
     static void loadItem(std::ifstream& in);
+    static void insertItem(std::shared_ptr<Item> item);
     static void loadProjectiles();
     static void loadProjectile(std::ifstream& in);
 
