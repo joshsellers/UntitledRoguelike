@@ -73,7 +73,7 @@ public:
     World* getWorld() const;
 
     bool isActive() const;
-    void deactivate();
+    virtual void deactivate();
     void activate();
 
     bool isDormant() const;

@@ -13,6 +13,8 @@ public:
     virtual void loadSprite(std::shared_ptr<sf::Texture> spriteSheet);
 
     void blowOpenDoor();
+
+    virtual void deactivate();
 protected:
     virtual void damage(int damage);
 private:
@@ -20,6 +22,8 @@ private:
     sf::Sprite _blownUpSprite;
 
     bool _doorBlownOpen = false;
+
+    std::shared_ptr<Entity> _doorHitDetector = nullptr;
 };
 
 #endif

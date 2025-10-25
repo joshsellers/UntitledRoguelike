@@ -375,6 +375,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
     bool noCollide = false;
     bool useDamageMultiplier = true;
     bool allowPlayerProjectileEffects = true;
+    bool allowDamageToProps = false;
     EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE;
 
     std::string line;
@@ -432,6 +433,8 @@ void ModManager::loadProjectile(std::ifstream& in) {
                 } else {
                     explosionBehavior = explosionBehaviorNames.at(strExplBehavior);
                 }
+            } else if (tokens.at(0) == "allowDamageToProps") {
+                allowDamageToProps = tokens.at(2) == "1";
             } else {
                 MessageManager::displayMessage("Unrecognized projectile parameter: \"" + tokens.at(0) + "\"", 5, WARN);
             }
@@ -456,7 +459,7 @@ void ModManager::loadProjectile(std::ifstream& in) {
 
     ProjectileData data(
         itemId, baseVelocity, hitBox, rotateSprite, onlyHitEnemies, lifeTime, isAnimated, animationFrames, animationSpeed, 
-        dropOnExpire, noCollide, useDamageMultiplier, explosionBehavior, allowPlayerProjectileEffects
+        dropOnExpire, noCollide, useDamageMultiplier, explosionBehavior, allowPlayerProjectileEffects, allowDamageToProps
     );
 }
 

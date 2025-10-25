@@ -84,96 +84,40 @@ void Projectile::update() {
                 _isActive = false;
                 return;
             }
-        } else if (_parent->getSaveId() != PLAYER) {
-            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
-                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
-                    && entity->getEntityType() != _parent->getEntityType()) {
-                    if (entity->getHitBox().intersects(_hitBox)) {
-                        entity->takeDamage((Item::ITEMS[_itemId]->getDamage() + _damageBoost) * _parent->getDamageMultiplier(), _criticalHit);
-                        _entitiesPassedThrough++;
-                        if (_entitiesPassedThrough >= passThroughCount) {
-                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
-                                spawnExplosion();
-                            }
-
-                            if (_splitOnHit) split();
-                            _isActive = false;
-                            return;
-                        }
-                        break;
-                    }
-                }
-            }
-        } else if (_data.onlyHitEnemies) {
-            for (auto& entity : getWorld()->getNearbyEntites(getPosition(), true)) {
-                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
-                    && entity->getEntityType() != _parent->getEntityType()) {
-                    if (entity->getHitBox().intersects(_hitBox)) {
-                        bool alreadyHitThisEntity = false;
-                        for (const std::string& uid : _hitEntities) {
-                            if (uid == entity->getUID()) {
-                                alreadyHitThisEntity = true;
-                                break;
-                            }
-                        }
-                        if (alreadyHitThisEntity) continue;
-
-                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
-                        entity->takeDamage(damage, _criticalHit);
-                        StatManager::increaseStat(DAMAGE_DEALT, damage);
-
-                        _entitiesPassedThrough++;
-                        _hitEntities.push_back(entity->getUID());
-                        if (_entitiesPassedThrough >= passThroughCount) {
-                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
-                                spawnExplosion();
-                            }
-
-                            if (_splitOnHit) split();
-                            _isActive = false;
-                            return;
-                        }
-                        break;
-                    }
-                }
-            }
         } else {
-            for (auto& entity : getWorld()->getNearbyEntites(getPosition())) {
-                if (!entity->compare(_parent) && entity->getHitBox() != getHitBox() && entity->isActive() && entity->isDamageable()
-                    && (!_data.onlyHitEnemies || entity->isEnemy()) && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
-                    && entity->getEntityType() != _parent->getEntityType()) {
-                    if (entity->getHitBox().intersects(_hitBox)) {
-                        bool alreadyHitThisEntity = false;
-                        for (const std::string& uid : _hitEntities) {
-                            if (uid == entity->getUID()) {
-                                alreadyHitThisEntity = true;
-                                break;
-                            }
+            const bool isExplosive = _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT;
+            for (auto& entity : getWorld()->getNearbyEntites(getPosition(), _data.onlyHitEnemies && !isExplosive)) {
+                if (!entity->compare(_parent) && entity->isActive() && entity->isDamageable() && (!entity->isProp() || _data.allowDamageToProps) 
+                    && !(_parent->getSaveId() == PLAYER && entity->getEntityType() == "dontblockplayershots")
+                    && entity->getEntityType() != _parent->getEntityType() && entity->getEntityType() != "explosion" && entity->getHitBox().intersects(_hitBox)) {
+                    bool alreadyHitThisEntity = false;
+                    for (const std::string& uid : _hitEntities) {
+                        if (uid == entity->getUID()) {
+                            alreadyHitThisEntity = true;
+                            break;
                         }
-                        if (alreadyHitThisEntity) continue;
-
-                        int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
-                        entity->takeDamage(damage, _criticalHit);
-                        StatManager::increaseStat(DAMAGE_DEALT, damage);
-
-                        _entitiesPassedThrough++;
-                        _hitEntities.push_back(entity->getUID());
-                        if (_entitiesPassedThrough >= passThroughCount) {
-                            if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
-                                spawnExplosion();
-                            }
-
-                            if (_splitOnHit) split();
-                            _isActive = false;
-                            return;
-                        }
-                        break;
                     }
+                    if (alreadyHitThisEntity) continue;
+
+                    int damage = (Item::ITEMS[_itemId]->getDamage() + _damageBoost) * (_data.useDamageMultiplier ? _parent->getDamageMultiplier() : 1);
+                    entity->takeDamage(damage, _criticalHit);
+                    if (_parent->getSaveId() == PLAYER) StatManager::increaseStat(DAMAGE_DEALT, damage);
+
+                    _entitiesPassedThrough++;
+                    _hitEntities.push_back(entity->getUID());
+                    if (_entitiesPassedThrough >= passThroughCount) {
+                        if (_explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_IMPACT || _explosionBehavior == EXPLOSION_BEHAVIOR::EXPLODE_ON_DECAY_AND_IMPACT) {
+                            spawnExplosion();
+                        }
+
+                        if (_splitOnHit) split();
+                        _isActive = false;
+                        return;
+                    }
+                    break;
                 }
             }
-        }
+        } 
     }
 
     if (targetSeeking && (_data.onlyHitEnemies || _parent->getSaveId() == PLAYER)) {

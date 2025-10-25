@@ -411,7 +411,7 @@ const Item Item::_PROJECITLE_CHAINSAW(53, "_CHAINSAW_PROJECTILE", sf::IntRect(75
     "This item should not be obtainable",
     EQUIPMENT_TYPE::NOT_EQUIPABLE, 2, 0, 0, sf::Vector2f(), false
 );
-const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.getId(), 0, sf::IntRect(0, 0, 16, 16), false, false, 100);
+const ProjectileData Item::DATA_PROJECTILE_CHAINSAW(Item::_PROJECITLE_CHAINSAW.getId(), 0, sf::IntRect(0, 0, 16, 16), false, false, 100, false, 0, 0, false, false, true, EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE, true, true);
 
 const Item Item::CHAINSAW(54, "Chainsaw", sf::IntRect(75, 0, 1, 1), false, GASOLINE.getId(), false,
     "What if I attatched a saw blade onto a rope and\nstrung it around some wheels",

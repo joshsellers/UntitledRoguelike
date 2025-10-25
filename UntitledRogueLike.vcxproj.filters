@@ -633,6 +633,9 @@
     <ClCompile Include="world\SpatialHash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world\entities\ShopDoorHitDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Game.h">
@@ -1170,6 +1173,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ui\AppearanceConfigs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world\entities\ShopDoorHitDetector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -64,6 +64,7 @@
     <ClCompile Include="world\entities\PenguinBoss.cpp" />
     <ClCompile Include="world\entities\Scythe.cpp" />
     <ClCompile Include="world\entities\ShopATM.cpp" />
+    <ClCompile Include="world\entities\ShopDoorHitDetector.cpp" />
     <ClCompile Include="world\entities\ShopKeepCorpse.cpp" />
     <ClCompile Include="world\entities\Lightning.cpp" />
     <ClCompile Include="world\entities\AltarArrow.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="world\entities\projectiles\ExplosionBehavior.h" />
     <ClInclude Include="world\entities\Scythe.h" />
     <ClInclude Include="world\entities\ShopATM.h" />
+    <ClInclude Include="world\entities\ShopDoorHitDetector.h" />
     <ClInclude Include="world\entities\ShopKeepCorpse.h" />
     <ClInclude Include="world\entities\Lightning.h" />
     <ClInclude Include="world\entities\AltarArrow.h" />

@@ -4,6 +4,7 @@
 #include "../../core/SoundManager.h"
 #include "../../statistics/StatManager.h"
 #include "../../inventory/effect/PlayerVisualEffectManager.h"
+#include "ShopDoorHitDetector.h"
 
 ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> spriteSheet, bool doorBlownOpen) : Entity(NO_SAVE, pos, 0, 192 / TILE_SIZE, 96 / TILE_SIZE, true) {
     _pos = pos;
@@ -48,6 +49,11 @@ ShopExterior::ShopExterior(sf::Vector2f pos, std::shared_ptr<sf::Texture> sprite
 }
 
 void ShopExterior::update() {
+    if (!_doorBlownOpen && _doorHitDetector == nullptr) {
+        _doorHitDetector = std::shared_ptr<ShopDoorHitDetector>(new ShopDoorHitDetector({ _pos.x + TILE_SIZE * 5, _pos.y + TILE_SIZE * 4 }, this));
+        getWorld()->addEntity(_doorHitDetector);
+    }
+
     if (!getWorld()->playerIsInShop()) {
         _hasColliders = true;
         if (getWorld()->onEnemySpawnCooldown() && !getWorld()->bossIsActive() && getWorld()->getCurrentWaveNumber() < SHOPS_CLOSED_WAVE || _doorBlownOpen) {
@@ -91,8 +97,6 @@ void ShopExterior::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
 
 void ShopExterior::blowOpenDoor() {
     if (_doorBlownOpen) return;
-    /*const sf::FloatRect doorHitBox(_pos.x + TILE_SIZE * 5, _pos.y + TILE_SIZE * 4, TILE_SIZE * 2, TILE_SIZE * 2);
-    _doorBlownOpen = doorHitBox.contains(explosionPos);*/
     _doorBlownOpen = true;
     getWorld()->shopDoorBlownUpAt(getPosition());
     SoundManager::playSound("glass");
@@ -101,5 +105,12 @@ void ShopExterior::blowOpenDoor() {
 }
 
 void ShopExterior::damage(int damage) {
-    if (damage == 25) blowOpenDoor();
+    //if (damage == 25) blowOpenDoor();
+}
+
+void ShopExterior::deactivate() {
+    _isActive = false;
+    if (!_doorBlownOpen && _doorHitDetector != nullptr) {
+        _doorHitDetector->deactivate();
+    }
 }

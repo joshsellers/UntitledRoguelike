@@ -9,10 +9,11 @@ struct ProjectileData {
     ProjectileData(const unsigned int itemId, const float baseVelocity, const sf::IntRect hitBox, const bool rotateSprite, const bool onlyHitEnemies = false,
         const long long lifeTime = 5000LL,
         const bool isAnimated = false, const int animationFrames = 0, const int animationSpeed = 0, const bool dropOnExpire = false, const bool noCollide = false,
-        const bool useDamageMultiplier = true, const EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE, const bool allowPlayerProjectileEffects = true) :
+        const bool useDamageMultiplier = true, const EXPLOSION_BEHAVIOR explosionBehavior = EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE, const bool allowPlayerProjectileEffects = true,
+        const bool allowDamageToProps = false) :
         itemId(itemId), baseVelocity(baseVelocity), hitBox(hitBox), rotateSprite(rotateSprite), onlyHitEnemies(onlyHitEnemies), lifeTime(lifeTime),
         isAnimated(isAnimated), animationFrames(animationFrames), animationSpeed(animationSpeed), dropOnExpire(false), noCollide(noCollide),
-        useDamageMultiplier(useDamageMultiplier), explosionBehavior(explosionBehavior), allowPlayerProjectileEffects(allowPlayerProjectileEffects)
+        useDamageMultiplier(useDamageMultiplier), explosionBehavior(explosionBehavior), allowPlayerProjectileEffects(allowPlayerProjectileEffects), allowDamageToProps(allowDamageToProps)
     {
 
         ProjectileDataManager::addData(*this);
@@ -21,7 +22,7 @@ struct ProjectileData {
     ProjectileData()
         : itemId(0), baseVelocity(0), hitBox(sf::IntRect()), rotateSprite(false), onlyHitEnemies(true), lifeTime(0),
         isAnimated(false), animationFrames(0), animationSpeed(0), dropOnExpire(false), noCollide(false), useDamageMultiplier(false),
-        explosionBehavior(EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE), allowPlayerProjectileEffects(false)
+        explosionBehavior(EXPLOSION_BEHAVIOR::NOT_EXPLOSIVE), allowPlayerProjectileEffects(false), allowDamageToProps(false)
     { }
 
     unsigned int itemId;
@@ -37,6 +38,7 @@ struct ProjectileData {
     bool noCollide;
     bool useDamageMultiplier;
     bool allowPlayerProjectileEffects;
+    bool allowDamageToProps;
     EXPLOSION_BEHAVIOR explosionBehavior;
 };
 
