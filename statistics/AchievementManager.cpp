@@ -137,7 +137,6 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) + 1);
         }
         StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, false);
-        MessageManager::displayMessage(StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE), 5, DEBUG);
 
         if (StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) == 5) {
             unlock(SLIPPERY);
