@@ -8,7 +8,7 @@
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
     UIButtonListener* listener, std::string buttonCode, bool centerOnCoords, bool showControlButtonIcon)
     : UIElement(
-        x, y, width, height - 0.5, true, true, font, centerOnCoords, true
+        x, y, width, height - 0.9, true, true, font, centerOnCoords, true
     ) {
     _showControlButtonIcon = showControlButtonIcon;
 
