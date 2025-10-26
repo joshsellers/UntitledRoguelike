@@ -20,16 +20,18 @@ void DamageParticle::draw(sf::RenderTexture& surface) {
 }
 
 void DamageParticle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
+    constexpr int numeralTileSize = 10;
+    constexpr int charWidth = 7;
     std::string damageString = std::to_string(_amount);
     for (int i = 0; i < damageString.size(); i++) {
         std::string character(1, damageString.at(i));
-
+        
         sf::Sprite sprite;
         sprite.setTexture(*spriteSheet);
         sprite.setTextureRect(
-            sf::IntRect(std::stoi(character) * TILE_SIZE, 30 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+            sf::IntRect(std::stoi(character) * numeralTileSize, 486, numeralTileSize, numeralTileSize)
         );
-        sprite.setPosition(getPosition().x + 12 * i - (damageString.length() * 12), getPosition().y - TILE_SIZE);
+        sprite.setPosition(getPosition().x + charWidth * i - (damageString.length() * charWidth) / 2.f, getPosition().y - numeralTileSize);
         
         sprite.setColor(sf::Color((_crit ? 0xA700E0FF : 0xF50000FF)));
 
@@ -39,7 +41,7 @@ void DamageParticle::loadSprite(std::shared_ptr<sf::Texture> spriteSheet) {
     // Fixes damage particles being invisible with frustum culling
     _sprite.setTexture(*spriteSheet);
     _sprite.setTextureRect(
-        sf::IntRect(0, 0, damageString.length() * 12, TILE_SIZE)
+        sf::IntRect(0, 0, damageString.length() * charWidth, numeralTileSize)
     );
-    _sprite.setPosition(getPosition().x - (damageString.length() * 12), getPosition().y - TILE_SIZE);
+    _sprite.setPosition(getPosition().x - (damageString.length() * charWidth), getPosition().y - numeralTileSize);
 }
