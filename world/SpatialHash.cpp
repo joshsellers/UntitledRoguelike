@@ -4,7 +4,7 @@
 constexpr int CELL_SIZE = 64;
 
 void SpatialHash::insert(std::shared_ptr<Entity> entity) {
-    const sf::Vector2i cell = getCell(entity->getPosition());
+    const sf::Vector2i cell = getCell({entity->getPosition().x, entity->getPosition().y + entity->getSpriteSize().y / 2.f});
     
     const int key = hash(cell.x, cell.y);
     _grid[key].push_back(entity);
