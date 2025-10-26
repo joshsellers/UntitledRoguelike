@@ -255,7 +255,7 @@ void Game::initUI() {
     _pauseMenu->addElement(statsMenuButton_pause);
 
     std::shared_ptr<UILabel> pausedLabel_pause = std::shared_ptr<UILabel>(new UILabel(
-        "paused", 50.f, 10.f, 2.5f, _font
+        "paused", 50.f, 9.5f, 2.5f, _font
     ));
     pausedLabel_pause->setTextOutlineThickness(2.f);
     _pauseMenu->addElement(pausedLabel_pause);

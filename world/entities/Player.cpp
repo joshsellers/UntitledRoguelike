@@ -59,7 +59,8 @@ void Player::update() {
 
             _magContentsPercentage = ((float)(maxAmmo * reloadProgress) / (float)weapon->getMagazineSize()) * 100;
         }
-    } else if (AUTO_RELOAD_ENABLED && _magazineContents == 0 && GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT))) {
+    } else if (AUTO_RELOAD_ENABLED && _magazineContents == 0 
+        && (GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::SHOOT)) || sf::Mouse::isButtonPressed(sf::Mouse::Left))) {
         startReloadingWeapon();
     }
 

@@ -8,7 +8,7 @@
 UIButton::UIButton(float x, float y, float width, float height, sf::String labelText, sf::Font font,
     UIButtonListener* listener, std::string buttonCode, bool centerOnCoords, bool showControlButtonIcon)
     : UIElement(
-        x, y, width, height - 0.5, true, true, font, centerOnCoords, true
+        x, y, width, height - 0.9, true, true, font, centerOnCoords, true
     ) {
     _showControlButtonIcon = showControlButtonIcon;
 
@@ -69,8 +69,8 @@ UIButton::UIButton(float x, float y, float width, float height, sf::String label
         _controlButtonShape.setSize({ getRelativeWidth(controlButtonSize), getRelativeWidth(controlButtonSize) });
         _controlButtonShape.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::A));
         _controlButtonShape.setPosition(
-            _pos.x - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
-            _pos.y + _controlButtonShape.getSize().y / 2.f - getBounds().height / 2.f
+            getBounds().left - _controlButtonShape.getSize().x - getRelativeWidth(controlButtonPadding),
+            getBounds().top - _controlButtonShape.getSize().y / 2.f + getBounds().height / 2.f
         );
     }
 
@@ -93,7 +93,7 @@ void UIButton::update() {
     if (pressWhenSelected && _isSelected && !_wasJustSelected) {
         _listener->buttonPressed(_buttonCode);
     }
-    _wasJustSelected = _isSelected;
+    _wasJustSelected = _isSelected; 
 }
 
 void UIButton::draw(sf::RenderTexture& surface) {
