@@ -1566,11 +1566,13 @@ void Game::buttonPressed(std::string buttonCode) {
 
         std::shared_ptr<const Item> startingItem = (Tutorial::isCompleted() ? Item::ITEMS[startingItems[randomInt(0, numStartingItems - 1)]] : Item::ITEMS[Item::getIdFromName("Bee")]);
 
-        constexpr int gunStartChance = 49;
-        if (Tutorial::isCompleted() && randomInt(0, gunStartChance) == 0) {
+        const float gunChance = std::min(StatManager::getOverallStat(BOSSES_DEFEATED) / 37.f, 0.75f);
+
+        if (Tutorial::isCompleted() && randomChance(gunChance)) {
             std::vector<unsigned int> startingGuns;
             for (const auto& item : Item::ITEMS) {
-                if (item->isGun() && item->isBuyable()) {
+                if (item->isGun() && item->isBuyable() && item->isUnlocked(StatManager::getOverallStat(HIGHEST_WAVE_REACHED))
+                    && !stringStartsWith(item->getName(), "_")) {
                     startingGuns.push_back(item->getId());
                 }
             }
