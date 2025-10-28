@@ -4,6 +4,7 @@
 #include "../../core/Viewport.h"
 #include "ImpactExplosion.h"
 #include "orbiters/Orbiter.h"
+#include "../../core/SoundManager.h"
 
 FrogBoss::FrogBoss(sf::Vector2f pos) : Boss(FROG_BOSS, pos, 1.f, TILE_SIZE * 7, TILE_SIZE * 10,
     {
@@ -214,6 +215,7 @@ void FrogBoss::runCurrentState() {
                         _jumpState = RISING;
                         _jumpFrame = 0;
                         _animCounter = 0;
+                        SoundManager::playSound("jump");
                     }
                     break;
                 }
