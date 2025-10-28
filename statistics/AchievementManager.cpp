@@ -113,9 +113,9 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         && StatManager::getOverallStat(ITEMS_PURCHASED) >= 1000 && StatManager::getOverallStat(ITEMS_SOLD) >= 1000) {
         unlock(BUSINESSPERSON);
         ConditionalUnlockManager::increaseUnlockProgress("Order Form", 1);
-    } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 10) {
+    } else if (stat == TIMES_DIED && !Tutorial::isCompleted() && valueThisSave == 5) {
         unlock(TENACIOUS);
-    } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 100) {
+    } else if (stat == TIMES_DIED && StatManager::getOverallStat(TIMES_DIED) == 20) {
         unlock(TRIAL_AND_ERROR);
         ConditionalUnlockManager::increaseUnlockProgress("Reset Button", 1);
     } else if (stat == ENEMIES_DEFEATED && valueThisSave == 5000) {
@@ -131,7 +131,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
     } else if (stat == DAMAGE_TAKEN) {
         StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, 0);
         StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, true);
-        if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 50000) unlock(MASOCHIST);
+        if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 10000) unlock(MASOCHIST);
     } else if (stat == WAVES_CLEARED) {
         if (!StatManager::getStatThisRun(TOOK_DAMAGE_THIS_WAVE)) {
             StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, StatManager::getStatThisRun(WAVES_WITHOUT_DAMAGE) + 1);
@@ -150,7 +150,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
                 SoundManager::playSound("itemunlock");
             }
         }
-    } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 20000) {
+    } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 15000) {
         unlock(HUMAN_BOULDER);
     } else if (stat == ATM_AMOUNT && StatManager::getOverallStat(ATM_AMOUNT) == 999) {
         unlock(ECONOMICAL);
