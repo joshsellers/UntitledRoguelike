@@ -1676,6 +1676,7 @@ void Game::buttonPressed(std::string buttonCode) {
         _world._shopsWithDoorBlownOpen.clear();
         _world._visitedShops.clear();
         _world._bossIsActive = false;
+        AchievementManager::bossIsActive = false;
 
         _world._isPlayerInShop = false;
         _shopManager.reset();

@@ -161,6 +161,8 @@ public:
 
     static void checkAchievementsOnStatIncrease(STATISTIC stat, float valueThisSave);
 
+    static inline bool bossIsActive = false;
+
 private:
     inline static AchievementManagerInstance _instance;
 };

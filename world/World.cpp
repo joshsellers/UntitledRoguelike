@@ -1313,6 +1313,7 @@ void World::addEntity(std::shared_ptr<Entity> entity, bool defer) {
         }
 
         _bossIsActive = true;
+        AchievementManager::bossIsActive = true;
         _currentBoss = entity;
     } else if (HARD_MODE_ENABLED && entity->isMiniBoss()) {
         //entity->setMaxHitPoints(entity->getMaxHitPoints() + ((float)entity->getMaxHitPoints() * 1.15f));
@@ -1709,6 +1710,7 @@ void World::bossDefeated() {
     else MusicManager::setSituation(MUSIC_SITUATION::WAVE);
 
     _bossIsActive = false;
+    AchievementManager::bossIsActive = false;
     StatManager::increaseStat(BOSSES_DEFEATED, 1.f);
 
     ACHIEVEMENT achievement = MILLIONAIRE;

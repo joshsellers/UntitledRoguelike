@@ -129,8 +129,11 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         unlock(TRIGGER_HAPPY);
         ConditionalUnlockManager::increaseUnlockProgress("Quantum Visor", 1);
     } else if (stat == DAMAGE_TAKEN) {
-        StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, 0);
-        StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, true);
+        if (!bossIsActive) {
+            StatManager::setStatThisRun(WAVES_WITHOUT_DAMAGE, 0);
+            StatManager::setStatThisRun(TOOK_DAMAGE_THIS_WAVE, true);
+        }
+
         if (StatManager::getOverallStat(DAMAGE_TAKEN) >= 10000) {
             unlock(MASOCHIST);
             ConditionalUnlockManager::increaseUnlockProgress("Defibrillator Sandwich", 1);
