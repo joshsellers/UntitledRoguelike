@@ -149,6 +149,9 @@ void Player::update() {
         ya /= 4.f;
     }
 
+    float dodgeTimeExtention = 1.f;
+    if (AbilityManager::playerHasAbility(Ability::EXTRA_ROLL.getId())) dodgeTimeExtention += AbilityManager::getParameter(Ability::EXTRA_ROLL.getId(), "multiplier");
+
     if (hasSufficientStamina(DODGE_STAMINA_COST) && (!isSwimming() || NO_MOVEMENT_RESTRICIONS || freeMove) && !isDodging() && !isInBoat() && !getWorld()->playerIsInShop()
         && (sf::Keyboard::isKeyPressed(InputBindingManager::getKeyboardBinding(InputBindingManager::BINDABLE_ACTION::DODGE)) 
             || GamePad::isButtonPressed(InputBindingManager::getGamepadBinding(InputBindingManager::BINDABLE_ACTION::DODGE))) && _dodgeKeyReleased) {
@@ -156,10 +159,10 @@ void Player::update() {
         _dodgeTimer++;
 
         if (isMoving()) _stamina = std::max(_stamina - DODGE_STAMINA_COST, 0);
-    } else if (isDodging() && _dodgeTimer < _maxDodgeTime) {
+    } else if (isDodging() && _dodgeTimer < _maxDodgeTime * dodgeTimeExtention) {
         _dodgeSpeedMultiplier = _dodgeMultiplier(_dodgeTimer);
         _dodgeTimer++;
-    } else if (isDodging() && _dodgeTimer >= _maxDodgeTime) {
+    } else if (isDodging() && _dodgeTimer >= _maxDodgeTime * dodgeTimeExtention) {
         _isDodging = false;
         _dodgeTimer = 0;
         _dodgeSpeedMultiplier = 1.f;

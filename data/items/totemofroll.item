@@ -1,0 +1,10 @@
+#!SIG3692442749
+id = 183
+name = "Totem of Rolling"
+description = "An edible totem that makes you roll further"
+isConsumable = true
+conditionalUnlock = true
+isBuyable = true
+value = 229
+textureRect = 24, 19, 1, 1
+functionName = "rolltotem"

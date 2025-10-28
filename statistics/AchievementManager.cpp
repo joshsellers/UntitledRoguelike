@@ -152,6 +152,7 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 15000) {
         unlock(HUMAN_BOULDER);
+        ConditionalUnlockManager::increaseUnlockProgress("Totem of Rolling", 1);
     } else if (stat == ATM_AMOUNT && StatManager::getOverallStat(ATM_AMOUNT) == 999) {
         unlock(ECONOMICAL);
         ConditionalUnlockManager::increaseUnlockProgress("Debit Card", 1);

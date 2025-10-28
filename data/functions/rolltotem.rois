@@ -1,0 +1,17 @@
+ability = "Extra Roll";
+
+hasAbility = player.hasAbility(ability);
+if: not hasAbility {
+    player.addAbility(ability);
+}
+
+increaseAmount = 1/10
+currentAmount = player.getAbilityParameter(ability, "multiplier");
+if: currentAmount >= 5/10 {
+    displayMessage("You can't use any more of these.", 5);
+    return false;
+}
+
+player.setAbilityParameter(ability, "multiplier", currentAmount + increaseAmount);
+
+return true;
