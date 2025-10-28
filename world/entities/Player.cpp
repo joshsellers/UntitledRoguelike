@@ -9,6 +9,7 @@
 #include "../../core/Tutorial.h"
 #include "../../core/ShaderManager.h"
 #include "../../core/FinalBossEffectManager.h"
+#include "../../core/SoundManager.h"
 
 Player::Player(sf::Vector2f pos, sf::RenderWindow* window, bool& gamePaused) : 
     HairyEntity(PLAYER, pos, BASE_PLAYER_SPEED, PLAYER_WIDTH / TILE_SIZE, PLAYER_HEIGHT / TILE_SIZE), _window(window), _gamePaused(gamePaused) {
@@ -804,6 +805,17 @@ void Player::damage(int damage) {
         if (_hitPoints <= 0) {
             _isActive = false;
             _hitPoints = 0;
+            if (AbilityManager::playerHasAbility(Ability::REVIVE_SANDWICH.getId())) {
+                const int extraLives = AbilityManager::getParameter(Ability::REVIVE_SANDWICH.getId(), "extra lives");
+                if (extraLives > 0) {
+                    AbilityManager::setParameter(Ability::REVIVE_SANDWICH.getId(), "extra lives", extraLives - 1);
+                    setMaxHitPoints(std::max(1, getMaxHitPoints() / 2));
+                    heal(getMaxHitPoints());
+                    _isActive = true;
+
+                    SoundManager::playSound("revive");
+                }
+            }
         }
 
         if (AbilityManager::playerHasAbility(Ability::CONTACT_DAMAGE.getId())) {

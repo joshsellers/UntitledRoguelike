@@ -1,0 +1,12 @@
+ability = "Revive Sandwich"
+
+hasAbility = player.hasAbility(ability);
+if: not hasAbility {
+    player.addAbility(ability);
+}
+
+
+currentLives = player.getAbilityParameter(ability, "extra lives");
+player.setAbilityParameter(ability, "extra lives", currentLives + 1);
+
+return true;

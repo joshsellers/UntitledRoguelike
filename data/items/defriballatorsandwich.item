@@ -1,0 +1,11 @@
+#!SIG783728031
+id = 184
+name = "Defibrillator Sandwich"
+description = "A powerful sandwich that will bring you\nback to life when you perish\nwith half your current max HP.\n\nGain an extra life for each one you eat."
+isConsumable = true
+conditionalUnlock = true
+rarityTier = 3
+isBuyable = true
+value = 1599
+textureRect = 25, 19, 1, 1
+functionName = "revivesandwich"

@@ -389,6 +389,12 @@ const Ability Ability::EXTRA_ROLL(25, "Extra Roll",
     [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
 );
 
+const Ability Ability::REVIVE_SANDWICH(26, "Revive Sandwich",
+    { {"extra lives", 0.f} },
+    [](Player* player, Ability* ability) {},
+    [](Player* player, Ability* ability, sf::RenderTexture& surface) {}
+);
+
 std::vector<Ability*> Ability::ABILITIES;
 
 Ability::Ability(const unsigned int id, const std::string name, std::map<std::string, float> parameters,
