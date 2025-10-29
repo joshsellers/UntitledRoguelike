@@ -151,9 +151,11 @@ void AchievementManager::checkAchievementsOnStatIncrease(STATISTIC stat, float v
             unlock(UNTOUCHABLE);
             ConditionalUnlockManager::increaseUnlockProgress("Coupon", 1);
             if (HARD_MODE_ENABLED) {
+                if (!LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
+                    MessageManager::displayMessage("You unlocked the Altar!", 8, SPECIAL);
+                    SoundManager::playSound("itemunlock");
+                }
                 unlock(HARDMODE_UNTOUCHABLE);
-                MessageManager::displayMessage("You unlocked the Altar!", 8, SPECIAL);
-                SoundManager::playSound("itemunlock");
             }
         }
     } else if (stat == TIMES_ROLLED && StatManager::getOverallStat(TIMES_ROLLED) >= 15000) {
