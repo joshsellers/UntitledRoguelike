@@ -759,8 +759,9 @@ void World::checkAltarSpawn() {
             AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") + 1.f
         );
 
-        constexpr float maxAltarChance = 50.f;
-        const float altarChance = std::min((AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage") / 10.f) * maxAltarChance, maxAltarChance);
+        constexpr float maxAltarChance = 75.f;
+        const float wavesCleared = AbilityManager::getParameter(Ability::ALTAR_CHANCE.getId(), "wavesWithoutDamage");
+        const float altarChance = std::min((float)std::pow(std::log(getCurrentWaveNumber()) * wavesCleared, 2.25f) + 5.f, maxAltarChance);
         if (altarChance != 0.f) {
             if (randomChance(altarChance / 100.f) && LocalAchievementManager::isUnlocked(HARDMODE_UNTOUCHABLE)) {
                 sf::Vector2f spawnPos;
