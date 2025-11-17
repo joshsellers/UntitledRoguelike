@@ -2,6 +2,7 @@
 #include "../../core/Util.h"
 #include "../World.h"
 #include "../../inventory/ConditionalUnlockManager.h"
+#include "../../statistics/AchievementManager.h"
 
 Cyclops::Cyclops(sf::Vector2f pos) : Entity(CYCLOPS, pos, 1, TILE_SIZE * 3, TILE_SIZE * 4, false) {
     setMaxHitPoints(130);
@@ -134,5 +135,8 @@ void Cyclops::damage(int damage) {
         }
 
         ConditionalUnlockManager::increaseUnlockProgress("Cyclops Eye", 1);
+        if (ConditionalUnlockManager::isUnlocked("Cyclops Eye")) {
+            AchievementManager::unlock(CYCLOPS_HUNTER);
+        }
     }
 }

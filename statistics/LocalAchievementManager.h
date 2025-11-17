@@ -71,7 +71,8 @@ private:
         "Princeton the Penguin",
         "Princeton the Penguin but harder",
         "The Developer",
-        "The Developer but harder"
+        "The Developer but harder",
+        "Cyclops Hunter"
     };
 };
 
