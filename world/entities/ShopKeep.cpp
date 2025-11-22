@@ -113,10 +113,10 @@ void ShopKeep::initInventory(bool visited) {
 
                 float spawnChance = item->getShopChance() / 100.f;
                 const EQUIPMENT_TYPE equipType = item->getEquipmentType();
-                if (equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
+                if ((equipType == EQUIPMENT_TYPE::CLOTHING_HEAD
                     || equipType == EQUIPMENT_TYPE::CLOTHING_BODY
                     || equipType == EQUIPMENT_TYPE::CLOTHING_LEGS
-                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) spawnChance -= 0.67f;
+                    || equipType == EQUIPMENT_TYPE::CLOTHING_FEET) && spawnChance == 1.f) spawnChance -= 0.67f;
 
                 if (randomChance(spawnChance)) {
                     unsigned int itemAmount = 1;
