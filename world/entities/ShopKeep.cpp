@@ -6,6 +6,7 @@
 #include "../../inventory/abilities/AbilityManager.h"
 #include "../../inventory/abilities/Ability.h"
 #include "../../statistics/StatManager.h"
+#include "../../inventory/effect/PlayerVisualEffectManager.h"
 
 ShopKeep::ShopKeep(sf::Vector2f pos, ShopManager* shopManager, std::shared_ptr<sf::Texture> spriteSheet) : Entity(NO_SAVE, pos, 0, 96, 48, false) {
     loadSprite(spriteSheet);
@@ -99,6 +100,7 @@ void ShopKeep::initInventory(bool visited) {
                 else if (item->getId() == Item::getIdFromName("Bloat Jewel") && AbilityManager::playerHasAbility(Ability::BIG_BULLETS.getId())) continue;
                 else if (item->getId() == Item::getIdFromName("Seek Jewel") && AbilityManager::playerHasAbility(Ability::TARGET_SEEKING_BULLETS.getId())) continue;
                 else if (item->getId() == Item::getIdFromName("Map") && getWorld()->getPlayer()->getInventory().hasItem(Item::getIdFromName("Map"))) continue;
+                else if (item->getId() == Item::getIdFromName("Heavy Duty Boots") && PlayerVisualEffectManager::playerHasEffect("Heavy Duty Boots")) continue;
 
                 availableItems.push_back(item->getId());
             }
