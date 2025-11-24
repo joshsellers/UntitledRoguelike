@@ -38,3 +38,5 @@ if: hasAbility {
 
     displayMessage(msg, 5);
 }
+
+return true;
