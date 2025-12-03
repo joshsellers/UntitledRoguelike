@@ -192,6 +192,7 @@ private:
 	void toggleShopMenu();
 	void toggleMiniMapMenu();
 	bool _firstTimeOpeningMap = true;
+	bool miniMapIsShrunk();
 
 	void interruptPause();
 

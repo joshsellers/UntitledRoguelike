@@ -2298,11 +2298,13 @@ void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
+            if (miniMapIsShrunk()) _miniMapMenu->show();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
         } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()
             && !_unlocksMenu->isActive() && !_achievementsMenu->isActive() && !_progressMenu->isActive()) {
             _pauseMenu->show();
+            _miniMapMenu->hide();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
@@ -2328,8 +2330,10 @@ void Game::togglePauseMenu() {
 
 void Game::toggleInventoryMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive() && !_pauseMenu->isActive()) {
-        if (_inventoryMenu->isActive()) _inventoryMenu->hide();
-        else {
+        if (_inventoryMenu->isActive()) {
+            _inventoryMenu->hide();
+            if (miniMapIsShrunk()) _miniMapMenu->show();
+        } else {
             _miniMapMenu->hide();
             _inventoryMenu->show();
         }
@@ -2362,6 +2366,7 @@ void Game::toggleShopMenu() {
         }
     } else if (_shopMenu->isActive()) {
         _shopMenu->hide();
+        if (miniMapIsShrunk()) _miniMapMenu->show();
     } else if (!_shopMenu->isActive() && _inventoryMenu->isActive()) {
         if (_world.playerIsInShop()) {
             for (auto& entity : _world.getEntities()) {
@@ -2740,7 +2745,7 @@ void Game::generateStatsString(std::string& statsString, bool overall, bool useU
 }
 
 void Game::toggleMiniMapMenu() {
-    if (_player->getInventory().hasItem(Item::getIdFromName("Map")) && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
+    if (_player->getInventory().hasItem(Item::getIdFromName("Map")) && !_inventoryMenu->isActive() && !_shopMenu->isActive() && !miniMapIsShrunk()) {
         if (_miniMapMenu->isActive()) _miniMapMenu->hide();
         else {
             _miniMapMenu->show();
@@ -2764,6 +2769,12 @@ void Game::toggleMiniMapMenu() {
             }
         }
     }
+}
+
+bool Game::miniMapIsShrunk() {
+    const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+    if (miniMapInterface != nullptr) return miniMapInterface->getMode() == MiniMapMode::SHRUNK;
+    return false;
 }
 
 void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
