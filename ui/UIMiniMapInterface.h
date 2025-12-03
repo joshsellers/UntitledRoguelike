@@ -29,6 +29,8 @@ public:
     void centerOnPlayer();
 
     MiniMapMode getMode() const;
+    void shrink();
+    void expand();
 private:
     int _dispSize;
     int _dispScale;
@@ -51,8 +53,6 @@ private:
     long long _lastDpadPressTime = 0LL;
 
     MiniMapMode _mode = MiniMapMode::FULL;
-    void shrink();
-    void expand();
 };
 
 #endif

@@ -41,6 +41,8 @@ _dispSize(getRelativeWidth(DEFAULT_DISP_SIZE)), _dispScale(DEFAULT_DISP_SCALE) {
     _bossIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _bossIcon.setTextureRect(sf::IntRect(112, 240, 16, 16));
     _bossIcon.setSize(sf::Vector2f(getRelativeWidth(1.75f), getRelativeWidth(1.75f)));
+
+    shrink();
 }
 
 void UIMiniMapInterface::update() {
