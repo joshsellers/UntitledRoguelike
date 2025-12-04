@@ -22,7 +22,6 @@ void MiniMapGenerator::blitChunk(Chunk& chunk) {
             }
 
             int mostCommonBiome = 0;
-            int highestCount = 0;
             for (int i = 0; i < biomeCount; i++) {
                 if (terrainTypeCounts[i] > terrainTypeCounts[mostCommonBiome]) {
                     mostCommonBiome = i;
