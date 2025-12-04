@@ -29,7 +29,10 @@ void MiniMapGenerator::blitChunk(Chunk& chunk) {
                 }
             }
 
-            _data[(chunkXScaled + x) + (chunkYScaled + y) * (CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS)] = (TERRAIN_TYPE)mostCommonBiome;
+            const unsigned int index = (chunkXScaled + x) + (chunkYScaled + y) * (CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS);
+            if (index >= 0 && index < CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS * CHUNK_SIZE_SCALED * MAP_SIZE_DEFAULT_CHUNKS) {
+                _data[index] = (TERRAIN_TYPE)mostCommonBiome;
+            }
         }
     }
 }
