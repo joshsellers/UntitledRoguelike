@@ -970,7 +970,13 @@ void Game::initUI() {
         "SHOP:\n" +
         "buy/sell one item: left click\n" +
         "buy/sell stack: right click\n" +
-        "buy/sell 25: middle click"
+        "buy/sell 25: middle click\n\n" +
+        "MAP:\n" +
+        "toggle map: m\n" +
+        "expand/minimize map: ctrl + m\n" + 
+        "look around: middle mouse button + drag\n" +
+        "drop pin: left click\n" + 
+        "zoom: mouse wheel"
     );
 
     std::shared_ptr<UILabel> controlsImage = std::shared_ptr<UILabel>(new UILabel(
