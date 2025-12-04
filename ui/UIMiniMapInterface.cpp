@@ -69,6 +69,8 @@ void UIMiniMapInterface::update() {
             _lastDpadPressTime = currentTimeMillis();
         }
     }
+
+    if (getMode() == MiniMapMode::SHRUNK) centerOnPlayer();
 }
 
 void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
@@ -176,8 +178,6 @@ void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
     if (GamePad::isConnected()) {
         drawControls(surface);
     }
-
-    if (getMode() == MiniMapMode::SHRUNK) centerOnPlayer();
 }
 
 void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
@@ -298,7 +298,9 @@ void UIMiniMapInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIMiniMapInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
-    zoom(mouseWheelScroll.delta);
+    if (_mode == MiniMapMode::FULL || _shape.getGlobalBounds().contains(mouseWheelScroll.x, mouseWheelScroll.y)) {
+        zoom(mouseWheelScroll.delta);
+    }
 }
 
 void UIMiniMapInterface::textEntered(const sf::Uint32 character) {
