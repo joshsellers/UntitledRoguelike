@@ -5,8 +5,11 @@
 #include "../world/World.h"
 #include "UIControlsDisplay.h"
 
+constexpr float DEFAULT_DISP_SIZE = 4.f;
+constexpr float DEFAULT_DISP_SCALE = 5.25f;
+
 UIMiniMapInterface::UIMiniMapInterface(Player* player, sf::Font font) : UIElement(50, 50, 30, 30, false, false, font), 
-_dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
+_dispSize(getRelativeWidth(DEFAULT_DISP_SIZE)), _dispScale(DEFAULT_DISP_SCALE) {
     _player = player;
 
     const float scale = (float)MiniMapGenerator::CHUNK_SIZE_SCALED / (float)CHUNK_SIZE; 
@@ -38,22 +41,26 @@ _dispSize(getRelativeWidth(4)), _dispScale(5.25f) {
     _bossIcon.setTexture(UIHandler::getUISpriteSheet().get());
     _bossIcon.setTextureRect(sf::IntRect(112, 240, 16, 16));
     _bossIcon.setSize(sf::Vector2f(getRelativeWidth(1.75f), getRelativeWidth(1.75f)));
+
+    shrink();
 }
 
 void UIMiniMapInterface::update() {
     if (GamePad::isConnected()) {
-        const float xAxis = GamePad::getRightStickXAxis();
-        const float yAxis = GamePad::getRightStickYAxis();
+        if (_mode == MiniMapMode::FULL) {
+            const float xAxis = GamePad::getRightStickXAxis();
+            const float yAxis = GamePad::getRightStickYAxis();
 
-        const float angle = std::atan2(yAxis, xAxis);
+            const float angle = std::atan2(yAxis, xAxis);
 
-        const float absX = std::abs(xAxis);
-        const float absY = std::abs(yAxis);
-        const float mag = std::min(100.f, std::sqrt(xAxis * xAxis + yAxis * yAxis)) / 100.f;
+            const float absX = std::abs(xAxis);
+            const float absY = std::abs(yAxis);
+            const float mag = std::min(100.f, std::sqrt(xAxis * xAxis + yAxis * yAxis)) / 100.f;
 
-        constexpr float panSpeed = 4.f;
-        if (xAxis > 20.f || xAxis < -20.f) _cameraX += panSpeed * std::cos(angle) * mag;
-        if (yAxis > 20.f || yAxis < -20.f) _cameraY += panSpeed * std::sin(angle) * mag;
+            constexpr float panSpeed = 4.f;
+            if (xAxis > 20.f || xAxis < -20.f) _cameraX += panSpeed * std::cos(angle) * mag;
+            if (yAxis > 20.f || yAxis < -20.f) _cameraY += panSpeed * std::sin(angle) * mag;
+        }
         
         constexpr long long dpadHoldInterval = 100LL;
         if (currentTimeMillis() - _lastDpadPressTime >= dpadHoldInterval) {
@@ -62,6 +69,8 @@ void UIMiniMapInterface::update() {
             _lastDpadPressTime = currentTimeMillis();
         }
     }
+
+    if (getMode() == MiniMapMode::SHRUNK) centerOnPlayer();
 }
 
 void UIMiniMapInterface::draw(sf::RenderTexture& surface) {
@@ -184,43 +193,59 @@ void UIMiniMapInterface::drawControls(sf::RenderTexture& surface) {
     const float y = 70.f;
     const float ySpacing = 4.f;
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK));
-    button.setPosition(getRelativePos(x, y + ySpacing * 0));
-    surface.draw(button);
+    if (_mode == MiniMapMode::FULL) {
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK));
+        button.setPosition(getRelativePos(x, y + ySpacing * 0));
+        surface.draw(button);
 
-    controlLabel.setString("look around");
-    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
-    surface.draw(controlLabel);
+        controlLabel.setString("look around");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 0 + 0.5f));
+        surface.draw(controlLabel);
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
-    button.setPosition(getRelativePos(x, y + ySpacing * 1));
-    surface.draw(button);
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::RIGHT_STICK, true));
+        button.setPosition(getRelativePos(x, y + ySpacing * 1));
+        surface.draw(button);
 
-    controlLabel.setString("center map on your location");
-    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
-    surface.draw(controlLabel);
+        controlLabel.setString("center map on your location");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 1 + 0.5f));
+        surface.draw(controlLabel);
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_STICK, true));
-    button.setPosition(getRelativePos(x, y + ySpacing * 2));
-    surface.draw(button);
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::LEFT_STICK, true));
+        button.setPosition(getRelativePos(x, y + ySpacing * 2));
+        surface.draw(button);
 
-    controlLabel.setString("drop/remove pin");
-    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
-    surface.draw(controlLabel);
+        controlLabel.setString("drop/remove pin");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 2 + 0.5f));
+        surface.draw(controlLabel);
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_UP));
-    button.setPosition(getRelativePos(x, y + ySpacing * 3));
-    surface.draw(button);
-    controlLabel.setString("zoom in");
-    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
-    surface.draw(controlLabel);
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_UP));
+        button.setPosition(getRelativePos(x, y + ySpacing * 3));
+        surface.draw(button);
+        controlLabel.setString("zoom in");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 3 + 0.5f));
+        surface.draw(controlLabel);
 
-    button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_DOWN));
-    button.setPosition(getRelativePos(x, y + ySpacing * 4));
-    surface.draw(button);
-    controlLabel.setString("zoom out");
-    controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 4 + 1.f));
-    surface.draw(controlLabel);
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_DOWN));
+        button.setPosition(getRelativePos(x, y + ySpacing * 4));
+        surface.draw(button);
+        controlLabel.setString("zoom out");
+        controlLabel.setPosition(getRelativePos(x + xTextPadding, y + ySpacing * 4 + 1.f));
+        surface.draw(controlLabel);
+
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_RIGHT));
+        button.setPosition(getRelativeWidth(x), _shape.getPosition().y - button.getSize().y);
+        surface.draw(button);
+        controlLabel.setString("minimize");
+        controlLabel.setPosition(getRelativeWidth(x + xTextPadding), button.getPosition().y + getRelativeHeight(0.5f));
+        surface.draw(controlLabel);
+    } else {
+        button.setTextureRect(UIControlsDisplay::getButtonIcon(GAMEPAD_BUTTON::DPAD_LEFT));
+        button.setPosition(_shape.getPosition().x, _shape.getPosition().y + _shape.getGlobalBounds().height);
+        surface.draw(button);
+        controlLabel.setString("expand");
+        controlLabel.setPosition(_shape.getPosition().x + button.getSize().x + xTextPadding, button.getPosition().y + getRelativeHeight(0.5f));
+        surface.draw(controlLabel);
+    }
 }
 
 void UIMiniMapInterface::controllerButtonPressed(GAMEPAD_BUTTON button) {
@@ -228,15 +253,21 @@ void UIMiniMapInterface::controllerButtonPressed(GAMEPAD_BUTTON button) {
 }
 
 void UIMiniMapInterface::controllerButtonReleased(GAMEPAD_BUTTON button) {
-    if (button == GAMEPAD_BUTTON::RIGHT_STICK) {
-        centerOnPlayer();
-    } else if (button == GAMEPAD_BUTTON::LEFT_STICK) {
-        MiniMapGenerator::dropPin(_player->getPosition());
+    if (getMode() == MiniMapMode::FULL) {
+        if (button == GAMEPAD_BUTTON::RIGHT_STICK) {
+            centerOnPlayer();
+        } else if (button == GAMEPAD_BUTTON::LEFT_STICK) {
+            MiniMapGenerator::dropPin(_player->getPosition());
+        } else if (button == GAMEPAD_BUTTON::DPAD_RIGHT) {
+            shrink();
+        }
+    } else if (button == GAMEPAD_BUTTON::DPAD_LEFT) {
+        expand();
     }
 }
 
 void UIMiniMapInterface::mouseButtonPressed(const int mx, const int my, const int button) {
-    if (button == sf::Mouse::Middle) {
+    if (button == sf::Mouse::Middle && _mode != MiniMapMode::SHRUNK) {
         _mPosOnClick.x = mx;
         _mPosOnClick.y = my;
         _cameraPosOnClick = sf::Vector2i(_cameraX, _cameraY);
@@ -245,17 +276,19 @@ void UIMiniMapInterface::mouseButtonPressed(const int mx, const int my, const in
 }
 
 void UIMiniMapInterface::mouseButtonReleased(const int mx, const int my, const int button) {
-    if (button == sf::Mouse::Middle) {
-        _middleButtonPressed = false;
-    } else if (button == sf::Mouse::Right) {
-        centerOnPlayer();
-    } else if (button == sf::Mouse::Left) {
-        MiniMapGenerator::dropPin(_player->getPosition());
+    if (_mode != MiniMapMode::SHRUNK) {
+        if (button == sf::Mouse::Middle) {
+            _middleButtonPressed = false;
+        } else if (button == sf::Mouse::Right) {
+            centerOnPlayer();
+        } else if (button == sf::Mouse::Left) {
+            MiniMapGenerator::dropPin(_player->getPosition());
+        }
     }
 }
 
 void UIMiniMapInterface::mouseMoved(const int mx, const int my) {
-    if (_middleButtonPressed) {
+    if (_middleButtonPressed && _mode != MiniMapMode::SHRUNK) {
         const int dX = _mPosOnClick.x - mx;
         const int dY = _mPosOnClick.y - my;
 
@@ -265,7 +298,9 @@ void UIMiniMapInterface::mouseMoved(const int mx, const int my) {
 }
 
 void UIMiniMapInterface::mouseWheelScrolled(sf::Event::MouseWheelScrollEvent mouseWheelScroll) {
-    zoom(mouseWheelScroll.delta);
+    if (_mode == MiniMapMode::FULL || _shape.getGlobalBounds().contains(mouseWheelScroll.x, mouseWheelScroll.y)) {
+        zoom(mouseWheelScroll.delta);
+    }
 }
 
 void UIMiniMapInterface::textEntered(const sf::Uint32 character) {
@@ -292,4 +327,37 @@ void UIMiniMapInterface::zoom(float factor) {
     const int previousCenterY = _cameraY + oldDispSize / 2;
     _cameraX = previousCenterX - _dispSize / 2;
     _cameraY = previousCenterY - _dispSize / 2;
+}
+
+void UIMiniMapInterface::shrink() {
+    _mode = MiniMapMode::SHRUNK;
+
+    _dispSize = getRelativeWidth(DEFAULT_DISP_SIZE * 0.5f);
+    _dispScale = DEFAULT_DISP_SCALE;
+
+    const float padding = getRelativeWidth(1.f);
+    _x = getRelativeWidth(100.f) - _dispSize * _dispScale - padding;
+    _y = padding;
+    _shape.setPosition(_x - padding, _y - padding);
+    _shape.setSize(sf::Vector2f(_dispSize * _dispScale + padding * 2, _dispSize * _dispScale + padding * 2));
+}
+
+void UIMiniMapInterface::expand() {
+    _mode = MiniMapMode::FULL; 
+
+    _dispSize = getRelativeWidth(DEFAULT_DISP_SIZE);
+    _dispScale = DEFAULT_DISP_SCALE;
+
+    _x = getRelativeWidth(50.f) - _dispSize * _dispScale / 2.f;
+    _y = getRelativeHeight(50.f) - _dispSize * _dispScale / 2.f;
+
+    const float padding = getRelativeWidth(1.f);
+    _shape.setPosition(_x - padding, _y - padding);
+    _shape.setSize(sf::Vector2f(_dispSize * _dispScale + padding * 2, _dispSize * _dispScale + padding * 2));
+
+    centerOnPlayer();
+}
+
+MiniMapMode UIMiniMapInterface::getMode() const {
+    return _mode;
 }

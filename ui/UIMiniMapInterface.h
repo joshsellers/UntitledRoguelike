@@ -4,6 +4,11 @@
 #include "UIElement.h"
 #include "../world/entities/Player.h"
 
+enum class MiniMapMode : bool {
+    FULL,
+    SHRUNK
+};
+
 class UIMiniMapInterface : public UIElement {
 public:
     UIMiniMapInterface(Player* player, sf::Font font);
@@ -22,6 +27,10 @@ public:
     void textEntered(const sf::Uint32 character);
 
     void centerOnPlayer();
+
+    MiniMapMode getMode() const;
+    void shrink();
+    void expand();
 private:
     int _dispSize;
     int _dispScale;
@@ -42,6 +51,8 @@ private:
     void zoom(float factor);
 
     long long _lastDpadPressTime = 0LL;
+
+    MiniMapMode _mode = MiniMapMode::FULL;
 };
 
 #endif

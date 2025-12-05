@@ -970,7 +970,13 @@ void Game::initUI() {
         "SHOP:\n" +
         "buy/sell one item: left click\n" +
         "buy/sell stack: right click\n" +
-        "buy/sell 25: middle click"
+        "buy/sell 25: middle click\n\n" +
+        "MAP:\n" +
+        "toggle map: m\n" +
+        "expand/minimize map: ctrl + m\n" + 
+        "look around: middle mouse button + drag\n" +
+        "drop pin: left click\n" + 
+        "zoom: mouse wheel"
     );
 
     std::shared_ptr<UILabel> controlsImage = std::shared_ptr<UILabel>(new UILabel(
@@ -1331,6 +1337,9 @@ void Game::update() {
             _HUDMenu->show();
             changeMagMeterColor();
             if (GamePad::isConnected()) _controlsDisplayMenu->show();
+            if (_player->getInventory().hasItem(Item::getIdFromName("Map"))) {
+                toggleMiniMapMenu();
+            }
             
             MUSIC_SITUATION situation = MUSIC_SITUATION::WAVE;
             if (_world.onEnemySpawnCooldown()) {
@@ -1592,7 +1601,9 @@ void Game::buttonPressed(std::string buttonCode) {
         startingItemDropped->loadSprite(_world.getSpriteSheet());
         _world.addEntity(startingItemDropped);
 
-        if (LocalAchievementManager::isUnlocked(ACHIEVEMENT::MARATHON)) _player->getInventory().addItem(Item::getIdFromName("Map"), 1);
+        if (LocalAchievementManager::isUnlocked(ACHIEVEMENT::MARATHON)) {
+            _player->getInventory().addItem(Item::getIdFromName("Map"), 1);
+        }
 
         startLoading();
         if (!Tutorial::isCompleted()) {
@@ -1627,6 +1638,10 @@ void Game::buttonPressed(std::string buttonCode) {
         RecentItemUnlockTracker::reset();
 
         _miniMapMenu->hide();
+        if (!miniMapIsShrunk()) {
+            const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+            miniMapInterface->shrink();
+        }
         MiniMapGenerator::reset();
         _firstTimeOpeningMap = true;
 
@@ -2197,7 +2212,11 @@ void Game::keyReleased(sf::Keyboard::Key& key) {
         if (!_commandMenu->isActive() && DEBUG_MODE) _camera->zoom(0.5);
         break;
     case sf::Keyboard::M:
-        toggleMiniMapMenu();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+            const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+            if (miniMapIsShrunk()) miniMapInterface->expand();
+            else miniMapInterface->shrink();
+        } else toggleMiniMapMenu();
         break;
     }
 
@@ -2298,11 +2317,13 @@ void Game::togglePauseMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_inventoryMenu->isActive() && !_shopMenu->isActive()) {
         if (_pauseMenu->isActive()) {
             _pauseMenu->hide();
+            if (miniMapIsShrunk() && _player->getInventory().hasItem(Item::getIdFromName("Map"))) _miniMapMenu->show();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
         } else if (!_pauseMenu_settings->isActive() && !_controlsMenu->isActive() && !_inputBindingsMenu->isActive() && !_statsMenu_pauseMenu->isActive() && !_audioMenu->isActive()
             && !_unlocksMenu->isActive() && !_achievementsMenu->isActive() && !_progressMenu->isActive()) {
             _pauseMenu->show();
+            _miniMapMenu->hide();
             _isPaused = !_isPaused;
             skipCooldownAdjustment = false;
         } else if (_pauseMenu_settings->isActive()) buttonPressed("back_pausesettings");
@@ -2328,8 +2349,10 @@ void Game::togglePauseMenu() {
 
 void Game::toggleInventoryMenu() {
     if (_gameStarted && !_commandMenu->isActive() && !_shopMenu->isActive() && !_pauseMenu->isActive()) {
-        if (_inventoryMenu->isActive()) _inventoryMenu->hide();
-        else {
+        if (_inventoryMenu->isActive()) {
+            _inventoryMenu->hide();
+            if (miniMapIsShrunk() && _player->getInventory().hasItem(Item::getIdFromName("Map"))) toggleMiniMapMenu();
+        } else {
             _miniMapMenu->hide();
             _inventoryMenu->show();
         }
@@ -2362,6 +2385,7 @@ void Game::toggleShopMenu() {
         }
     } else if (_shopMenu->isActive()) {
         _shopMenu->hide();
+        if (miniMapIsShrunk() && _player->getInventory().hasItem(Item::getIdFromName("Map"))) toggleMiniMapMenu();
     } else if (!_shopMenu->isActive() && _inventoryMenu->isActive()) {
         if (_world.playerIsInShop()) {
             for (auto& entity : _world.getEntities()) {
@@ -2757,13 +2781,19 @@ void Game::toggleMiniMapMenu() {
                 _firstTimeOpeningMap = false;
             }
 
-            if (!GamePad::isConnected()) {
+            /*if (!GamePad::isConnected()) {
                 const std::string keyboardMsg =
                     "Hold mousewheel button and drag to look around\nRight click to center on player\nLeft click to drop/remove a pin\nScroll mousewheel to zoom in/out";
                 MessageManager::displayMessage(keyboardMsg, 8);
-            }
+            }*/
         }
     }
+}
+
+bool Game::miniMapIsShrunk() {
+    const auto& miniMapInterface = dynamic_cast<UIMiniMapInterface*>(_miniMapMenu->getElements().at(0).get());
+    if (miniMapInterface != nullptr) return miniMapInterface->getMode() == MiniMapMode::SHRUNK;
+    return false;
 }
 
 void Game::onSteamOverlayActivated(GameOverlayActivated_t* pCallback) {
