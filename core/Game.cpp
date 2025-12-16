@@ -2718,11 +2718,14 @@ void Game::runStartupCommands() const {
 }
 
 void Game::autoSave() {
-    if (AUTOSAVE_ENABLED && !_world.playerIsInShop() && currentTimeMillis() - _lastAutosaveTime >= AUTOSAVE_INTERVAL_SECONDS * 1000) {
+    if (AUTOSAVE_ENABLED && !_world.playerIsInShop() && _world.onEnemySpawnCooldown() && !_alreadySavedThisCooldown) {
         SaveManager::saveGame(false);
         _lastAutosaveTime = currentTimeMillis();
         MessageManager::displayMessage("Autosaved", 0, DEBUG);
         MessageManager::displayMessage(">>" + splitString(SaveManager::getCurrentSaveFileName(), ".")[0] + ">>SFN", 0, DEBUG);
+        _alreadySavedThisCooldown = true;
+    } else if (!_world.onEnemySpawnCooldown()) {
+        _alreadySavedThisCooldown = false;
     }
 }
 
