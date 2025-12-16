@@ -140,8 +140,11 @@ std::map<const std::string, const std::function<bool(Entity*, Interpreter*)>> Sc
                     for (const auto& parameter : params) {
                         const float val = randomInt(0, 50000) / 100.f;
                         float minVal = 0;
-                        float maxVal = 500.f;
-                        if (abilityId == Ability::AIR_STRIKE.getId() && parameter.first == "rate") minVal = 500.f;
+                        float maxVal = 500.f; // I think having max and min val for airstrike the same means it will always be 500
+                        if (abilityId == Ability::AIR_STRIKE.getId() && parameter.first == "rate") {
+                            minVal = 500.f;
+                            maxVal = 10000.f;
+                        }
                         else if (abilityId == Ability::DAMAGE_AURA.getId() && parameter.first == "expansion rate") maxVal = 4.75f;
                         AbilityManager::setParameter(abilityId, parameter.first, std::min(maxVal, std::max(minVal, val)));
                     }

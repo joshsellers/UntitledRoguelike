@@ -314,7 +314,7 @@ const Ability Ability::PERMANENT_ARMOR(18, "Permanent Armor",
 );
 
 const Ability Ability::AIR_STRIKE(19, "Air Strike",
-    { {"rate", 1000.f}, {"chance", 0.25f} },
+    { {"rate", 2500.f}, {"chance", 0.25f} },
     [](Player* player, Ability* ability) {
         const float chance = ability->getParameter("chance");
         const long long rate = (long long)ability->getParameter("rate");
